@@ -31,10 +31,17 @@ const config: Config = {
 
   presets: [
     [
-      'classic',
+      'docusaurus-preset-openapi',
+      /** @type {import('docusaurus-preset-openapi').Options} */
       {
+        api: {
+          path: "./feldera/openapi.json",
+          routeBasePath: "/api",
+        },
         docs: {
-          sidebarPath: './sidebars.ts',
+          path: 'feldera/docs',
+          sidebarPath: './feldera/docs/sidebars.js',
+          routeBasePath: '/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -44,8 +51,12 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    //image: 'img/docusaurus-social-card.jpg',
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: true,
+      respectPrefersColorScheme: false,
+    },
     algolia: {
       /* login to https://dashboard.algolia.com/users/sign_in
          with learnmore@feldera.com for below details
@@ -56,27 +67,26 @@ const config: Config = {
     },
     navbar: {
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Feldera Logo',
+        src: 'img/logo-color-light.svg',
+        href: "https://www.feldera.com",
       },
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'right',
-          label: 'Tutorial',
+          sidebarId: 'docsSidebar',
+          position: 'left',
+          label: 'Docs',
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'right',
-          label: 'REST API',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'right',
+          position: 'left',
           label: 'Python SDK',
+          to: "/python"
+        },
+        {
+          label: 'REST API',
+          position: 'left',
+          to: "/api"
         },
         {
           href: 'https://github.com/feldera/feldera',
@@ -92,8 +102,16 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
+              label: 'Get Started',
+              to: '/get-started',
+            },
+            {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/tutorials/basics/part1',
+            },
+            {
+              label: 'SQL Reference',
+              to: '/sql/intro',
             },
           ],
         },
@@ -101,16 +119,16 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Slack',
+              href: 'https://join.slack.com/t/felderacommunity/shared_invite/zt-222bq930h-dgsu5IEzAihHg8nQt~dHzA',
             },
             {
               label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              href: 'https://discord.com/invite/s6t5n9UzHE',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://x.com/felderainc',
             },
           ],
         },
@@ -119,7 +137,7 @@ const config: Config = {
           items: [
             {
               label: 'Blog',
-              to: '/blog',
+              href: 'https://feldera.com/blog',
             },
             {
               label: 'GitHub',
@@ -142,7 +160,30 @@ const config: Config = {
           enableInDevelopment: true,
         },
       ]
-    ]
+    ],
+    headTags: [
+      // Declare a <link> preconnect tag
+      {
+        tagName: 'link',
+        attributes: {
+          rel: 'preconnect',
+          href: 'https://feldera.com',
+        },
+      },
+      // Declare some json-ld structured data
+      {
+        tagName: 'script',
+        attributes: {
+          type: 'application/ld+json',
+        },
+        innerHTML: JSON.stringify({
+          '@type': ['Organization', 'Brand'],
+          name: 'Feldera Documentation',
+          url: 'https://www.feldera.com/',
+          logo: 'http://www.feldera.com/docs/img/logo.svg',
+        }),
+      },
+    ],
   } satisfies Preset.ThemeConfig,
 };
 

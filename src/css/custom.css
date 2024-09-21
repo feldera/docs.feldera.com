@@ -4,15 +4,27 @@
  * work well for content-centric websites.
  */
 
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+@font-face {
+  font-family: "Signifier Thin";
+  src: url("/font/signifier-thin.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-font-family-base: "DM Sans", sans-serif;
+  --ifm-font-size-base: 1.2em;
+  --ifm-color-primary: #c533b9;
+  --ifm-color-primary-dark: #a52b9a;
+  --ifm-color-primary-darker: #661a60;
+  --ifm-color-primary-darkest: #270b25;
+  --ifm-color-primary-light: #cd54c4;
+  --ifm-color-primary-lighter: #e194db;
+  --ifm-color-primary-lightest: #f3d6f1;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
@@ -27,4 +39,40 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+
+.navbar {
+  background-color: #1e1e1e;
+}
+
+.navbar__item {
+  color: white;
+}
+
+.navbar__item:hover {
+  color: #fcbe6e;
+}
+
+.navbar__logo img {
+  margin-top: -6px;
+}
+
+.navbar__link--active {
+  font-weight: bold;
+}
+
+.navbar__item {
+  padding-top: 10px;
+}
+
+.navbar__link--active {
+  font-weight: bold;
+  color: #fcbe6e;
+}
+
+.footer {
+  background-color: #333333;
+  color: white;
+  padding: 20px 0;
 }

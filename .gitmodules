@@ -1,0 +1,3 @@
+[submodule "feldera"]
+	path = feldera
+	url = git@github.com:feldera/feldera.git
