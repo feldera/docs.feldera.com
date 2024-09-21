@@ -81,7 +81,7 @@ const config: Config = {
         {
           position: 'left',
           label: 'Python SDK',
-          to: "/python"
+          href: "https://docs.feldera.com/python"
         },
         {
           label: 'REST API',
