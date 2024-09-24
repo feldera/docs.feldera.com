@@ -1,0 +1,26 @@
+name: Link Checker
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install the default version of uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v2
+
+      - name: Check links on feldera.com
+        run: |
+          uv run --locked linkchecker https://feldera.com --check-extern --no-status
+
+      - name: Check links on docs.feldera.com
+        run: |
+          uv run --locked linkchecker https://docs.feldera.com --check-extern --no-status
