@@ -50,6 +50,16 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: "phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",
+        enableInDevelopment: true,
+      },
+    ]
+  ],
+
   themeConfig: {
     //image: 'img/docusaurus-social-card.jpg',
     colorMode: {
@@ -131,6 +141,7 @@ const config: Config = {
         },
         {
           title: 'More',
+          items: [
             {
               label: 'GitHub',
               href: 'https://github.com/feldera/feldera',
@@ -144,15 +155,6 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-    plugins: [
-      [
-        "posthog-docusaurus",
-        {
-          apiKey: "phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",
-          enableInDevelopment: true,
-        },
-      ]
-    ],
     headTags: [
       // Declare a <link> preconnect tag
       {
