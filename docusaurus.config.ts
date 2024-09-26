@@ -58,12 +58,9 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     algolia: {
-      /* login to https://dashboard.algolia.com/users/sign_in
-         with learnmore@feldera.com for below details
-      */
-      appId: 'CXICLN2IOX',
-      apiKey: 'befbb9a53c1c04f6b7a17b901e15e128',
-      indexName: 'feldera1'
+      appId: 'DPZ6UX4KKN',
+      apiKey: 'a7eaf4c0918f93d745145afd4b382425',
+      indexName: 'feldera'
     },
     navbar: {
       logo: {
@@ -134,11 +131,6 @@ const config: Config = {
         },
         {
           title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              href: 'https://feldera.com/blog',
-            },
             {
               label: 'GitHub',
               href: 'https://github.com/feldera/feldera',
