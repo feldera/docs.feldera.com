@@ -68,8 +68,8 @@ const config: Config = {
       respectPrefersColorScheme: false,
     },
     algolia: {
-      appId: 'DPZ6UX4KKN',
-      apiKey: 'a7eaf4c0918f93d745145afd4b382425',
+      appId: 'WX24466N8W',
+      apiKey: '8cce7b26a5c025f69008e3f843dab4cc',
       indexName: 'feldera'
     },
     navbar: {
