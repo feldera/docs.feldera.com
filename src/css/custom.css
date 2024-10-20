@@ -17,7 +17,6 @@
 /* You can override the default Infima variables here. */
 :root {
   --ifm-font-family-base: "DM Sans", sans-serif;
-  --ifm-font-size-base: 1.2em;
   --ifm-color-primary: #c533b9;
   --ifm-color-primary-dark: #a52b9a;
   --ifm-color-primary-darker: #661a60;
