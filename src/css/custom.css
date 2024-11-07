@@ -57,6 +57,10 @@
   margin-top: -6px;
 }
 
+.navbar-sidebar  .navbar__logo img {
+    content: url('/img/logo-color-dark.svg');
+}
+
 .navbar__link--active {
   font-weight: bold;
 }
@@ -68,6 +72,10 @@
 .navbar__link--active {
   font-weight: bold;
   color: #fcbe6e;
+}
+
+.navbar__toggle {
+  color: #ffffff !important;
 }
 
 .footer {

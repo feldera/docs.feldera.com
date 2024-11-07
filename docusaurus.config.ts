@@ -76,6 +76,7 @@ const config: Config = {
       logo: {
         alt: 'Feldera Logo',
         src: 'img/logo-color-light.svg',
+        srcDark: 'img/logo-color-dark.svg',
         href: "https://www.feldera.com",
       },
       items: [
