@@ -67,6 +67,11 @@ const config: Config = {
       disableSwitch: true,
       respectPrefersColorScheme: false,
     },
+    hubspot: {
+      accountId: 45801078,
+      async: true,
+      defer: true,
+    },
     algolia: {
       appId: 'WX24466N8W',
       apiKey: '8cce7b26a5c025f69008e3f843dab4cc',
