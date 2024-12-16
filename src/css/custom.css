@@ -40,6 +40,27 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+/* Customize inline code style */
+code {
+    background: none; /* Remove any background color */
+    color: #c533b9; /* Feldera's purple color */
+    font-weight: bold; /* Bold font */
+    font-size: 0.9; /* Shrink a little due to monospace */
+    font-family: 'DM Mono', monospace !important;
+    border-radius: 0; /* Remove rounded corners */
+    border: none; /* Remove border */
+    box-shadow: none; /* Ensure no shadows */
+    vertical-align: baseline; /* Align text properly */
+}
+
+
+/* Target links only in the Docs page content */
+main .theme-doc-markdown a {
+    color: #000 !important; /* Force black color */
+    text-decoration: underline !important; /* Always underline */
+    font-weight: bold !important;
+}
+
 
 .navbar {
   background-color: #1e1e1e;
