@@ -104,3 +104,11 @@ main .theme-doc-markdown a {
   color: white;
   padding: 20px 0;
 }
+
+/* This makes the page scroll to a position above the anchor specified in url's hash value - to account for the fixed-width header that overlaps the page contents */
+:target::before {
+  content: '';
+  display: block;
+  height:      180px;
+  margin-top: -180px;
+}
