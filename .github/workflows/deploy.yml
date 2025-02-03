@@ -55,7 +55,7 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
       - name: Upload docs
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           path: build
 
