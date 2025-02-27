@@ -140,8 +140,8 @@ const config: Config = {
               href: 'https://discord.com/invite/s6t5n9UzHE',
             },
             {
-              label: 'Twitter',
-              href: 'https://x.com/felderainc',
+              label: 'Bluesky',
+              href: 'https://bsky.app/profile/feldera.bsky.social',
             },
           ],
         },
