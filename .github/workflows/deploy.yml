@@ -17,10 +17,6 @@ concurrency:
 
 jobs:
   build:
-    container:
-      image: ghcr.io/feldera/feldera-dev:14e9d92b234097b314fc8c8b2b94eaac475a490c
-      options: --user ubuntu
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,6 +25,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 18
+      - name: Install required-version defined in pyproject.toml
+        uses: astral-sh/setup-uv@v5
+        with:
+          pyproject-file: "feldera/python/pyproject.toml"
       - name: Build Python SDK docs
         working-directory: ./feldera/python/docs
         run: |
