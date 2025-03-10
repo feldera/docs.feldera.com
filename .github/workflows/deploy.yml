@@ -18,7 +18,8 @@ concurrency:
 jobs:
   build:
     container:
-      image: ghcr.io/feldera/feldera-dev:0a775f772b2ebde13708744d3e6a219ca4a492d2
+      image: ghcr.io/feldera/feldera-dev:14e9d92b234097b314fc8c8b2b94eaac475a490c
+      options: --user ubuntu
 
     runs-on: ubuntu-latest
     steps:
