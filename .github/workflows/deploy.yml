@@ -17,9 +17,8 @@ concurrency:
 
 jobs:
   build:
-    permissions:
-      contents: read
-      packages: write
+    container:
+      image: ghcr.io/feldera/feldera-dev:0a775f772b2ebde13708744d3e6a219ca4a492d2
 
     runs-on: ubuntu-latest
     steps:
@@ -29,24 +28,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 18
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - name: Store variables
-        run: |
-          touch .env
-          echo 'ENV=${{ secrets.ENV }}' >> .env
-          cat .env
-      - name: Install python dependencies
-        working-directory: ./feldera/python
-        run: |
-          pip install .
-          pip install -r requirements-dev.txt
       - name: Build Python SDK docs
         working-directory: ./feldera/python/docs
         run: |
-          sphinx-apidoc -o . ../feldera
-          make html
+          uv run sphinx-apidoc -o . ../feldera
+          uv run sphinx-build -M html . _build
       - name: Copy the Python docs to static
         run: |
           cp -r feldera/python/docs/_build/html static/python
