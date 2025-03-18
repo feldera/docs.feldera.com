@@ -282,3 +282,29 @@ main .theme-doc-markdown a:hover {
   margin: 1.5rem 0 2rem;
   border-radius: 8px;
 }
+
+/* Index/category cards styling */
+.card {
+  margin-bottom: 1rem !important;
+  padding: 1rem !important;
+}
+
+.card__header {
+  margin-bottom: 0.5rem !important;
+}
+
+.card__header h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.card__description {
+  margin-bottom: 0 !important;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Remove extra margin from last card in a row */
+.row .col:last-child .card {
+  margin-bottom: 0;
+}
