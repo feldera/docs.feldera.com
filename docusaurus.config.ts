@@ -1,5 +1,5 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
@@ -80,8 +80,8 @@ const config: Config = {
     navbar: {
       logo: {
         alt: 'Feldera Logo',
-        src: 'img/logo-color-light.svg',
-        srcDark: 'img/logo-color-dark.svg',
+        src: 'img/logo-color-dark.svg',
+        srcDark: 'img/logo-color-light.svg',
         href: "https://www.feldera.com",
       },
       items: [
