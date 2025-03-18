@@ -184,88 +184,44 @@ main .theme-doc-markdown a:hover {
   color: var(--ifm-color-emphasis-800);
 }
 
-/* Active and hover states */
-.menu__link--active,
-.menu__link:hover {
-  color: var(--ifm-color-primary);
-  background: none;
-}
-
-.menu__link--active {
-  font-weight: 500;
-}
-
-/* Indent nested items for better hierarchy */
-.menu__list .menu__list {
-  margin-left: 0.8rem;
-  border-left: 1px solid var(--ifm-color-emphasis-200);
-  padding-left: 0.4rem;
-}
-
-/* Dark mode adjustments */
-[data-theme='dark'] .theme-doc-sidebar-item-category>.menu__list-item-collapsible {
-  color: var(--ifm-color-emphasis-500);
-}
-
-[data-theme='dark'] .theme-doc-sidebar-item-link .menu__link {
-  color: var(--ifm-color-emphasis-600);
-}
-
-/* Make collapse/expand arrows smaller and handle rotation */
-.menu__caret:before,
-.menu__link--sublist:after {
-  width: 1rem;
-  height: 1rem;
-  background-size: 1rem 1rem;
-  transform: rotate(180deg);
-  transition: transform 0.2s ease;
-}
-
-/* Rotate arrow when expanded */
-.menu__list-item--expanded .menu__link--sublist:after,
-.menu__list-item--expanded .menu__caret:before {
-  transform: rotate(90deg);
-}
-
-/* Adjust position of the arrow */
-.menu__list-item-collapsible .menu__link {
-  padding-right: 2rem;
-}
-
 /* Documentation page styling improvements */
 .theme-doc-markdown {
-  --ifm-h1-font-size: 2rem;
-  --ifm-h2-font-size: 1.375rem;
-  --ifm-h3-font-size: 1.125rem;
-  --ifm-h4-font-size: 1rem;
+  --content-font-size: 16px;
+  --content-line-height: 1.625;
+  font-size: var(--content-font-size);
+  line-height: var(--content-line-height);
+  max-width: 960px;
+  /* Increased from 42rem for better wide screen display */
+  margin: 0 auto;
 }
 
 /* Main content container width and spacing */
 .container {
-  max-width: 1140px !important;
+  max-width: 1400px !important;
+  /* Increased from 1140px */
   padding: 0 2rem;
 }
 
 /* Headers styling */
 .theme-doc-markdown h1 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 2.5rem;
+  line-height: 1.25;
   margin-bottom: 2rem;
-  line-height: 1.2;
-  margin-top: 1rem;
+  font-weight: 600;
 }
 
 .theme-doc-markdown h2 {
-  font-weight: 500;
-  margin-top: 3.5rem;
-  margin-bottom: 1.25rem;
-  padding-top: 0.5rem;
+  font-size: 1.75rem;
+  line-height: 1.3;
+  margin: 2.5rem 0 1.25rem;
+  font-weight: 600;
 }
 
 .theme-doc-markdown h3 {
-  font-weight: 500;
-  margin-top: 2.5rem;
-  margin-bottom: 1.25rem;
+  font-size: 1.375rem;
+  line-height: 1.4;
+  margin: 2rem 0 1rem;
+  font-weight: 600;
 }
 
 .theme-doc-markdown h4 {
@@ -288,27 +244,29 @@ main .theme-doc-markdown a:hover {
   margin-top: -0.75rem;
 }
 
-/* Paragraph spacing */
+/* Remove max-width from paragraphs since it's handled by parent */
 .theme-doc-markdown p {
-  line-height: 1.7;
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
 }
 
 /* List styling */
 .theme-doc-markdown ul,
 .theme-doc-markdown ol {
-  margin: 0 0 1.5rem;
-  line-height: 1.7;
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
 }
 
 .theme-doc-markdown li {
   margin: 0.5rem 0;
+  padding-left: 0.5rem;
 }
 
 /* Code blocks spacing */
 .theme-doc-markdown .prism-code {
-  margin: 1.5rem 0 2rem;
-  border-radius: 8px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 1rem;
+  margin: 1.5rem 0;
 }
 
 /* Index/category cards styling */
@@ -339,10 +297,15 @@ main .theme-doc-markdown a:hover {
 
 /* Admonition (callout) styling */
 .alert {
-  border: 1px solid var(--ifm-alert-border-color);
-  border-left-width: 6px;
-  border-radius: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
   margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+}
+
+.alert__title {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Notes - use Deep Purple */
@@ -442,15 +405,6 @@ table th {
   background-color: rgba(54, 14, 59, 0.8);
 }
 
-/* Active sidebar category background */
-.menu__list-item--expanded {
-  background-color: rgba(54, 14, 59, 0.05);
-}
-
-[data-theme='dark'] .menu__list-item--expanded {
-  background-color: rgba(54, 14, 59, 0.3);
-}
-
 /* Update the admonition styling for better visibility */
 .alert {
   border: 1px solid var(--ifm-alert-border-color);
@@ -501,4 +455,104 @@ table th {
 
 .admonition-icon svg {
   fill: var(--ifm-alert-border-color);
+}
+
+/* Ensure tables and code blocks span full width of content */
+.theme-doc-markdown table,
+.theme-doc-markdown .prism-code,
+.theme-doc-markdown .alert {
+  width: 100%;
+  max-width: none;
+}
+
+/* Ensure proper table display */
+.theme-doc-markdown table {
+  display: table;
+  table-layout: auto;
+  /* Changed from fixed to better handle content */
+}
+
+/* Table header code blocks */
+.theme-doc-markdown table th code {
+  color: inherit;
+  /* Inherit the table header text color */
+  font-weight: inherit;
+  /* Inherit the table header font weight */
+  font-size: 0.95em;
+  /* Slightly smaller than the header text */
+  background: none;
+  /* Remove any background */
+  padding: 0;
+  /* Remove padding */
+}
+
+[data-theme='dark'] .theme-doc-markdown table th code {
+  color: inherit;
+  /* Keep inheriting in dark mode */
+}
+
+/* Active and hover states */
+.menu__link--active,
+.menu__link:hover {
+  color: var(--ifm-color-primary);
+  background: none;
+}
+
+.menu__link--active {
+  font-weight: 500;
+}
+
+/* Indent nested items for better hierarchy */
+.menu__list .menu__list {
+  margin-left: 0.8rem;
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+  padding-left: 0.4rem;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .theme-doc-sidebar-item-category>.menu__list-item-collapsible {
+  color: var(--ifm-color-emphasis-500);
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-link .menu__link {
+  color: var(--ifm-color-emphasis-600);
+}
+
+/* Make collapse/expand arrows smaller and handle rotation */
+.menu__caret:before,
+.menu__link--sublist:after {
+  width: 1rem;
+  height: 1rem;
+  background-size: 1rem 1rem;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+/* Rotate arrow when expanded */
+.menu__list-item--expanded .menu__link--sublist:after,
+.menu__list-item--expanded .menu__caret:before {
+  transform: rotate(90deg);
+}
+
+/* Adjust position of the arrow */
+.menu__list-item-collapsible .menu__link {
+  padding-right: 2rem;
+}
+
+/* Sidebar hover and active states */
+.menu__link:hover {
+  background-color: var(--ifm-menu-color-background-hover, rgba(54, 14, 59, 0.05));
+}
+
+[data-theme='dark'] .menu__link:hover {
+  background-color: var(--ifm-menu-color-background-hover, rgba(252, 175, 79, 0.05));
+}
+
+/* Keep active state background */
+.menu__link--active {
+  background-color: var(--ifm-menu-color-background-active, rgba(54, 14, 59, 0.1));
+}
+
+[data-theme='dark'] .menu__link--active {
+  background-color: var(--ifm-menu-color-background-active, rgba(252, 175, 79, 0.1));
 }
