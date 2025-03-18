@@ -86,25 +86,38 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'docsSidebar',
+          label: 'Get Started',
+          to: '/get-started',
           position: 'left',
-          label: 'Docs',
         },
         {
-          label: 'REST API',
+          label: 'SQL Reference',
+          to: '/sql',
           position: 'left',
-          to: "/api"
         },
         {
+          label: 'Connectors',
+          to: '/connectors',
           position: 'left',
-          label: 'Python SDK',
-          href: "https://docs.feldera.com/python"
         },
         {
-          href: 'https://github.com/feldera/feldera',
-          label: 'GitHub',
+          type: 'dropdown',
+          label: 'Community',
           position: 'right',
+          items: [
+            {
+              label: 'Slack',
+              href: 'https://join.slack.com/t/felderacommunity/shared_invite/zt-222bq930h-dgsu5IEzAihHg8nQt~dHzA',
+            },
+            {
+              label: 'Discord',
+              href: 'https://discord.com/invite/s6t5n9UzHE',
+            },
+            {
+              label: 'GitHub',
+              href: 'https://github.com/feldera/feldera',
+            },
+          ],
         },
       ],
     },
