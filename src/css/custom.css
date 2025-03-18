@@ -140,9 +140,9 @@ main .theme-doc-markdown a:hover {
 /* Category/section headers in sidebar */
 .theme-doc-sidebar-item-category>.menu__list-item-collapsible {
   font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  font-size: 0.9rem;
+  letter-spacing: normal;
   color: var(--ifm-color-emphasis-700);
 }
 
