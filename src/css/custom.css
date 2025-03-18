@@ -31,6 +31,8 @@
   --ifm-navbar-link-hover-color: #C533B9;
   --feldera-tangerine: #FCAF4F;
   --feldera-deep-purple: #360E3B;
+  --feldera-red-orange: #FF2D55;
+  --feldera-olive-green: #94C445;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -46,6 +48,7 @@
   --ifm-navbar-background-color: #360E3B;
   --ifm-navbar-link-color: #ffffff;
   --ifm-navbar-link-hover-color: #FCAF4F;
+  --ifm-alert-background-color: rgba(255, 45, 85, 0.15);
 }
 
 /* Customize inline code style */
@@ -99,7 +102,7 @@ main .theme-doc-markdown a:hover {
 }
 
 .footer {
-  background-color: #360E3B;
+  background-color: var(--feldera-deep-purple);
   color: white;
   padding: 40px 0;
 }
@@ -310,4 +313,170 @@ main .theme-doc-markdown a:hover {
 /* Remove extra margin from last card in a row */
 .row .col:last-child .card {
   margin-bottom: 0;
+}
+
+/* Admonition (callout) styling */
+.alert {
+  border: 1px solid var(--ifm-alert-border-color);
+  border-left-width: 6px;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+
+/* Notes - use Deep Purple */
+.alert--info {
+  --ifm-alert-background-color: rgba(54, 14, 59, 0.03);
+  --ifm-alert-border-color: var(--feldera-deep-purple);
+  background: #F9F6FA;
+  /* Light purple background */
+}
+
+/* Tips - use Olive Green */
+.alert--success,
+.alert--tip {
+  --ifm-alert-background-color: rgba(148, 196, 69, 0.03);
+  --ifm-alert-border-color: var(--feldera-olive-green);
+}
+
+/* Warnings - use Tangerine with more visible styling */
+.alert--warning {
+  --ifm-alert-background-color: rgba(252, 175, 79, 0.05);
+  --ifm-alert-border-color: var(--feldera-tangerine);
+  background: #FFF9F2;
+  /* Light tangerine background */
+}
+
+/* Danger/Important - use Red Orange */
+.alert--danger {
+  --ifm-alert-background-color: rgba(255, 45, 85, 0.03);
+  --ifm-alert-border-color: var(--feldera-red-orange);
+}
+
+/* Make admonition titles match their border colors */
+.alert--info .alert__title {
+  color: var(--feldera-deep-purple);
+  font-weight: 500;
+}
+
+.alert--success .alert__title,
+.alert--tip .alert__title {
+  color: var(--feldera-olive-green);
+}
+
+.alert--warning .alert__title {
+  color: var(--feldera-tangerine);
+  font-weight: 600;
+}
+
+.alert--danger .alert__title {
+  color: var(--feldera-red-orange);
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .alert {
+  --ifm-alert-background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Use olive green for success messages and tips */
+.alert--success {
+  --ifm-alert-background-color: rgba(148, 196, 69, 0.1);
+  --ifm-alert-border-color: var(--feldera-olive-green);
+  --ifm-alert-color: var(--feldera-olive-green);
+}
+
+/* Add subtle olive green accent for info blocks */
+.alert--info {
+  border-left: 4px solid var(--feldera-olive-green);
+}
+
+/* Use red-orange for deprecated or beta feature badges */
+.badge--secondary {
+  background: var(--feldera-red-orange);
+  color: white;
+}
+
+/* Add olive green for version badges or stable features */
+.badge--primary {
+  background: var(--feldera-olive-green);
+  color: white;
+}
+
+/* Add Deep Purple to more UI elements */
+/* Blockquotes for important callouts */
+blockquote {
+  background-color: rgba(54, 14, 59, 0.05);
+  border-left: 3px solid var(--feldera-deep-purple);
+  margin: 1.5rem 0;
+  padding: 1rem;
+}
+
+/* Table headers */
+table th {
+  background-color: var(--feldera-deep-purple);
+  color: white;
+}
+
+[data-theme='dark'] table th {
+  background-color: rgba(54, 14, 59, 0.8);
+}
+
+/* Active sidebar category background */
+.menu__list-item--expanded {
+  background-color: rgba(54, 14, 59, 0.05);
+}
+
+[data-theme='dark'] .menu__list-item--expanded {
+  background-color: rgba(54, 14, 59, 0.3);
+}
+
+/* Update the admonition styling for better visibility */
+.alert {
+  border: 1px solid var(--ifm-alert-border-color);
+  border-left-width: 6px;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+
+/* Warnings - use Tangerine with more visible styling */
+.alert--warning {
+  --ifm-alert-background-color: rgba(252, 175, 79, 0.05);
+  --ifm-alert-border-color: var(--feldera-tangerine);
+  background: #FFF9F2;
+  /* Light tangerine background */
+}
+
+[data-theme='dark'] .alert--warning {
+  background: rgba(252, 175, 79, 0.05);
+}
+
+/* Make warning icons and titles more visible */
+.alert--warning .alert__title {
+  color: var(--feldera-tangerine);
+  font-weight: 600;
+}
+
+.admonition-icon svg {
+  fill: var(--ifm-alert-border-color);
+}
+
+/* Update note styling to be more visible */
+.alert--info {
+  --ifm-alert-background-color: rgba(54, 14, 59, 0.03);
+  --ifm-alert-border-color: var(--feldera-deep-purple);
+  background: #F9F6FA;
+  /* Light purple background */
+}
+
+[data-theme='dark'] .alert--info {
+  background: rgba(54, 14, 59, 0.1);
+}
+
+/* Make note icons and titles more visible */
+.alert--info .alert__title {
+  color: var(--feldera-deep-purple);
+  font-weight: 500;
+}
+
+.admonition-icon svg {
+  fill: var(--ifm-alert-border-color);
 }
