@@ -518,25 +518,36 @@ table th {
   color: var(--ifm-color-emphasis-600);
 }
 
-/* Make collapse/expand arrows smaller and handle rotation */
-.menu__caret:before,
-.menu__link--sublist:after {
+/* Menu arrow styling and alignment */
+.menu__link--sublist:after,
+.menu__caret:before {
   width: 1rem;
   height: 1rem;
   background-size: 1rem 1rem;
   transform: rotate(180deg);
   transition: transform 0.2s ease;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  margin-top: -0.5rem;
+  /* Center vertically */
+}
+
+/* Container for items with arrows */
+.menu__list-item-collapsible {
+  position: relative;
+  /* For absolute positioning of arrows */
+}
+
+.menu__list-item-collapsible .menu__link {
+  padding-right: 2rem;
+  /* Make space for the arrow */
 }
 
 /* Rotate arrow when expanded */
 .menu__list-item--expanded .menu__link--sublist:after,
 .menu__list-item--expanded .menu__caret:before {
   transform: rotate(90deg);
-}
-
-/* Adjust position of the arrow */
-.menu__list-item-collapsible .menu__link {
-  padding-right: 2rem;
 }
 
 /* Sidebar hover and active states */
@@ -555,4 +566,9 @@ table th {
 
 [data-theme='dark'] .menu__link--active {
   background-color: var(--ifm-menu-color-background-active, rgba(252, 175, 79, 0.1));
+}
+
+/* Hide breadcrumbs */
+.theme-doc-breadcrumbs {
+  display: none;
 }
