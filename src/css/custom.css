@@ -139,11 +139,16 @@ main .theme-doc-markdown a:hover {
 
 /* Category/section headers in sidebar */
 .theme-doc-sidebar-item-category>.menu__list-item-collapsible {
-  font-weight: 600;
-  text-transform: none;
+  font-weight: 400;
+  /* Default weight for all category headers */
   font-size: 0.9rem;
   letter-spacing: normal;
   color: var(--ifm-color-emphasis-700);
+}
+
+/* Bold only top-level categories */
+.theme-doc-sidebar-menu>.theme-doc-sidebar-item-category>.menu__list-item-collapsible {
+  font-weight: 600;
 }
 
 /* Regular menu items */
@@ -179,4 +184,22 @@ main .theme-doc-markdown a:hover {
 
 [data-theme='dark'] .theme-doc-sidebar-item-link .menu__link {
   color: var(--ifm-color-emphasis-600);
+}
+
+/* Make collapse/expand arrows smaller */
+.menu__caret:before,
+.menu__link--sublist:after {
+  width: 1rem;
+  height: 1rem;
+  background-size: 1rem 1rem;
+  transform: rotate(90deg);
+}
+
+.menu__caret--up:before {
+  transform: rotate(-90deg);
+}
+
+/* Adjust position of the arrow */
+.menu__list-item-collapsible .menu__link {
+  padding-right: 2rem;
 }
