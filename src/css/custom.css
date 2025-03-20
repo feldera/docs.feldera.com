@@ -465,30 +465,36 @@ table th {
   max-width: none;
 }
 
-/* Ensure proper table display */
+/* Table container to enable horizontal scrolling */
 .theme-doc-markdown table {
-  display: table;
-  table-layout: auto;
-  /* Changed from fixed to better handle content */
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1rem 0;
 }
 
-/* Table header code blocks */
-.theme-doc-markdown table th code {
-  color: inherit;
-  /* Inherit the table header text color */
-  font-weight: inherit;
-  /* Inherit the table header font weight */
-  font-size: 0.95em;
-  /* Slightly smaller than the header text */
-  background: none;
-  /* Remove any background */
-  padding: 0;
-  /* Remove padding */
+/* Make the table structure behave normally inside the scrollable container */
+.theme-doc-markdown table thead,
+.theme-doc-markdown table tbody,
+.theme-doc-markdown table tr {
+  width: 100%;
 }
 
-[data-theme='dark'] .theme-doc-markdown table th code {
-  color: inherit;
-  /* Keep inheriting in dark mode */
+/* Ensure table headers and cells align properly */
+.theme-doc-markdown table th,
+.theme-doc-markdown table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  min-width: 100px;
+  /* Prevent cells from becoming too narrow */
+}
+
+/* Keep header styling */
+.theme-doc-markdown table th {
+  background-color: var(--feldera-deep-purple);
+  color: white;
+  font-weight: 500;
 }
 
 /* Active and hover states */
