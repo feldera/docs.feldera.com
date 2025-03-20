@@ -29,10 +29,12 @@
   --ifm-navbar-background-color: #ffffff;
   --ifm-navbar-link-color: #333333;
   --ifm-navbar-link-hover-color: #C533B9;
-  --feldera-tangerine: #FCAF4F;
+  --feldera-tangerine: #FFCF4F;
   --feldera-deep-purple: #360E3B;
   --feldera-red-orange: #FF2D55;
   --feldera-olive-green: #94C445;
+  --feldera-magenta: #FC5380;
+  --feldera-purple: #360E38;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -86,41 +88,44 @@ main .theme-doc-markdown a:hover {
 
 /* Navbar styling */
 .navbar {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
-  height: 70px;
-  padding: 0.5rem 2rem;
-  /* Add consistent padding */
+  background: var(--feldera-purple);
+  height: 60px;
+  padding: 0.25rem 2rem;
+  border-bottom: none;
 }
 
-/* Logo sizing and alignment */
-.navbar__logo {
-  height: 40px;
-  /* Increase logo container height */
-  display: flex;
-  align-items: center;
+/* Remove the pattern and gradient */
+.navbar::before {
+  display: none;
 }
 
-.navbar__logo img {
-  height: 32px;
-  /* Adjust logo size */
-  margin-right: 1rem;
-  /* Add spacing between logo and nav items */
+/* Update text colors for dark background */
+.navbar__title,
+.navbar__link,
+.navbar__brand {
+  color: white !important;
 }
 
-/* Navigation items alignment */
-.navbar__items {
-  align-items: center;
-  height: 100%;
+/* Update hover states */
+.navbar__link:hover,
+.navbar__item.dropdown .navbar__link:hover {
+  color: var(--feldera-tangerine) !important;
 }
 
-.navbar__item {
-  font-weight: 500;
-  padding: 0 1rem;
-  /* Add consistent padding to nav items */
+/* Update search input for dark background */
+.navbar__search-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.navbar__link--active {
-  font-weight: 600;
+/* Update mobile toggle color */
+.navbar__toggle {
+  color: white;
+}
+
+/* Dark mode - keep the same styling */
+[data-theme='dark'] .navbar {
+  background: var(--feldera-purple);
 }
 
 .footer {
@@ -570,5 +575,14 @@ table th {
 
 /* Hide breadcrumbs */
 .theme-doc-breadcrumbs {
+  display: none;
+}
+
+/* Remove the main-wrapper and hero gradients */
+.main-wrapper {
+  background: none;
+}
+
+.hero::before {
   display: none;
 }

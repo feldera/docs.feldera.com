@@ -80,8 +80,8 @@ const config: Config = {
     navbar: {
       logo: {
         alt: 'Feldera Logo',
-        src: 'img/logo-color-dark.svg',
-        srcDark: 'img/logo-color-light.svg',
+        src: 'img/logo-color-light.svg',
+        srcDark: 'img/logo-color-dark.svg',
         href: "https://www.feldera.com",
       },
       items: [
