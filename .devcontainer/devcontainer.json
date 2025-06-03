@@ -1,0 +1,14 @@
+{
+    "name": "docs.feldera.com",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+	"workspaceFolder": "/workspaces/docs.feldera.com",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "unifiedjs.vscode-mdx"
+            ]
+        }
+    }
+}

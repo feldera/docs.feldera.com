@@ -1,6 +1,8 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type * as PresetOpenapi from 'docusaurus-preset-openapi'
+import type * as Redocusaurus from 'redocusaurus';
 
 const config: Config = {
   title: 'Feldera Documentation',
@@ -32,7 +34,6 @@ const config: Config = {
   presets: [
     [
       'docusaurus-preset-openapi',
-      /** @type {import('docusaurus-preset-openapi').Options} */
       {
         api: {
           path: "./feldera/openapi.json",
@@ -46,8 +47,23 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
-      } satisfies Preset.Options,
+      } satisfies PresetOpenapi.Options,
     ],
+    [
+      'redocusaurus',
+      {
+        openapi: {
+          // Folder to scan for *.openapi.yaml files
+          path: 'feldera',
+          routeBasePath: '/pipelines',
+        },
+        theme: {
+          // Change with your site colors
+          primaryColor: '#ae35cc',
+          customCss: './src/css/custom.css',
+        },
+      },
+    ] satisfies Redocusaurus.PresetEntry,
   ],
 
   plugins: [
