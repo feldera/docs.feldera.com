@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feldera Python SDK Documentation &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Feldera Python SDK Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="feldera-python-sdk-documentation">
+<h1>Feldera Python SDK Documentation<a class="headerlink" href="#feldera-python-sdk-documentation" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#key-concepts">Key Concepts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pandas.html">Pandas Compatibility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pandas.html#using-pandas-dataframes-as-input-output">Using Pandas DataFrames as Input / Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#connecting-to-feldera-sandbox">Connecting to Feldera Sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#connecting-to-feldera-on-localhost">Connecting to Feldera on localhost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#setting-http-connection-timeouts">Setting HTTP Connection Timeouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#creating-a-pipeline-overwriting-existing-pipelines">Creating a Pipeline (OVERWRITING existing pipelines)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#starting-a-pipeline">Starting a Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#using-pandas-dataframes">Using Pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#executing-ad-hoc-sql-queries">Executing ad-hoc SQL Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#iterating-over-output-chunks">Iterating over Output Chunks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#waiting-for-completion">Waiting for Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#end-to-end-example-with-kafka-sink">End-to-End Example with Kafka Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#specifying-data-sources-sinks">Specifying Data Sources / Sinks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">python</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="feldera.html">feldera package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.pipeline_builder">feldera.pipeline_builder module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline_builder.PipelineBuilder"><code class="docutils literal notranslate"><span class="pre">PipelineBuilder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.pipeline">feldera.pipeline module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.enums">feldera.enums module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode"><code class="docutils literal notranslate"><span class="pre">BuildMode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus"><code class="docutils literal notranslate"><span class="pre">ProgramStatus</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.output_handler">feldera.output_handler module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler"><code class="docutils literal notranslate"><span class="pre">OutputHandler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.runtime_config">feldera.runtime_config module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.Resources"><code class="docutils literal notranslate"><span class="pre">Resources</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.Storage"><code class="docutils literal notranslate"><span class="pre">Storage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html">feldera.rest package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html">tests.aggregate_tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests-test-pipeline-module">tests.test_pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests-test-pipeline-builder-module">tests.test_pipeline_builder module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests-test-udf-module">tests.test_udf module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests-test-variant-module">tests.test_variant module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="python" href="modules.html" />
+    <link rel="prev" title="Pandas Compatibility" href="pandas.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-feldera-sandbox">Connecting to Feldera Sandbox</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-feldera-on-localhost">Connecting to Feldera on localhost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-http-connection-timeouts">Setting HTTP Connection Timeouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-overwriting-existing-pipelines">Creating a Pipeline (OVERWRITING existing pipelines)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starting-a-pipeline">Starting a Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-pandas-dataframes">Using Pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#executing-ad-hoc-sql-queries">Executing ad-hoc SQL Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iterating-over-output-chunks">Iterating over Output Chunks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#waiting-for-completion">Waiting for Completion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#end-to-end-example-with-kafka-sink">End-to-End Example with Kafka Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#specifying-data-sources-sinks">Specifying Data Sources / Sinks</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<section id="connecting-to-feldera-sandbox">
+<h2>Connecting to Feldera Sandbox<a class="headerlink" href="#connecting-to-feldera-sandbox" title="Link to this heading"></a></h2>
+<p>Ensure that you have an API key to connect to Feldera Sandbox.</p>
+<p>To get the key:</p>
+<ul class="simple">
+<li><p>Login to the Feldera Sandbox.</p></li>
+<li><p>Click on the top right button that says: “Logged in”</p></li>
+<li><p>Click on “Manage API keys”</p></li>
+<li><p>Generate a new API key</p></li>
+<li><p>Give it a name, and copy the API key</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span><span class="p">,</span> <span class="n">PipelineBuilder</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span><span class="s1">&#39;https://try.feldera.com&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="connecting-to-feldera-on-localhost">
+<h2>Connecting to Feldera on localhost<a class="headerlink" href="#connecting-to-feldera-on-localhost" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span><span class="p">,</span> <span class="n">PipelineBuilder</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span><span class="s1">&#39;http://127.0.0.1:8080&#39;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-http-connection-timeouts">
+<h2>Setting HTTP Connection Timeouts<a class="headerlink" href="#setting-http-connection-timeouts" title="Link to this heading"></a></h2>
+<p>To set a timeout for the HTTP connection, pass the timeout parameter to the <cite>.class:FelderaClient</cite> constructor.
+If the Feldera backend server takes longer than the specified timeout to respond, a
+<cite>.class:FelderaTimeoutError</cite> exception will be raised.
+This example sets the timeout for each HTTP request to 10 seconds.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span><span class="p">,</span> <span class="n">PipelineBuilder</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span><span class="s2">&quot;http://127.0.0.1:8080&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is for an individual HTTP request, and does not affect things like waiting for a pipeline to start,
+pause, resume and shutdown.
+To set a timeout for these state transitions, set the parameter <cite>timeout_s</cite> in respective functions.</p>
+</div>
+</section>
+<section id="creating-a-pipeline-overwriting-existing-pipelines">
+<h2>Creating a Pipeline (OVERWRITING existing pipelines)<a class="headerlink" href="#creating-a-pipeline-overwriting-existing-pipelines" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">CREATE TABLE student (</span>
+<span class="s2">    name STRING,</span>
+<span class="s2">    id INT</span>
+<span class="s2">);</span>
+
+<span class="s2">CREATE TABLE grades (</span>
+<span class="s2">    student_id INT,</span>
+<span class="s2">    science INT,</span>
+<span class="s2">    maths INT,</span>
+<span class="s2">    art INT</span>
+<span class="s2">);</span>
+
+<span class="s2">CREATE VIEW average_scores AS SELECT name, ((science + maths + art) / 3) as average FROM </span><span class="si">{TBL_NAMES[0]}</span><span class="s2"> JOIN </span><span class="si">{TBL_NAMES[1]}</span><span class="s2"> on id = student_id ORDER BY average DESC;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># This will shutdown and overwrite any existing pipeline with the same name.</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="starting-a-pipeline">
+<h2>Starting a Pipeline<a class="headerlink" href="#starting-a-pipeline" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="analyzing-existing-feldera-pipeline-for-errors">
+<h2>Analyzing Existing Feldera Pipeline for Errors<a class="headerlink" href="#analyzing-existing-feldera-pipeline-for-errors" title="Link to this heading"></a></h2>
+<p>First let’s create a Feldera pipeline that errors from the web console, with the
+name <code class="docutils literal notranslate"><span class="pre">check_error</span></code> and invalid SQL as follows:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">invalid</span>
+</pre></div>
+</div>
+<p>This will fail to compile.</p>
+<p>We can use this Python SDK to connect to this Feldera pipeline to check if it has
+any errors as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;check_error&quot;</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">errors</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;got err: &quot;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">err</span></code> is a list of all errors in this pipeline. The above code will emit
+the following output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>got err:  [{&#39;sql_compilation&#39;: {&#39;exit_code&#39;: 1, &#39;messages&#39;: [{&#39;start_line_number&#39;: 1, &#39;start_column&#39;: 1, &#39;end_line_number&#39;: 1, &#39;end_column&#39;: 14, &#39;warning&#39;: False, &#39;error_type&#39;: &#39;Not supported&#39;, &#39;message&#39;: &#39;Raw \&#39;SELECT\&#39; statements are not supported; did you forget to CREATE VIEW?: SELECT &quot;invalid&quot;&#39;, &#39;snippet&#39;: &#39;    1|SELECT invalid\n      ^^^^^^^^^^^^^^\n&#39;}]}}]
+</pre></div>
+</div>
+</section>
+<section id="using-pandas-dataframes">
+<h2>Using Pandas DataFrames<a class="headerlink" href="#using-pandas-dataframes" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># populate pandas dataframes</span>
+<span class="n">df_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;students.csv&#39;</span><span class="p">)</span>
+<span class="n">df_grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;grades.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># subscribe to listen to outputs from a view</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;average_scores&quot;</span><span class="p">)</span>
+
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># feed pandas dataframes as input</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;students&quot;</span><span class="p">,</span> <span class="n">df_students</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;grades&quot;</span><span class="p">,</span> <span class="n">df_grades</span><span class="p">)</span>
+
+<span class="c1"># wait for the pipeline to complete and shutdown</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># get the output of the view as a pandas dataframe</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+<span class="c1"># delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="executing-ad-hoc-sql-queries">
+<h2>Executing ad-hoc SQL Queries<a class="headerlink" href="#executing-ad-hoc-sql-queries" title="Link to this heading"></a></h2>
+<p>Ad-hoc SQL queries can be executed on running or paused pipelines.
+Ad-hoc queries provide a way to query the state of <strong>materialized</strong> views or tables.</p>
+<p>For more information, refer to the docs at: <a class="reference external" href="https://docs.feldera.com/sql/ad-hoc">https://docs.feldera.com/sql/ad-hoc</a></p>
+<p>We provide the following methods to execute ad-hoc queries:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.execute()</span></code></a> - Execute an ad-hoc query and discard the result. Useful for <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> queries.</p></li>
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query" title="feldera.pipeline.Pipeline.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.query()</span></code></a> <strong>(Lazy)</strong> - Executes an ad-hoc query and returns a generator to iterate over the result.</p></li>
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query_tabular" title="feldera.pipeline.Pipeline.query_tabular"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.query_tabular()</span></code></a> <strong>(Lazy)</strong> - Executes an ad-hoc query and returns a generator that yields a string representing the query result in human-readable tabular format.</p></li>
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query_parquet" title="feldera.pipeline.Pipeline.query_parquet"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.query_parquet()</span></code></a> - Executes an ad-hoc query and saves the result to the specified path as a parquet file.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># execute an `INSERT` ad-hoc SQL query</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSERT into students VALUES (&#39;John&#39;, 1)&quot;</span><span class="p">)</span>
+
+<span class="c1"># executing a `SELECT` ad-hoc SQL query</span>
+<span class="n">students</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM students&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="iterating-over-output-chunks">
+<h2>Iterating over Output Chunks<a class="headerlink" href="#iterating-over-output-chunks" title="Link to this heading"></a></h2>
+<p>Use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.foreach_chunk" title="feldera.pipeline.Pipeline.foreach_chunk"><code class="xref py py-meth docutils literal notranslate"><span class="pre">foreach_chunk()</span></code></a> to process each chunk of data from a view or table.
+It takes a callback, and calls the callback on each chunk of received data.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define your callback to run on every chunk of data received</span>
+<span class="c1"># ensure that it takes two parameters, the chunk (DataFrame) and the sequence number</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">seq_no</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Seq No: </span><span class="si">{</span><span class="n">seq_no</span><span class="si">}</span><span class="s2">, DF size: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+
+<span class="c1"># register the callback for data received from the selected view</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">foreach_chunk</span><span class="p">(</span><span class="s2">&quot;view_name&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+
+<span class="c1"># run the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+
+<span class="c1"># wait for the pipeline to finish and shutdown</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="waiting-for-completion">
+<h2>Waiting for Completion<a class="headerlink" href="#waiting-for-completion" title="Link to this heading"></a></h2>
+<p>To wait (block) till the pipeline has been completed, use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_completion" title="feldera.pipeline.Pipeline.wait_for_completion"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.wait_for_completion()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Optionally, to shutdown the pipeline after completion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">shutdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the data source is streaming, this will block forever.</p>
+</div>
+</section>
+<section id="end-to-end-example-with-kafka-sink">
+<h2>End-to-End Example with Kafka Sink<a class="headerlink" href="#end-to-end-example-with-kafka-sink" title="Link to this heading"></a></h2>
+<p>This example shows creating and running a pipeline with Feldera’s internal data generator and writing to a Kafka sink.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span><span class="p">,</span> <span class="n">PipelineBuilder</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span><span class="s1">&#39;http://localhost:8080&#39;</span><span class="p">)</span>
+
+<span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        CREATE TABLE Stocks (</span>
+<span class="s2">        symbol VARCHAR NOT NULL,</span>
+<span class="s2">        price_time BIGINT NOT NULL,  -- UNIX timestamp</span>
+<span class="s2">        price DOUBLE NOT NULL</span>
+<span class="s2">        ) with (</span>
+<span class="s2">          &#39;connectors&#39; = &#39;[{</span>
+<span class="s2">            &quot;transport&quot;: {</span>
+<span class="s2">              &quot;name&quot;: &quot;datagen&quot;,</span>
+<span class="s2">              &quot;config&quot;: {</span>
+<span class="s2">                &quot;plan&quot;: [{</span>
+<span class="s2">                    &quot;limit&quot;: 5,</span>
+<span class="s2">                    &quot;rate&quot;: 1,</span>
+<span class="s2">                    &quot;fields&quot;: {</span>
+<span class="s2">                        &quot;symbol&quot;: { &quot;values&quot;: [&quot;AAPL&quot;, &quot;GOOGL&quot;, &quot;SPY&quot;, &quot;NVDA&quot;] },</span>
+<span class="s2">                        &quot;price&quot;: { &quot;strategy&quot;: &quot;uniform&quot;, &quot;range&quot;: [100, 10000] }</span>
+<span class="s2">                    }</span>
+<span class="s2">                }]</span>
+<span class="s2">              }</span>
+<span class="s2">            }</span>
+<span class="s2">          }]&#39;</span>
+<span class="s2">        );</span>
+
+<span class="s2">        CREATE VIEW googl_stocks</span>
+<span class="s2">        WITH (</span>
+<span class="s2">            &#39;connectors&#39; = &#39;[</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;name&quot;: &quot;kafka-3&quot;,</span>
+<span class="s2">                    &quot;transport&quot;: {</span>
+<span class="s2">                        &quot;name&quot;: &quot;kafka_output&quot;,</span>
+<span class="s2">                        &quot;config&quot;: {</span>
+<span class="s2">                            &quot;bootstrap.servers&quot;: &quot;localhost:9092&quot;,</span>
+<span class="s2">                            &quot;topic&quot;: &quot;googl_stocks&quot;,</span>
+<span class="s2">                            &quot;auto.offset.reset&quot;: &quot;earliest&quot;</span>
+<span class="s2">                        }</span>
+<span class="s2">                    },</span>
+<span class="s2">                    &quot;format&quot;: {</span>
+<span class="s2">                        &quot;name&quot;: &quot;json&quot;,</span>
+<span class="s2">                        &quot;config&quot;: {</span>
+<span class="s2">                            &quot;update_format&quot;: &quot;insert_delete&quot;,</span>
+<span class="s2">                            &quot;array&quot;: false</span>
+<span class="s2">                        }</span>
+<span class="s2">                    }</span>
+<span class="s2">                }</span>
+<span class="s2">            ]&#39;</span>
+<span class="s2">        )</span>
+<span class="s2">        AS SELECT * FROM Stocks WHERE symbol = &#39;GOOGL&#39;;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;kafka_example&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;googl_stocks&quot;</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+<span class="c1"># important: `wait_for_completion` will block forever here</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_idle</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
+
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="specifying-data-sources-sinks">
+<h2>Specifying Data Sources / Sinks<a class="headerlink" href="#specifying-data-sources-sinks" title="Link to this heading"></a></h2>
+<p>To connect Feldera to various data sources or sinks, you can define them in the SQL code.
+Refer to the connector documentation at: <a class="reference external" href="https://docs.feldera.com/connectors/">https://docs.feldera.com/connectors/</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pandas.html" class="btn btn-neutral float-left" title="Pandas Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

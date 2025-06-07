@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">feldera.pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for feldera.pipeline</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatus</span><span class="p">,</span> <span class="n">ProgramStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CallbackRunnerInstruction</span><span class="p">,</span> <span class="n">CallbackRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.output_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_dataframe_has_columns</span><span class="p">,</span> <span class="n">chunk_dataframe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
+
+
+<div class="viewcode-block" id="Pipeline">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">:</span> <span class="n">InnerPipeline</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Queue</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_inner</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">InnerPipeline</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Pipeline&quot;</span><span class="p">:</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">inner</span>
+        <span class="k">return</span> <span class="n">pipeline</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setup_output_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal function used to set up the output listeners.</span>
+
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">view_queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">view_queue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># sends a message to the callback runner to start listening</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">PipelineStarted</span><span class="p">)</span>
+                <span class="c1"># block until the callback runner is ready</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Pipeline.refresh">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.refresh">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls the backend to get the updated, latest version of the pipeline.</span>
+
+<span class="sd">        :raises FelderaConnectionError: If there is an issue connecting to the backend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current status of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_status</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">FelderaAPIError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">err</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.input_pandas">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.input_pandas">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Push all rows in a pandas DataFrame to the pipeline.</span>
+
+<span class="sd">        The pipeline must either be in RUNNING or PAUSED states to push data.</span>
+<span class="sd">        An error will be raised if the pipeline is in any other state.</span>
+
+<span class="sd">        The dataframe must have the same columns as the table in the pipeline.</span>
+
+<span class="sd">        :param table_name: The name of the table to insert data into.</span>
+<span class="sd">        :param df: The pandas DataFrame to be pushed to the pipeline.</span>
+<span class="sd">        :param force: `True` to push data even if the pipeline is paused. `False` by default.</span>
+
+<span class="sd">        :raises ValueError: If the table does not exist in the pipeline.</span>
+<span class="sd">        :raises RuntimeError: If the pipeline is not in a valid state to push data.</span>
+<span class="sd">        :raises RuntimeError: If the pipeline is paused and force is not set to `True`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
+            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running or paused to push data&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">status</span> <span class="o">==</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline is paused, set force=True to push data&quot;</span><span class="p">)</span>
+
+        <span class="n">ensure_dataframe_has_columns</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;now&quot;</span> <span class="ow">and</span> <span class="n">table_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">tbl</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">tbl</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">tables</span>
+        <span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot push to table &#39;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&#39;: table with this name does not exist in the &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; pipeline&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># consider validating the schema here</span>
+            <span class="k">for</span> <span class="n">datum</span> <span class="ow">in</span> <span class="n">chunk_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">push_to_pipeline</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">table_name</span><span class="p">,</span>
+                    <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+                    <span class="n">datum</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s2">&quot;epoch&quot;</span><span class="p">),</span>
+                    <span class="n">json_flavor</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span>
+                    <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">serialize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">return</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.input_json">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.input_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">input_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Push this JSON data to the specified table of the pipeline.</span>
+
+<span class="sd">        The pipeline must either be in RUNNING or PAUSED states to push data.</span>
+<span class="sd">        An error will be raised if the pipeline is in any other state.</span>
+
+<span class="sd">        :param table_name: The name of the table to push data into.</span>
+<span class="sd">        :param data: The JSON encoded data to be pushed to the pipeline. The data should be in the form:</span>
+<span class="sd">            `{&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}` or `[{&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}, {&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}]`</span>
+<span class="sd">        :param update_format: The update format of the JSON data to be pushed to the pipeline. Must be one of:</span>
+<span class="sd">            &quot;raw&quot;, &quot;insert_delete&quot;. &lt;https://docs.feldera.com/formats/json#the-insertdelete-format&gt;</span>
+<span class="sd">        :param force: `True` to push data even if the pipeline is paused. `False` by default.</span>
+
+<span class="sd">        :raises ValueError: If the update format is invalid.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a valid state to push data.</span>
+<span class="sd">        :raises RuntimeError: If the pipeline is paused and `force` is not set to `True`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">status</span> <span class="o">==</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline is paused, set force=True to push data&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">update_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;insert_delete&quot;</span><span class="p">]:</span>
+            <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;update_format must be one of raw or insert_delete&quot;</span><span class="p">)</span>
+
+        <span class="n">array</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">push_to_pipeline</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">table_name</span><span class="p">,</span>
+            <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">update_format</span><span class="o">=</span><span class="n">update_format</span><span class="p">,</span>
+            <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
+            <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.pause_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the specified input connector.</span>
+
+<span class="sd">        Connectors allow feldera to fetch data from a source or write data to a sink.</span>
+<span class="sd">        This method allows users to **PAUSE** a specific **INPUT** connector.</span>
+<span class="sd">        All connectors are RUNNING by default.</span>
+
+<span class="sd">        Refer to the connector documentation for more information:</span>
+<span class="sd">        &lt;https://docs.feldera.com/connectors/#input-connector-orchestration&gt;</span>
+
+<span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
+<span class="sd">        :param connector_name: The name of the connector to pause.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.resume_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.resume_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resume the specified connector.</span>
+
+<span class="sd">        Connectors allow feldera to fetch data from a source or write data to a sink.</span>
+<span class="sd">        This method allows users to **RESUME / START** a specific **INPUT** connector.</span>
+<span class="sd">        All connectors are RUNNING by default.</span>
+
+<span class="sd">        Refer to the connector documentation for more information:</span>
+<span class="sd">        &lt;https://docs.feldera.com/connectors/#input-connector-orchestration&gt;</span>
+
+<span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
+<span class="sd">        :param connector_name: The name of the connector to resume.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">resume_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.listen">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.listen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputHandler</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Follow the change stream (i.e., the output) of the provided view.</span>
+<span class="sd">        Returns an output handler to read the changes.</span>
+
+<span class="sd">        When the pipeline is shutdown, these listeners are dropped.</span>
+
+<span class="sd">        You must call this method before starting the pipeline to get the entire output of the view.</span>
+<span class="sd">        If this method is called once the pipeline has started, you will only get the output from that point onwards.</span>
+
+<span class="sd">        :param view_name: The name of the view to listen to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">,</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">]:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">view_name</span><span class="p">:</span> <span class="n">queue</span><span class="p">})</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">OutputHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">handler</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.foreach_chunk">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.foreach_chunk">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">foreach_chunk</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the given callback on each chunk of the output of the specified view.</span>
+
+<span class="sd">        You must call this method before starting the pipeline to operate on the entire output.</span>
+<span class="sd">        You can call this method after the pipeline has started, but you will only get the output from that point onwards.</span>
+
+<span class="sd">        :param view_name: The name of the view.</span>
+<span class="sd">        :param callback: The callback to run on each chunk. The callback should take two arguments:</span>
+
+<span class="sd">                - **chunk**  -&gt; The chunk as a pandas DataFrame</span>
+<span class="sd">                - **seq_no** -&gt; The sequence number. The sequence number is a monotonically increasing integer that</span>
+<span class="sd">                  starts from 0. Note that the sequence number is unique for each chunk, but not necessarily contiguous.</span>
+
+<span class="sd">        Please note that the callback is run in a separate thread, so it should be thread-safe.</span>
+<span class="sd">        Please note that the callback should not block for a long time, as by default, backpressure is enabled and</span>
+<span class="sd">        will block the pipeline.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            - The callback must be thread-safe as it will be run in a separate thread.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">]:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">view_name</span><span class="p">:</span> <span class="n">queue</span><span class="p">})</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="n">handler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.wait_for_completion">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.wait_for_completion">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_completion</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Block until the pipeline has completed processing all input records.</span>
+
+<span class="sd">        This method blocks until (1) all input connectors attached to the pipeline</span>
+<span class="sd">        have finished reading their input data sources and issued end-of-input</span>
+<span class="sd">        notifications to the pipeline, and (2) all inputs received from these</span>
+<span class="sd">        connectors have been fully processed and corresponding outputs have been</span>
+<span class="sd">        sent out through the output connectors.</span>
+
+<span class="sd">        This method will block indefinitely if at least one of the input</span>
+<span class="sd">        connectors attached to the pipeline is a streaming connector, such as</span>
+<span class="sd">        Kafka, that does not issue the end-of-input notification.</span>
+
+<span class="sd">        :param shutdown: If True, the pipeline will be shutdown after completion. False by default.</span>
+<span class="sd">        :param timeout_s: Optional. The maximum time (in seconds) to wait for the pipeline to complete.</span>
+<span class="sd">            The default is None, which means wait indefinitely.</span>
+
+<span class="sd">        :raises RuntimeError: If the pipeline returns unknown metrics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
+            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">INITIALIZING</span><span class="p">,</span>
+            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PROVISIONING</span><span class="p">,</span>
+        <span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running to wait for completion&quot;</span><span class="p">)</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to complete&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;waiting for pipeline </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to complete: elapsed time </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s, timeout: </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;global_metrics&quot;</span>
+            <span class="p">)</span>
+            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pipeline_complete&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pipeline_complete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;received unknown metrics from the pipeline, pipeline_complete is None&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pipeline_complete</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">shutdown</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__failed_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">next</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the pipeline is in FAILED state and raises an error if it is.</span>
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span>
+            <span class="n">deployment_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">deployment_error</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot </span><span class="si">{</span><span class="nb">next</span><span class="si">}</span><span class="s2"> pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in FAILED state.</span>
+<span class="s2">The pipeline must be in SHUTDOWN state before it can be started, but it is currently in FAILED state.</span>
+<span class="s2">Use `Pipeline.shutdown()` method to shut down the pipeline.</span>
+<span class="s2">Error Message:</span>
+<span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Pipeline.start">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. _start:</span>
+
+<span class="sd">        Starts this pipeline.</span>
+
+<span class="sd">        The pipeline must be in SHUTDOWN state to start.</span>
+<span class="sd">        If the pipeline is in any other state, an error will be raised.</span>
+<span class="sd">        If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
+<span class="sd">        If the pipeline is in FAILED state, it must be shutdown before starting it again.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to start.</span>
+
+<span class="sd">        :raises RuntimeError: If the pipeline is not in SHUTDOWN state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot start pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in state &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;.</span>
+<span class="s2">The pipeline must be in SHUTDOWN state before it can be started.</span>
+<span class="s2">You can either shut down the pipeline using the `Pipeline.shutdown()` method or use `Pipeline.resume()` to </span><span class="se">\</span>
+<span class="s2">resume a paused pipeline.&quot;&quot;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_pipeline</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Unable to START the pipeline.&quot;</span><span class="p">,</span> <span class="n">timeout_s</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setup_output_listeners</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.restart">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.restart">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restarts the pipeline.</span>
+
+<span class="sd">        This method **SHUTS DOWN** the pipeline regardless of its current state and then starts it again.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to restart.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.wait_for_idle">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.wait_for_idle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_idle</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">idle_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">600.0</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wait for the pipeline to become idle and then returns.</span>
+
+<span class="sd">        Idle is defined as a sufficiently long interval in which the number of</span>
+<span class="sd">        input and processed records reported by the pipeline do not change, and</span>
+<span class="sd">        they equal each other (thus, all input records present at the pipeline</span>
+<span class="sd">        have been processed).</span>
+
+<span class="sd">        :param idle_interval_s: Idle interval duration (default is 5.0 seconds).</span>
+<span class="sd">        :param timeout_s: Timeout waiting for idle (default is 600.0 seconds).</span>
+<span class="sd">        :param poll_interval_s: Polling interval, should be set substantially</span>
+<span class="sd">            smaller than the idle interval (default is 0.2 seconds).</span>
+<span class="sd">        :raises ValueError: If idle interval is larger than timeout, poll interval</span>
+<span class="sd">            is larger than timeout, or poll interval is larger than idle interval.</span>
+<span class="sd">        :raises RuntimeError: If the metrics are missing or the timeout was</span>
+<span class="sd">            reached.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">idle_interval_s</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;idle interval (</span><span class="si">{</span><span class="n">idle_interval_s</span><span class="si">}</span><span class="s2">s) cannot be larger than timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s)&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">poll_interval_s</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;poll interval (</span><span class="si">{</span><span class="n">poll_interval_s</span><span class="si">}</span><span class="s2">s) cannot be larger than timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s)&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">poll_interval_s</span> <span class="o">&gt;</span> <span class="n">idle_interval_s</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;poll interval (</span><span class="si">{</span><span class="n">poll_interval_s</span><span class="si">}</span><span class="s2">s) cannot be larger &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;than idle interval (</span><span class="si">{</span><span class="n">idle_interval_s</span><span class="si">}</span><span class="s2">s)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">start_time_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">idle_started_s</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">now_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+            <span class="c1"># Metrics retrieval</span>
+            <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;global_metrics&quot;</span>
+            <span class="p">)</span>
+            <span class="n">total_input_records</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_input_records&quot;</span><span class="p">)</span>
+            <span class="n">total_processed_records</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_processed_records&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">total_input_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;total_input_records is missing from the pipeline metrics&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">total_processed_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;total_processed_records is missing from the pipeline metrics&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Idle check</span>
+            <span class="n">unchanged</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">total_input_records</span> <span class="ow">and</span> <span class="n">prev</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">total_processed_records</span>
+            <span class="p">)</span>
+            <span class="n">equal</span> <span class="o">=</span> <span class="n">total_input_records</span> <span class="o">==</span> <span class="n">total_processed_records</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_input_records</span><span class="p">,</span> <span class="n">total_processed_records</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unchanged</span> <span class="ow">and</span> <span class="n">equal</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">idle_started_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">idle_started_s</span> <span class="o">=</span> <span class="n">now_s</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idle_started_s</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">idle_started_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">now_s</span> <span class="o">-</span> <span class="n">idle_started_s</span> <span class="o">&gt;=</span> <span class="n">idle_interval_s</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Timeout</span>
+            <span class="k">if</span> <span class="n">now_s</span> <span class="o">-</span> <span class="n">start_time_s</span> <span class="o">&gt;=</span> <span class="n">timeout_s</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;waiting for idle reached timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s)&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.pause">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the pipeline.</span>
+
+<span class="sd">        The pipeline can only transition to the PAUSED state from the RUNNING state.</span>
+<span class="sd">        If the pipeline is already paused, it will remain in the PAUSED state.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to pause.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is in FAILED state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;pause&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.shutdown">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.shutdown">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shut down the pipeline.</span>
+
+<span class="sd">        Shuts down the pipeline regardless of its current state.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to shut down.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># sends a message to the callback runner to stop listening</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">RanToCompletion</span><span class="p">)</span>
+                <span class="c1"># block until the callback runner has been stopped</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">shutdown_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.resume">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.resume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resumes the pipeline from the PAUSED state. If the pipeline is already running, it will remain in the RUNNING state.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to shut down.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is in FAILED state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;resume&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.delete">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.delete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes the pipeline.</span>
+
+<span class="sd">        The pipeline must be shutdown before it can be deleted.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in SHUTDOWN state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">delete_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.get">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.get">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Pipeline&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pipeline if it exists.</span>
+
+<span class="sd">        :param name: The name of the pipeline.</span>
+<span class="sd">        :param client: The FelderaClient instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">inner</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Pipeline</span><span class="o">.</span><span class="n">_from_inner</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">FelderaAPIError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline with name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.checkpoint">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoint">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checkpoints this pipeline, if fault-tolerance is enabled.</span>
+<span class="sd">        Fault Tolerance in Feldera: &lt;https://docs.feldera.com/pipelines/fault-tolerance/&gt;</span>
+
+<span class="sd">        :raises FelderaAPIError: If checkpointing is not enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.query">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc SQL query on this pipeline and returns a generator that yields the rows of the result as Python dictionaries.</span>
+<span class="sd">        For ``INSERT`` and ``DELETE`` queries, consider using :meth:`.execute` instead.</span>
+<span class="sd">        All floating-point numbers are deserialized as Decimal objects to avoid precision loss.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
+
+<span class="sd">        Important:</span>
+<span class="sd">            This method is lazy. It returns a generator and is not evaluated until you consume the result.</span>
+
+<span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :return: A generator that yields the rows of the result as Python dictionaries.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
+<span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query_as_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.query_parquet">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query_parquet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc SQL query on this pipeline and saves the result to the specified path as a parquet file.</span>
+<span class="sd">        If the extension isn&#39;t `parquet`, it will be automatically appended to `path`.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
+
+<span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :param path: The path of the parquet file.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
+<span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query_as_parquet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.query_tabular">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query_tabular">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_tabular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a SQL query on this pipeline and returns the result as a formatted string.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
+
+<span class="sd">        Important:</span>
+<span class="sd">            This method is lazy. It returns a generator and is not evaluated until you consume the result.</span>
+
+<span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :return: A generator that yields a string representing the query result in a human-readable, tabular format.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
+<span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query_as_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.execute">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc SQL query on the current pipeline, discarding its result.</span>
+<span class="sd">        Unlike the :meth:`.query` method which returns a generator for retrieving query results lazily,</span>
+<span class="sd">        this method processes the query eagerly and fully before returning.</span>
+
+<span class="sd">        This method is suitable for SQL operations like ``INSERT`` and ``DELETE``, where the user needs</span>
+<span class="sd">        confirmation of successful query execution, but does not require the query result.</span>
+<span class="sd">        If the query fails, an exception will be raised.</span>
+
+<span class="sd">        Important:</span>
+<span class="sd">            If you try to ``INSERT`` or ``DELETE`` data from a table while the pipeline is paused,</span>
+<span class="sd">            it will block until the pipeline is resumed.</span>
+
+<span class="sd">        :param query: The SQL query to be executed.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING state.</span>
+<span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_tabular</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">deque</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the name of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">name</span>
+
+<div class="viewcode-block" id="Pipeline.program_code">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_code">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program SQL code of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_code</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgramStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program status of the pipeline.</span>
+
+<span class="sd">        Program status is the status of compilation of this SQL program.</span>
+<span class="sd">        We first compile the SQL program to Rust code, and then compile the Rust code to a binary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ProgramStatus</span><span class="o">.</span><span class="n">from_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_status</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_status_since">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_status_since">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_status_since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the timestamp when the current program status was set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_status_since</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.udf_rust">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.udf_rust">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">udf_rust</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Rust code for UDFs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">udf_rust</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.udf_toml">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.udf_toml">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">udf_toml</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Rust dependencies required by UDFs (in the TOML format).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">udf_toml</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_config">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program config of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_config</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.runtime_config">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.runtime_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the runtime config of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">runtime_config</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.id">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.id">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the ID of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">id</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.description">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the description of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">description</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.tables">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.tables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SQLTable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the tables of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">tables</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.views">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.views">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">views</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SQLView</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the views of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">views</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.created_at">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.created_at">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">created_at</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the creation time of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.version">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the version of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">version</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_version">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program version of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_version</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_status_since">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_status_since">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_status_since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the timestamp when the current deployment status of the pipeline was set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_status_since</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_config">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deployment config of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_config</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_desired_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_desired_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_desired_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the desired deployment status of the pipeline.</span>
+<span class="sd">        This is the next state that the pipeline should transition to.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_desired_status</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_error">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deployment error of the pipeline.</span>
+<span class="sd">        Returns an empty string if there is no error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_error</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_location">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_location">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deployment location of the pipeline.</span>
+<span class="sd">        Deployment location is the location where the pipeline can be reached at runtime (a TCP port number or a URI).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_location</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_binary_url">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_binary_url">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_binary_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program binary URL of the pipeline.</span>
+<span class="sd">        This is the URL where the compiled program binary can be downloaded from.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_binary_url</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_info">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program info of the pipeline.</span>
+<span class="sd">        This is the output returned by the SQL compiler, including: the list of input and output connectors, the generated Rust code for the pipeline, and the SQL program schema.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_info</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.program_error">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">program_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the program error of the pipeline.</span>
+<span class="sd">        If there are no errors, the `exit_code` field inside both `sql_compilation` and `rust_compilation` will be 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_error</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.errors">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.errors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">errors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all errors in this pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">perr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">program_error</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">perr</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">perr</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">err</span> <span class="ow">and</span> <span class="n">err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;exit_code&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">e</span><span class="p">:</span> <span class="n">err</span><span class="p">})</span>
+        <span class="n">derr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment_error</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">derr</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">derr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">errors</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

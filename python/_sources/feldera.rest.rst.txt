@@ -1,0 +1,61 @@
+feldera.rest package
+====================
+
+Submodules
+----------
+
+feldera.rest.config module
+--------------------------
+
+.. automodule:: feldera.rest.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+feldera.rest.errors module
+--------------------------
+
+.. automodule:: feldera.rest.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+feldera.rest.feldera\_client module
+-----------------------------------
+
+.. automodule:: feldera.rest.feldera_client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+feldera.rest.pipeline module
+----------------------------
+
+.. automodule:: feldera.rest.pipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+feldera.rest.sql\_table module
+------------------------------
+
+.. automodule:: feldera.rest.sql_table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+feldera.rest.sql\_view module
+-----------------------------
+
+.. automodule:: feldera.rest.sql_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: feldera.rest
+   :members:
+   :undoc-members:
+   :show-inheritance:
