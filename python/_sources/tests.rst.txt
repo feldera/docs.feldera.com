@@ -1,0 +1,53 @@
+tests package
+=============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tests.aggregate_tests
+
+Submodules
+----------
+
+tests.test\_pipeline module
+---------------------------
+
+.. automodule:: tests.test_pipeline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.test\_pipeline\_builder module
+------------------------------------
+
+.. automodule:: tests.test_pipeline_builder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.test\_udf module
+----------------------
+
+.. automodule:: tests.test_udf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.test\_variant module
+--------------------------
+
+.. automodule:: tests.test_variant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: tests
+   :members:
+   :undoc-members:
+   :show-inheritance:

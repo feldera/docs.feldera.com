@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>feldera.enums &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">feldera.enums</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for feldera.enums</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="CompilationProfile">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.CompilationProfile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompilationProfile</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The compilation profile to use when compiling the program.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SERVER_DEFAULT</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The compiler server default compilation profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DEV</span> <span class="o">=</span> <span class="s2">&quot;dev&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The development compilation profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">UNOPTIMIZED</span> <span class="o">=</span> <span class="s2">&quot;unoptimized&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The unoptimized compilation profile.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">OPTIMIZED</span> <span class="o">=</span> <span class="s2">&quot;optimized&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The optimized compilation profile, the default for this API.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="BuildMode">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.BuildMode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BuildMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CREATE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">GET</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">GET_OR_CREATE</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+
+<div class="viewcode-block" id="PipelineStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the state that this pipeline is currently in.</span>
+
+<span class="sd">    .. code-block:: text</span>
+
+<span class="sd">        Shutdown     ◄────┐</span>
+<span class="sd">        │         │</span>
+<span class="sd">        /deploy   │       │</span>
+<span class="sd">        │   ⌛ShuttingDown</span>
+<span class="sd">        ▼         ▲</span>
+<span class="sd">        ⌛Provisioning    │</span>
+<span class="sd">        │         │</span>
+<span class="sd">        Provisioned        │</span>
+<span class="sd">        ▼         │/shutdown</span>
+<span class="sd">        ⌛Initializing     │</span>
+<span class="sd">        │        │</span>
+<span class="sd">        ┌────────┴─────────┴─┐</span>
+<span class="sd">        │        ▼           │</span>
+<span class="sd">        │      Paused        │</span>
+<span class="sd">        │      │    ▲        │</span>
+<span class="sd">        │/start│    │/pause  │</span>
+<span class="sd">        │      ▼    │        │</span>
+<span class="sd">        │     Running        │</span>
+<span class="sd">        └──────────┬─────────┘</span>
+<span class="sd">                   │</span>
+<span class="sd">                   ▼</span>
+<span class="sd">                Failed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">NOT_FOUND</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline has not been created yet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SHUTDOWN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pipeline has not been started or has been shut down.</span>
+
+<span class="sd">    The pipeline remains in this state until the user triggers</span>
+<span class="sd">    a deployment by invoking the `/deploy` endpoint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">PROVISIONING</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The runner triggered a deployment of the pipeline and is</span>
+<span class="sd">    waiting for the pipeline HTTP server to come up.</span>
+
+<span class="sd">    In this state, the runner provisions a runtime for the pipeline,</span>
+<span class="sd">    starts the pipeline within this runtime and waits for it to start accepting HTTP requests.</span>
+
+<span class="sd">    The user is unable to communicate with the pipeline during this</span>
+<span class="sd">    time.  The pipeline remains in this state until:</span>
+
+<span class="sd">        1. Its HTTP server is up and running; the pipeline transitions to the</span>
+<span class="sd">           `PipelineStatus.INITIALIZING` state.</span>
+<span class="sd">        2. A pre-defined timeout has passed.  The runner performs forced</span>
+<span class="sd">           shutdown of the pipeline; returns to the `PipelineStatus.SHUTDOWN` state.</span>
+<span class="sd">        3. The user cancels the pipeline by invoking the `/shutdown` endpoint.</span>
+<span class="sd">           The manager performs forced shutdown of the pipeline, returns to the</span>
+<span class="sd">           `PipelineStatus.SHUTDOWN` state.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline is initializing its internal state and connectors.</span>
+
+<span class="sd">    This state is part of the pipeline&#39;s deployment process.  In this state,</span>
+<span class="sd">    the pipeline&#39;s HTTP server is up and running, but its query engine</span>
+<span class="sd">    and input and output connectors are still initializing.</span>
+
+<span class="sd">    The pipeline remains in this state until:</span>
+
+<span class="sd">        1.  Initialization completes successfully; the pipeline transitions to the</span>
+<span class="sd">            `PipelineStatus.PAUSED` state.</span>
+<span class="sd">        2.  Initialization fails; transitions to the `PipelineStatus.FAILED` state.</span>
+<span class="sd">        3.  A pre-defined timeout has passed.  The runner performs forced</span>
+<span class="sd">            shutdown of the pipeline; returns to the `PipelineStatus.SHUTDOWN` state.</span>
+<span class="sd">        4.  The user cancels the pipeline by invoking the `/shutdown` endpoint.</span>
+<span class="sd">            The manager performs forced shutdown of the pipeline; returns to the</span>
+<span class="sd">            `PipelineStatus.SHUTDOWN` state.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline is fully initialized, but data processing has been paused.</span>
+
+<span class="sd">    The pipeline remains in this state until:</span>
+
+<span class="sd">        1.  The user starts the pipeline by invoking the `/start` endpoint. The</span>
+<span class="sd">            manager passes the request to the pipeline; transitions to the</span>
+<span class="sd">            `PipelineStatus.RUNNING` state.</span>
+<span class="sd">        2.  The user cancels the pipeline by invoking the `/shutdown` endpoint.</span>
+<span class="sd">            The manager passes the shutdown request to the pipeline to perform a</span>
+<span class="sd">            graceful shutdown; transitions to the `PipelineStatus.SHUTTING_DOWN` state.</span>
+<span class="sd">        3.  An unexpected runtime error renders the pipeline `PipelineStatus.FAILED`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline is processing data.</span>
+
+<span class="sd">    The pipeline remains in this state until:</span>
+
+<span class="sd">        1. The user pauses the pipeline by invoking the `/pause` endpoint. The</span>
+<span class="sd">           manager passes the request to the pipeline; transitions to the</span>
+<span class="sd">           `PipelineStatus.PAUSED` state.</span>
+<span class="sd">        2. The user cancels the pipeline by invoking the `/shutdown` endpoint.</span>
+<span class="sd">           The runner passes the shutdown request to the pipeline to perform a</span>
+<span class="sd">           graceful shutdown; transitions to the</span>
+<span class="sd">           `PipelineStatus.SHUTTING_DOWN` state.</span>
+<span class="sd">        3. An unexpected runtime error renders the pipeline</span>
+<span class="sd">           `PipelineStatus.FAILED`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SHUTTING_DOWN</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Graceful shutdown in progress.</span>
+
+<span class="sd">    In this state, the pipeline finishes any ongoing data processing,</span>
+<span class="sd">    produces final outputs, shuts down input/output connectors and</span>
+<span class="sd">    terminates.</span>
+
+<span class="sd">    The pipeline remains in this state until:</span>
+
+<span class="sd">        1. Shutdown completes successfully; transitions to the `PipelineStatus.SHUTDOWN` state.</span>
+<span class="sd">        2. A pre-defined timeout has passed. The manager performs forced shutdown of the pipeline; returns to the</span>
+<span class="sd">           `PipelineStatus.SHUTDOWN` state.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline remains in this state until the users acknowledge the failure</span>
+<span class="sd">    by issuing a call to shutdown the pipeline; transitions to the</span>
+<span class="sd">    `PipelineStatus.SHUTDOWN` state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">9</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The pipeline was at least once initialized, but in the most recent status check either</span>
+<span class="sd">    could not be reached or returned it is not yet ready.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PipelineStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">PipelineStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="ProgramStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProgramStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Pending</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">CompilingSql</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">SqlCompiled</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">CompilingRust</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">Success</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">SqlError</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">RustError</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="ne">SystemError</span> <span class="o">=</span> <span class="mi">8</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="ProgramStatus.from_value">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus.from_value">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_value</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">ProgramStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">member</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">ProgramStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;: (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProgramStatus.get_error">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus.get_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the compilation error, if any.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
