@@ -430,7 +430,7 @@
 <span class="sd">        Shutdown a pipeline</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to shut down</span>
-<span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline to shut down. Default is 15 seconds.</span>
+<span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline to shut down. Default is 300 seconds.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -456,6 +456,48 @@
 
         <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not shutdown in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.suspend_pipeline">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.suspend_pipeline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">suspend_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Suspend a pipeline</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline to suspend</span>
+<span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline to suspend. Default is 300 seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/suspend&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_status</span>
+
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Suspended&quot;</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Failed&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Unable to Suspend pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">Reason: The pipeline is in a FAILED state due to the following error:</span>
+<span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still suspending </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
+                <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not suspend in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
         <span class="p">)</span></div>
 
 

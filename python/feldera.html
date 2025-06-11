@@ -666,6 +666,17 @@ If the pipeline is in FAILED state, it must be shutdown before starting it again
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.suspend">
+<span class="sig-name descname"><span class="pre">suspend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.suspend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.suspend" title="Link to this definition"></a></dt>
+<dd><p>Suspends the pipeline to storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to suspend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.tables">
 <span class="sig-name descname"><span class="pre">tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="feldera.rest.html#feldera.rest.sql_table.SQLTable" title="feldera.rest.sql_table.SQLTable"><span class="pre">SQLTable</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.tables" title="Link to this definition"></a></dt>
 <dd><p>Return the tables of the pipeline.</p>
@@ -957,6 +968,12 @@ terminates.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDED">
+<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd><p>The pipeline was successfully suspended to storage.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.UNAVAILABLE">
 <span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
 <dd><p>The pipeline was at least once initialized, but in the most recent status check either
@@ -1153,6 +1170,7 @@ as IOPS and throughput.</p></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.shutdown_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.shutdown_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.suspend_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.suspend_pipeline()</span></code></a></li>
 </ul>
 </li>
 </ul>

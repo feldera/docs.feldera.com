@@ -416,7 +416,7 @@ All connectors are RUNNING by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pipeline_name</strong> – The name of the pipeline to shut down</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to shut down. Default is 15 seconds.</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to shut down. Default is 300 seconds.</p></li>
 </ul>
 </dd>
 </dl>
@@ -430,6 +430,20 @@ All connectors are RUNNING by default.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pipeline_name</strong> – The name of the pipeline to start</p></li>
 <li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to start. 300 seconds by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.suspend_pipeline">
+<span class="sig-name descname"><span class="pre">suspend_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.suspend_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.suspend_pipeline" title="Link to this definition"></a></dt>
+<dd><p>Suspend a pipeline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline to suspend</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to suspend. Default is 300 seconds.</p></li>
 </ul>
 </dd>
 </dl>

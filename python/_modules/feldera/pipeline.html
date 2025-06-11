@@ -243,7 +243,7 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline is paused, set force=True to push data&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">update_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="s2">&quot;insert_delete&quot;</span><span class="p">]:</span>
-            <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;update_format must be one of raw or insert_delete&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;update_format must be one of raw or insert_delete&quot;</span><span class="p">)</span>
 
         <span class="n">array</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">push_to_pipeline</span><span class="p">(</span>
@@ -613,6 +613,25 @@
                 <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">shutdown_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.suspend">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.suspend">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">suspend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Suspends the pipeline to storage.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to suspend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="c1"># sends a message to the callback runner to stop listening</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">RanToCompletion</span><span class="p">)</span>
+                <span class="c1"># block until the callback runner has been stopped</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">suspend_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.resume">
