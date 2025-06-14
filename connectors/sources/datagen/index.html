@@ -8,8 +8,8 @@
 
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script><link rel="stylesheet" href="/assets/css/styles.371af061.css">
-<script src="/assets/js/runtime~main.f802310a.js" defer="defer"></script>
-<script src="/assets/js/main.c7779354.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.19e51514.js" defer="defer"></script>
+<script src="/assets/js/main.1a676223.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -146,19 +146,33 @@ settings for the elements of the array.</p>
 <h4 class="anchor anchorWithStickyNavbar_LWe7" id="string-generation-strategies">String Generation Strategies<a href="#string-generation-strategies" class="hash-link" aria-label="Direct link to String Generation Strategies" title="Direct link to String Generation Strategies">​</a></h4>
 <p>In case the field type is a string, various strategies can be used to generate different kinds of strings.</p>
 <ul>
-<li>Lorem: <code>word</code>, <code>words</code>, <code>sentence</code>, <code>sentences</code>, <code>paragraph</code>, <code>paragraphs</code></li>
-<li>Name: <code>first_name</code>, <code>last_name</code>, <code>title</code>, <code>suffix</code>, <code>name</code>, <code>name_with_title</code>, <code>phone_number</code>, <code>cell_number</code></li>
-<li>Internet: <code>domain_suffix</code>, <code>email</code>, <code>username</code>, <code>password</code>, <code>ipv4</code>, <code>ipv6</code>, <code>ip</code>, <code>mac_address</code>, <code>user_agent</code></li>
-</ul>
+<li>
+<p>Lorem: <code>word</code>, <code>words</code>, <code>sentence</code>, <code>sentences</code>, <code>paragraph</code>, <code>paragraphs</code></p>
+</li>
+<li>
+<p>Name: <code>first_name</code>, <code>last_name</code>, <code>title</code>, <code>suffix</code>, <code>name</code>, <code>name_with_title</code>, <code>phone_number</code>, <code>cell_number</code></p>
+</li>
+<li>
+<p>Internet: <code>domain_suffix</code>, <code>email</code>, <code>username</code>, <code>password</code>, <code>ipv4</code>, <code>ipv6</code>, <code>ip</code>, <code>mac_address</code>, <code>user_agent</code></p>
+</li>
+<li>
 <p>Company: <code>company_suffix</code>, <code>company_name</code>, <code>buzzword</code>, <code>buzzword_middle</code>, <code>buzzword_tail</code>, <code>catch_phrase</code>, <code>bs_verb</code>, <code>bs_adj</code>, <code>bs_noun</code>, <code>bs</code>, <code>profession</code>, <code>industry</code></p>
-<ul>
-<li>Currency: <code>currency_code</code>, <code>currency_name</code>, <code>currency_symbol</code></li>
-<li>Finance: <code>credit_card_number</code></li>
-</ul>
+</li>
+<li>
+<p>Currency: <code>currency_code</code>, <code>currency_name</code>, <code>currency_symbol</code></p>
+</li>
+<li>
+<p>Finance: <code>credit_card_number</code></p>
+</li>
+<li>
 <p>Address: <code>city_prefix</code>, <code>city_suffix</code>, <code>city_name</code>, <code>country_name</code>, <code>country_code</code>, <code>street_suffix</code>, <code>street_name</code>, <code>time_zone</code>, <code>state_name</code>, <code>state_abbr</code>, <code>secondary_address_type</code>, <code>secondary_address</code>, <code>zip_code</code>, <code>post_code</code>, <code>building_number</code>, <code>latitude</code>, <code>longitude</code></p>
-<ul>
-<li>Barcode: <code>isbn10</code>, <code>isbn13</code>, <code>isbn</code></li>
-<li>Files: <code>file_path</code>, <code>file_name</code>, <code>file_extension</code>, <code>dir_path</code></li>
+</li>
+<li>
+<p>Barcode: <code>isbn10</code>, <code>isbn13</code>, <code>isbn</code></p>
+</li>
+<li>
+<p>Files: <code>file_path</code>, <code>file_name</code>, <code>file_extension</code>, <code>dir_path</code></p>
+</li>
 </ul>
 <p>For some of these parameters (<code>words</code>, <code>sentences</code>, <code>paragraphs</code>) the length of the resulting string is controlled with
 the <code>range</code> parameter.</p>
