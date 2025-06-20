@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.pipeline">feldera.pipeline module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.created_at"><code class="docutils literal notranslate"><span class="pre">Pipeline.created_at()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.delete"><code class="docutils literal notranslate"><span class="pre">Pipeline.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_config()</span></code></a></li>
@@ -138,6 +139,8 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start"><code class="docutils literal notranslate"><span class="pre">Pipeline.start()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.status"><code class="docutils literal notranslate"><span class="pre">Pipeline.status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.suspend"><code class="docutils literal notranslate"><span class="pre">Pipeline.suspend()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">Pipeline.sync_checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.sync_checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.tables"><code class="docutils literal notranslate"><span class="pre">Pipeline.tables()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.udf_rust"><code class="docutils literal notranslate"><span class="pre">Pipeline.udf_rust()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.udf_toml"><code class="docutils literal notranslate"><span class="pre">Pipeline.udf_toml()</span></code></a></li>
@@ -154,6 +157,14 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.CREATE"><code class="docutils literal notranslate"><span class="pre">BuildMode.CREATE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.GET"><code class="docutils literal notranslate"><span class="pre">BuildMode.GET</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.GET_OR_CREATE"><code class="docutils literal notranslate"><span class="pre">BuildMode.GET_OR_CREATE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Failure"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Failure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.InProgress"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.InProgress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Success"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Success</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Unknown"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Unknown</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.get_error"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.get_error()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a><ul>
@@ -216,6 +227,7 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.config">feldera.rest.config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.errors">feldera.rest.errors module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.feldera_client">feldera.rest.feldera_client module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.feldera_config">feldera.rest.feldera_config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.pipeline">feldera.rest.pipeline module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.sql_table">feldera.rest.sql_table module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.sql_view">feldera.rest.sql_view module</a></li>
@@ -324,6 +336,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#tests-integration-tests-module">tests.integration_tests module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-pipeline-module">tests.test_pipeline module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-pipeline-builder-module">tests.test_pipeline_builder module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-udf-module">tests.test_udf module</a></li>

@@ -153,11 +153,22 @@
 Feldera and its permissions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline">
-<span class="sig-name descname"><span class="pre">checkpoint_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.checkpoint_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">checkpoint_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.checkpoint_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline" title="Link to this definition"></a></dt>
 <dd><p>Checkpoint a fault-tolerant pipeline</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pipeline_name</strong> – The name of the pipeline to checkpoint</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status">
+<span class="sig-name descname"><span class="pre">checkpoint_pipeline_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.checkpoint_pipeline_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status" title="Link to this definition"></a></dt>
+<dd><p>Gets the checkpoint status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_name</strong> – The name of the pipeline to check the checkpoint status of.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -188,6 +199,12 @@ Feldera and its permissions.</p>
 <dd class="field-odd"><p><strong>name</strong> – The name of the pipeline</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.feldera_config.FelderaConfig" title="feldera.rest.feldera_config.FelderaConfig"><span class="pre">FelderaConfig</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_config" title="Link to this definition"></a></dt>
+<dd><p>Get general feldera configuration.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -448,6 +465,69 @@ All connectors are RUNNING by default.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.sync_checkpoint">
+<span class="sig-name descname"><span class="pre">sync_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.sync_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.sync_checkpoint" title="Link to this definition"></a></dt>
+<dd><p>Triggers a checkpoint synchronization for the specified pipeline.
+Check the status by calling <cite>pipeline_sync_checkpoint_status</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_name</strong> – Name of the pipeline whose checkpoint should be synchronized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status">
+<span class="sig-name descname"><span class="pre">sync_checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.sync_checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status" title="Link to this definition"></a></dt>
+<dd><p>Gets the checkpoint sync status of the pipeline</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_name</strong> – The name of the pipeline to check the checkpoint synchronization status of.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-feldera.rest.feldera_config">
+<span id="feldera-rest-feldera-config-module"></span><h2>feldera.rest.feldera_config module<a class="headerlink" href="#module-feldera.rest.feldera_config" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.rest.feldera_config.</span></span><span class="sig-name descname"><span class="pre">FelderaConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_config.html#FelderaConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_config.FelderaConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>General configuration of the current Feldera instance.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaEdition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.rest.feldera_config.</span></span><span class="sig-name descname"><span class="pre">FelderaEdition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_config.html#FelderaEdition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_config.FelderaEdition" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>The compilation profile to use when compiling the program.
+Represents the Feldera edition between Enterprise and Open source.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaEdition.ENTERPRISE">
+<span class="sig-name descname"><span class="pre">ENTERPRISE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Enterprise'</span></em><a class="headerlink" href="#feldera.rest.feldera_config.FelderaEdition.ENTERPRISE" title="Link to this definition"></a></dt>
+<dd><p>The Enterprise version of Feldera.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaEdition.OPEN_SOURCE">
+<span class="sig-name descname"><span class="pre">OPEN_SOURCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Open</span> <span class="pre">source'</span></em><a class="headerlink" href="#feldera.rest.feldera_config.FelderaEdition.OPEN_SOURCE" title="Link to this definition"></a></dt>
+<dd><p>The open source version of Feldera.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaEdition.from_value">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_config.html#FelderaEdition.from_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_config.FelderaEdition.from_value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_config.FelderaEdition.is_enterprise">
+<span class="sig-name descname"><span class="pre">is_enterprise</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_config.html#FelderaEdition.is_enterprise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_config.FelderaEdition.is_enterprise" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

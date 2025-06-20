@@ -115,16 +115,22 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline">checkpoint_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status">checkpoint_pipeline_status() (feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.checkpoint_status">checkpoint_status() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus">CheckpointStatus (class in feldera.enums)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile">CompilationProfile (class in feldera.enums)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingSql">CompilingSql (feldera.enums.ProgramStatus attribute)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.config.Config">Config (class in feldera.rest.config)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.BuildMode.CREATE">CREATE (feldera.enums.BuildMode attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline_builder.PipelineBuilder.create">create() (feldera.pipeline_builder.PipelineBuilder method)</a>
@@ -169,10 +175,12 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="feldera.html#feldera.pipeline.Pipeline.errors">errors() (feldera.pipeline.Pipeline method)</a>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition.ENTERPRISE">ENTERPRISE (feldera.rest.feldera_config.FelderaEdition attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.errors">errors() (feldera.pipeline.Pipeline method)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.execute">execute() (feldera.pipeline.Pipeline method)</a>
 </li>
   </ul></td>
@@ -182,6 +190,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.PipelineStatus.FAILED">FAILED (feldera.enums.PipelineStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus.Failure">Failure (feldera.enums.CheckpointStatus attribute)</a>
 </li>
       <li>
     feldera.enums
@@ -240,6 +250,13 @@
 </li>
       </ul></li>
       <li>
+    feldera.rest.feldera_config
+
+      <ul>
+        <li><a href="feldera.rest.html#module-feldera.rest.feldera_config">module</a>
+</li>
+      </ul></li>
+      <li>
     feldera.rest.pipeline
 
       <ul>
@@ -275,6 +292,10 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.errors.FelderaCommunicationError">FelderaCommunicationError</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaConfig">FelderaConfig (class in feldera.rest.feldera_config)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition">FelderaEdition (class in feldera.rest.feldera_config)</a>
+</li>
       <li><a href="feldera.rest.html#feldera.rest.errors.FelderaError">FelderaError</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.errors.FelderaTimeoutError">FelderaTimeoutError</a>
@@ -294,7 +315,11 @@
       <li><a href="feldera.html#feldera.enums.PipelineStatus.from_str">from_str() (feldera.enums.PipelineStatus static method)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.from_value">from_value() (feldera.enums.ProgramStatus static method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition.from_value">(feldera.rest.feldera_config.FelderaEdition static method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -305,8 +330,14 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.get">get() (feldera.pipeline.Pipeline static method)</a>
 </li>
-      <li><a href="feldera.html#feldera.enums.ProgramStatus.get_error">get_error() (feldera.enums.ProgramStatus method)</a>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config">get_config() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus.get_error">get_error() (feldera.enums.CheckpointStatus method)</a>
+
+      <ul>
+        <li><a href="feldera.html#feldera.enums.ProgramStatus.get_error">(feldera.enums.ProgramStatus method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.BuildMode.GET_OR_CREATE">GET_OR_CREATE (feldera.enums.BuildMode attribute)</a>
@@ -327,11 +358,15 @@
 </li>
       <li><a href="feldera.html#feldera.enums.PipelineStatus.INITIALIZING">INITIALIZING (feldera.enums.PipelineStatus attribute)</a>
 </li>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus.InProgress">InProgress (feldera.enums.CheckpointStatus attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.input_json">input_json() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.input_pandas">input_pandas() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition.is_enterprise">is_enterprise() (feldera.rest.feldera_config.FelderaEdition method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -373,6 +408,8 @@
 </li>
         <li><a href="feldera.rest.html#module-feldera.rest.feldera_client">feldera.rest.feldera_client</a>
 </li>
+        <li><a href="feldera.rest.html#module-feldera.rest.feldera_config">feldera.rest.feldera_config</a>
+</li>
         <li><a href="feldera.rest.html#module-feldera.rest.pipeline">feldera.rest.pipeline</a>
 </li>
         <li><a href="feldera.rest.html#module-feldera.rest.sql_table">feldera.rest.sql_table</a>
@@ -400,10 +437,12 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="feldera.html#feldera.enums.CompilationProfile.OPTIMIZED">OPTIMIZED (feldera.enums.CompilationProfile attribute)</a>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition.OPEN_SOURCE">OPEN_SOURCE (feldera.rest.feldera_config.FelderaEdition attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.enums.CompilationProfile.OPTIMIZED">OPTIMIZED (feldera.enums.CompilationProfile attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.output_handler.OutputHandler">OutputHandler (class in feldera.output_handler)</a>
 </li>
   </ul></td>
@@ -538,8 +577,6 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.sql_view.SQLView">SQLView (class in feldera.rest.sql_view)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.output_handler.OutputHandler.start">start() (feldera.output_handler.OutputHandler method)</a>
 
       <ul>
@@ -548,18 +585,36 @@
       </ul></li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline">start_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.status">status() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.runtime_config.Storage">Storage (class in feldera.runtime_config)</a>
 </li>
-      <li><a href="feldera.html#feldera.enums.ProgramStatus.Success">Success (feldera.enums.ProgramStatus attribute)</a>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus.Success">Success (feldera.enums.CheckpointStatus attribute)</a>
+
+      <ul>
+        <li><a href="feldera.html#feldera.enums.ProgramStatus.Success">(feldera.enums.ProgramStatus attribute)</a>
 </li>
+      </ul></li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.suspend">suspend() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.suspend_pipeline">suspend_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.PipelineStatus.SUSPENDED">SUSPENDED (feldera.enums.PipelineStatus attribute)</a>
 </li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint">sync_checkpoint() (feldera.pipeline.Pipeline method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint">(feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      </ul></li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_status">sync_checkpoint_status() (feldera.pipeline.Pipeline method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status">(feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      </ul></li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.SystemError">SystemError (feldera.enums.ProgramStatus attribute)</a>
 </li>
   </ul></td>
@@ -589,6 +644,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.PipelineStatus.UNAVAILABLE">UNAVAILABLE (feldera.enums.PipelineStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.CheckpointStatus.Unknown">Unknown (feldera.enums.CheckpointStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile.UNOPTIMIZED">UNOPTIMIZED (feldera.enums.CompilationProfile attribute)</a>
 </li>

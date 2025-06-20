@@ -337,6 +337,33 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span></div>
 </div>
 
+
+
+<div class="viewcode-block" id="CheckpointStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.CheckpointStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CheckpointStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Success</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Failure</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">InProgress</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">Unknown</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>
+
+<div class="viewcode-block" id="CheckpointStatus.get_error">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.CheckpointStatus.get_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the error, if any.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span></div>
+</div>
+
 </pre></div>
 
            </div>

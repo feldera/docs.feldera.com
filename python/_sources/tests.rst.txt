@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+tests.integration\_tests module
+-------------------------------
+
+.. automodule:: tests.integration_tests
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.test\_pipeline module
 ---------------------------
 

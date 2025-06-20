@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.68.0
+  version: 0.69.0
 paths:
   /config/authentication:
     get:
@@ -3971,7 +3971,7 @@ components:
             deletion.
 
 
-            This setting is only valid in the 'cdc' mode. It specifies a
+            This setting is only valid in the `cdc` mode. It specifies a
             predicate applied to
 
             each row in the Delta table to determine whether the row represents
@@ -3989,7 +3989,7 @@ components:
             table.
 
 
-            This setting is only valid in the 'cdc' mode. It specifies a
+            This setting is only valid in the `cdc` mode. It specifies a
             predicate applied to
 
             each row in the Delta table to determine the order in which updates
@@ -4018,10 +4018,11 @@ components:
             event time encoded in the data).  In `snapshot` and
             `snapshot_and_follow` modes, it
 
-            retrieves the snapshot of this version of the table.  In `follow`
-            and `snapshot_and_follow`
+            retrieves the snapshot of this version of the table.  In `follow`,
+            `snapshot_and_follow`, and
 
-            modes, it follows transaction log records **after** this version.
+            `cdc` modes, it follows transaction log records **after** this
+            version.
 
 
             Note: at most one of `version` and `datetime` options can be
@@ -4031,6 +4032,23 @@ components:
             version of the table
 
             is used.
+          nullable: true
+        end_version:
+          type: integer
+          format: int64
+          description: >-
+            Optional final table version.
+
+
+            Valid only when the connector is configured in `follow`,
+            `snapshot_and_follow`, or `cdc` mode.
+
+
+            When set, the connector will stop scanning the table’s transaction
+            log after reaching this version or any greater version.
+
+            This bound is inclusive: if the specified version appears in the
+            log, it will be processed before signaling end-of-input.
           nullable: true
         filter:
           type: string
@@ -4239,8 +4257,8 @@ components:
             In `snapshot` and `snapshot_and_follow` modes, it retrieves the
             snapshot of this version of
 
-            the table.  In `follow` and `snapshot_and_follow` modes, it follows
-            transaction log records
+            the table.  In `follow`, `snapshot_and_follow`, and `cdc` modes, it
+            follows transaction log records
 
             **after** this version.
 
@@ -4437,6 +4455,11 @@ components:
           default: null
           nullable: true
           minimum: 0
+        sync:
+          allOf:
+            - $ref: '#/components/schemas/SyncConfig'
+          default: null
+          nullable: true
     FileInputConfig:
       type: object
       description: Configuration for reading data from a file with `FileInputTransport`
@@ -7702,6 +7725,93 @@ components:
           default: null
           nullable: true
           minimum: 0
+    SyncConfig:
+      type: object
+      required:
+        - bucket
+        - start_from_checkpoint
+      properties:
+        access_key:
+          type: string
+          description: >-
+            The access key used to authenticate with the storage provider.
+
+
+            If not provided, rclone will fall back to environment-based
+            credentials, such as
+
+            `RCLONE_S3_ACCESS_KEY_ID`. In Kubernetes environments using IRSA
+            (IAM Roles for Service Accounts),
+
+            this can be left empty to allow automatic authentication via the
+            pod's service account.
+          nullable: true
+        bucket:
+          type: string
+          description: >-
+            The name of the storage bucket.
+
+
+            This may include a path to a folder inside the bucket (e.g.,
+            `my-bucket/data`).
+        endpoint:
+          type: string
+          description: >-
+            The endpoint URL for the storage service.
+
+
+            This is typically required for custom or local S3-compatible storage
+            providers like MinIO.
+
+            Example: `http://localhost:9000`
+
+
+            Relevant rclone config key:
+            [`endpoint`](https://rclone.org/s3/#s3-endpoint)
+          nullable: true
+        provider:
+          type: string
+          description: >-
+            The name of the cloud storage provider (e.g., `"AWS"`, `"Minio"`).
+
+
+            Used for provider-specific behavior in rclone.
+
+            If omitted, defaults to `"Other"`.
+
+
+            See [rclone S3 provider
+            documentation](https://rclone.org/s3/#s3-provider)
+          nullable: true
+        region:
+          type: string
+          description: |-
+            The region that this bucket is in.
+
+            Leave empty for Minio or the default region (`us-east-1` for AWS).
+          nullable: true
+        secret_key:
+          type: string
+          description: >-
+            The secret key used together with the access key for authentication.
+
+
+            If not provided, rclone will fall back to environment-based
+            credentials, such as
+
+            `RCLONE_S3_SECRET_ACCESS_KEY`. In Kubernetes environments using IRSA
+            (IAM Roles for Service Accounts),
+
+            this can be left empty to allow automatic authentication via the
+            pod's service account.
+          nullable: true
+        start_from_checkpoint:
+          type: boolean
+          description: >-
+            If `true`, will try to pull the latest checkpoint from the
+            configured
+
+            object store and resume from that point.
     TransportConfig:
       oneOf:
         - type: object
