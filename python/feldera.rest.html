@@ -149,8 +149,8 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.rest.feldera_client.</span></span><span class="sig-name descname"><span class="pre">FelderaClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requests_verify</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A client for the Feldera HTTP API</p>
-<p>A client instance is needed for every Feldera API method to know the location of
-Feldera and its permissions.</p>
+<p>A client instance is needed for every Feldera API method to know the
+location of Feldera and its permissions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline">
 <span class="sig-name descname"><span class="pre">checkpoint_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.checkpoint_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline" title="Link to this definition"></a></dt>
@@ -174,9 +174,26 @@ Feldera and its permissions.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.clear_storage">
+<span class="sig-name descname"><span class="pre">clear_storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.clear_storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.clear_storage" title="Link to this definition"></a></dt>
+<dd><p>Clears the storage from the pipeline.
+This operation cannot be canceled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the storage
+to clear. Default is 300 seconds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline">
 <span class="sig-name descname"><span class="pre">create_or_update_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_or_update_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline" title="Link to this definition"></a></dt>
-<dd><p>Create a pipeline if it doesn’t exist or update a pipeline and wait for it to compile</p>
+<dd><p>Create a pipeline if it doesn’t exist or update a pipeline and wait for
+it to compile</p>
 </dd></dl>
 
 <dl class="py method">
@@ -276,7 +293,8 @@ down the entire pipeline.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> – The name of the pipeline</p></li>
-<li><p><strong>sql</strong> – The SQL snippet. Replaces the existing SQL code with this one.</p></li>
+<li><p><strong>sql</strong> – The SQL snippet. Replaces the existing SQL code with this
+one.</p></li>
 </ul>
 </dd>
 </dl>
@@ -313,8 +331,10 @@ All connectors are RUNNING by default.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pipeline_name</strong> – The name of the pipeline to stop</p></li>
-<li><p><strong>error_message</strong> – The error message to show if the pipeline is in FAILED state</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to pause. 300 seconds by default.</p></li>
+<li><p><strong>error_message</strong> – The error message to show if the pipeline is in
+STOPPED state due to a failure.</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline
+to pause. 300 seconds by default.</p></li>
 </ul>
 </dd>
 </dl>
@@ -426,41 +446,31 @@ All connectors are RUNNING by default.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.shutdown_pipeline">
-<span class="sig-name descname"><span class="pre">shutdown_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.shutdown_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.shutdown_pipeline" title="Link to this definition"></a></dt>
-<dd><p>Shutdown a pipeline</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pipeline_name</strong> – The name of the pipeline to shut down</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to shut down. Default is 300 seconds.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.start_pipeline">
 <span class="sig-name descname"><span class="pre">start_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.start_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.start_pipeline" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pipeline_name</strong> – The name of the pipeline to start</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to start. 300 seconds by default.</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline
+to start. 300 seconds by default.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.suspend_pipeline">
-<span class="sig-name descname"><span class="pre">suspend_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.suspend_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.suspend_pipeline" title="Link to this definition"></a></dt>
-<dd><p>Suspend a pipeline</p>
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.stop_pipeline">
+<span class="sig-name descname"><span class="pre">stop_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.stop_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.stop_pipeline" title="Link to this definition"></a></dt>
+<dd><p>Stop a pipeline</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pipeline_name</strong> – The name of the pipeline to suspend</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline to suspend. Default is 300 seconds.</p></li>
+<li><p><strong>pipeline_name</strong> – The name of the pipeline to stop</p></li>
+<li><p><strong>force</strong> – Set True to immediately scale compute resources to zero.
+Set False to automatically checkpoint before stopping.</p></li>
+<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the pipeline
+to stop. Default is 300 seconds.</p></li>
 </ul>
 </dd>
 </dl>

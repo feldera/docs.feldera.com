@@ -177,7 +177,7 @@ will do while working with Feldera.</p></li>
 <dt><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_completion" title="feldera.pipeline.Pipeline.wait_for_completion"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.wait_for_completion()</span></code></a></dt><dd><ul>
 <li><p>Blocks this pipeline until completion, i.e., until the end-of-file (EOI)
 has been reached for all input sources.</p></li>
-<li><p>Takes a parameter <code class="docutils literal notranslate"><span class="pre">shutdown</span></code>, when set shuts the pipeline down after completion.</p></li>
+<li><p>Takes a parameter <code class="docutils literal notranslate"><span class="pre">force_stop</span></code>, when set stops the pipeline down after completion.</p></li>
 <li><p>Example:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span><span class="p">,</span> <span class="n">PipelineBuilder</span>
@@ -204,7 +204,7 @@ has been reached for all input sources.</p></li>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="n">tbl_name</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># wait for the pipeline to complete</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">shutdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">force_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">

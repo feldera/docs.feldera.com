@@ -351,11 +351,12 @@ paths:
                     rust_compilation: null
                     system_error: null
                   program_info: null
-                  deployment_status: Shutdown
+                  deployment_status: Stopped
                   deployment_status_since: '1970-01-01T00:00:00Z'
-                  deployment_desired_status: Shutdown
+                  deployment_desired_status: Stopped
                   deployment_error: null
                   refresh_version: 4
+                  storage_status: Cleared
                 - id: 67e55044-10b1-426f-9247-bb680e5fe0c9
                   name: example2
                   description: Description of the pipeline example2
@@ -407,11 +408,12 @@ paths:
                     rust_compilation: null
                     system_error: null
                   program_info: null
-                  deployment_status: Shutdown
+                  deployment_status: Stopped
                   deployment_status_since: '1970-01-01T00:00:00Z'
-                  deployment_desired_status: Shutdown
+                  deployment_desired_status: Stopped
                   deployment_error: null
                   refresh_version: 1
+                  storage_status: Cleared
         '500':
           description: ''
           content:
@@ -530,11 +532,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '400':
           description: ''
           content:
@@ -660,11 +663,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -803,11 +807,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '201':
           description: Pipeline successfully created
           content:
@@ -866,11 +871,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '400':
           description: ''
           content:
@@ -878,13 +884,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                Cannot update non-shutdown pipeline:
+                Cannot update non-stopped pipeline:
                   value:
                     message: >-
-                      Cannot update a pipeline which is not fully shutdown.
-                      Shutdown the pipeline first by invoking the '/shutdown'
-                      endpoint.
-                    error_code: CannotUpdateNonShutdownPipeline
+                      Pipeline can only be updated while stopped. Stop it first
+                      by invoking '/stop'.
+                    error_code: UpdateRestrictedToStopped
                     details: null
                 Name does not match pattern:
                   value:
@@ -929,16 +934,16 @@ paths:
         '200':
           description: Pipeline successfully deleted
         '400':
-          description: Pipeline needs to be shutdown to be deleted
+          description: Pipeline must be fully stopped and cleared to be deleted
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: >-
-                  Cannot delete a pipeline which is not fully shutdown. Shutdown
-                  the pipeline first by invoking the '/shutdown' endpoint.
-                error_code: CannotDeleteNonShutdownPipeline
+                  Cannot delete a pipeline which is not fully stopped. Stop the
+                  pipeline first fully by invoking the '/stop' endpoint.
+                error_code: DeleteRestrictedToFullyStopped
                 details: null
         '404':
           description: Pipeline with that name does not exist
@@ -1044,11 +1049,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '400':
           description: ''
           content:
@@ -1056,13 +1062,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                Cannot update non-shutdown pipeline:
+                Cannot update non-stopped pipeline:
                   value:
                     message: >-
-                      Cannot update a pipeline which is not fully shutdown.
-                      Shutdown the pipeline first by invoking the '/shutdown'
-                      endpoint.
-                    error_code: CannotUpdateNonShutdownPipeline
+                      Pipeline can only be updated while stopped. Stop it first
+                      by invoking '/stop'.
+                    error_code: UpdateRestrictedToStopped
                     details: null
                 Name does not match pattern:
                   value:
@@ -1157,7 +1162,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1165,10 +1170,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1184,12 +1189,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1262,7 +1267,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1270,10 +1275,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1289,12 +1294,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1369,7 +1374,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1377,10 +1382,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1396,12 +1401,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1422,6 +1427,70 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/clear:
+    post:
+      tags:
+        - Pipeline management
+      summary: Clears the pipeline storage asynchronously.
+      description: >-
+        IMPORTANT: Clearing means disassociating the storage from the pipeline.
+
+        Depending on the storage type this can include its deletion.
+
+
+        It sets the storage state to `Clearing`, after which the clearing
+        process is
+
+        performed asynchronously. Progress should be monitored by polling the
+        pipeline
+
+        using the `GET` endpoints. An `/clear` cannot be cancelled.
+      operationId: post_pipeline_clear
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Action is accepted and is being performed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Illegal action:
+                  value:
+                    message: >-
+                      Cannot transition from storage status 'cleared' to
+                      'clearing'
+                    error_code: InvalidStorageStatusTransition
+                    details:
+                      current_status: Cleared
+                      new_status: Clearing
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/completion_status:
@@ -1511,7 +1580,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1519,10 +1588,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1538,12 +1607,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1582,7 +1651,7 @@ paths:
 
         The pipeline continues sending updates until the client closes the
 
-        connection or the pipeline is shut down.
+        connection or the pipeline is stopped.
       operationId: http_output
       parameters:
         - name: pipeline_name
@@ -1672,7 +1741,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1680,10 +1749,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1699,12 +1768,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1786,7 +1855,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1794,10 +1863,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -1813,12 +1882,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -1973,7 +2042,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -1981,10 +2050,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2000,12 +2069,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2032,7 +2101,7 @@ paths:
     get:
       tags:
         - Pipeline interaction
-      summary: Retrieve logs of a (non-shutdown) pipeline as a stream.
+      summary: Retrieve logs of a pipeline as a stream.
       description: >-
         The logs stream catches up to the extent of the internally configured
         per-pipeline
@@ -2046,16 +2115,19 @@ paths:
         available.
 
 
-        The logs stream will end when the pipeline is shut down. It is also
-        possible for the
+        It is possible for the logs stream to end prematurely due to the API
+        server temporarily losing
 
-        logs stream to end prematurely due to the runner back-end (temporarily)
-        losing
+        connection to the runner. In this case, it is needed to issue again a
+        new request to this
 
-        connectivity to the pipeline instance (e.g., process). In this case, it
-        is needed
+        endpoint.
 
-        to issue again a new request to this endpoint.
+
+        The logs stream will end when the pipeline is deleted, or if the runner
+        restarts. Note that in
+
+        both cases the logs will be cleared.
       operationId: get_pipeline_logs
       parameters:
         - name: pipeline_name
@@ -2096,14 +2168,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
-                Pipeline is shutdown:
-                  value:
-                    message: >-
-                      Unable to interact with pipeline runner because the
-                      deployment status is 'shutdown' -- start the pipeline or
-                      wait if it has already been started
-                    error_code: RunnerInteractionShutdown
-                    details: null
                 Runner response timeout:
                   value:
                     message: >-
@@ -2180,7 +2244,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2188,10 +2252,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2207,12 +2271,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2233,6 +2297,80 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/pause:
+    post:
+      tags:
+        - Pipeline management
+      summary: Pause the pipeline asynchronously by updating the desired state.
+      description: >-
+        The endpoint returns immediately after setting the desired state to
+        `Paused`.
+
+        The procedure to get to the desired state is performed asynchronously.
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
+
+
+        Note the following:
+
+        - A stopped pipeline can be started through calling either `/start` or
+        `/pause`
+
+        - Both starting as paused and pausing a pipeline is done by calling
+        `/pause`
+
+        - A pipeline which is in the process of suspending or stopping cannot be
+        paused
+      operationId: post_pipeline_pause
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Action is accepted and is being performed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: >-
+                  Deployment status (current: 'Stopping', desired: 'Stopped')
+                  cannot have desired changed to 'Running'. Cannot restart the
+                  pipeline while it is stopping. Wait for it to stop before
+                  starting a new instance of the pipeline.
+                error_code: IllegalPipelineAction
+                details:
+                  pipeline_status: Stopping
+                  current_desired_status: Stopped
+                  new_desired_status: Running
+                  hint: >-
+                    Cannot restart the pipeline while it is stopping. Wait for
+                    it to stop before starting a new instance of the pipeline.
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/program_info:
@@ -2307,11 +2445,12 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Shutdown
+                deployment_status: Stopped
                 deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Shutdown
+                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
+                storage_status: Cleared
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -2401,7 +2540,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2409,10 +2548,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2428,12 +2567,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2454,6 +2593,80 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/start:
+    post:
+      tags:
+        - Pipeline management
+      summary: Start the pipeline asynchronously by updating the desired state.
+      description: >-
+        The endpoint returns immediately after setting the desired state to
+        `Running`.
+
+        The procedure to get to the desired state is performed asynchronously.
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
+
+
+        Note the following:
+
+        - A stopped pipeline can be started through calling either `/start` or
+        `/pause`
+
+        - Both starting as running and resuming a pipeline is done by calling
+        `/start`
+
+        - A pipeline which is in the process of suspending or stopping cannot be
+        started
+      operationId: post_pipeline_start
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Action is accepted and is being performed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: >-
+                  Deployment status (current: 'Stopping', desired: 'Stopped')
+                  cannot have desired changed to 'Running'. Cannot restart the
+                  pipeline while it is stopping. Wait for it to stop before
+                  starting a new instance of the pipeline.
+                error_code: IllegalPipelineAction
+                details:
+                  pipeline_status: Stopping
+                  current_desired_status: Stopped
+                  new_desired_status: Running
+                  hint: >-
+                    Cannot restart the pipeline while it is stopping. Wait for
+                    it to stop before starting a new instance of the pipeline.
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/stats:
@@ -2508,7 +2721,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2516,10 +2729,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2535,12 +2748,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2561,6 +2774,166 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/stop:
+    post:
+      tags:
+        - Pipeline management
+      summary: Stop the pipeline asynchronously by updating the desired state.
+      description: >-
+        There are two variants:
+
+        - `/stop?force=false` (default): the pipeline will first atomically
+        checkpoint before
+
+        deprovisioning the compute resources. When resuming, the pipeline will
+        start from this
+
+        - `/stop?force=true`: the compute resources will be immediately
+        deprovisioned. When resuming,
+
+        it will pick up the latest checkpoint made by the periodic checkpointer
+        or by a prior
+
+        `/checkpoint` call.
+
+
+        The endpoint returns immediately after setting the desired state to
+        `Suspended` for
+
+        `?force=false` or `Stopped` for `?force=true`. In the former case, once
+        the pipeline has
+
+        successfully passes the `Suspending` state, the desired state will
+        become `Stopped` as well.
+
+        The procedure to get to the desired state is performed asynchronously.
+        Progress should be
+
+        monitored by polling the pipeline `GET` endpoints.
+
+
+        Note the following:
+
+        - The suspending that is done with `/stop?force=false` is not guaranteed
+        to succeed:
+
+        - If an error is returned during the suspension, the pipeline will be
+        forcefully stopped with
+
+        that error set
+
+        - Otherwise, it will keep trying to suspend, in which case it is
+        possible to cancel suspending
+
+        by calling `/stop?force=true`
+
+        - `/stop?force=true` cannot be cancelled: the pipeline must first reach
+        `Stopped` before another
+
+        action can be done
+
+        - A pipeline which is in the process of suspending or stopping can only
+        be forcefully stopped
+      operationId: post_pipeline_stop
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: >-
+            The `force` parameter determines whether to immediately deprovision
+            the pipeline compute
+
+            resources (`force=true`) or first attempt to atomically checkpoint
+            before doing so
+
+            (`force=false`, which is the default).
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '202':
+          description: Action is accepted and is being performed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: >-
+                  Deployment status (current: 'Stopping', desired: 'Stopped')
+                  cannot have desired changed to 'Running'. Cannot restart the
+                  pipeline while it is stopping. Wait for it to stop before
+                  starting a new instance of the pipeline.
+                error_code: IllegalPipelineAction
+                details:
+                  pipeline_status: Stopping
+                  current_desired_status: Stopped
+                  new_desired_status: Running
+                  hint: >-
+                    Cannot restart the pipeline while it is stopping. Wait for
+                    it to stop before starting a new instance of the pipeline.
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '405':
+          description: Action is not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Unsupported action:
+                  value:
+                    message: >-
+                      Unsupported pipeline action 'suspend': this pipeline does
+                      not support the suspend action for the following
+                      reason(s):
+                          - Storage must be configured
+                    error_code: UnsupportedPipelineAction
+                    details:
+                      action: suspend
+                      reason: >-
+                        this pipeline does not support the suspend action for
+                        the following reason(s):
+                            - Storage must be configured
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '501':
+          description: >-
+            Action is not implemented because it is only available in the
+            Enterprise edition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: >-
+            Action can not be performed (maybe because the pipeline is already
+            suspended)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/tables/{table_name}/connectors/{connector_name}/completion_token:
@@ -2636,7 +3009,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2644,10 +3017,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2663,12 +3036,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2755,7 +3128,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2763,10 +3136,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2782,12 +3155,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -2932,7 +3305,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -2940,10 +3313,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -2959,12 +3332,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -3051,7 +3424,7 @@ paths:
                       Unable to reach pipeline to interact due to: the pipeline
                       disconnected while it was processing this HTTP request.
                       This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was shutdown, or (c)
+                      a fatal error or panic, (b) was stopped, or (c)
                       experienced network issues -- retrying might help in the
                       last case. Alternatively, check the pipeline logs.
                     error_code: PipelineInteractionUnreachable
@@ -3059,10 +3432,10 @@ paths:
                       error: >-
                         the pipeline disconnected while it was processing this
                         HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was
-                        shutdown, or (c) experienced network issues -- retrying
-                        might help in the last case. Alternatively, check the
-                        pipeline logs.
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
                 Pipeline is currently unavailable:
                   value:
                     message: >-
@@ -3078,12 +3451,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('shutdown') is not one of the deployed statuses
+                      status ('stopped') is not one of the deployed statuses
                       ('running', 'paused' or 'unavailable') -- to resolve this:
                       wait for the pipeline to become running or paused
                     error_code: PipelineInteractionNotDeployed
                     details:
-                      status: Shutdown
+                      status: Stopped
                       desired_status: Running
                 Response timeout:
                   value:
@@ -3104,157 +3477,6 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
-      security:
-        - JSON web token (JWT) or API key: []
-  /v0/pipelines/{pipeline_name}/{action}:
-    post:
-      tags:
-        - Pipeline management
-      summary: Sets the desired deployment state of a pipeline.
-      description: >-
-        The desired state is set based on the `action` path parameter:
-
-        - `/start` sets desired state to `Running`
-
-        - `/pause` sets desired state to `Paused`
-
-        - `/suspend` sets desired state to `Suspended`
-
-        - `/shutdown` sets desired state to `Shutdown`
-
-
-        The endpoint returns immediately after setting the desired state.
-
-        The relevant procedure to get to the desired state is performed
-        asynchronously,
-
-        and, as such, progress should be monitored by polling the pipeline using
-        the
-
-        `GET` endpoints.
-
-
-        Note the following:
-
-        - A shutdown pipeline can be started through calling either `/start` or
-        `/pause`
-
-        - Both starting as running and resuming a pipeline is done by calling
-        `/start`
-
-        - Both starting as paused and pausing a pipeline is done by calling
-        `/pause`
-
-        - `/shutdown` cannot be cancelled: the pipeline must reach `Shutdown`
-        before another action
-
-        - `/suspend` can only be cancelled using `/shutdown`: otherwise, the
-        pipeline must reach
-
-        `Suspended` first
-      operationId: post_pipeline_action
-      parameters:
-        - name: pipeline_name
-          in: path
-          description: Unique pipeline name
-          required: true
-          schema:
-            type: string
-        - name: action
-          in: path
-          description: 'Pipeline action (one of: start, pause, suspend, shutdown)'
-          required: true
-          schema:
-            type: string
-      responses:
-        '202':
-          description: Action is accepted and is being performed
-        '400':
-          description: Action could not be performed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                Illegal action:
-                  value:
-                    message: >-
-                      Deployment status (current: 'ShuttingDown', desired:
-                      'Shutdown') cannot have desired changed to 'Running'.
-                      Cannot restart the pipeline while it is shutting down.
-                      Wait for the shutdown to complete before starting a new
-                      instance of the pipeline.
-                    error_code: IllegalPipelineAction
-                    details:
-                      hint: >-
-                        Cannot restart the pipeline while it is shutting down.
-                        Wait for the shutdown to complete before starting a new
-                        instance of the pipeline.
-                      status: ShuttingDown
-                      desired_status: Shutdown
-                      requested_desired_status: Running
-                Invalid action:
-                  value:
-                    message: >-
-                      Invalid pipeline action 'dance'; valid actions are:
-                      'start', 'pause', or 'shutdown'
-                    error_code: InvalidPipelineAction
-                    details:
-                      action: dance
-        '404':
-          description: Pipeline with that name does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                message: Unknown pipeline name 'non-existent-pipeline'
-                error_code: UnknownPipelineName
-                details:
-                  pipeline_name: non-existent-pipeline
-        '405':
-          description: Action is not supported
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                Unsupported action:
-                  value:
-                    message: >-
-                      Unsupported pipeline action 'suspend': this pipeline does
-                      not support the suspend action for the following
-                      reason(s):
-                          - Storage must be configured
-                    error_code: UnsupportedPipelineAction
-                    details:
-                      action: suspend
-                      reason: >-
-                        this pipeline does not support the suspend action for
-                        the following reason(s):
-                            - Storage must be configured
-        '500':
-          description: ''
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '501':
-          description: >-
-            Action is not implemented because it is only available in the
-            Enterprise edition
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '503':
-          description: >-
-            Action can not be performed (maybe because the pipeline is already
-            suspended)
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
 components:
@@ -5853,21 +6075,8 @@ components:
             checkpoint_during_suspend:
               type: boolean
               description: >-
-                * If `true`, the suspend operation will first atomically
-                checkpoint the pipeline before
-
-                deprovisioning the compute resources. When resuming, the
-                pipeline will start from this
-
-                checkpoint.
-
-                * If `false`, then the pipeline will be suspended without
-                creating an additional checkpoint.
-
-                When resuming, it will pick up the latest checkpoint made by the
-                periodic checkpointer or
-
-                by invoking the `/checkpoint` API.
+                Deprecated: setting this true or false does not have an effect
+                anymore.
               default: true
             clock_resolution_usecs:
               type: integer
@@ -6104,7 +6313,7 @@ components:
     PipelineDesiredStatus:
       type: string
       enum:
-        - Shutdown
+        - Stopped
         - Paused
         - Running
         - Suspended
@@ -6142,6 +6351,7 @@ components:
         - deployment_status_since
         - deployment_desired_status
         - refresh_version
+        - storage_status
       properties:
         created_at:
           type: string
@@ -6186,6 +6396,8 @@ components:
           $ref: '#/components/schemas/Version'
         runtime_config:
           $ref: '#/components/schemas/RuntimeConfig'
+        storage_status:
+          $ref: '#/components/schemas/StorageStatus'
         udf_rust:
           type: string
         udf_toml:
@@ -6215,6 +6427,7 @@ components:
         - deployment_status_since
         - deployment_desired_status
         - refresh_version
+        - storage_status
       properties:
         created_at:
           type: string
@@ -6266,6 +6479,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/RuntimeConfig'
           nullable: true
+        storage_status:
+          $ref: '#/components/schemas/StorageStatus'
         udf_rust:
           type: string
           nullable: true
@@ -6306,8 +6521,7 @@ components:
 
         * State transitions labeled with API endpoint names (`/start`, `/pause`,
 
-        `/suspend`, `/shutdown`) are triggered by invoking corresponding
-        endpoint,
+        `/stop`) are triggered by invoking corresponding endpoint,
 
         e.g., `POST /v0/pipelines/{name}/start`. Note that these only express
 
@@ -6316,53 +6530,41 @@ components:
 
         ```text
 
-        Shutdown◄────────────────────┐
+        Stopped ◄─────────── Stopping ◄───── All states can transition
 
-        │                        │
+        │                    ▲            to Stopping by either:
 
-        /start or /pause │                   ShuttingDown ◄─────── Failed
+        /start or /pause │                    │            (1) user calling
+        /stop?force=true, or;
 
-        │                        ▲                  ▲
+        ▼                    │            (2) pipeline encountering a fatal
 
-        ▼              /shutdown │                  │
+        ⌛Provisioning          Suspending            resource or runtime error,
 
-        ⌛Provisioning ──────────────────┤     All states except ShuttingDown
+        │                    ▲                having the system call
+        /stop?force=true
 
-        │                        │        can transition to Failed
+        ▼                    │ /stop          effectively
 
-        │                        │
+        ⌛Initializing ──────────────┤  ?force=false
 
-        ▼                        │
+        │                    │
 
-        ⌛Initializing ──────────────────┤
+        ┌─────────┼────────────────────┴─────┐
 
-        │                       
-        │────────────────────────────────────────────────────────────────┐
+        │         ▼                          │
 
-        ┌─────────┼────────────────────────┴─┐                 
-        │                         │                 │
+        │       Paused  ◄──────► Unavailable │
 
-        │         ▼                          │                 
-        │                         │                 │
+        │        │   ▲                ▲      │
 
-        │       Paused  ◄──────► Unavailable │                 
-        │                         │                 │
+        │ /start │   │  /pause        │      │
 
-        │       │    ▲                ▲      │                 
-        │                         │                 │
+        │        ▼   │                │      │
 
-        │ /start│    │/pause          │      │──────────> SuspendingCircuit ───>
-        SuspendingCompute ───> Suspended
+        │       Running ◄─────────────┘      │
 
-        │       ▼    │                │      │
-        /suspend                            ▲                        │ /start or
-        /pause
-
-        │      Running ◄──────────────┘     
-        │─────────────────────────────────────┘                        ▼
-
-        └────────────────────────────────────┘ (if
-        runtime_config.checkpoint_during_suspend=false)    ⌛Provisioning
+        └────────────────────────────────────┘
 
         ```
 
@@ -6389,11 +6591,9 @@ components:
 
         used as desired statuses: `Paused`, `Running`, `Suspended` and
 
-        `Shutdown`. These statuses are selected by invoking REST endpoints
+        `Stopped`. These statuses are selected by invoking REST endpoints
 
-        shown in the diagram (respectively, `/pause`, `/start`, `/suspend`
-
-        and `/shutdown`).
+        shown in the diagram (respectively, `/pause`, `/start`, and `/stop`).
 
 
         The user can monitor the current state of the pipeline via the
@@ -6410,19 +6610,16 @@ components:
 
         that the pipeline has been successfully initialized and is
 
-        processing data, or `Failed`, indicating an error.
+        processing data, or `Stopped` with `deployment_error` being set.
       enum:
-        - Shutdown
+        - Stopped
         - Provisioning
         - Initializing
         - Paused
         - Running
         - Unavailable
-        - SuspendingCircuit
-        - SuspendingCompute
-        - Suspended
-        - Failed
-        - ShuttingDown
+        - Suspending
+        - Stopping
     PostPutPipeline:
       type: object
       description: >-
@@ -6459,6 +6656,20 @@ components:
         udf_toml:
           type: string
           nullable: true
+    PostStopPipelineParameters:
+      type: object
+      description: Query parameters to POST a pipeline stop.
+      properties:
+        force:
+          type: boolean
+          description: >-
+            The `force` parameter determines whether to immediately deprovision
+            the pipeline compute
+
+            resources (`force=true`) or first attempt to atomically checkpoint
+            before doing so
+
+            (`force=false`, which is the default).
     PostgresReaderConfig:
       type: object
       description: Postgres input connector configuration.
@@ -7075,21 +7286,8 @@ components:
         checkpoint_during_suspend:
           type: boolean
           description: >-
-            * If `true`, the suspend operation will first atomically checkpoint
-            the pipeline before
-
-            deprovisioning the compute resources. When resuming, the pipeline
-            will start from this
-
-            checkpoint.
-
-            * If `false`, then the pipeline will be suspended without creating
-            an additional checkpoint.
-
-            When resuming, it will pick up the latest checkpoint made by the
-            periodic checkpointer or
-
-            by invoking the `/checkpoint` API.
+            Deprecated: setting this true or false does not have an effect
+            anymore.
           default: true
         clock_resolution_usecs:
           type: integer
@@ -7725,6 +7923,39 @@ components:
           default: null
           nullable: true
           minimum: 0
+    StorageStatus:
+      type: string
+      description: >-
+        Storage status.
+
+
+        The storage status can only transition when the pipeline status is
+        `Stopped`.
+
+
+        ```text
+
+        Cleared ───┐
+
+        ▲       │
+
+        /clear │       │
+
+        │       │
+
+        Clearing   │
+
+        ▲       │
+
+        │       │
+
+        InUse ◄───┘
+
+        ```
+      enum:
+        - Cleared
+        - InUse
+        - Clearing
     SyncConfig:
       type: object
       required:

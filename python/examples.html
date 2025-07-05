@@ -138,7 +138,7 @@ This example sets the timeout for each HTTP request to 10 seconds.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is for an individual HTTP request, and does not affect things like waiting for a pipeline to start,
-pause, resume and shutdown.
+pause, resume and stop.
 To set a timeout for these state transitions, set the parameter <cite>timeout_s</cite> in respective functions.</p>
 </div>
 </section>
@@ -160,7 +160,7 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
 <span class="s2">CREATE VIEW average_scores AS SELECT name, ((science + maths + art) / 3) as average FROM </span><span class="si">{TBL_NAMES[0]}</span><span class="s2"> JOIN </span><span class="si">{TBL_NAMES[1]}</span><span class="s2"> on id = student_id ORDER BY average DESC;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="c1"># This will shutdown and overwrite any existing pipeline with the same name.</span>
+<span class="c1"># This will stop and overwrite any existing pipeline with the same name.</span>
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -209,14 +209,14 @@ the following output:</p>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;students&quot;</span><span class="p">,</span> <span class="n">df_students</span><span class="p">)</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;grades&quot;</span><span class="p">,</span> <span class="n">df_grades</span><span class="p">)</span>
 
-<span class="c1"># wait for the pipeline to complete and shutdown</span>
+<span class="c1"># wait for the pipeline to complete and stop</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># get the output of the view as a pandas dataframe</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 
-<span class="c1"># delete the pipeline</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -258,9 +258,11 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
 
-<span class="c1"># wait for the pipeline to finish and shutdown</span>
+<span class="c1"># wait for the pipeline to finish and stop</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -270,8 +272,8 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Optionally, to shutdown the pipeline after completion:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">shutdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Optionally, to forcibly stop (without checkpointing) the pipeline after completion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">force_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -342,11 +344,12 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="c1"># important: `wait_for_completion` will block forever here</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_idle</span><span class="p">()</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
 
-<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

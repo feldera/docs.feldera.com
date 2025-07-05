@@ -68,6 +68,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.ProgramStatus"><code class="docutils literal notranslate"><span class="pre">ProgramStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.StorageStatus"><code class="docutils literal notranslate"><span class="pre">StorageStatus</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-feldera.output_handler">feldera.output_handler module</a><ul>
@@ -170,12 +171,14 @@
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.checkpoint">
 <span class="sig-name descname"><span class="pre">checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoint" title="Link to this definition"></a></dt>
 <dd><p>Checkpoints this pipeline, if fault-tolerance is enabled.
-Fault Tolerance in Feldera: &lt;<a class="reference external" href="https://docs.feldera.com/pipelines/fault-tolerance/">https://docs.feldera.com/pipelines/fault-tolerance/</a>&gt;</p>
+Fault Tolerance in Feldera:
+&lt;<a class="reference external" href="https://docs.feldera.com/pipelines/fault-tolerance/">https://docs.feldera.com/pipelines/fault-tolerance/</a>&gt;</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>wait</strong> – If true, will block until the checkpoint completes.</p></li>
-<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the checkpoint to complete.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+checkpoint to complete.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -196,6 +199,14 @@ Fault Tolerance in Feldera: &lt;<a class="reference external" href="https://docs
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.clear_storage">
+<span class="sig-name descname"><span class="pre">clear_storage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.clear_storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.clear_storage" title="Link to this definition"></a></dt>
+<dd><p>Clears the storage of the pipeline if it is currently in use.
+This action cannot be canceled, and will delete all the pipeline
+storage.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.created_at">
 <span class="sig-name descname"><span class="pre">created_at</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.created_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.created_at" title="Link to this definition"></a></dt>
 <dd><p>Return the creation time of the pipeline.</p>
@@ -203,12 +214,18 @@ Fault Tolerance in Feldera: &lt;<a class="reference external" href="https://docs
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.delete">
-<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.delete" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clear_storage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.delete" title="Link to this definition"></a></dt>
 <dd><p>Deletes the pipeline.</p>
-<p>The pipeline must be shutdown before it can be deleted.</p>
+<p>The pipeline must be stopped, and the storage cleared before it can be
+deleted.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in SHUTDOWN state.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clear_storage</strong> – True if the storage should be cleared before
+deletion. False by default</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in STOPPED state or the
+storage is still bound.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -237,13 +254,15 @@ Returns an empty string if there is no error.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_location">
 <span class="sig-name descname"><span class="pre">deployment_location</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_location" title="Link to this definition"></a></dt>
 <dd><p>Return the deployment location of the pipeline.
-Deployment location is the location where the pipeline can be reached at runtime (a TCP port number or a URI).</p>
+Deployment location is the location where the pipeline can be reached
+at runtime (a TCP port number or a URI).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_status_since">
 <span class="sig-name descname"><span class="pre">deployment_status_since</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_status_since"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_status_since" title="Link to this definition"></a></dt>
-<dd><p>Return the timestamp when the current deployment status of the pipeline was set.</p>
+<dd><p>Return the timestamp when the current deployment status of the pipeline
+was set.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -261,15 +280,17 @@ Deployment location is the location where the pipeline can be reached at runtime
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.execute" title="Link to this definition"></a></dt>
-<dd><p>Executes an ad-hoc SQL query on the current pipeline, discarding its result.
-Unlike the <a class="reference internal" href="#feldera.pipeline.Pipeline.query" title="feldera.pipeline.Pipeline.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query()</span></code></a> method which returns a generator for retrieving query results lazily,
-this method processes the query eagerly and fully before returning.</p>
-<p>This method is suitable for SQL operations like <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code>, where the user needs
-confirmation of successful query execution, but does not require the query result.
-If the query fails, an exception will be raised.</p>
+<dd><p>Executes an ad-hoc SQL query on the current pipeline, discarding its
+result. Unlike the <a class="reference internal" href="#feldera.pipeline.Pipeline.query" title="feldera.pipeline.Pipeline.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query()</span></code></a> method which returns a generator for
+retrieving query results lazily, this method processes the query
+eagerly and fully before returning.</p>
+<p>This method is suitable for SQL operations like <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and
+<code class="docutils literal notranslate"><span class="pre">DELETE</span></code>, where the user needs confirmation of successful query
+execution, but does not require the query result. If the query fails,
+an exception will be raised.</p>
 <dl class="simple">
-<dt>Important:</dt><dd><p>If you try to <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> or <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> data from a table while the pipeline is paused,
-it will block until the pipeline is resumed.</p>
+<dt>Important:</dt><dd><p>If you try to <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> or <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> data from a table while the
+pipeline is paused, it will block until the pipeline is resumed.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -393,7 +414,7 @@ An error will be raised if the pipeline is in any other state.</p>
 <span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.output_handler.OutputHandler" title="feldera.output_handler.OutputHandler"><span class="pre">OutputHandler</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.listen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.listen" title="Link to this definition"></a></dt>
 <dd><p>Follow the change stream (i.e., the output) of the provided view.
 Returns an output handler to read the changes.</p>
-<p>When the pipeline is shutdown, these listeners are dropped.</p>
+<p>When the pipeline is stopped, these listeners are dropped.</p>
 <p>You must call this method before starting the pipeline to get the entire output of the view.
 If this method is called once the pipeline has started, you will only get the output from that point onwards.</p>
 <dl class="field-list simple">
@@ -413,14 +434,13 @@ If this method is called once the pipeline has started, you will only get the ou
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.pause">
 <span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.pause" title="Link to this definition"></a></dt>
 <dd><p>Pause the pipeline.</p>
-<p>The pipeline can only transition to the PAUSED state from the RUNNING state.
-If the pipeline is already paused, it will remain in the PAUSED state.</p>
+<p>The pipeline can only transition to the PAUSED state from the RUNNING
+state. If the pipeline is already paused, it will remain in the PAUSED
+state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to pause.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is in FAILED state.</p>
+<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to pause.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -451,7 +471,8 @@ All connectors are RUNNING by default.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.program_binary_url">
 <span class="sig-name descname"><span class="pre">program_binary_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.program_binary_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.program_binary_url" title="Link to this definition"></a></dt>
 <dd><p>Return the program binary URL of the pipeline.
-This is the URL where the compiled program binary can be downloaded from.</p>
+This is the URL where the compiled program binary can be downloaded
+from.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -470,14 +491,17 @@ This is the URL where the compiled program binary can be downloaded from.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.program_error">
 <span class="sig-name descname"><span class="pre">program_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.program_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.program_error" title="Link to this definition"></a></dt>
 <dd><p>Return the program error of the pipeline.
-If there are no errors, the <cite>exit_code</cite> field inside both <cite>sql_compilation</cite> and <cite>rust_compilation</cite> will be 0.</p>
+If there are no errors, the <cite>exit_code</cite> field inside both
+<cite>sql_compilation</cite> and <cite>rust_compilation</cite> will be 0.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.program_info">
 <span class="sig-name descname"><span class="pre">program_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.program_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.program_info" title="Link to this definition"></a></dt>
 <dd><p>Return the program info of the pipeline.
-This is the output returned by the SQL compiler, including: the list of input and output connectors, the generated Rust code for the pipeline, and the SQL program schema.</p>
+This is the output returned by the SQL compiler, including: the list of
+input and output connectors, the generated Rust code for the pipeline,
+and the SQL program schema.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -485,7 +509,8 @@ This is the output returned by the SQL compiler, including: the list of input an
 <span class="sig-name descname"><span class="pre">program_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.ProgramStatus" title="feldera.enums.ProgramStatus"><span class="pre">ProgramStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.program_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.program_status" title="Link to this definition"></a></dt>
 <dd><p>Return the program status of the pipeline.</p>
 <p>Program status is the status of compilation of this SQL program.
-We first compile the SQL program to Rust code, and then compile the Rust code to a binary.</p>
+We first compile the SQL program to Rust code, and then compile the
+Rust code to a binary.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -503,13 +528,16 @@ We first compile the SQL program to Rust code, and then compile the Rust code to
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.query">
 <span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query" title="Link to this definition"></a></dt>
-<dd><p>Executes an ad-hoc SQL query on this pipeline and returns a generator that yields the rows of the result as Python dictionaries.
-For <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> queries, consider using <a class="reference internal" href="#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a> instead.
-All floating-point numbers are deserialized as Decimal objects to avoid precision loss.</p>
+<dd><p>Executes an ad-hoc SQL query on this pipeline and returns a generator
+that yields the rows of the result as Python dictionaries. For
+<code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> queries, consider using <a class="reference internal" href="#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a>
+instead. All floating-point numbers are deserialized as Decimal objects
+to avoid precision loss.</p>
 <dl class="simple">
 <dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
 </dd>
-<dt>Important:</dt><dd><p>This method is lazy. It returns a generator and is not evaluated until you consume the result.</p>
+<dt>Important:</dt><dd><p>This method is lazy. It returns a generator and is not evaluated
+until you consume the result.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -517,11 +545,13 @@ All floating-point numbers are deserialized as Decimal objects to avoid precisio
 <dd class="field-odd"><p><strong>query</strong> – The SQL query to be executed.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A generator that yields the rows of the result as Python dictionaries.</p>
+<dd class="field-even"><p>A generator that yields the rows of the result as Python
+dictionaries.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED state.</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED
+state.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If querying a non materialized table or view.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the query is invalid.</p></li>
 </ul>
@@ -532,8 +562,9 @@ All floating-point numbers are deserialized as Decimal objects to avoid precisio
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.query_parquet">
 <span class="sig-name descname"><span class="pre">query_parquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query_parquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query_parquet" title="Link to this definition"></a></dt>
-<dd><p>Executes an ad-hoc SQL query on this pipeline and saves the result to the specified path as a parquet file.
-If the extension isn’t <cite>parquet</cite>, it will be automatically appended to <cite>path</cite>.</p>
+<dd><p>Executes an ad-hoc SQL query on this pipeline and saves the result to
+the specified path as a parquet file. If the extension isn’t <cite>parquet</cite>,
+it will be automatically appended to <cite>path</cite>.</p>
 <dl class="simple">
 <dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
 </dd>
@@ -547,7 +578,8 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED state.</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED
+state.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If querying a non materialized table or view.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the query is invalid.</p></li>
 </ul>
@@ -558,11 +590,13 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.query_tabular">
 <span class="sig-name descname"><span class="pre">query_tabular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query_tabular"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query_tabular" title="Link to this definition"></a></dt>
-<dd><p>Executes a SQL query on this pipeline and returns the result as a formatted string.</p>
+<dd><p>Executes a SQL query on this pipeline and returns the result as a
+formatted string.</p>
 <dl class="simple">
 <dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
 </dd>
-<dt>Important:</dt><dd><p>This method is lazy. It returns a generator and is not evaluated until you consume the result.</p>
+<dt>Important:</dt><dd><p>This method is lazy. It returns a generator and is not evaluated
+until you consume the result.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -570,11 +604,13 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 <dd class="field-odd"><p><strong>query</strong> – The SQL query to be executed.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A generator that yields a string representing the query result in a human-readable, tabular format.</p>
+<dd class="field-even"><p>A generator that yields a string representing the query result
+in a human-readable, tabular format.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED state.</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED
+state.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If querying a non materialized table or view.</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the query is invalid.</p></li>
 </ul>
@@ -597,10 +633,13 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.restart">
 <span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.restart" title="Link to this definition"></a></dt>
 <dd><p>Restarts the pipeline.</p>
-<p>This method <strong>SHUTS DOWN</strong> the pipeline regardless of its current state and then starts it again.</p>
+<p>This method forcibly <strong>STOPS</strong> the pipeline regardless of its current
+state and then starts it again. No checkpoints are made when stopping
+the pipeline.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to restart.</p>
+<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to restart.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -608,13 +647,12 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.resume">
 <span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.resume" title="Link to this definition"></a></dt>
-<dd><p>Resumes the pipeline from the PAUSED state. If the pipeline is already running, it will remain in the RUNNING state.</p>
+<dd><p>Resumes the pipeline from the PAUSED state. If the pipeline is already
+running, it will remain in the RUNNING state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to shut down.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is in FAILED state.</p>
+<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to resume.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -648,33 +686,29 @@ All connectors are RUNNING by default.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.shutdown">
-<span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.shutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.shutdown" title="Link to this definition"></a></dt>
-<dd><p>Shut down the pipeline.</p>
-<p>Shuts down the pipeline regardless of its current state.</p>
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
+<dd><p id="start">Starts this pipeline.</p>
+<ul class="simple">
+<li><p>The pipeline must be in STOPPED state to start.</p></li>
+<li><p>If the pipeline is in any other state, an error will be raised.</p></li>
+<li><p>If the pipeline is in PAUSED state, use <cite>.meth:resume</cite> instead.</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to shut down.</p>
+<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to start.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If the pipeline is not in STOPPED state.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
-<dd><p id="start">Starts this pipeline.</p>
-<p>The pipeline must be in SHUTDOWN state to start.
-If the pipeline is in any other state, an error will be raised.
-If the pipeline is in PAUSED state, use <cite>.meth:resume</cite> instead.
-If the pipeline is in FAILED state, it must be shutdown before starting it again.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to start.</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>RuntimeError</strong> – If the pipeline is not in SHUTDOWN state.</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.stats">
+<span class="sig-name descname"><span class="pre">stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PipelineStatistics</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.stats" title="Link to this definition"></a></dt>
+<dd><p>Gets the pipeline metrics and performance counters.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -684,14 +718,26 @@ If the pipeline is in FAILED state, it must be shutdown before starting it again
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.suspend">
-<span class="sig-name descname"><span class="pre">suspend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.suspend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.suspend" title="Link to this definition"></a></dt>
-<dd><p>Suspends the pipeline to storage.</p>
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.stop" title="Link to this definition"></a></dt>
+<dd><p>Stops the pipeline.</p>
+<p>Stops the pipeline regardless of its current state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the pipeline to suspend.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> – Set True to immediately scale compute resources to zero.
+Set False to automatically checkpoint before stopping.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to stop.</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.storage_status">
+<span class="sig-name descname"><span class="pre">storage_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.StorageStatus" title="feldera.enums.StorageStatus"><span class="pre">StorageStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.storage_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.storage_status" title="Link to this definition"></a></dt>
+<dd><p>Return the storage status of the pipeline.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -701,8 +747,10 @@ If the pipeline is in FAILED state, it must be shutdown before starting it again
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>wait</strong> – If true, will block until the checkpoint sync opeartion completes.</p></li>
-<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the checkpoint to complete syncing.</p></li>
+<li><p><strong>wait</strong> – If true, will block until the checkpoint sync opeartion
+completes.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+checkpoint to complete syncing.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -756,22 +804,24 @@ If the checkpoint is currently being synchronized, returns
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.wait_for_completion">
-<span class="sig-name descname"><span class="pre">wait_for_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shutdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.wait_for_completion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.wait_for_completion" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">wait_for_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force_stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.wait_for_completion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.wait_for_completion" title="Link to this definition"></a></dt>
 <dd><p>Block until the pipeline has completed processing all input records.</p>
-<p>This method blocks until (1) all input connectors attached to the pipeline
-have finished reading their input data sources and issued end-of-input
-notifications to the pipeline, and (2) all inputs received from these
-connectors have been fully processed and corresponding outputs have been
-sent out through the output connectors.</p>
+<p>This method blocks until (1) all input connectors attached to the
+pipeline have finished reading their input data sources and issued
+end-of-input notifications to the pipeline, and (2) all inputs received
+from these connectors have been fully processed and corresponding
+outputs have been sent out through the output connectors.</p>
 <p>This method will block indefinitely if at least one of the input
 connectors attached to the pipeline is a streaming connector, such as
 Kafka, that does not issue the end-of-input notification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shutdown</strong> – If True, the pipeline will be shutdown after completion. False by default.</p></li>
-<li><p><strong>timeout_s</strong> – Optional. The maximum time (in seconds) to wait for the pipeline to complete.
-The default is None, which means wait indefinitely.</p></li>
+<li><p><strong>force_stop</strong> – If True, the pipeline will be forcibly stopped after
+completion. False by default. No checkpoints will be made.</p></li>
+<li><p><strong>timeout_s</strong> – Optional. The maximum time (in seconds) to wait for
+the pipeline to complete. The default is None, which means wait
+indefinitely.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
@@ -901,163 +951,154 @@ reached.</p></li>
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">PipelineStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#PipelineStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.PipelineStatus" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Represents the state that this pipeline is currently in.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Shutdown     ◄────┐
-│         │
-/deploy   │       │
-│   ⌛ShuttingDown
-▼         ▲
-⌛Provisioning    │
-│         │
-Provisioned        │
-▼         │/shutdown
-⌛Initializing     │
-│        │
-┌────────┴─────────┴─┐
-│        ▼           │
-│      Paused        │
-│      │    ▲        │
-│/start│    │/pause  │
-│      ▼    │        │
-│     Running        │
-└──────────┬─────────┘
-           │
-           ▼
-        Failed
+<blockquote>
+<div><p>Represents the state that this pipeline is currently in.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Stopped ◄─────────── Stopping ◄───── All states can transition
+   │                    ▲            to Stopping by either:
 </pre></div>
 </div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.FAILED">
-<span class="sig-name descname"><span class="pre">FAILED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.FAILED" title="Link to this definition"></a></dt>
-<dd><p>The pipeline remains in this state until the users acknowledge the failure
-by issuing a call to shutdown the pipeline; transitions to the
-<cite>PipelineStatus.SHUTDOWN</cite> state.</p>
-</dd></dl>
-
+</div></blockquote>
+<dl>
+<dt>/start or /pause │                    │            (1) user calling /stop?force=true, or;</dt><dd><blockquote>
+<div><blockquote>
+<div><p>▼                    │            (2) pipeline encountering a fatal</p>
+</div></blockquote>
+<dl class="simple">
+<dt>⌛Provisioning          Suspending            resource or runtime error,</dt><dd><p>│                    ▲                having the system call /stop?force=true
+▼                    │ /stop          effectively</p>
+</dd>
+<dt>⌛Initializing ─────────────┤  ?force=false</dt><dd><p>│                    │</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>┌─────────┼────────────────────┴─────┐
+│         ▼                          │
+│       Paused  ◄──────► Unavailable │
+│        │   ▲                ▲      │
+│ /start │   │  /pause        │      │
+│        ▼   │                │      │
+│       Running ◄─────────────┘      │
+└────────────────────────────────────┘</p>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.INITIALIZING">
-<span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>
 <dd><p>The pipeline is initializing its internal state and connectors.</p>
-<p>This state is part of the pipeline’s deployment process.  In this state,
-the pipeline’s HTTP server is up and running, but its query engine
-and input and output connectors are still initializing.</p>
 <p>The pipeline remains in this state until:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Initialization completes successfully; the pipeline transitions to the
-<cite>PipelineStatus.PAUSED</cite> state.</p></li>
-<li><p>Initialization fails; transitions to the <cite>PipelineStatus.FAILED</cite> state.</p></li>
-<li><p>A pre-defined timeout has passed.  The runner performs forced
-shutdown of the pipeline; returns to the <cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
-<li><p>The user cancels the pipeline by invoking the <cite>/shutdown</cite> endpoint.
-The manager performs forced shutdown of the pipeline; returns to the
-<cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
+<li><p>Initialization succeeds, transitioning to <cite>PAUSED</cite>.</p></li>
+<li><p>Initialization fails or times out, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>The user suspends the pipeline via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
+<li><p>The user stops the pipeline via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
 </ol>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.NOT_FOUND">
-<span class="sig-name descname"><span class="pre">NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.NOT_FOUND" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.NOT_FOUND" title="Link to this definition"></a></dt>
 <dd><p>The pipeline has not been created yet.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.PAUSED">
-<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PAUSED" title="Link to this definition"></a></dt>
-<dd><p>The pipeline is fully initialized, but data processing has been paused.</p>
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PAUSED" title="Link to this definition"></a></dt>
+<dd><p>The pipeline is initialized but data processing is paused.</p>
 <p>The pipeline remains in this state until:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>The user starts the pipeline by invoking the <cite>/start</cite> endpoint. The
-manager passes the request to the pipeline; transitions to the
-<cite>PipelineStatus.RUNNING</cite> state.</p></li>
-<li><p>The user cancels the pipeline by invoking the <cite>/shutdown</cite> endpoint.
-The manager passes the shutdown request to the pipeline to perform a
-graceful shutdown; transitions to the <cite>PipelineStatus.SHUTTING_DOWN</cite> state.</p></li>
-<li><p>An unexpected runtime error renders the pipeline <cite>PipelineStatus.FAILED</cite>.</p></li>
+<li><p>The user starts it via <cite>/start</cite>, transitioning to <cite>RUNNING</cite>.</p></li>
+<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
+<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
 </ol>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.PROVISIONING">
-<span class="sig-name descname"><span class="pre">PROVISIONING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PROVISIONING" title="Link to this definition"></a></dt>
-<dd><p>The runner triggered a deployment of the pipeline and is
-waiting for the pipeline HTTP server to come up.</p>
-<p>In this state, the runner provisions a runtime for the pipeline,
-starts the pipeline within this runtime and waits for it to start accepting HTTP requests.</p>
-<p>The user is unable to communicate with the pipeline during this
-time.  The pipeline remains in this state until:</p>
+<span class="sig-name descname"><span class="pre">PROVISIONING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PROVISIONING" title="Link to this definition"></a></dt>
+<dd><p>Compute (and optionally storage) resources needed for running the pipeline
+are being provisioned.</p>
+<p>The pipeline remains in this state until:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Its HTTP server is up and running; the pipeline transitions to the
-<cite>PipelineStatus.INITIALIZING</cite> state.</p></li>
-<li><p>A pre-defined timeout has passed.  The runner performs forced
-shutdown of the pipeline; returns to the <cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
-<li><p>The user cancels the pipeline by invoking the <cite>/shutdown</cite> endpoint.
-The manager performs forced shutdown of the pipeline, returns to the
-<cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
+<li><p>Resources are provisioned successfully, transitioning to <cite>INITIALIZING</cite>.</p></li>
+<li><p>Provisioning fails or times out, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>The user cancels the pipeline via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
 </ol>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.RUNNING">
-<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.RUNNING" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.RUNNING" title="Link to this definition"></a></dt>
 <dd><p>The pipeline is processing data.</p>
 <p>The pipeline remains in this state until:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>The user pauses the pipeline by invoking the <cite>/pause</cite> endpoint. The
-manager passes the request to the pipeline; transitions to the
-<cite>PipelineStatus.PAUSED</cite> state.</p></li>
-<li><p>The user cancels the pipeline by invoking the <cite>/shutdown</cite> endpoint.
-The runner passes the shutdown request to the pipeline to perform a
-graceful shutdown; transitions to the
-<cite>PipelineStatus.SHUTTING_DOWN</cite> state.</p></li>
-<li><p>An unexpected runtime error renders the pipeline
-<cite>PipelineStatus.FAILED</cite>.</p></li>
+<li><p>The user pauses it via <cite>/pause</cite>, transitioning to <cite>PAUSED</cite>.</p></li>
+<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
+<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
 </ol>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SHUTDOWN">
-<span class="sig-name descname"><span class="pre">SHUTDOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SHUTDOWN" title="Link to this definition"></a></dt>
-<dd><p>Pipeline has not been started or has been shut down.</p>
-<p>The pipeline remains in this state until the user triggers
-a deployment by invoking the <cite>/deploy</cite> endpoint.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SHUTTING_DOWN">
-<span class="sig-name descname"><span class="pre">SHUTTING_DOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SHUTTING_DOWN" title="Link to this definition"></a></dt>
-<dd><p>Graceful shutdown in progress.</p>
-<p>In this state, the pipeline finishes any ongoing data processing,
-produces final outputs, shuts down input/output connectors and
-terminates.</p>
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.STOPPED">
+<span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STOPPED" title="Link to this definition"></a></dt>
+<dd><p>The pipeline has not (yet) been started or has been stopped either
+manually by the user or automatically by the system due to a
+resource or runtime error.</p>
 <p>The pipeline remains in this state until:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Shutdown completes successfully; transitions to the <cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
-<li><p>A pre-defined timeout has passed. The manager performs forced shutdown of the pipeline; returns to the
-<cite>PipelineStatus.SHUTDOWN</cite> state.</p></li>
+<li><p>The user starts it via <cite>/start</cite> or <cite>/pause</cite>, transitioning to <cite>PROVISIONING</cite>.</p></li>
+<li><p>Early start fails (e.g., compilation failure), transitioning to <cite>STOPPING</cite>.</p></li>
 </ol>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDED">
-<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDED" title="Link to this definition"></a></dt>
-<dd><p>The pipeline was successfully suspended to storage.</p>
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.STOPPING">
+<span class="sig-name descname"><span class="pre">STOPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STOPPING" title="Link to this definition"></a></dt>
+<dd><p>The pipeline’s compute resources are being scaled down to zero.</p>
+<p>The pipeline remains in this state until deallocation completes,
+transitioning to <cite>STOPPED</cite>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDING">
+<span class="sig-name descname"><span class="pre">SUSPENDING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDING" title="Link to this definition"></a></dt>
+<dd><p>The pipeline is being suspended to storage.</p>
+<p>The pipeline remains in this state until:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Suspension succeeds, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
+</ol>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.UNAVAILABLE">
-<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
-<dd><p>The pipeline was at least once initialized, but in the most recent status check either
-could not be reached or returned it is not yet ready.</p>
+<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd><p>The pipeline was initialized at least once but is currently unreachable
+or not ready.</p>
+<p>The pipeline remains in this state until:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>A successful status check transitions it back to <cite>PAUSED</cite> or <cite>RUNNING</cite>.</p></li>
+<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
+<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
+<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
+</ol>
+</div></blockquote>
+<p>Note: While in this state, <cite>/start</cite> or <cite>/pause</cite> express desired state but
+are only applied once the pipeline becomes reachable.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1121,6 +1162,46 @@ could not be reached or returned it is not yet ready.</p>
 <span class="sig-name descname"><span class="pre">get_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/enums.html#ProgramStatus.get_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.ProgramStatus.get_error" title="Link to this definition"></a></dt>
 <dd><p>Returns the compilation error, if any.</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.StorageStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">StorageStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#StorageStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.StorageStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Represents the current storage usage status of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.StorageStatus.CLEARED">
+<span class="sig-name descname"><span class="pre">CLEARED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.StorageStatus.CLEARED" title="Link to this definition"></a></dt>
+<dd><p>The pipeline has not been started before, or the user has cleared storage.</p>
+<p>In this state, the pipeline has no storage resources bound to it.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.StorageStatus.CLEARING">
+<span class="sig-name descname"><span class="pre">CLEARING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.StorageStatus.CLEARING" title="Link to this definition"></a></dt>
+<dd><p>The pipeline is in the process of becoming unbound from its storage resources.</p>
+<p>If storage resources are configured to be deleted upon clearing, their deletion
+occurs before transitioning to <cite>CLEARED</cite>. Otherwise, no actual work is required,
+and the transition happens immediately.</p>
+<p>If storage is not deleted during clearing, the responsibility to manage or delete
+those resources lies with the user.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.StorageStatus.INUSE">
+<span class="sig-name descname"><span class="pre">INUSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.StorageStatus.INUSE" title="Link to this definition"></a></dt>
+<dd><p>The pipeline was (attempted to be) started before, transitioning from <cite>STOPPED</cite>
+to <cite>PROVISIONING</cite>, which caused the storage status to become <cite>INUSE</cite>.</p>
+<p>Being in the <cite>INUSE</cite> state restricts certain edits while the pipeline is <cite>STOPPED</cite>.</p>
+<p>The pipeline remains in this state until the user invokes <cite>/clear</cite>, transitioning
+it to <cite>CLEARING</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.StorageStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#StorageStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.StorageStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1232,6 +1313,7 @@ as IOPS and throughput.</p></li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient"><code class="docutils literal notranslate"><span class="pre">FelderaClient</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage"><code class="docutils literal notranslate"><span class="pre">FelderaClient.clear_storage()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_or_update_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_pipeline()</span></code></a></li>
@@ -1250,9 +1332,8 @@ as IOPS and throughput.</p></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_parquet"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_parquet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_text"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_text()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.shutdown_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.shutdown_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.suspend_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.suspend_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.stop_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_status()</span></code></a></li>
 </ul>

@@ -169,7 +169,10 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># shutdown the pipeline if it exists and is running</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">shutdown_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">()</span>
+
         <span class="k">except</span> <span class="n">FelderaAPIError</span><span class="p">:</span>
             <span class="c1"># pipeline doesn&#39;t exist, no worries</span>
             <span class="k">pass</span>

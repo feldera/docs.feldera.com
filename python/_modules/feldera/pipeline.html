@@ -89,6 +89,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatus</span><span class="p">,</span> <span class="n">ProgramStatus</span><span class="p">,</span> <span class="n">CheckpointStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">StorageStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CallbackRunnerInstruction</span><span class="p">,</span> <span class="n">CallbackRunner</span>
@@ -96,6 +97,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_dataframe_has_columns</span><span class="p">,</span> <span class="n">chunk_dataframe</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatistics</span>
 
 
 <div class="viewcode-block" id="Pipeline">
@@ -154,6 +156,14 @@
                 <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">err</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.stats">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatistics</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the pipeline metrics and performance counters.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">PipelineStatistics</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.input_pandas">
@@ -310,7 +320,7 @@
 <span class="sd">        Follow the change stream (i.e., the output) of the provided view.</span>
 <span class="sd">        Returns an output handler to read the changes.</span>
 
-<span class="sd">        When the pipeline is shutdown, these listeners are dropped.</span>
+<span class="sd">        When the pipeline is stopped, these listeners are dropped.</span>
 
 <span class="sd">        You must call this method before starting the pipeline to get the entire output of the view.</span>
 <span class="sd">        If this method is called once the pipeline has started, you will only get the output from that point onwards.</span>
@@ -370,24 +380,26 @@
 <div class="viewcode-block" id="Pipeline.wait_for_completion">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.wait_for_completion">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_completion</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">shutdown</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">force_stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Block until the pipeline has completed processing all input records.</span>
 
-<span class="sd">        This method blocks until (1) all input connectors attached to the pipeline</span>
-<span class="sd">        have finished reading their input data sources and issued end-of-input</span>
-<span class="sd">        notifications to the pipeline, and (2) all inputs received from these</span>
-<span class="sd">        connectors have been fully processed and corresponding outputs have been</span>
-<span class="sd">        sent out through the output connectors.</span>
+<span class="sd">        This method blocks until (1) all input connectors attached to the</span>
+<span class="sd">        pipeline have finished reading their input data sources and issued</span>
+<span class="sd">        end-of-input notifications to the pipeline, and (2) all inputs received</span>
+<span class="sd">        from these connectors have been fully processed and corresponding</span>
+<span class="sd">        outputs have been sent out through the output connectors.</span>
 
 <span class="sd">        This method will block indefinitely if at least one of the input</span>
 <span class="sd">        connectors attached to the pipeline is a streaming connector, such as</span>
 <span class="sd">        Kafka, that does not issue the end-of-input notification.</span>
 
-<span class="sd">        :param shutdown: If True, the pipeline will be shutdown after completion. False by default.</span>
-<span class="sd">        :param timeout_s: Optional. The maximum time (in seconds) to wait for the pipeline to complete.</span>
-<span class="sd">            The default is None, which means wait indefinitely.</span>
+<span class="sd">        :param force_stop: If True, the pipeline will be forcibly stopped after</span>
+<span class="sd">            completion. False by default. No checkpoints will be made.</span>
+<span class="sd">        :param timeout_s: Optional. The maximum time (in seconds) to wait for</span>
+<span class="sd">            the pipeline to complete. The default is None, which means wait</span>
+<span class="sd">            indefinitely.</span>
 
 <span class="sd">        :raises RuntimeError: If the pipeline returns unknown metrics.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -416,41 +428,19 @@
 <span class="w">                    </span><span class="si">}</span><span class="s2">s, timeout: </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;global_metrics&quot;</span>
-            <span class="p">)</span>
-            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pipeline_complete&quot;</span><span class="p">)</span>
-
+            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span>
             <span class="k">if</span> <span class="n">pipeline_complete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;received unknown metrics from the pipeline, pipeline_complete is None&quot;</span>
                 <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">pipeline_complete</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">pipeline_complete</span><span class="p">:</span>
                 <span class="k">break</span>
 
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">shutdown</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="n">force_stop</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__failed_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">next</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if the pipeline is in FAILED state and raises an error if it is.</span>
-<span class="sd">        :meta private:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span>
-            <span class="n">deployment_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">deployment_error</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot </span><span class="si">{</span><span class="nb">next</span><span class="si">}</span><span class="s2"> pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in FAILED state.</span>
-<span class="s2">The pipeline must be in SHUTDOWN state before it can be started, but it is currently in FAILED state.</span>
-<span class="s2">Use `Pipeline.shutdown()` method to shut down the pipeline.</span>
-<span class="s2">Error Message:</span>
-<span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
-            <span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.start">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start">[docs]</a>
@@ -460,28 +450,27 @@
 
 <span class="sd">        Starts this pipeline.</span>
 
-<span class="sd">        The pipeline must be in SHUTDOWN state to start.</span>
-<span class="sd">        If the pipeline is in any other state, an error will be raised.</span>
-<span class="sd">        If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
-<span class="sd">        If the pipeline is in FAILED state, it must be shutdown before starting it again.</span>
+<span class="sd">        - The pipeline must be in STOPPED state to start.</span>
+<span class="sd">        - If the pipeline is in any other state, an error will be raised.</span>
+<span class="sd">        - If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
 
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to start.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to start.</span>
 
-<span class="sd">        :raises RuntimeError: If the pipeline is not in SHUTDOWN state.</span>
+<span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">SHUTDOWN</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">STOPPED</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot start pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in state &#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;.</span>
-<span class="s2">The pipeline must be in SHUTDOWN state before it can be started.</span>
-<span class="s2">You can either shut down the pipeline using the `Pipeline.shutdown()` method or use `Pipeline.resume()` to </span><span class="se">\</span>
-<span class="s2">resume a paused pipeline.&quot;&quot;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot start pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in state </span><span class="se">\</span>
+<span class="s2">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;. The pipeline must be in STOPPED state before it can be </span><span class="se">\</span>
+<span class="s2">started. You can either stop the pipeline using the `Pipeline.stop()` </span><span class="se">\</span>
+<span class="s2">method or use `Pipeline.resume()` to resume a paused pipeline.&quot;&quot;&quot;</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_pipeline</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Unable to START the pipeline.&quot;</span><span class="p">,</span> <span class="n">timeout_s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Unable to START the pipeline.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">timeout_s</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setup_output_listeners</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span></div>
@@ -493,12 +482,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Restarts the pipeline.</span>
 
-<span class="sd">        This method **SHUTS DOWN** the pipeline regardless of its current state and then starts it again.</span>
+<span class="sd">        This method forcibly **STOPS** the pipeline regardless of its current</span>
+<span class="sd">        state and then starts it again. No checkpoints are made when stopping</span>
+<span class="sd">        the pipeline.</span>
 
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to restart.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to restart.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
@@ -552,18 +544,17 @@
             <span class="n">now_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
             <span class="c1"># Metrics retrieval</span>
-            <span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;global_metrics&quot;</span>
-            <span class="p">)</span>
-            <span class="n">total_input_records</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_input_records&quot;</span><span class="p">)</span>
-            <span class="n">total_processed_records</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_processed_records&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">total_input_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span>
+            <span class="n">total_input_records</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_input_records</span>
+            <span class="n">total_processed_records</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_processed_records</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_input_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;total_input_records is missing from the pipeline metrics&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="n">total_processed_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_processed_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="s2">&quot;total_processed_records is missing from the pipeline metrics&quot;</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;total_processed_records is missing from the pipeline \</span>
+<span class="sd">metrics&quot;&quot;&quot;</span>
                 <span class="p">)</span>
 
             <span class="c1"># Idle check</span>
@@ -592,27 +583,29 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pause the pipeline.</span>
 
-<span class="sd">        The pipeline can only transition to the PAUSED state from the RUNNING state.</span>
-<span class="sd">        If the pipeline is already paused, it will remain in the PAUSED state.</span>
+<span class="sd">        The pipeline can only transition to the PAUSED state from the RUNNING</span>
+<span class="sd">        state. If the pipeline is already paused, it will remain in the PAUSED</span>
+<span class="sd">        state.</span>
 
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to pause.</span>
-
-<span class="sd">        :raises FelderaAPIError: If the pipeline is in FAILED state.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to pause.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;pause&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Pipeline.shutdown">
-<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.shutdown">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">shutdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Pipeline.stop">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.stop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shut down the pipeline.</span>
+<span class="sd">        Stops the pipeline.</span>
 
-<span class="sd">        Shuts down the pipeline regardless of its current state.</span>
+<span class="sd">        Stops the pipeline regardless of its current state.</span>
 
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to shut down.</span>
+<span class="sd">        :param force: Set True to immediately scale compute resources to zero.</span>
+<span class="sd">            Set False to automatically checkpoint before stopping.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to stop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -622,54 +615,41 @@
                 <span class="c1"># block until the callback runner has been stopped</span>
                 <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">shutdown_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="Pipeline.suspend">
-<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.suspend">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">suspend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Suspends the pipeline to storage.</span>
-
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to suspend.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="c1"># sends a message to the callback runner to stop listening</span>
-                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">RanToCompletion</span><span class="p">)</span>
-                <span class="c1"># block until the callback runner has been stopped</span>
-                <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">suspend_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.resume">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.resume">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Resumes the pipeline from the PAUSED state. If the pipeline is already running, it will remain in the RUNNING state.</span>
+<span class="sd">        Resumes the pipeline from the PAUSED state. If the pipeline is already</span>
+<span class="sd">        running, it will remain in the RUNNING state.</span>
 
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the pipeline to shut down.</span>
-
-<span class="sd">        :raises FelderaAPIError: If the pipeline is in FAILED state.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to resume.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__failed_check</span><span class="p">(</span><span class="s2">&quot;resume&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.delete">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.delete">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clear_storage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deletes the pipeline.</span>
 
-<span class="sd">        The pipeline must be shutdown before it can be deleted.</span>
+<span class="sd">        The pipeline must be stopped, and the storage cleared before it can be</span>
+<span class="sd">        deleted.</span>
 
-<span class="sd">        :raises FelderaAPIError: If the pipeline is not in SHUTDOWN state.</span>
+<span class="sd">        :param clear_storage: True if the storage should be cleared before</span>
+<span class="sd">            deletion. False by default</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in STOPPED state or the</span>
+<span class="sd">            storage is still bound.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="k">if</span> <span class="n">clear_storage</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">delete_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
@@ -689,7 +669,8 @@
             <span class="k">return</span> <span class="n">Pipeline</span><span class="o">.</span><span class="n">_from_inner</span><span class="p">(</span><span class="n">inner</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">FelderaAPIError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline with name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span></div>
+                <span class="n">err</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Pipeline with name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not found&quot;</span>
+                <span class="k">raise</span> <span class="n">err</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.checkpoint">
@@ -697,10 +678,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checkpoints this pipeline, if fault-tolerance is enabled.</span>
-<span class="sd">        Fault Tolerance in Feldera: &lt;https://docs.feldera.com/pipelines/fault-tolerance/&gt;</span>
+<span class="sd">        Fault Tolerance in Feldera:</span>
+<span class="sd">        &lt;https://docs.feldera.com/pipelines/fault-tolerance/&gt;</span>
 
 <span class="sd">        :param wait: If true, will block until the checkpoint completes.</span>
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the checkpoint to complete.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            checkpoint to complete.</span>
 
 <span class="sd">        :raises FelderaAPIError: If checkpointing is not enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -716,9 +699,8 @@
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
             <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for pipeline &#39;</span><span class="si">{</span>
-<span class="w">                        </span><span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-<span class="w">                    </span><span class="si">}</span><span class="s2">&#39; to make checkpoint &#39;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for </span><span class="se">\</span>
+<span class="s2">pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to make checkpoint &#39;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">&#39;&quot;&quot;&quot;</span>
                 <span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_status</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">InProgress</span><span class="p">:</span>
@@ -763,8 +745,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Syncs this checkpoint to object store.</span>
 
-<span class="sd">        :param wait: If true, will block until the checkpoint sync opeartion completes.</span>
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the checkpoint to complete syncing.</span>
+<span class="sd">        :param wait: If true, will block until the checkpoint sync opeartion</span>
+<span class="sd">            completes.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            checkpoint to complete syncing.</span>
 
 <span class="sd">        :raises FelderaAPIError: If no checkpoints have been made.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -780,9 +764,8 @@
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
             <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for pipeline &#39;</span><span class="si">{</span>
-<span class="w">                        </span><span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-<span class="w">                    </span><span class="si">}</span><span class="s2">&#39; to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for </span><span class="se">\</span>
+<span class="s2">pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;&quot;&quot;&quot;</span>
                 <span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">InProgress</span><span class="p">,</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Unknown</span><span class="p">]:</span>
@@ -824,20 +807,25 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Executes an ad-hoc SQL query on this pipeline and returns a generator that yields the rows of the result as Python dictionaries.</span>
-<span class="sd">        For ``INSERT`` and ``DELETE`` queries, consider using :meth:`.execute` instead.</span>
-<span class="sd">        All floating-point numbers are deserialized as Decimal objects to avoid precision loss.</span>
+<span class="sd">        Executes an ad-hoc SQL query on this pipeline and returns a generator</span>
+<span class="sd">        that yields the rows of the result as Python dictionaries. For</span>
+<span class="sd">        ``INSERT`` and ``DELETE`` queries, consider using :meth:`.execute`</span>
+<span class="sd">        instead. All floating-point numbers are deserialized as Decimal objects</span>
+<span class="sd">        to avoid precision loss.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
 
 <span class="sd">        Important:</span>
-<span class="sd">            This method is lazy. It returns a generator and is not evaluated until you consume the result.</span>
+<span class="sd">            This method is lazy. It returns a generator and is not evaluated</span>
+<span class="sd">            until you consume the result.</span>
 
 <span class="sd">        :param query: The SQL query to be executed.</span>
-<span class="sd">        :return: A generator that yields the rows of the result as Python dictionaries.</span>
+<span class="sd">        :return: A generator that yields the rows of the result as Python</span>
+<span class="sd">            dictionaries.</span>
 
-<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED</span>
+<span class="sd">            state.</span>
 <span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
 <span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -849,8 +837,9 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query_parquet">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">query_parquet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Executes an ad-hoc SQL query on this pipeline and saves the result to the specified path as a parquet file.</span>
-<span class="sd">        If the extension isn&#39;t `parquet`, it will be automatically appended to `path`.</span>
+<span class="sd">        Executes an ad-hoc SQL query on this pipeline and saves the result to</span>
+<span class="sd">        the specified path as a parquet file. If the extension isn&#39;t `parquet`,</span>
+<span class="sd">        it will be automatically appended to `path`.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
@@ -858,7 +847,8 @@
 <span class="sd">        :param query: The SQL query to be executed.</span>
 <span class="sd">        :param path: The path of the parquet file.</span>
 
-<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED</span>
+<span class="sd">            state.</span>
 <span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
 <span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -870,18 +860,22 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query_tabular">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">query_tabular</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Executes a SQL query on this pipeline and returns the result as a formatted string.</span>
+<span class="sd">        Executes a SQL query on this pipeline and returns the result as a</span>
+<span class="sd">        formatted string.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
 
 <span class="sd">        Important:</span>
-<span class="sd">            This method is lazy. It returns a generator and is not evaluated until you consume the result.</span>
+<span class="sd">            This method is lazy. It returns a generator and is not evaluated</span>
+<span class="sd">            until you consume the result.</span>
 
 <span class="sd">        :param query: The SQL query to be executed.</span>
-<span class="sd">        :return: A generator that yields a string representing the query result in a human-readable, tabular format.</span>
+<span class="sd">        :return: A generator that yields a string representing the query result</span>
+<span class="sd">            in a human-readable, tabular format.</span>
 
-<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED state.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED</span>
+<span class="sd">            state.</span>
 <span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
 <span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -893,17 +887,19 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.execute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Executes an ad-hoc SQL query on the current pipeline, discarding its result.</span>
-<span class="sd">        Unlike the :meth:`.query` method which returns a generator for retrieving query results lazily,</span>
-<span class="sd">        this method processes the query eagerly and fully before returning.</span>
+<span class="sd">        Executes an ad-hoc SQL query on the current pipeline, discarding its</span>
+<span class="sd">        result. Unlike the :meth:`.query` method which returns a generator for</span>
+<span class="sd">        retrieving query results lazily, this method processes the query</span>
+<span class="sd">        eagerly and fully before returning.</span>
 
-<span class="sd">        This method is suitable for SQL operations like ``INSERT`` and ``DELETE``, where the user needs</span>
-<span class="sd">        confirmation of successful query execution, but does not require the query result.</span>
-<span class="sd">        If the query fails, an exception will be raised.</span>
+<span class="sd">        This method is suitable for SQL operations like ``INSERT`` and</span>
+<span class="sd">        ``DELETE``, where the user needs confirmation of successful query</span>
+<span class="sd">        execution, but does not require the query result. If the query fails,</span>
+<span class="sd">        an exception will be raised.</span>
 
 <span class="sd">        Important:</span>
-<span class="sd">            If you try to ``INSERT`` or ``DELETE`` data from a table while the pipeline is paused,</span>
-<span class="sd">            it will block until the pipeline is resumed.</span>
+<span class="sd">            If you try to ``INSERT`` or ``DELETE`` data from a table while the</span>
+<span class="sd">            pipeline is paused, it will block until the pipeline is resumed.</span>
 
 <span class="sd">        :param query: The SQL query to be executed.</span>
 
@@ -913,6 +909,19 @@
 
         <span class="n">gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_tabular</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="n">deque</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.clear_storage">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.clear_storage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clears the storage of the pipeline if it is currently in use.</span>
+<span class="sd">        This action cannot be canceled, and will delete all the pipeline</span>
+<span class="sd">        storage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_status</span><span class="p">()</span> <span class="o">==</span> <span class="n">StorageStatus</span><span class="o">.</span><span class="n">INUSE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -934,6 +943,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_code</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.storage_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.storage_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">storage_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StorageStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the storage status of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">StorageStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">storage_status</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.program_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">program_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProgramStatus</span><span class="p">:</span>
@@ -941,7 +961,8 @@
 <span class="sd">        Return the program status of the pipeline.</span>
 
 <span class="sd">        Program status is the status of compilation of this SQL program.</span>
-<span class="sd">        We first compile the SQL program to Rust code, and then compile the Rust code to a binary.</span>
+<span class="sd">        We first compile the SQL program to Rust code, and then compile the</span>
+<span class="sd">        Rust code to a binary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -1084,7 +1105,8 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_status_since">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">deployment_status_since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the timestamp when the current deployment status of the pipeline was set.</span>
+<span class="sd">        Return the timestamp when the current deployment status of the pipeline</span>
+<span class="sd">        was set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -1131,7 +1153,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">deployment_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the deployment location of the pipeline.</span>
-<span class="sd">        Deployment location is the location where the pipeline can be reached at runtime (a TCP port number or a URI).</span>
+<span class="sd">        Deployment location is the location where the pipeline can be reached</span>
+<span class="sd">        at runtime (a TCP port number or a URI).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -1143,7 +1166,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">program_binary_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the program binary URL of the pipeline.</span>
-<span class="sd">        This is the URL where the compiled program binary can be downloaded from.</span>
+<span class="sd">        This is the URL where the compiled program binary can be downloaded</span>
+<span class="sd">        from.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -1155,7 +1179,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">program_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the program info of the pipeline.</span>
-<span class="sd">        This is the output returned by the SQL compiler, including: the list of input and output connectors, the generated Rust code for the pipeline, and the SQL program schema.</span>
+<span class="sd">        This is the output returned by the SQL compiler, including: the list of</span>
+<span class="sd">        input and output connectors, the generated Rust code for the pipeline,</span>
+<span class="sd">        and the SQL program schema.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -1167,7 +1193,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">program_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the program error of the pipeline.</span>
-<span class="sd">        If there are no errors, the `exit_code` field inside both `sql_compilation` and `rust_compilation` will be 0.</span>
+<span class="sd">        If there are no errors, the `exit_code` field inside both</span>
+<span class="sd">        `sql_compilation` and `rust_compilation` will be 0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
