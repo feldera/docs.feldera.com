@@ -951,36 +951,26 @@ reached.</p></li>
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">PipelineStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#PipelineStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.PipelineStatus" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<blockquote>
-<div><p>Represents the state that this pipeline is currently in.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Stopped ◄─────────── Stopping ◄───── All states can transition
-   │                    ▲            to Stopping by either:
+<p>Represents the state that this pipeline is currently in.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>              Stopped ◄─────────── Stopping ◄───── All states can transition
+                 │                    ▲            to Stopping by either:
+/start or /pause │                    │            (1) user calling /stop?force=true, or;
+                 ▼                    │            (2) pipeline encountering a fatal
+          ⌛Provisioning          Suspending            resource or runtime error,
+                 │                    ▲                having the system call /stop?force=true
+                 ▼                    │ /stop          effectively
+          ⌛Initializing ─────────────┤  ?force=false
+                 │                    │
+       ┌─────────┼────────────────────┴─────┐
+       │         ▼                          │
+       │       Paused  ◄──────► Unavailable │
+       │        │   ▲                ▲      │
+       │ /start │   │  /pause        │      │
+       │        ▼   │                │      │
+       │       Running ◄─────────────┘      │
+       └────────────────────────────────────┘
 </pre></div>
 </div>
-</div></blockquote>
-<dl>
-<dt>/start or /pause │                    │            (1) user calling /stop?force=true, or;</dt><dd><blockquote>
-<div><blockquote>
-<div><p>▼                    │            (2) pipeline encountering a fatal</p>
-</div></blockquote>
-<dl class="simple">
-<dt>⌛Provisioning          Suspending            resource or runtime error,</dt><dd><p>│                    ▲                having the system call /stop?force=true
-▼                    │ /stop          effectively</p>
-</dd>
-<dt>⌛Initializing ─────────────┤  ?force=false</dt><dd><p>│                    │</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>┌─────────┼────────────────────┴─────┐
-│         ▼                          │
-│       Paused  ◄──────► Unavailable │
-│        │   ▲                ▲      │
-│ /start │   │  /pause        │      │
-│        ▼   │                │      │
-│       Running ◄─────────────┘      │
-└────────────────────────────────────┘</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.INITIALIZING">
 <span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>

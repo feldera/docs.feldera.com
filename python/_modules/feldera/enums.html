@@ -123,27 +123,28 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PipelineStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">      Represents the state that this pipeline is currently in.</span>
+<span class="sd">    Represents the state that this pipeline is currently in.</span>
 
-<span class="sd">      .. code-block:: text</span>
+<span class="sd">    .. code-block:: text</span>
 
-<span class="sd">                  Stopped ◄─────────── Stopping ◄───── All states can transition</span>
-<span class="sd">                     │                    ▲            to Stopping by either:</span>
-<span class="sd">    /start or /pause │                    │            (1) user calling /stop?force=true, or;</span>
-<span class="sd">                     ▼                    │            (2) pipeline encountering a fatal</span>
-<span class="sd">              ⌛Provisioning          Suspending            resource or runtime error,</span>
-<span class="sd">                     │                    ▲                having the system call /stop?force=true</span>
-<span class="sd">                     ▼                    │ /stop          effectively</span>
-<span class="sd">              ⌛Initializing ─────────────┤  ?force=false</span>
-<span class="sd">                     │                    │</span>
-<span class="sd">           ┌─────────┼────────────────────┴─────┐</span>
-<span class="sd">           │         ▼                          │</span>
-<span class="sd">           │       Paused  ◄──────► Unavailable │</span>
-<span class="sd">           │        │   ▲                ▲      │</span>
-<span class="sd">           │ /start │   │  /pause        │      │</span>
-<span class="sd">           │        ▼   │                │      │</span>
-<span class="sd">           │       Running ◄─────────────┘      │</span>
-<span class="sd">           └────────────────────────────────────┘</span>
+<span class="sd">                    Stopped ◄─────────── Stopping ◄───── All states can transition</span>
+<span class="sd">                       │                    ▲            to Stopping by either:</span>
+<span class="sd">      /start or /pause │                    │            (1) user calling /stop?force=true, or;</span>
+<span class="sd">                       ▼                    │            (2) pipeline encountering a fatal</span>
+<span class="sd">                ⌛Provisioning          Suspending            resource or runtime error,</span>
+<span class="sd">                       │                    ▲                having the system call /stop?force=true</span>
+<span class="sd">                       ▼                    │ /stop          effectively</span>
+<span class="sd">                ⌛Initializing ─────────────┤  ?force=false</span>
+<span class="sd">                       │                    │</span>
+<span class="sd">             ┌─────────┼────────────────────┴─────┐</span>
+<span class="sd">             │         ▼                          │</span>
+<span class="sd">             │       Paused  ◄──────► Unavailable │</span>
+<span class="sd">             │        │   ▲                ▲      │</span>
+<span class="sd">             │ /start │   │  /pause        │      │</span>
+<span class="sd">             │        ▼   │                │      │</span>
+<span class="sd">             │       Running ◄─────────────┘      │</span>
+<span class="sd">             └────────────────────────────────────┘</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">NOT_FOUND</span> <span class="o">=</span> <span class="mi">0</span>
