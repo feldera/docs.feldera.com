@@ -77,7 +77,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for feldera.runtime_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
 
 
 <div class="viewcode-block" id="Resources">
@@ -159,6 +160,7 @@
         <span class="n">clock_resolution_usecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">provisioning_timeout_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resources</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing</span> <span class="o">=</span> <span class="n">tracing</span>
@@ -168,12 +170,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_batch_size_records</span> <span class="o">=</span> <span class="n">min_batch_size_records</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock_resolution_usecs</span> <span class="o">=</span> <span class="n">clock_resolution_usecs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provisioning_timeout_secs</span> <span class="o">=</span> <span class="n">provisioning_timeout_secs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span> <span class="o">=</span> <span class="n">runtime_version</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">resources</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">Storage</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="vm">__dict__</span>
+
+<div class="viewcode-block" id="RuntimeConfig.default">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.default">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;RuntimeConfig&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="n">Resources</span><span class="p">())</span></div>
+
 
 <div class="viewcode-block" id="RuntimeConfig.from_dict">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.from_dict">[docs]</a>

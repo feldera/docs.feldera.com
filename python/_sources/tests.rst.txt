@@ -12,18 +12,18 @@ Subpackages
 Submodules
 ----------
 
-tests.integration\_tests module
--------------------------------
+tests.negative\_test module
+---------------------------
 
-.. automodule:: tests.integration_tests
+.. automodule:: tests.negative_test
    :members:
    :undoc-members:
    :show-inheritance:
 
-tests.test\_pipeline module
----------------------------
+tests.shared\_test\_pipeline module
+-----------------------------------
 
-.. automodule:: tests.test_pipeline
+.. automodule:: tests.shared_test_pipeline
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,18 +36,26 @@ tests.test\_pipeline\_builder module
    :undoc-members:
    :show-inheritance:
 
-tests.test\_udf module
-----------------------
+tests.test\_shared\_pipeline0 module
+------------------------------------
 
-.. automodule:: tests.test_udf
+.. automodule:: tests.test_shared_pipeline0
    :members:
    :undoc-members:
    :show-inheritance:
 
-tests.test\_variant module
---------------------------
+tests.test\_shared\_pipeline1 module
+------------------------------------
 
-.. automodule:: tests.test_variant
+.. automodule:: tests.test_shared_pipeline1
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.test\_udf module
+----------------------
+
+.. automodule:: tests.test_udf
    :members:
    :undoc-members:
    :show-inheritance:

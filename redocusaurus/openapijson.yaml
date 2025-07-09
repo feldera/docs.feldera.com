@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.100.0
+  version: 0.101.0
 paths:
   /config/authentication:
     get:

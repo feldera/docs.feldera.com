@@ -81,7 +81,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompilationProfile</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span><span class="p">,</span> <span class="n">Resources</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
 
 
@@ -110,7 +110,7 @@
         <span class="n">udf_toml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">compilation_profile</span><span class="p">:</span> <span class="n">CompilationProfile</span> <span class="o">=</span> <span class="n">CompilationProfile</span><span class="o">.</span><span class="n">OPTIMIZED</span><span class="p">,</span>
-        <span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="n">Resources</span><span class="p">()),</span>
+        <span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="o">.</span><span class="n">default</span><span class="p">(),</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">name</span>
