@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.101.0
+  version: 0.102.0
 paths:
   /config/authentication:
     get:
@@ -337,6 +337,7 @@ paths:
                     init_containers: null
                     checkpoint_during_suspend: true
                     dev_tweaks: {}
+                    logging: null
                   program_code: CREATE TABLE table1 ( col1 INT );
                   udf_rust: ''
                   udf_toml: ''
@@ -395,6 +396,7 @@ paths:
                     init_containers: null
                     checkpoint_during_suspend: false
                     dev_tweaks: {}
+                    logging: null
                   program_code: CREATE TABLE table2 ( col2 VARCHAR );
                   udf_rust: ''
                   udf_toml: ''
@@ -468,6 +470,7 @@ paths:
                 init_containers: null
                 checkpoint_during_suspend: true
                 dev_tweaks: {}
+                logging: null
               program_code: CREATE TABLE table1 ( col1 INT );
               udf_rust: null
               udf_toml: null
@@ -521,6 +524,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -653,6 +657,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -746,6 +751,7 @@ paths:
                 init_containers: null
                 checkpoint_during_suspend: true
                 dev_tweaks: {}
+                logging: null
               program_code: CREATE TABLE table1 ( col1 INT );
               udf_rust: null
               udf_toml: null
@@ -799,6 +805,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -864,6 +871,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1043,6 +1051,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -2440,6 +2449,7 @@ paths:
                   init_containers: null
                   checkpoint_during_suspend: true
                   dev_tweaks: {}
+                  logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -6192,6 +6202,28 @@ components:
             init_containers:
               description: Specification of additional (sidecar) containers.
               nullable: true
+            logging:
+              type: string
+              description: >-
+                Log filtering directives.
+
+
+                If set to a valid [tracing-subscriber] filter, this controls the
+                log
+
+                messages emitted by the pipeline process.  Otherwise, or if the
+                filter
+
+                has invalid syntax, messages at "info" severity and higher are
+                written
+
+                to the log and all others are discarded.
+
+
+                [tracing-subscriber]:
+                https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html#directives
+              default: null
+              nullable: true
             max_buffering_delay_usecs:
               type: integer
               format: int64
@@ -7443,6 +7475,27 @@ components:
             checkpoint_interval_secs: 60
         init_containers:
           description: Specification of additional (sidecar) containers.
+          nullable: true
+        logging:
+          type: string
+          description: >-
+            Log filtering directives.
+
+
+            If set to a valid [tracing-subscriber] filter, this controls the log
+
+            messages emitted by the pipeline process.  Otherwise, or if the
+            filter
+
+            has invalid syntax, messages at "info" severity and higher are
+            written
+
+            to the log and all others are discarded.
+
+
+            [tracing-subscriber]:
+            https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html#directives
+          default: null
           nullable: true
         max_buffering_delay_usecs:
           type: integer

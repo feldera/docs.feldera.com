@@ -240,7 +240,7 @@
 <span class="sd">        :param data: The JSON encoded data to be pushed to the pipeline. The data should be in the form:</span>
 <span class="sd">            `{&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}` or `[{&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}, {&#39;col1&#39;: &#39;val1&#39;, &#39;col2&#39;: &#39;val2&#39;}]`</span>
 <span class="sd">        :param update_format: The update format of the JSON data to be pushed to the pipeline. Must be one of:</span>
-<span class="sd">            &quot;raw&quot;, &quot;insert_delete&quot;. &lt;https://docs.feldera.com/formats/json#the-insertdelete-format&gt;</span>
+<span class="sd">            &quot;raw&quot;, &quot;insert_delete&quot;. https://docs.feldera.com/formats/json#the-insertdelete-format</span>
 <span class="sd">        :param force: `True` to push data even if the pipeline is paused. `False` by default.</span>
 
 <span class="sd">        :raises ValueError: If the update format is invalid.</span>
@@ -278,7 +278,7 @@
 <span class="sd">        All connectors are RUNNING by default.</span>
 
 <span class="sd">        Refer to the connector documentation for more information:</span>
-<span class="sd">        &lt;https://docs.feldera.com/connectors/#input-connector-orchestration&gt;</span>
+<span class="sd">            https://docs.feldera.com/connectors/#input-connector-orchestration</span>
 
 <span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
 <span class="sd">        :param connector_name: The name of the connector to pause.</span>
@@ -300,7 +300,7 @@
 <span class="sd">        All connectors are RUNNING by default.</span>
 
 <span class="sd">        Refer to the connector documentation for more information:</span>
-<span class="sd">        &lt;https://docs.feldera.com/connectors/#input-connector-orchestration&gt;</span>
+<span class="sd">            https://docs.feldera.com/connectors/#input-connector-orchestration</span>
 
 <span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
 <span class="sd">        :param connector_name: The name of the connector to resume.</span>
@@ -670,15 +670,13 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checkpoints this pipeline, if fault-tolerance is enabled.</span>
-<span class="sd">        Fault Tolerance in Feldera:</span>
-<span class="sd">        &lt;https://docs.feldera.com/pipelines/fault-tolerance/&gt;</span>
+<span class="sd">        Checkpoints this pipeline.</span>
 
 <span class="sd">        :param wait: If true, will block until the checkpoint completes.</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            checkpoint to complete.</span>
 
-<span class="sd">        :raises FelderaAPIError: If checkpointing is not enabled.</span>
+<span class="sd">        :raises FelderaAPIError: If enterprise features are not enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>

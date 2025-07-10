@@ -53,6 +53,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-feldera-on-localhost">Connecting to Feldera on localhost</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setting-http-connection-timeouts">Setting HTTP Connection Timeouts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-overwriting-existing-pipelines">Creating a Pipeline (OVERWRITING existing pipelines)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-with-fault-tolerance-enabled">Creating a Pipeline with Fault Tolerance Enabled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-configuration-of-a-pipeline">Runtime configuration of a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#starting-a-pipeline">Starting a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-pandas-dataframes">Using Pandas DataFrames</a></li>
@@ -162,6 +164,69 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
 
 <span class="c1"># This will stop and overwrite any existing pipeline with the same name.</span>
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-a-pipeline-with-fault-tolerance-enabled">
+<h2>Creating a Pipeline with Fault Tolerance Enabled<a class="headerlink" href="#creating-a-pipeline-with-fault-tolerance-enabled" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">()</span>
+<span class="n">runtime_config</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="p">(</span>
+    <span class="n">fault_tolerance_model</span><span class="o">=</span><span class="n">FaultToleranceModel</span><span class="o">.</span><span class="n">AtLeastOnce</span><span class="p">,</span>
+    <span class="n">checkpoint_interval_secs</span><span class="o">=</span><span class="mi">60</span>
+<span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="runtime-configuration-of-a-pipeline">
+<h2>Runtime configuration of a Pipeline<a class="headerlink" href="#runtime-configuration-of-a-pipeline" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">()</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s2">&quot;storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;min_step_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;compression&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cache_mib&quot;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;fault_tolerance&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;at_least_once&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">:</span> <span class="mi">60</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;cpu_profiler&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;tracing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;tracing_endpoint_jaeger&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;min_batch_size_records&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;cpu_cores_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;storage_class&quot;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;pin_cpus&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;max_parallel_connector_init&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;init_containers&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;checkpoint_during_suspend&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;dev_tweaks&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="n">runtime_config</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

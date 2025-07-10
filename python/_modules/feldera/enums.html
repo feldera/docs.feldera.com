@@ -388,6 +388,47 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span></div>
 
+
+
+<div class="viewcode-block" id="FaultToleranceModel">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.FaultToleranceModel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FaultToleranceModel</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The fault tolerance model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">AtLeastOnce</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Each record is output at least once.  Crashes may duplicate output, but</span>
+<span class="sd">    no input or output is dropped.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ExactlyOnce</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Each record is output exactly once.  Crashes do not drop or duplicate</span>
+<span class="sd">    input or output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">match</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">FaultToleranceModel</span><span class="o">.</span><span class="n">AtLeastOnce</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;at_least_once&quot;</span>
+            <span class="k">case</span> <span class="n">FaultToleranceModel</span><span class="o">.</span><span class="n">ExactlyOnce</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;exactly_once&quot;</span>
+
+<div class="viewcode-block" id="FaultToleranceModel.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.FaultToleranceModel.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">FaultToleranceModel</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">member</span><span class="p">)</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">FaultToleranceModel</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
