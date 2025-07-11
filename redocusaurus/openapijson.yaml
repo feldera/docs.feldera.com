@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.102.0
+  version: 0.103.0
 paths:
   /config/authentication:
     get:
@@ -336,6 +336,8 @@ paths:
                     max_parallel_connector_init: null
                     init_containers: null
                     checkpoint_during_suspend: true
+                    http_workers: null
+                    io_workers: null
                     dev_tweaks: {}
                     logging: null
                   program_code: CREATE TABLE table1 ( col1 INT );
@@ -395,6 +397,8 @@ paths:
                     max_parallel_connector_init: 10
                     init_containers: null
                     checkpoint_during_suspend: false
+                    http_workers: null
+                    io_workers: null
                     dev_tweaks: {}
                     logging: null
                   program_code: CREATE TABLE table2 ( col2 VARCHAR );
@@ -469,6 +473,8 @@ paths:
                 max_parallel_connector_init: null
                 init_containers: null
                 checkpoint_during_suspend: true
+                http_workers: null
+                io_workers: null
                 dev_tweaks: {}
                 logging: null
               program_code: CREATE TABLE table1 ( col1 INT );
@@ -523,6 +529,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -656,6 +664,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -750,6 +760,8 @@ paths:
                 max_parallel_connector_init: null
                 init_containers: null
                 checkpoint_during_suspend: true
+                http_workers: null
+                io_workers: null
                 dev_tweaks: {}
                 logging: null
               program_code: CREATE TABLE table1 ( col1 INT );
@@ -804,6 +816,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -870,6 +884,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -1050,6 +1066,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -2448,6 +2466,8 @@ paths:
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
+                  http_workers: null
+                  io_workers: null
                   dev_tweaks: {}
                   logging: null
                 program_code: CREATE TABLE table1 ( col1 INT );
@@ -6199,9 +6219,45 @@ components:
               default:
                 model: none
                 checkpoint_interval_secs: 60
+            http_workers:
+              type: integer
+              format: int64
+              description: >-
+                Sets the number of available runtime threads for the http
+                server.
+
+
+                In most cases, this does not need to be set explicitly and
+
+                the default is sufficient. Can be increased in case the
+
+                pipeline HTTP API operations are a bottleneck.
+
+
+                If not specified, the default is set to `workers`.
+              default: null
+              nullable: true
+              minimum: 0
             init_containers:
               description: Specification of additional (sidecar) containers.
               nullable: true
+            io_workers:
+              type: integer
+              format: int64
+              description: |-
+                Sets the number of available runtime threads for async IO tasks.
+
+                This affects some networking and file I/O operations
+                especially adapters and ad-hoc queries.
+
+                In most cases, this does not need to be set explicitly and
+                the default is sufficient. Can be increased in case
+                ingress, egress or ad-hoc queries are a bottleneck.
+
+                If not specified, the default is set to `workers`.
+              default: null
+              nullable: true
+              minimum: 0
             logging:
               type: string
               description: >-
@@ -7473,9 +7529,40 @@ components:
           default:
             model: none
             checkpoint_interval_secs: 60
+        http_workers:
+          type: integer
+          format: int64
+          description: |-
+            Sets the number of available runtime threads for the http server.
+
+            In most cases, this does not need to be set explicitly and
+            the default is sufficient. Can be increased in case the
+            pipeline HTTP API operations are a bottleneck.
+
+            If not specified, the default is set to `workers`.
+          default: null
+          nullable: true
+          minimum: 0
         init_containers:
           description: Specification of additional (sidecar) containers.
           nullable: true
+        io_workers:
+          type: integer
+          format: int64
+          description: |-
+            Sets the number of available runtime threads for async IO tasks.
+
+            This affects some networking and file I/O operations
+            especially adapters and ad-hoc queries.
+
+            In most cases, this does not need to be set explicitly and
+            the default is sufficient. Can be increased in case
+            ingress, egress or ad-hoc queries are a bottleneck.
+
+            If not specified, the default is set to `workers`.
+          default: null
+          nullable: true
+          minimum: 0
         logging:
           type: string
           description: >-
