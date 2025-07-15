@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.104.0
+  version: 0.105.0
 paths:
   /config/authentication:
     get:
@@ -7941,6 +7941,22 @@ components:
           description: SQL `BIGINT` or `INT64` type.
           enum:
             - BigInt
+        - type: string
+          description: SQL `TINYINT UNSIGNED` type.
+          enum:
+            - UTinyInt
+        - type: string
+          description: SQL `SMALLINT UNSIGNED` type.
+          enum:
+            - USmallInt
+        - type: string
+          description: SQL `UNSIGNED`, `INTEGER UNSIGNED`, `INT UNSIGNED` type.
+          enum:
+            - UInt
+        - type: string
+          description: SQL `BIGINT UNSIGNED` type.
+          enum:
+            - UBigInt
         - type: string
           description: SQL `REAL` or `FLOAT4` or `FLOAT32` type.
           enum:
