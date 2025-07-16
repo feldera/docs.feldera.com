@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.105.0
+  version: 0.106.0
 paths:
   /config/authentication:
     get:
@@ -6179,16 +6179,17 @@ components:
                 queries depends on the real-time clock and can change over time
                 without any external
 
-                inputs.  The pipeline will update the clock value and trigger
-                incremental recomputation
+                inputs.  If the query uses `NOW()`, the pipeline will update the
+                clock value and trigger incremental
 
-                at most each `clock_resolution_usecs` microseconds.
+                recomputation at most each `clock_resolution_usecs`
+                microseconds.  If the query does not use
+
+                `NOW()`, then clock value updates are suppressed and the
+                pipeline ignores this setting.
 
 
                 It is set to 1 second (1,000,000 microseconds) by default.
-
-
-                Set to `null` to disable periodic clock updates.
               default: 1000000
               nullable: true
               minimum: 0
@@ -7493,16 +7494,17 @@ components:
             queries depends on the real-time clock and can change over time
             without any external
 
-            inputs.  The pipeline will update the clock value and trigger
-            incremental recomputation
+            inputs.  If the query uses `NOW()`, the pipeline will update the
+            clock value and trigger incremental
 
-            at most each `clock_resolution_usecs` microseconds.
+            recomputation at most each `clock_resolution_usecs` microseconds. 
+            If the query does not use
+
+            `NOW()`, then clock value updates are suppressed and the pipeline
+            ignores this setting.
 
 
             It is set to 1 second (1,000,000 microseconds) by default.
-
-
-            Set to `null` to disable periodic clock updates.
           default: 1000000
           nullable: true
           minimum: 0
@@ -8028,6 +8030,18 @@ components:
           enum:
             - Variant
       description: The available SQL types as specified in `CREATE` statements.
+    StartFromCheckpoint:
+      oneOf:
+        - type: string
+          enum:
+            - Latest
+        - type: object
+          required:
+            - Uuid
+          properties:
+            Uuid:
+              type: string
+              format: uuid
     StorageBackendConfig:
       oneOf:
         - type: object
@@ -8219,7 +8233,6 @@ components:
       type: object
       required:
         - bucket
-        - start_from_checkpoint
       properties:
         access_key:
           type: string
@@ -8296,12 +8309,9 @@ components:
             pod's service account.
           nullable: true
         start_from_checkpoint:
-          type: boolean
-          description: >-
-            If `true`, will try to pull the latest checkpoint from the
-            configured
-
-            object store and resume from that point.
+          allOf:
+            - $ref: '#/components/schemas/StartFromCheckpoint'
+          nullable: true
     TransportConfig:
       oneOf:
         - type: object

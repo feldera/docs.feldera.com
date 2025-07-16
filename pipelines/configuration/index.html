@@ -8,8 +8,8 @@
 
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.42500ff2.js" defer="defer"></script>
-<script src="/assets/js/main.1087f63b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.638bfc7e.js" defer="defer"></script>
+<script src="/assets/js/main.8f856e00.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -28,17 +28,17 @@ You can edit all pipeline settings when the pipeline is <code>Stopped</code> wit
 </div></div></div></td></tr><tr class=""><td kind="field" title="clock_resolution_usecs" class="sc-kHNKno sc-frmfij cdqHkU bEMUez"><span class="sc-hLyRwt kzJYht"></span><span class="property-name">clock_resolution_usecs</span></td><td class="sc-groBii inPiBP"><div><div><span class="sc-byRegH sc-budtlk lfpluU kqsZlC"></span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC">integer or null</span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-byRegH sc-fYNhqQ lfpluU fhBxBv"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-byRegH lfpluU"> <!-- -->Default:<!-- --> </span> <span class="sc-byRegH sc-dEAvcG lfpluU IvJiA">1000000</span></div> <div><div html="&lt;p&gt;Real-time clock resolution in microseconds.&lt;/p&gt;
 &lt;p&gt;This parameter controls the execution of queries that use the &lt;code&gt;NOW()&lt;/code&gt; function.  The output of such
 queries depends on the real-time clock and can change over time without any external
-inputs.  The pipeline will update the clock value and trigger incremental recomputation
-at most each &lt;code&gt;clock_resolution_usecs&lt;/code&gt; microseconds.&lt;/p&gt;
+inputs.  If the query uses &lt;code&gt;NOW()&lt;/code&gt;, the pipeline will update the clock value and trigger incremental
+recomputation at most each &lt;code&gt;clock_resolution_usecs&lt;/code&gt; microseconds.  If the query does not use
+&lt;code&gt;NOW()&lt;/code&gt;, then clock value updates are suppressed and the pipeline ignores this setting.&lt;/p&gt;
 &lt;p&gt;It is set to 1 second (1,000,000 microseconds) by default.&lt;/p&gt;
-&lt;p&gt;Set to &lt;code&gt;null&lt;/code&gt; to disable periodic clock updates.&lt;/p&gt;
 " class="sc-faJlkc sc-fdduAw JEUrA AkGJk"><p>Real-time clock resolution in microseconds.</p>
 <p>This parameter controls the execution of queries that use the <code>NOW()</code> function.  The output of such
 queries depends on the real-time clock and can change over time without any external
-inputs.  The pipeline will update the clock value and trigger incremental recomputation
-at most each <code>clock_resolution_usecs</code> microseconds.</p>
+inputs.  If the query uses <code>NOW()</code>, the pipeline will update the clock value and trigger incremental
+recomputation at most each <code>clock_resolution_usecs</code> microseconds.  If the query does not use
+<code>NOW()</code>, then clock value updates are suppressed and the pipeline ignores this setting.</p>
 <p>It is set to 1 second (1,000,000 microseconds) by default.</p>
-<p>Set to <code>null</code> to disable periodic clock updates.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="cpu_profiler" class="sc-kHNKno sc-frmfij cdqHkU bEMUez"><span class="sc-hLyRwt kzJYht"></span><span class="property-name">cpu_profiler</span></td><td class="sc-groBii inPiBP"><div><div><span class="sc-byRegH sc-budtlk lfpluU kqsZlC"></span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC">boolean</span></div><div><span class="sc-byRegH lfpluU"> <!-- -->Default:<!-- --> </span> <span class="sc-byRegH sc-dEAvcG lfpluU IvJiA">true</span></div> <div><div html="&lt;p&gt;Enable CPU profiler.&lt;/p&gt;
 &lt;p&gt;The default value is &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 " class="sc-faJlkc sc-fdduAw JEUrA AkGJk"><p>Enable CPU profiler.</p>
