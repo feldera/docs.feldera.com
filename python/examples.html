@@ -357,7 +357,7 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 <span class="s2">        CREATE TABLE Stocks (</span>
 <span class="s2">        symbol VARCHAR NOT NULL,</span>
 <span class="s2">        price_time BIGINT NOT NULL,  -- UNIX timestamp</span>
-<span class="s2">        price DOUBLE NOT NULL</span>
+<span class="s2">        price DECIMAL(38, 2) NOT NULL</span>
 <span class="s2">        ) with (</span>
 <span class="s2">          &#39;connectors&#39; = &#39;[{</span>
 <span class="s2">            &quot;transport&quot;: {</span>
