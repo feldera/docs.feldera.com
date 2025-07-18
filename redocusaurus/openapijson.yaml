@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.107.0
+  version: 0.108.0
 paths:
   /config/authentication:
     get:
@@ -6679,39 +6679,47 @@ components:
 
         Stopped ◄─────────── Stopping ◄───── All states can transition
 
-        │                    ▲            to Stopping by either:
+        │                   ▲            to Stopping by either:
 
-        /start or /pause │                    │            (1) user calling
+        /start or /pause │                   │            (1) user calling
         /stop?force=true, or;
 
-        ▼                    │            (2) pipeline encountering a fatal
+        ▼                   │            (2) pipeline encountering a fatal
 
-        ⌛Provisioning          Suspending            resource or runtime error,
+        ⌛Provisioning         Suspending            resource or runtime error,
 
-        │                    ▲                having the system call
+        │                   ▲                having the system call
         /stop?force=true
 
-        ▼                    │ /stop          effectively
+        │                   │ /stop          effectively
 
-        ⌛Initializing ──────────────┤  ?force=false
+        │                   │  ?force=false
 
-        │                    │
+        │                   │
 
-        ┌─────────┼────────────────────┴─────┐
+        ┌──────────────┼───────────────────┴─────┐
 
-        │         ▼                          │
+        │              ▼                         │
 
-        │       Paused  ◄──────► Unavailable │
+        │  ┌──► Initializing                     │
 
-        │        │   ▲                ▲      │
+        │  │           ▲  ▲                      │
 
-        │ /start │   │  /pause        │      │
+        │  │           │  └───────────┐          │
 
-        │        ▼   │                │      │
+        │  │           ▼              ▼          │
 
-        │       Running ◄─────────────┘      │
+        │  │        Paused  ◄──────► Unavailable │
 
-        └────────────────────────────────────┘
+        │  │          │  ▲                ▲      │
+
+        │  │   /start │  │  /pause        │      │
+
+        │  │          ▼  │                │      │
+
+        │  └─────►  Running ◄─────────────┘      │
+
+        └────────────────────────────────────────┘
 
         ```
 
