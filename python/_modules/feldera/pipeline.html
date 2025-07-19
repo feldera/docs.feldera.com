@@ -98,6 +98,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_dataframe_has_columns</span><span class="p">,</span> <span class="n">chunk_dataframe</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatistics</span>
 
 
@@ -1012,13 +1013,33 @@
 
 <div class="viewcode-block" id="Pipeline.runtime_config">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.runtime_config">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RuntimeConfig</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the runtime config of the pipeline.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">runtime_config</span></div>
+        <span class="k">return</span> <span class="n">RuntimeConfig</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.set_runtime_config">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.set_runtime_config">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the runtime config of the pipeline.  The pipeline</span>
+<span class="sd">        must be stopped and, in addition, changing some pipeline</span>
+<span class="sd">        configuration requires storage to be cleared.</span>
+
+<span class="sd">        For example, to set &#39;min_batch_size_records&#39; on a pipeline:</span>
+
+<span class="sd">        runtime_config = pipeline.runtime_config()</span>
+<span class="sd">        runtime_config.min_batch_size_records = 500</span>
+<span class="sd">        pipeline.set_runtime_config(runtime_config)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">patch_pipeline</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.id">
