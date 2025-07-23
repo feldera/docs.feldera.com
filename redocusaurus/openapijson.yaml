@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.110.0
+  version: 0.111.0
 paths:
   /config/authentication:
     get:
@@ -8268,6 +8268,14 @@ components:
 
             This may include a path to a folder inside the bucket (e.g.,
             `my-bucket/data`).
+        checkers:
+          type: integer
+          format: int32
+          description: |-
+            The number of checkers to run in parallel.
+            Default: 20
+          nullable: true
+          minimum: 0
         endpoint:
           type: string
           description: >-
@@ -8283,6 +8291,52 @@ components:
             Relevant rclone config key:
             [`endpoint`](https://rclone.org/s3/#s3-endpoint)
           nullable: true
+        flags:
+          type: array
+          items:
+            type: string
+          description: >-
+            Extra flags to pass to `rclone`.
+
+
+            WARNING: Supplying incorrect or conflicting flags can break
+            `rclone`.
+
+            Use with caution.
+
+
+            Refer to the docs to see the supported flags:
+
+            Global flags: https://rclone.org/flags/
+
+            S3 specific flags: https://rclone.org/s3/
+          nullable: true
+        ignore_checksum:
+          type: boolean
+          description: >-
+            Set to skip post copy check of checksums, and only check the file
+            sizes.
+
+            This can significantly improve the throughput.
+
+            Defualt: false
+          nullable: true
+        multi_thread_cutoff:
+          type: string
+          description: |-
+            Use multi-thread download for files above this size.
+            Format: [size][Suffix] (Example: 1G, 500M)
+            Supported suffixes: k|M|G|T
+            Default: 100M
+          nullable: true
+        multi_thread_streams:
+          type: integer
+          format: int32
+          description: |-
+            Number of streams to use for multi-thread downloads.
+            Default: 10
+          nullable: true
+          minimum: 0
         provider:
           type: string
           description: >-
@@ -8323,6 +8377,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/StartFromCheckpoint'
           nullable: true
+        transfers:
+          type: integer
+          format: int32
+          description: |-
+            The number of file transfers to run in parallel.
+            Default: 20
+          nullable: true
+          minimum: 0
     TransportConfig:
       oneOf:
         - type: object
