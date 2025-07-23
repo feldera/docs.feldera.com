@@ -77,8 +77,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for feldera.runtime_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
 
 
@@ -166,7 +165,6 @@
         <span class="n">clock_resolution_usecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">provisioning_timeout_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resources</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">fault_tolerance_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FaultToleranceModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">checkpoint_interval_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -178,9 +176,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_batch_size_records</span> <span class="o">=</span> <span class="n">min_batch_size_records</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock_resolution_usecs</span> <span class="o">=</span> <span class="n">clock_resolution_usecs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provisioning_timeout_secs</span> <span class="o">=</span> <span class="n">provisioning_timeout_secs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span> <span class="o">=</span> <span class="n">runtime_version</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span>
-        <span class="p">)</span>
         <span class="k">if</span> <span class="n">fault_tolerance_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fault_tolerance</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fault_tolerance_model</span><span class="p">),</span>

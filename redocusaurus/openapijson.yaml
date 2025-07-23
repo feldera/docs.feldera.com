@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.109.0
+  version: 0.110.0
 paths:
   /config/authentication:
     get:
@@ -6447,6 +6447,13 @@ components:
               description: Output endpoint configuration.
               additionalProperties:
                 $ref: '#/components/schemas/OutputEndpointConfig'
+            secrets_dir:
+              type: string
+              description: |-
+                Directory containing values of secrets.
+
+                If this is not set, a default directory is used.
+              nullable: true
             storage_config:
               allOf:
                 - $ref: '#/components/schemas/StorageConfig'
@@ -8042,14 +8049,10 @@ components:
       oneOf:
         - type: string
           enum:
-            - Latest
-        - type: object
-          required:
-            - Uuid
-          properties:
-            Uuid:
-              type: string
-              format: uuid
+            - latest
+        - type: string
+          format: uuid
+      nullable: true
     StorageBackendConfig:
       oneOf:
         - type: object
