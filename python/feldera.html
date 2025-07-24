@@ -694,12 +694,14 @@ All connectors are RUNNING by default.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.set_runtime_config">
 <span class="sig-name descname"><span class="pre">set_runtime_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">runtime_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.runtime_config.RuntimeConfig" title="feldera.runtime_config.RuntimeConfig"><span class="pre">RuntimeConfig</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.set_runtime_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.set_runtime_config" title="Link to this definition"></a></dt>
 <dd><p>Updates the runtime config of the pipeline.  The pipeline
-must be stopped and, in addition, changing some pipeline
-configuration requires storage to be cleared.</p>
+must be stopped.  Changing some pipeline configuration, such
+as the number of workers, requires storage to be cleared.</p>
 <p>For example, to set ‘min_batch_size_records’ on a pipeline:</p>
-<p>runtime_config = pipeline.runtime_config()
-runtime_config.min_batch_size_records = 500
-pipeline.set_runtime_config(runtime_config)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">runtime_config</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">()</span>
+<span class="n">runtime_config</span><span class="o">.</span><span class="n">min_batch_size_records</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">set_runtime_config</span><span class="p">(</span><span class="n">runtime_config</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

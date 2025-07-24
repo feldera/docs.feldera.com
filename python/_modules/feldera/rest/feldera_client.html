@@ -382,7 +382,11 @@
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Running&quot;</span><span class="p">:</span>
                 <span class="k">break</span>
-            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Failed&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span> <span class="ow">or</span> <span class="p">{})</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="ow">and</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_desired_status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
+            <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Unable to START the pipeline.</span>
 <span class="s2">Reason: The pipeline is in a STOPPED state due to the following error:</span>

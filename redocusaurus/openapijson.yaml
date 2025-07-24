@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.111.0
+  version: 0.112.0
 paths:
   /config/authentication:
     get:
@@ -2247,9 +2247,10 @@ paths:
         '200':
           description: Pipeline circuit metrics retrieved successfully
           content:
-            application/json:
+            application/octet-stream:
               schema:
-                type: object
+                type: string
+                format: binary
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -8383,6 +8384,16 @@ components:
           description: |-
             The number of file transfers to run in parallel.
             Default: 20
+          nullable: true
+          minimum: 0
+        upload_concurrency:
+          type: integer
+          format: int32
+          description: >-
+            The number of chunks of the same file that are uploaded for
+            multipart uploads.
+
+            Default: 10
           nullable: true
           minimum: 0
     TransportConfig:
