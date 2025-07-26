@@ -742,13 +742,16 @@
 
         <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span> <span class="k">if</span> <span class="n">timeout</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="c1"># Using the default chunk size below makes `iter_lines` extremely</span>
-        <span class="c1"># inefficient when dealing with long lines.</span>
-        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">50000000</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
-                <span class="k">break</span>
-            <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="n">Decimal</span><span class="p">)</span></div>
+        <span class="k">def</span><span class="w"> </span><span class="nf">generator</span><span class="p">():</span>
+            <span class="c1"># Using the default chunk size below makes `iter_lines` extremely</span>
+            <span class="c1"># inefficient when dealing with long lines.</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">50000000</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">end</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="n">Decimal</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">generator</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.query_as_text">

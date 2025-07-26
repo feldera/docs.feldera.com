@@ -609,7 +609,9 @@
             <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="c1"># block until the callback runner has been stopped</span>
                 <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
