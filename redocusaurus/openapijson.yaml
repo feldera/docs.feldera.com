@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.113.0
+  version: 0.114.0
 paths:
   /config/authentication:
     get:
@@ -5722,7 +5722,7 @@ components:
         Circuit metrics output format.
 
         - `prometheus`:
-        [format](https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md)
+        [format](https://github.com/prometheus/docs/blob/4b1b80f5f660a2f8dc25a54f52a65a502f31879a/docs/instrumenting/exposition_formats.md)
         expected by Prometheus
 
         - `json`: JSON format
