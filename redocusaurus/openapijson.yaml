@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.114.0
+  version: 0.115.0
 paths:
   /config/authentication:
     get:
@@ -6857,6 +6857,18 @@ components:
         - uri
         - table
       properties:
+        ssl_ca_pem:
+          type: string
+          description: The CA certificate in PEM format.
+          nullable: true
+        ssl_client_key:
+          type: string
+          description: The client certificate key in PEM format.
+          nullable: true
+        ssl_client_pem:
+          type: string
+          description: The client certificate in PEM format.
+          nullable: true
         table:
           type: string
           description: The table to write the output to.
@@ -6867,6 +6879,12 @@ components:
 
             See:
             <https://docs.rs/tokio-postgres/0.7.12/tokio_postgres/config/struct.Config.html>
+        verify_hostname:
+          type: boolean
+          description: >-
+            True to enable hostname verification when using TLS. True by
+            default.
+          nullable: true
     ProgramConfig:
       type: object
       description: Program configuration.
