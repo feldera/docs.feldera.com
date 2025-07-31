@@ -208,6 +208,32 @@ storage.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.commit_transaction">
+<span class="sig-name descname"><span class="pre">commit_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.commit_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.commit_transaction" title="Link to this definition"></a></dt>
+<dd><p>Commits the currently active transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction_id</strong> – If provided, the function verifies that the currently active transaction matches this ID.
+If the active transaction ID does not match, the function raises an error.</p></li>
+<li><p><strong>wait</strong> – If True, the function blocks until the transaction either commits successfully or the timeout is reached.
+If False, the function initiates the commit and returns immediately without waiting for completion. The default value is True.</p></li>
+<li><p><strong>timeout_s</strong> – Maximum time (in seconds) to wait for the transaction to commit when <cite>wait</cite> is True.
+If None, the function will wait indefinitely.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – If there is currently no transaction in progress.</p></li>
+<li><p><strong>ValueError</strong> – If the provided <cite>transaction_id</cite> does not match the current transaction.</p></li>
+<li><p><strong>TimeoutError</strong> – If the transaction does not commit within the specified timeout (when <cite>wait</cite> is True).</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline fails to start a transaction.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.created_at">
 <span class="sig-name descname"><span class="pre">created_at</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">datetime</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.created_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.created_at" title="Link to this definition"></a></dt>
 <dd><p>Return the creation time of the pipeline.</p>
@@ -425,6 +451,12 @@ If this method is called once the pipeline has started, you will only get the ou
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.logs">
+<span class="sig-name descname"><span class="pre">logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.logs" title="Link to this definition"></a></dt>
+<dd><p>Gets the pipeline logs.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#feldera.pipeline.Pipeline.name" title="Link to this definition"></a></dt>
@@ -433,15 +465,18 @@ If this method is called once the pipeline has started, you will only get the ou
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.pause">
-<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.pause" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.pause" title="Link to this definition"></a></dt>
 <dd><p>Pause the pipeline.</p>
 <p>The pipeline can only transition to the PAUSED state from the RUNNING
 state. If the pipeline is already paused, it will remain in the PAUSED
 state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
-pipeline to pause.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wait</strong> – Set True to wait for the pipeline to pause. True by default</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to pause.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -649,13 +684,16 @@ pipeline to restart.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.resume">
-<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.resume" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.resume" title="Link to this definition"></a></dt>
 <dd><p>Resumes the pipeline from the PAUSED state. If the pipeline is already
 running, it will remain in the RUNNING state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
-pipeline to resume.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wait</strong> – Set True to wait for the pipeline to resume. True by default</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to resume.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -706,7 +744,7 @@ as the number of workers, requires storage to be cleared.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
 <dd><p id="start">Starts this pipeline.</p>
 <ul class="simple">
 <li><p>The pipeline must be in STOPPED state to start.</p></li>
@@ -715,11 +753,24 @@ as the number of workers, requires storage to be cleared.</p>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
-pipeline to start.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to start.</p></li>
+<li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>RuntimeError</strong> – If the pipeline is not in STOPPED state.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_transaction">
+<span class="sig-name descname"><span class="pre">start_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_transaction" title="Link to this definition"></a></dt>
+<dd><p>Start a new transaction.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Transaction ID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -738,7 +789,7 @@ pipeline to start.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.stop" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.stop" title="Link to this definition"></a></dt>
 <dd><p>Stops the pipeline.</p>
 <p>Stops the pipeline regardless of its current state.</p>
 <dl class="field-list simple">
@@ -746,6 +797,8 @@ pipeline to start.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>force</strong> – Set True to immediately scale compute resources to zero.
 Set False to automatically checkpoint before stopping.</p></li>
+<li><p><strong>wait</strong> – Set True to gracefully shutdown listeners and wait for the
+pipeline to stop. True by default.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 pipeline to stop.</p></li>
 </ul>
@@ -766,7 +819,7 @@ pipeline to stop.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>wait</strong> – If true, will block until the checkpoint sync opeartion
+<li><p><strong>wait</strong> – If true, will block until the checkpoint sync operation
 completes.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 checkpoint to complete syncing.</p></li>
@@ -1365,11 +1418,13 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage"><code class="docutils literal notranslate"><span class="pre">FelderaClient.clear_storage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.commit_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_or_update_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_logs"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline_logs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_stats"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline_stats()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_runtime_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_runtime_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.listen_to_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.listen_to_pipeline()</span></code></a></li>
@@ -1384,6 +1439,7 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_text"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_text()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.stop_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_status()</span></code></a></li>

@@ -8,8 +8,8 @@
 
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.9ef4ebbf.js" defer="defer"></script>
-<script src="/assets/js/main.2bcdef35.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.10cbe2a5.js" defer="defer"></script>
+<script src="/assets/js/main.22b46711.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -193,8 +193,10 @@ as an argument via <code>cargo build --profile &lt;&gt;</code>. A compilation pr
 other things the compilation speed (how long till the program is ready to be run)
 and runtime speed (the performance while running).</p>
 </div></div></div></td></tr><tr class="last"><td kind="field" title="runtime_version" class="sc-kHNKno sc-frmfij cdqHkU bEMUez"><span class="sc-hLyRwt kzJYht"></span><span class="property-name">runtime_version</span></td><td class="sc-groBii inPiBP"><div><div><span class="sc-byRegH sc-budtlk lfpluU kqsZlC"></span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC">string or null</span></div><div><span class="sc-byRegH lfpluU"> <!-- -->Default:<!-- --> </span> <span class="sc-byRegH sc-dEAvcG lfpluU IvJiA">null</span></div> <div><div html="&lt;p&gt;Override runtime version of the pipeline being executed.&lt;/p&gt;
-&lt;p&gt;Warning: This option is experimental and may change in the future.
-Should only be used for CI/testing purposes, and requires network access.&lt;/p&gt;
+&lt;p&gt;Warning: This setting is experimental and may change in the future.
+Requires the platform to run with the unstable feature &lt;code&gt;runtime_version&lt;/code&gt;
+enabled. Should only be used for testing purposes, and requires
+network access.&lt;/p&gt;
 &lt;p&gt;A runtime version can be specified in the form of a version
 or SHA taken from the &lt;code&gt;feldera/feldera&lt;/code&gt; repository main branch.&lt;/p&gt;
 &lt;p&gt;Examples: &lt;code&gt;v0.96.0&lt;/code&gt; or &lt;code&gt;f4dcac0989ca0fda7d2eb93602a49d007cb3b0ae&lt;/code&gt;&lt;/p&gt;
@@ -207,8 +209,10 @@ are exact matches.&lt;/p&gt;
 the platform.&lt;/p&gt;
 &lt;p&gt;If not set (null), the runtime version will be the same as the platform version.&lt;/p&gt;
 " class="sc-faJlkc sc-fdduAw JEUrA AkGJk"><p>Override runtime version of the pipeline being executed.</p>
-<p>Warning: This option is experimental and may change in the future.
-Should only be used for CI/testing purposes, and requires network access.</p>
+<p>Warning: This setting is experimental and may change in the future.
+Requires the platform to run with the unstable feature <code>runtime_version</code>
+enabled. Should only be used for testing purposes, and requires
+network access.</p>
 <p>A runtime version can be specified in the form of a version
 or SHA taken from the <code>feldera/feldera</code> repository main branch.</p>
 <p>Examples: <code>v0.96.0</code> or <code>f4dcac0989ca0fda7d2eb93602a49d007cb3b0ae</code></p>
