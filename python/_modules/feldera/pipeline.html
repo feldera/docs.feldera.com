@@ -1253,19 +1253,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_location</span></div>
 
 
-<div class="viewcode-block" id="Pipeline.program_binary_url">
-<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_binary_url">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">program_binary_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the program binary URL of the pipeline.</span>
-<span class="sd">        This is the URL where the compiled program binary can be downloaded</span>
-<span class="sd">        from.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_binary_url</span></div>
-
-
 <div class="viewcode-block" id="Pipeline.program_info">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_info">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">program_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
