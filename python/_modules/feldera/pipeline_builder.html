@@ -126,8 +126,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">udf_toml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">udf_toml</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compilation_profile</span><span class="p">:</span> <span class="n">CompilationProfile</span> <span class="o">=</span> <span class="n">compilation_profile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">runtime_config</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">runtime_version</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span><span class="p">,</span> <span class="n">runtime_version</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="PipelineBuilder.create">
@@ -199,6 +199,7 @@
             <span class="n">udf_toml</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">udf_toml</span><span class="p">,</span>
             <span class="n">program_config</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">compilation_profile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">&quot;runtime_version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="n">runtime_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
         <span class="p">)</span>
