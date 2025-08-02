@@ -87,7 +87,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaTimeoutError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaTimeoutError</span><span class="p">,</span> <span class="n">FelderaAPIError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">client_version</span>
@@ -148,7 +148,7 @@
             <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
             <span class="n">version</span> <span class="o">=</span> <span class="n">client_version</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Client is on version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> while server is at &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">. There could be incompatibilities.&quot;</span>
                 <span class="p">)</span>
@@ -736,7 +736,9 @@
         <span class="n">update_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
         <span class="n">json_flavor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">serialize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">wait_timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert data into a pipeline</span>
 
@@ -753,6 +755,11 @@
 <span class="sd">            &quot;debezium_mysql&quot;, &quot;snowflake&quot;, &quot;kafka_connect_json_converter&quot;, &quot;pandas&quot;</span>
 <span class="sd">        :param data: The data to insert</span>
 <span class="sd">        :param serialize: If True, the data will be serialized to JSON. True by default</span>
+<span class="sd">        :param wait: If True, blocks until this input has been processed by the pipeline</span>
+<span class="sd">        :param wait_timeout_s: The timeout in seconds to wait for this set of</span>
+<span class="sd">            inputs to be processed by the pipeline. None by default</span>
+
+<span class="sd">        :returns: The completion token to this input.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">]:</span>
@@ -814,13 +821,84 @@
             <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;text/csv&quot;</span>
             <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/ingress/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
             <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">,</span>
             <span class="n">body</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">serialize</span><span class="o">=</span><span class="n">serialize</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+        <span class="n">token</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span><span class="s2">&quot;response did not contain a completion token&quot;</span><span class="p">,</span> <span class="n">resp</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">token</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">wait_timeout_s</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">token</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.wait_for_token">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_token</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Blocks until all records represented by this completion token have</span>
+<span class="sd">        been processed.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline</span>
+<span class="sd">        :param token: The token to check for completion</span>
+<span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
+<span class="sd">            to process these records. Default 600s</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">timeout_s</span> <span class="k">if</span> <span class="n">timeout_s</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">initial_backoff</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">max_backoff</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">exponent</span> <span class="o">=</span> <span class="mf">1.2</span>
+        <span class="n">retries</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; process records represented by token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> within&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/completion_status&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+            <span class="p">)</span>
+
+            <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;got empty status when checking for completion status for token: </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">resp</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;still waiting for inputs represented by </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> to be processed; elapsed: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s&quot;</span>
+            <span class="p">)</span>
+
+            <span class="n">retries</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">backoff</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_backoff</span><span class="p">,</span> <span class="n">initial_backoff</span> <span class="o">*</span> <span class="p">(</span><span class="n">exponent</span><span class="o">**</span><span class="n">retries</span><span class="p">))</span>
+
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">backoff</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.listen_to_pipeline">
