@@ -288,6 +288,26 @@ it to compile</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle">
+<span class="sig-name descname"><span class="pre">get_pipeline_support_bundle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_pipeline_support_bundle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle" title="Link to this definition"></a></dt>
+<dd><p>Generate a support bundle containing diagnostic information from a pipeline.</p>
+<p>This endpoint collects various diagnostic data from the pipeline including
+circuit profile, heap profile, metrics, logs, stats, and connector statistics,
+and packages them into a single ZIP file for support purposes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pipeline_name</strong> – The name of the pipeline</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The support bundle as bytes (ZIP file)</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline does not exist or if there’s an error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_runtime_config">
 <span class="sig-name descname"><span class="pre">get_runtime_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_runtime_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_runtime_config" title="Link to this definition"></a></dt>
 <dd><p>Get the runtime config of a pipeline by name</p>

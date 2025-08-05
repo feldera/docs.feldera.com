@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#iterating-over-output-chunks">Iterating over Output Chunks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#waiting-for-completion">Waiting for Completion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#end-to-end-example-with-kafka-sink">End-to-End Example with Kafka Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieve-a-support-bundle-for-a-pipeline">Retrieve a support-bundle for a pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#specifying-data-sources-sinks">Specifying Data Sources / Sinks</a></li>
 </ul>
 </li>
@@ -415,6 +416,71 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="c1"># clear the storage and delete the pipeline</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="retrieve-a-support-bundle-for-a-pipeline">
+<h2>Retrieve a support-bundle for a pipeline<a class="headerlink" href="#retrieve-a-support-bundle-for-a-pipeline" title="Link to this heading"></a></h2>
+<p>This example shows how to download a support bundle for a pipeline using the Python SDK.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a client (assuming Feldera is running on localhost:8080)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+
+<span class="c1"># Define a simple SQL program</span>
+<span class="n">sql_program</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">CREATE TABLE users(id INT, name STRING);</span>
+<span class="s2">CREATE MATERIALIZED VIEW user_count AS SELECT COUNT(*) as count FROM users;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Create a pipeline</span>
+<span class="n">pipeline_name</span> <span class="o">=</span> <span class="s2">&quot;support-bundle-example&quot;</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">,</span>
+    <span class="n">pipeline_name</span><span class="p">,</span>
+    <span class="n">sql_program</span>
+<span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created pipeline: </span><span class="si">{</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Start the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline started&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate support bundle as bytes</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating support bundle...&quot;</span><span class="p">)</span>
+<span class="n">support_bundle_bytes</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">support_bundle</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">support_bundle_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify it&#39;s a valid ZIP file</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">support_bundle_bytes</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
+        <span class="n">file_list</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle contains </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> files:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># Show first 5 files</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more files&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">BadZipFile</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Support bundle is not a valid ZIP file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save support bundle to a file</span>
+<span class="n">output_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">-support-bundle.zip&quot;</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">support_bundle</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle saved to: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify the saved file</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+    <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved file size: </span><span class="si">{</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Clean up</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cleaned up saved file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Stop the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline stopped and deleted&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
