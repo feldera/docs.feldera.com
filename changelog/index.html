@@ -8,8 +8,8 @@
 
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.27a93cd8.js" defer="defer"></script>
-<script src="/assets/js/main.bed2da63.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e0fb60f2.js" defer="defer"></script>
+<script src="/assets/js/main.f8c92385.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -19,7 +19,10 @@
 <div class="tabs-container tabList__CuJ"><ul role="tablist" aria-orientation="horizontal" class="tabs"><li role="tab" tabindex="0" aria-selected="true" class="tabs__item tabItem_LNqP tabs__item--active">Enterprise</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">Open Source</li></ul><div class="margin-top--md"><div role="tabpanel" class="tabItem_Ymn6 changelogItem"><h2 class="anchor anchorWithStickyNavbar_LWe7" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased">​</a></h2><p>We have changed the documentation for the SUBSTR and SUBSTRING
 function to specify correctly their behaviors when arguments are
 negative.  Their behavior has not changed, but the documentation
-was incorrect.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="01050">0.105.0<a href="#01050" class="hash-link" aria-label="Direct link to 0.105.0" title="Direct link to 0.105.0">​</a></h2><p>Changed the semantics of functions <code>ARRAY_CONTAINS</code>,
+was incorrect.</p><p>Changed the default character set from ISO-8859-1 to UTF-8.
+Removed from the documentation the ability to specify a different
+charater set for strings.  Removed mentions of trailing space
+trimming from strings.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="01050">0.105.0<a href="#01050" class="hash-link" aria-label="Direct link to 0.105.0" title="Direct link to 0.105.0">​</a></h2><p>Changed the semantics of functions <code>ARRAY_CONTAINS</code>,
 <code>ARRAY_REMOVE</code>, <code>ARRAY_POSITION</code> so that the right argument being
 <code>NULL</code> does not cause the result being <code>NULL</code>.</p><h2 class="anchor anchorWithStickyNavbar_LWe7" id="01050-1">0.105.0<a href="#01050-1" class="hash-link" aria-label="Direct link to 0.105.0" title="Direct link to 0.105.0">​</a></h2><p>We switched the implementation of DECIMAL numbers to a new DECIMAL
 library that we have developed in house.  The library uses 3 times
