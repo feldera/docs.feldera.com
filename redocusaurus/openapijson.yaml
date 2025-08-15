@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.126.0
+  version: 0.127.0
 paths:
   /config/authentication:
     get:
@@ -1163,6 +1163,116 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/activate:
+    post:
+      tags:
+        - Pipeline interaction
+      summary: Activates the pipeline if it is currently in standby mode.
+      description: >-
+        This endpoint is only applicable when the pipeline is configured to
+        start
+
+        from object store and launched in standby mode (`sync.standby: true`).
+      operationId: activate_pipeline
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Pipeline activation initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Disconnected during response:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: the pipeline
+                      disconnected while it was processing this HTTP request.
+                      This could be because the pipeline either (a) encountered
+                      a fatal error or panic, (b) was stopped, or (c)
+                      experienced network issues -- retrying might help in the
+                      last case. Alternatively, check the pipeline logs.
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        the pipeline disconnected while it was processing this
+                        HTTP request. This could be because the pipeline either
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
+                Pipeline is currently unavailable:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: deployment
+                      status is currently 'unavailable' -- wait for it to become
+                      'running' or 'paused' again
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        deployment status is currently 'unavailable' -- wait for
+                        it to become 'running' or 'paused' again
+                Pipeline is not deployed:
+                  value:
+                    message: >-
+                      Unable to interact with pipeline because the deployment
+                      status ('stopped') is not one of the deployed statuses
+                      ('running', 'paused' or 'unavailable') -- to resolve this:
+                      wait for the pipeline to become running or paused
+                    error_code: PipelineInteractionNotDeployed
+                    details:
+                      status: Stopped
+                      desired_status: Running
+                Response timeout:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: timeout (10s)
+                      was reached: this means the pipeline took too long to
+                      respond -- this can simply be because the request was too
+                      difficult to process in time, or other reasons (e.g.,
+                      deadlock): the pipeline logs might contain additional
+                      information (original send request error: Timeout while
+                      waiting for response)
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        timeout (10s) was reached: this means the pipeline took
+                        too long to respond -- this can simply be because the
+                        request was too difficult to process in time, or other
+                        reasons (e.g., deadlock): the pipeline logs might
+                        contain additional information (original send request
+                        error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/checkpoint:
     post:
       tags:
@@ -1188,6 +1298,218 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CheckpointResponse'
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Disconnected during response:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: the pipeline
+                      disconnected while it was processing this HTTP request.
+                      This could be because the pipeline either (a) encountered
+                      a fatal error or panic, (b) was stopped, or (c)
+                      experienced network issues -- retrying might help in the
+                      last case. Alternatively, check the pipeline logs.
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        the pipeline disconnected while it was processing this
+                        HTTP request. This could be because the pipeline either
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
+                Pipeline is currently unavailable:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: deployment
+                      status is currently 'unavailable' -- wait for it to become
+                      'running' or 'paused' again
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        deployment status is currently 'unavailable' -- wait for
+                        it to become 'running' or 'paused' again
+                Pipeline is not deployed:
+                  value:
+                    message: >-
+                      Unable to interact with pipeline because the deployment
+                      status ('stopped') is not one of the deployed statuses
+                      ('running', 'paused' or 'unavailable') -- to resolve this:
+                      wait for the pipeline to become running or paused
+                    error_code: PipelineInteractionNotDeployed
+                    details:
+                      status: Stopped
+                      desired_status: Running
+                Response timeout:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: timeout (10s)
+                      was reached: this means the pipeline took too long to
+                      respond -- this can simply be because the request was too
+                      difficult to process in time, or other reasons (e.g.,
+                      deadlock): the pipeline logs might contain additional
+                      information (original send request error: Timeout while
+                      waiting for response)
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        timeout (10s) was reached: this means the pipeline took
+                        too long to respond -- this can simply be because the
+                        request was too difficult to process in time, or other
+                        reasons (e.g., deadlock): the pipeline logs might
+                        contain additional information (original send request
+                        error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/checkpoint/sync:
+    post:
+      tags:
+        - Pipeline interaction
+      summary: >-
+        Syncs latest checkpoints to the object store configured in pipeline
+        config.
+      operationId: sync_checkpoint
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Checkpoint synced to object store
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointResponse'
+        '404':
+          description: No checkpoints found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Disconnected during response:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: the pipeline
+                      disconnected while it was processing this HTTP request.
+                      This could be because the pipeline either (a) encountered
+                      a fatal error or panic, (b) was stopped, or (c)
+                      experienced network issues -- retrying might help in the
+                      last case. Alternatively, check the pipeline logs.
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        the pipeline disconnected while it was processing this
+                        HTTP request. This could be because the pipeline either
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
+                Pipeline is currently unavailable:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: deployment
+                      status is currently 'unavailable' -- wait for it to become
+                      'running' or 'paused' again
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        deployment status is currently 'unavailable' -- wait for
+                        it to become 'running' or 'paused' again
+                Pipeline is not deployed:
+                  value:
+                    message: >-
+                      Unable to interact with pipeline because the deployment
+                      status ('stopped') is not one of the deployed statuses
+                      ('running', 'paused' or 'unavailable') -- to resolve this:
+                      wait for the pipeline to become running or paused
+                    error_code: PipelineInteractionNotDeployed
+                    details:
+                      status: Stopped
+                      desired_status: Running
+                Response timeout:
+                  value:
+                    message: >-
+                      Unable to reach pipeline to interact due to: timeout (10s)
+                      was reached: this means the pipeline took too long to
+                      respond -- this can simply be because the request was too
+                      difficult to process in time, or other reasons (e.g.,
+                      deadlock): the pipeline logs might contain additional
+                      information (original send request error: Timeout while
+                      waiting for response)
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      error: >-
+                        timeout (10s) was reached: this means the pipeline took
+                        too long to respond -- this can simply be because the
+                        request was too difficult to process in time, or other
+                        reasons (e.g., deadlock): the pipeline logs might
+                        contain additional information (original send request
+                        error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/checkpoint/sync_status:
+    get:
+      tags:
+        - Pipeline interaction
+      summary: Retrieve status of checkpoint sync activity in a pipeline.
+      operationId: get_checkpoint_sync_status
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Checkpoint sync status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckpointStatus'
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -8701,6 +9023,18 @@ components:
             See [rclone S3 provider
             documentation](https://rclone.org/s3/#s3-provider)
           nullable: true
+        pull_interval:
+          type: integer
+          format: int64
+          description: |-
+            The interval (in seconds) between each attempt to fetch the latest
+            checkpoint from object store while in standby mode.
+
+            Applies only when `start_from_checkpoint` is set to `latest`.
+
+            Default: 10 seconds
+          default: 10
+          minimum: 0
         region:
           type: string
           description: |-
@@ -8723,6 +9057,37 @@ components:
             this can be left empty to allow automatic authentication via the
             pod's service account.
           nullable: true
+        standby:
+          type: boolean
+          description: >-
+            When `true`, the pipeline starts in **standby** mode; processing
+            doesn't
+
+            start until activation (`POST /activate`).
+
+            If this pipeline was previously activated and the storage has not
+            been
+
+            cleared, the pipeline will auto activate, no newer checkpoints will
+            be
+
+            fetched.
+
+
+            Standby behavior depends on `start_from_checkpoint`:
+
+            - If `latest`, pipeline continuously fetches the latest available
+
+            checkpoint until activated.
+
+            - If checkpoint UUID, pipeline fetches this checkpoint once and
+            waits
+
+            in standby until activated.
+
+
+            Default: `false`
+          default: false
         start_from_checkpoint:
           allOf:
             - $ref: '#/components/schemas/StartFromCheckpoint'
