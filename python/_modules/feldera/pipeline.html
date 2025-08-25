@@ -977,6 +977,28 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query_as_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.query_hash">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query_hash">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc SQL query on this pipeline and returns the result</span>
+<span class="sd">        as a hash of the result set. This is useful for quickly checking</span>
+<span class="sd">        if the result set has changed without retrieving the entire result.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            For a stable hash, the query must be deterministic which means</span>
+<span class="sd">            it should be sorted.</span>
+
+<span class="sd">        :param query: The SQL query to be executed.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING or PAUSED</span>
+<span class="sd">            state.</span>
+<span class="sd">        :raises FelderaAPIError: If querying a non materialized table or view.</span>
+<span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query_as_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.execute">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.execute">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>

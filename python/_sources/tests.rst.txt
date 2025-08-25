@@ -36,6 +36,14 @@ tests.test\_checkpoint\_sync module
    :undoc-members:
    :show-inheritance:
 
+tests.test\_issue4457 module
+----------------------------
+
+.. automodule:: tests.test_issue4457
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.test\_pipeline\_builder module
 ------------------------------------
 
