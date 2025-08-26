@@ -68,6 +68,14 @@ tests.test\_shared\_pipeline\_stress module
    :undoc-members:
    :show-inheritance:
 
+tests.test\_uda module
+----------------------
+
+.. automodule:: tests.test_uda
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.test\_udf module
 ----------------------
 
