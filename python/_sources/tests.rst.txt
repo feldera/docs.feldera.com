@@ -1,24 +1,8 @@
 tests package
 =============
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   tests.aggregate_tests
-
 Submodules
 ----------
-
-tests.negative\_test module
----------------------------
-
-.. automodule:: tests.negative_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 tests.shared\_test\_pipeline module
 -----------------------------------
@@ -28,58 +12,10 @@ tests.shared\_test\_pipeline module
    :undoc-members:
    :show-inheritance:
 
-tests.test\_checkpoint\_sync module
------------------------------------
-
-.. automodule:: tests.test_checkpoint_sync
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tests.test\_issue4457 module
-----------------------------
-
-.. automodule:: tests.test_issue4457
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tests.test\_pipeline\_builder module
-------------------------------------
-
-.. automodule:: tests.test_pipeline_builder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tests.test\_shared\_pipeline module
------------------------------------
-
-.. automodule:: tests.test_shared_pipeline
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tests.test\_shared\_pipeline\_stress module
--------------------------------------------
-
-.. automodule:: tests.test_shared_pipeline_stress
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tests.test\_uda module
 ----------------------
 
 .. automodule:: tests.test_uda
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-tests.test\_udf module
-----------------------
-
-.. automodule:: tests.test_udf
    :members:
    :undoc-members:
    :show-inheritance:
