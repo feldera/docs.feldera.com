@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>feldera.testutils &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">feldera.testutils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for feldera.testutils</h1><div class="highlight"><pre>
+<span></span><span class="s2">&quot;Utility functions for writing tests against a Feldera instance.&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompilationProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.pipeline_builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineBuilder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
+
+<span class="n">API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_API_KEY&quot;</span><span class="p">)</span>
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_HOST&quot;</span><span class="p">)</span>
+    <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_BASE_URL&quot;</span><span class="p">)</span>
+    <span class="ow">or</span> <span class="s2">&quot;http://localhost:8080&quot;</span>
+<span class="p">)</span>
+<span class="n">KAFKA_SERVER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_KAFKA_SERVER&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost:19092&quot;</span><span class="p">)</span>
+<span class="n">PIPELINE_TO_KAFKA_SERVER</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s2">&quot;FELDERA_PIPELINE_TO_KAFKA_SERVER&quot;</span><span class="p">,</span> <span class="s2">&quot;redpanda:9092&quot;</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_LazyClient</span><span class="p">:</span>
+    <span class="s2">&quot;Construct the FelderaClient only when accessed as opposed to when imported.&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_client&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span>
+                <span class="n">BASE_URL</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="n">API_KEY</span><span class="p">,</span> <span class="n">connection_timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">requests_verify</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ensure</span><span class="p">(),</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FelderaClient</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure</span><span class="p">()</span>
+
+
+<span class="n">TEST_CLIENT</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">FelderaClient</span><span class="p">,</span> <span class="n">_LazyClient</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="unique_pipeline_name">
+<a class="viewcode-back" href="../../tests.html#tests.unique_pipeline_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unique_pipeline_name</span><span class="p">(</span><span class="n">base_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    In CI, multiple tests of different runs can run against the same Feldera instance, we</span>
+<span class="sd">    make sure the pipeline names they use are unique by appending the first 5 characters</span>
+<span class="sd">    of the commit SHA or &#39;local&#39; if not in CI.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ci_tag</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GITHUB_SHA&quot;</span><span class="p">,</span> <span class="s2">&quot;local&quot;</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ci_tag</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">base_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="enterprise_only">
+<a class="viewcode-back" href="../../tests.html#tests.enterprise_only">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">enterprise_only</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">fn</span><span class="o">.</span><span class="n">_enterprise_only</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">unittest</span><span class="o">.</span><span class="n">skipUnless</span><span class="p">(</span>
+        <span class="n">TEST_CLIENT</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span><span class="o">.</span><span class="n">edition</span><span class="o">.</span><span class="n">is_enterprise</span><span class="p">(),</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is enterprise only, skipping&quot;</span><span class="p">,</span>
+    <span class="p">)(</span><span class="n">fn</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">datafusionize</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sort_array_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s2">&quot;SORT_ARRAY&quot;</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="n">truncate_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s2">&quot;TRUNCATE&quot;</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="n">timestamp_trunc_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s2">&quot;TIMESTAMP_TRUNC\s*\(\s*MAKE_TIMESTAMP\s*\(\s*([^)]+)\s*\)\s*,\s*([A-Z]+)\s*\)&quot;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sort_array_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;array_sort&quot;</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">truncate_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;trunc&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">timestamp_trunc_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;DATE_TRUNC(&#39;\2&#39;, TO_TIMESTAMP(\1))&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_view</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">view_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validating view &#39;</span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># We have two modes to verify the view, either we run the same SQL as the view against datafusion</span>
+    <span class="c1"># by `datafusionizing` the query, or a weaker form where we pass a hash of what the result</span>
+    <span class="c1"># should look like and check that the hash hasn&#39;t changed</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view_query</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">_view_definition</span><span class="p">,</span> <span class="n">original_hash</span> <span class="o">=</span> <span class="n">view_query</span>
+        <span class="n">view_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;select * from </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">computed_hash</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">query_hash</span><span class="p">(</span><span class="n">view_query</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">computed_hash</span> <span class="o">!=</span> <span class="n">original_hash</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;View </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2"> hash </span><span class="si">{</span><span class="n">computed_hash</span><span class="si">}</span><span class="s2"> was but expected hash </span><span class="si">{</span><span class="n">original_hash</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># TODO: count records</span>
+        <span class="n">view_query</span> <span class="o">=</span> <span class="n">datafusionize</span><span class="p">(</span><span class="n">view_query</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">extra_rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(select * from </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">) except (</span><span class="si">{</span><span class="n">view_query</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">missing_rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">pipeline</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">view_query</span><span class="si">}</span><span class="s2">) except (select * from </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">extra_rows</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;Extra rows in Feldera output, but not in the ad hoc query output&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">extra_rows</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">missing_rows</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;Extra rows in the ad hoc query output, but not in Feldera output&quot;</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">missing_rows</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error querying view &#39;</span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ad-hoc Query: </span><span class="si">{</span><span class="n">view_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="k">if</span> <span class="n">extra_rows</span> <span class="ow">or</span> <span class="n">missing_rows</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Validation failed for view </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_workload</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tables</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">views</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper to run a pipeline to completion and validate the views afterwards using ad-hoc queries.</span>
+
+<span class="sd">    Use this for large-scale workload and standard benchmarks (like TPC-H etc.) where you plan to</span>
+<span class="sd">    ingest a lot of data and validate the results. For testing more specific functionality, see</span>
+<span class="sd">    frameworks in the `tests` directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">table_sql</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">table_sql</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">view_query</span><span class="p">,</span> <span class="n">_hash</span> <span class="o">=</span> <span class="n">view</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;create materialized view </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2"> as </span><span class="si">{</span><span class="n">view_query</span><span class="si">}</span><span class="s2">;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;create materialized view </span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2"> as </span><span class="si">{</span><span class="n">view</span><span class="si">}</span><span class="s2">;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
+        <span class="n">TEST_CLIENT</span><span class="p">,</span>
+        <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span>
+        <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">,</span>
+        <span class="n">compilation_profile</span><span class="o">=</span><span class="n">CompilationProfile</span><span class="o">.</span><span class="n">OPTIMIZED</span><span class="p">,</span>
+        <span class="n">runtime_config</span><span class="o">=</span><span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">provisioning_timeout_secs</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">start_transaction</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error starting transaction: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">force_stop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data ingested in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">commit_transaction</span><span class="p">(</span><span class="n">transaction_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error committing transaction: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Commit took </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">row_count</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;select count(*) from </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Table &#39;</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2">&#39; count(*):</span><span class="se">\n</span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">view_query</span> <span class="ow">in</span> <span class="n">views</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">validate_view</span><span class="p">(</span><span class="n">pipeline</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">view_query</span><span class="p">)</span>
+
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

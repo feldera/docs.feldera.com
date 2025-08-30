@@ -55,9 +55,19 @@
 <li class="toctree-l2"><a class="reference internal" href="feldera.html">feldera package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tests package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tests-shared-test-pipeline-module">tests.shared_test_pipeline module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tests-test-uda-module">tests.test_uda module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests.shared_test_pipeline">tests.shared_test_pipeline module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.shared_test_pipeline.SharedTestPipeline"><code class="docutils literal notranslate"><span class="pre">SharedTestPipeline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests.test_uda">tests.test_uda module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.test_uda.TestUDA"><code class="docutils literal notranslate"><span class="pre">TestUDA</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.enterprise_only"><code class="docutils literal notranslate"><span class="pre">enterprise_only()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.unique_pipeline_name"><code class="docutils literal notranslate"><span class="pre">unique_pipeline_name()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -94,14 +104,72 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="tests-shared-test-pipeline-module">
-<h2>tests.shared_test_pipeline module<a class="headerlink" href="#tests-shared-test-pipeline-module" title="Link to this heading"></a></h2>
+<section id="module-tests.shared_test_pipeline">
+<span id="tests-shared-test-pipeline-module"></span><h2>tests.shared_test_pipeline module<a class="headerlink" href="#module-tests.shared_test_pipeline" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.shared_test_pipeline.</span></span><span class="sig-name descname"><span class="pre">SharedTestPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#SharedTestPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline.new_pipeline_with_suffix">
+<span class="sig-name descname"><span class="pre">new_pipeline_with_suffix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline" title="feldera.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#SharedTestPipeline.new_pipeline_with_suffix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline.new_pipeline_with_suffix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline.pipeline">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pipeline</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline" title="feldera.pipeline.Pipeline"><span class="pre">Pipeline</span></a></em><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline.pipeline" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#SharedTestPipeline.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline.setUp" title="Link to this definition"></a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline.setUpClass">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">setUpClass</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#SharedTestPipeline.setUpClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline.setUpClass" title="Link to this definition"></a></dt>
+<dd><p>Hook method for setting up class fixture before running tests in the class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.SharedTestPipeline.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#SharedTestPipeline.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.SharedTestPipeline.tearDown" title="Link to this definition"></a></dt>
+<dd><p>Hook method for deconstructing the test fixture after testing it.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="tests-test-uda-module">
-<h2>tests.test_uda module<a class="headerlink" href="#tests-test-uda-module" title="Link to this heading"></a></h2>
+<section id="module-tests.test_uda">
+<span id="tests-test-uda-module"></span><h2>tests.test_uda module<a class="headerlink" href="#module-tests.test_uda" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_uda.TestUDA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_uda.</span></span><span class="sig-name descname"><span class="pre">TestUDA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_uda.html#TestUDA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_uda.TestUDA" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_uda.TestUDA.test_local">
+<span class="sig-name descname"><span class="pre">test_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_uda.html#TestUDA.test_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_uda.TestUDA.test_local" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<section id="module-tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.enterprise_only">
+<span class="sig-prename descclassname"><span class="pre">tests.</span></span><span class="sig-name descname"><span class="pre">enterprise_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/testutils.html#enterprise_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.enterprise_only" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.unique_pipeline_name">
+<span class="sig-prename descclassname"><span class="pre">tests.</span></span><span class="sig-name descname"><span class="pre">unique_pipeline_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/testutils.html#unique_pipeline_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.unique_pipeline_name" title="Link to this definition"></a></dt>
+<dd><p>In CI, multiple tests of different runs can run against the same Feldera instance, we
+make sure the pipeline names they use are unique by appending the first 5 characters
+of the commit SHA or ‘local’ if not in CI.</p>
+</dd></dl>
+
 </section>
 </section>
 
