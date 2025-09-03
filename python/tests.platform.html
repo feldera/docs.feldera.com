@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.platform package &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tests.runtime package" href="tests.runtime.html" />
+    <link rel="prev" title="tests package" href="tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">python</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="feldera.html">feldera package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tests.html">tests package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tests.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tests.platform package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html">tests.runtime package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-tests.shared_test_pipeline">tests.shared_test_pipeline module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-tests.test_uda">tests.test_uda module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">python</a></li>
+          <li class="breadcrumb-item"><a href="tests.html">tests package</a></li>
+      <li class="breadcrumb-item active">tests.platform package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tests.platform.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tests-platform-package">
+<h1>tests.platform package<a class="headerlink" href="#tests-platform-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.platform.conftest">
+<span id="tests-platform-conftest-module"></span><h2>tests.platform.conftest module<a class="headerlink" href="#module-tests.platform.conftest" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.conftest.fixture_pipeline_name">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.conftest.</span></span><span class="sig-name descname"><span class="pre">fixture_pipeline_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/conftest.html#fixture_pipeline_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.conftest.fixture_pipeline_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-tests.platform.helper">
+<span id="tests-platform-helper-module"></span><h2>tests.platform.helper module<a class="headerlink" href="#module-tests.platform.helper" title="Link to this heading"></a></h2>
+<p>Helper utilities for platform tests.</p>
+<p>Provides:</p>
+<ul class="simple">
+<li><p>Lightweight REST wrappers (no SDK abstraction where raw status codes matter)</p></li>
+<li><p>Polling helpers (compilation, generic condition)</p></li>
+<li><p>Simple selector/object helpers</p></li>
+</ul>
+<p>No automatic cleanup; pipelines are left in place for inspection after failures.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">HTTPStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/http.html#HTTPStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.HTTPStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></p>
+<p>HTTP status codes and reason phrases</p>
+<p>Status codes from the following RFCs are all observed:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>RFC 7231: Hypertext Transfer Protocol (HTTP/1.1), obsoletes 2616</p></li>
+<li><p>RFC 6585: Additional HTTP Status Codes</p></li>
+<li><p>RFC 3229: Delta encoding in HTTP</p></li>
+<li><p>RFC 4918: HTTP Extensions for WebDAV, obsoletes 2518</p></li>
+<li><p>RFC 5842: Binding Extensions to WebDAV</p></li>
+<li><p>RFC 7238: Permanent Redirect</p></li>
+<li><p>RFC 2295: Transparent Content Negotiation in HTTP</p></li>
+<li><p>RFC 2774: An HTTP Extension Framework</p></li>
+<li><p>RFC 7725: An HTTP Status Code to Report Legal Obstacles</p></li>
+<li><p>RFC 7540: Hypertext Transfer Protocol Version 2 (HTTP/2)</p></li>
+<li><p>RFC 2324: Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0)</p></li>
+<li><p>RFC 8297: An HTTP Status Code for Indicating Hints</p></li>
+<li><p>RFC 8470: Using Early Data in HTTP</p></li>
+</ul>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.ACCEPTED">
+<span class="sig-name descname"><span class="pre">ACCEPTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">202</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.ACCEPTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.ALREADY_REPORTED">
+<span class="sig-name descname"><span class="pre">ALREADY_REPORTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">208</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.ALREADY_REPORTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.BAD_GATEWAY">
+<span class="sig-name descname"><span class="pre">BAD_GATEWAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">502</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.BAD_GATEWAY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.BAD_REQUEST">
+<span class="sig-name descname"><span class="pre">BAD_REQUEST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">400</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.BAD_REQUEST" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.CONFLICT">
+<span class="sig-name descname"><span class="pre">CONFLICT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">409</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.CONFLICT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.CONTINUE">
+<span class="sig-name descname"><span class="pre">CONTINUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.CONTINUE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.CREATED">
+<span class="sig-name descname"><span class="pre">CREATED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">201</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.CREATED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.EARLY_HINTS">
+<span class="sig-name descname"><span class="pre">EARLY_HINTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">103</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.EARLY_HINTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.EXPECTATION_FAILED">
+<span class="sig-name descname"><span class="pre">EXPECTATION_FAILED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">417</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.EXPECTATION_FAILED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.FAILED_DEPENDENCY">
+<span class="sig-name descname"><span class="pre">FAILED_DEPENDENCY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">424</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.FAILED_DEPENDENCY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.FORBIDDEN">
+<span class="sig-name descname"><span class="pre">FORBIDDEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">403</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.FORBIDDEN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.FOUND">
+<span class="sig-name descname"><span class="pre">FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">302</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.FOUND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.GATEWAY_TIMEOUT">
+<span class="sig-name descname"><span class="pre">GATEWAY_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">504</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.GATEWAY_TIMEOUT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.GONE">
+<span class="sig-name descname"><span class="pre">GONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">410</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.GONE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.HTTP_VERSION_NOT_SUPPORTED">
+<span class="sig-name descname"><span class="pre">HTTP_VERSION_NOT_SUPPORTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">505</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.HTTP_VERSION_NOT_SUPPORTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.IM_A_TEAPOT">
+<span class="sig-name descname"><span class="pre">IM_A_TEAPOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">418</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.IM_A_TEAPOT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.IM_USED">
+<span class="sig-name descname"><span class="pre">IM_USED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">226</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.IM_USED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.INSUFFICIENT_STORAGE">
+<span class="sig-name descname"><span class="pre">INSUFFICIENT_STORAGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">507</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.INSUFFICIENT_STORAGE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.INTERNAL_SERVER_ERROR">
+<span class="sig-name descname"><span class="pre">INTERNAL_SERVER_ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">500</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.INTERNAL_SERVER_ERROR" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.LENGTH_REQUIRED">
+<span class="sig-name descname"><span class="pre">LENGTH_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">411</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.LENGTH_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.LOCKED">
+<span class="sig-name descname"><span class="pre">LOCKED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">423</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.LOCKED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.LOOP_DETECTED">
+<span class="sig-name descname"><span class="pre">LOOP_DETECTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">508</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.LOOP_DETECTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.METHOD_NOT_ALLOWED">
+<span class="sig-name descname"><span class="pre">METHOD_NOT_ALLOWED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">405</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.METHOD_NOT_ALLOWED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.MISDIRECTED_REQUEST">
+<span class="sig-name descname"><span class="pre">MISDIRECTED_REQUEST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">421</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.MISDIRECTED_REQUEST" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.MOVED_PERMANENTLY">
+<span class="sig-name descname"><span class="pre">MOVED_PERMANENTLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">301</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.MOVED_PERMANENTLY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.MULTIPLE_CHOICES">
+<span class="sig-name descname"><span class="pre">MULTIPLE_CHOICES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">300</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.MULTIPLE_CHOICES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.MULTI_STATUS">
+<span class="sig-name descname"><span class="pre">MULTI_STATUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">207</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.MULTI_STATUS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED">
+<span class="sig-name descname"><span class="pre">NETWORK_AUTHENTICATION_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">511</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NON_AUTHORITATIVE_INFORMATION">
+<span class="sig-name descname"><span class="pre">NON_AUTHORITATIVE_INFORMATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">203</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NON_AUTHORITATIVE_INFORMATION" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NOT_ACCEPTABLE">
+<span class="sig-name descname"><span class="pre">NOT_ACCEPTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">406</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NOT_ACCEPTABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NOT_EXTENDED">
+<span class="sig-name descname"><span class="pre">NOT_EXTENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">510</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NOT_EXTENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NOT_FOUND">
+<span class="sig-name descname"><span class="pre">NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">404</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NOT_FOUND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NOT_IMPLEMENTED">
+<span class="sig-name descname"><span class="pre">NOT_IMPLEMENTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">501</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NOT_IMPLEMENTED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NOT_MODIFIED">
+<span class="sig-name descname"><span class="pre">NOT_MODIFIED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">304</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NOT_MODIFIED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.NO_CONTENT">
+<span class="sig-name descname"><span class="pre">NO_CONTENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">204</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.NO_CONTENT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.OK">
+<span class="sig-name descname"><span class="pre">OK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.OK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PARTIAL_CONTENT">
+<span class="sig-name descname"><span class="pre">PARTIAL_CONTENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">206</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PARTIAL_CONTENT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PAYMENT_REQUIRED">
+<span class="sig-name descname"><span class="pre">PAYMENT_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">402</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PAYMENT_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PERMANENT_REDIRECT">
+<span class="sig-name descname"><span class="pre">PERMANENT_REDIRECT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">308</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PERMANENT_REDIRECT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PRECONDITION_FAILED">
+<span class="sig-name descname"><span class="pre">PRECONDITION_FAILED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">412</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PRECONDITION_FAILED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PRECONDITION_REQUIRED">
+<span class="sig-name descname"><span class="pre">PRECONDITION_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">428</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PRECONDITION_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PROCESSING">
+<span class="sig-name descname"><span class="pre">PROCESSING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">102</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PROCESSING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.PROXY_AUTHENTICATION_REQUIRED">
+<span class="sig-name descname"><span class="pre">PROXY_AUTHENTICATION_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">407</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.PROXY_AUTHENTICATION_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE">
+<span class="sig-name descname"><span class="pre">REQUESTED_RANGE_NOT_SATISFIABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">416</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.REQUEST_ENTITY_TOO_LARGE">
+<span class="sig-name descname"><span class="pre">REQUEST_ENTITY_TOO_LARGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">413</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.REQUEST_ENTITY_TOO_LARGE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE">
+<span class="sig-name descname"><span class="pre">REQUEST_HEADER_FIELDS_TOO_LARGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">431</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.REQUEST_TIMEOUT">
+<span class="sig-name descname"><span class="pre">REQUEST_TIMEOUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">408</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.REQUEST_TIMEOUT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.REQUEST_URI_TOO_LONG">
+<span class="sig-name descname"><span class="pre">REQUEST_URI_TOO_LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">414</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.REQUEST_URI_TOO_LONG" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.RESET_CONTENT">
+<span class="sig-name descname"><span class="pre">RESET_CONTENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">205</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.RESET_CONTENT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.SEE_OTHER">
+<span class="sig-name descname"><span class="pre">SEE_OTHER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">303</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.SEE_OTHER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.SERVICE_UNAVAILABLE">
+<span class="sig-name descname"><span class="pre">SERVICE_UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">503</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.SERVICE_UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.SWITCHING_PROTOCOLS">
+<span class="sig-name descname"><span class="pre">SWITCHING_PROTOCOLS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">101</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.SWITCHING_PROTOCOLS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.TEMPORARY_REDIRECT">
+<span class="sig-name descname"><span class="pre">TEMPORARY_REDIRECT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">307</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.TEMPORARY_REDIRECT" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.TOO_EARLY">
+<span class="sig-name descname"><span class="pre">TOO_EARLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">425</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.TOO_EARLY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.TOO_MANY_REQUESTS">
+<span class="sig-name descname"><span class="pre">TOO_MANY_REQUESTS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">429</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.TOO_MANY_REQUESTS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.UNAUTHORIZED">
+<span class="sig-name descname"><span class="pre">UNAUTHORIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">401</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.UNAUTHORIZED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.UNAVAILABLE_FOR_LEGAL_REASONS">
+<span class="sig-name descname"><span class="pre">UNAVAILABLE_FOR_LEGAL_REASONS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">451</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.UNAVAILABLE_FOR_LEGAL_REASONS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.UNPROCESSABLE_ENTITY">
+<span class="sig-name descname"><span class="pre">UNPROCESSABLE_ENTITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">422</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.UNPROCESSABLE_ENTITY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.UNSUPPORTED_MEDIA_TYPE">
+<span class="sig-name descname"><span class="pre">UNSUPPORTED_MEDIA_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">415</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.UNSUPPORTED_MEDIA_TYPE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.UPGRADE_REQUIRED">
+<span class="sig-name descname"><span class="pre">UPGRADE_REQUIRED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">426</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.UPGRADE_REQUIRED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.USE_PROXY">
+<span class="sig-name descname"><span class="pre">USE_PROXY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">305</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.USE_PROXY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.VARIANT_ALSO_NEGOTIATES">
+<span class="sig-name descname"><span class="pre">VARIANT_ALSO_NEGOTIATES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">506</span></em><a class="headerlink" href="#tests.platform.helper.HTTPStatus.VARIANT_ALSO_NEGOTIATES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.is_client_error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_client_error</span></span><a class="headerlink" href="#tests.platform.helper.HTTPStatus.is_client_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.is_informational">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_informational</span></span><a class="headerlink" href="#tests.platform.helper.HTTPStatus.is_informational" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.is_redirection">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_redirection</span></span><a class="headerlink" href="#tests.platform.helper.HTTPStatus.is_redirection" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.is_server_error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_server_error</span></span><a class="headerlink" href="#tests.platform.helper.HTTPStatus.is_server_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="tests.platform.helper.HTTPStatus.is_success">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_success</span></span><a class="headerlink" href="#tests.platform.helper.HTTPStatus.is_success" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.connector_action">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">connector_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/helper.html#connector_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.connector_action" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.delete">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.extract_object_by_name">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">extract_object_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">collection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#extract_object_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.extract_object_by_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.gen_pipeline_name">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">gen_pipeline_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/helper.html#gen_pipeline_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.gen_pipeline_name" title="Link to this definition"></a></dt>
+<dd><p>Decorator for pytest functions that automatically generates a unique pipeline name.
+The decorated function will receive a ‘pipeline_name’ parameter.</p>
+<p>After the test completes, attempts to delete the pipeline but ignores any errors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.get">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.get" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.http_request">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">http_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#http_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.http_request" title="Link to this definition"></a></dt>
+<dd><p>Low-level request wrapper (no retries). Raises only on network errors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.patch_json">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">patch_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#patch_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.patch_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.post_json">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">post_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#post_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.post_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.put_json">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">put_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#put_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.put_json" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.unique_pipeline_name">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">unique_pipeline_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/testutils.html#unique_pipeline_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.unique_pipeline_name" title="Link to this definition"></a></dt>
+<dd><p>In CI, multiple tests of different runs can run against the same Feldera instance, we
+make sure the pipeline names they use are unique by appending the first 5 characters
+of the commit SHA or ‘local’ if not in CI.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.wait_for_condition">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">wait_for_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sleep_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#wait_for_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.wait_for_condition" title="Link to this definition"></a></dt>
+<dd><p>Generic polling helper.
+predicate: callable returning truthy when condition met (can be sync or async).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.helper.wait_for_program_success">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">wait_for_program_success</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_program_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1800.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sleep_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">WaitResult</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#wait_for_program_success"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.wait_for_program_success" title="Link to this definition"></a></dt>
+<dd><p>Poll until the pipeline’s program_status is Success and program_version
+&gt;= expected_program_version.</p>
+<p>Mirrors semantics of the Rust <cite>wait_for_compiled_program</cite> helper.</p>
+<p>Returns a WaitResult. Raises AssertionError on compile error, TimeoutError on timeout.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.negative_test">
+<span id="tests-platform-negative-test-module"></span><h2>tests.platform.negative_test module<a class="headerlink" href="#module-tests.platform.negative_test" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.negative_test.</span></span><span class="sig-name descname"><span class="pre">NegativeCompilationTests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_errors0">
+<span class="sig-name descname"><span class="pre">test_errors0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_errors0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_errors0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_initialization_error">
+<span class="sig-name descname"><span class="pre">test_initialization_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_initialization_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_initialization_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_program_error0">
+<span class="sig-name descname"><span class="pre">test_program_error0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_program_error0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_program_error0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_program_error1">
+<span class="sig-name descname"><span class="pre">test_program_error1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_program_error1"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_program_error1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_rust_error">
+<span class="sig-name descname"><span class="pre">test_rust_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_rust_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_rust_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.negative_test.NegativeCompilationTests.test_sql_error">
+<span class="sig-name descname"><span class="pre">test_sql_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/negative_test.html#NegativeCompilationTests.test_sql_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.negative_test.NegativeCompilationTests.test_sql_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="tests-platform-test-checkpoint-suspend-module">
+<h2>tests.platform.test_checkpoint_suspend module<a class="headerlink" href="#tests-platform-test-checkpoint-suspend-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.platform.test_checkpoint_sync">
+<span id="tests-platform-test-checkpoint-sync-module"></span><h2>tests.platform.test_checkpoint_sync module<a class="headerlink" href="#module-tests.platform.test_checkpoint_sync" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.platform.test_cluster_health">
+<span id="tests-platform-test-cluster-health-module"></span><h2>tests.platform.test_cluster_health module<a class="headerlink" href="#module-tests.platform.test_cluster_health" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_cluster_health.test_cluster_health_check">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_cluster_health.</span></span><span class="sig-name descname"><span class="pre">test_cluster_health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_cluster_health.html#test_cluster_health_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_cluster_health.test_cluster_health_check" title="Link to this definition"></a></dt>
+<dd><p>Poll the cluster health endpoint until both runner and compiler are healthy.</p>
+<ul class="simple">
+<li><p>Repeatedly query the cluster health endpoint.</p></li>
+<li><p>If both runner and compiler report healthy=true, expect HTTP 200 and stop.</p></li>
+<li><p>Otherwise expect HTTP 503 while waiting.</p></li>
+<li><p>Timeout after 300 seconds.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_cluster_health.test_health_check">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_cluster_health.</span></span><span class="sig-name descname"><span class="pre">test_health_check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_cluster_health.html#test_health_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_cluster_health.test_health_check" title="Link to this definition"></a></dt>
+<dd><p>Poll the /healthz endpoint until it reports overall healthy or timeouts.</p>
+<dl>
+<dt>Success condition:</dt><dd><p>status code 200 and body == {“status”: “healthy”}</p>
+</dd>
+<dt>Acceptable transient condition (database not ready yet):</dt><dd><dl class="simple">
+<dt>status code 500 and body == {</dt><dd><p>“status”: “unhealthy: unable to reach database (see logs for further details)”</p>
+</dd>
+</dl>
+<p>}</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_completion_tokens">
+<span id="tests-platform-test-completion-tokens-module"></span><h2>tests.platform.test_completion_tokens module<a class="headerlink" href="#module-tests.platform.test_completion_tokens" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_completion_tokens.test_completion_tokens">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_completion_tokens.</span></span><span class="sig-name descname"><span class="pre">test_completion_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_completion_tokens.html#test_completion_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_completion_tokens.test_completion_tokens" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Pipeline without output connectors</p></li>
+<li><p>Ingest many single-row JSON events, each returning a completion token</p></li>
+<li><p>Poll completion_status for each token</p></li>
+<li><p>Validate the row becomes visible exactly once</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_completion_tokens.test_completion_tokens_with_outputs">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_completion_tokens.</span></span><span class="sig-name descname"><span class="pre">test_completion_tokens_with_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_completion_tokens.html#test_completion_tokens_with_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_completion_tokens.test_completion_tokens_with_outputs" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Pipeline with multiple file_output connectors on materialized views.</p></li>
+<li><p>Ingest multiple records, verify completion tokens, and validate counts.</p></li>
+<li><p>Start a paused datagen input connector, obtain a completion token through its endpoint,
+wait for completion, and validate resulting counts.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_ingress_formats">
+<span id="tests-platform-test-ingress-formats-module"></span><h2>tests.platform.test_ingress_formats module<a class="headerlink" href="#module-tests.platform.test_ingress_formats" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.JsonLineReader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">JsonLineReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#JsonLineReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.JsonLineReader" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.JsonLineReader.read_events">
+<span class="sig-name descname"><span class="pre">read_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#JsonLineReader.read_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.JsonLineReader.read_events" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.create_pipeline">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">create_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#create_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.create_pipeline" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_case_sensitive_tables">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_case_sensitive_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_case_sensitive_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_case_sensitive_tables" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Distinguish between quoted and unquoted identifiers.</p></li>
+<li><p>Validate streaming outputs for two views.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_duplicate_outputs">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_duplicate_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_duplicate_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_duplicate_outputs" title="Link to this definition"></a></dt>
+<dd><p>multiple inserts producing duplicate output values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_json_ingress">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_json_ingress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_json_ingress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_json_ingress" title="Link to this definition"></a></dt>
+<dd><p>Exercise raw inserts, insert_delete format, array format, parse errors,
+debezium update, and CSV ingestion with parse error.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_map_column">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_map_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_map_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_map_column" title="Link to this definition"></a></dt>
+<dd><p>Table with column of type MAP</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_parse_datetime">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_parse_datetime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_parse_datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_parse_datetime" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_primary_keys">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_primary_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_primary_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_primary_keys" title="Link to this definition"></a></dt>
+<dd><p>Port of primary_keys: test insert/update/delete semantics with primary key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_quoted_columns">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_quoted_columns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_quoted_columns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_quoted_columns" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_upsert">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_upsert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_upsert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_upsert" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Insert several rows with composite PK.</p></li>
+<li><p>Perform updates/inserts overwriting existing rows.</p></li>
+<li><p>Perform no-op updates and deletes of non-existing keys.</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_metrics_logs">
+<span id="tests-platform-test-metrics-logs-module"></span><h2>tests.platform.test_metrics_logs module<a class="headerlink" href="#module-tests.platform.test_metrics_logs" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_metrics_logs.test_pipeline_logs">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_metrics_logs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_metrics_logs.html#test_pipeline_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_metrics_logs.test_pipeline_logs" title="Link to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>Logs 404 before pipeline creation.</p></li>
+<li><p>Create pipeline; poll until logs return 200.</p></li>
+<li><p>Pause / start / stop / clear transitions keep logs accessible (200).</p></li>
+<li><p>After delete, logs eventually return 404 again.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_metrics_logs.test_pipeline_metrics">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_metrics_logs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_metrics_logs.html#test_pipeline_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_metrics_logs.test_pipeline_metrics" title="Link to this definition"></a></dt>
+<dd><p>Tests that circuit metrics can be retrieved from the pipeline.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_metrics_logs.test_pipeline_stats">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_metrics_logs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_metrics_logs.html#test_pipeline_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_metrics_logs.test_pipeline_stats" title="Link to this definition"></a></dt>
+<dd><p>Tests retrieving pipeline statistics via <cite>/stats</cite>.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_orchestration">
+<span id="tests-platform-test-orchestration-module"></span><h2>tests.platform.test_orchestration module<a class="headerlink" href="#module-tests.platform.test_orchestration" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_orchestration.test_pipeline_orchestration_basic">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_orchestration.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_orchestration_basic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_orchestration.html#test_pipeline_orchestration_basic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_orchestration.test_pipeline_orchestration_basic" title="Link to this definition"></a></dt>
+<dd><p>Tests the orchestration of the pipeline, which means the starting and pausing of the
+pipeline itself as well as its connectors individually. This tests the basic processing
+of data and handling of case sensitivity and special characters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_orchestration.test_pipeline_orchestration_errors">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_orchestration.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_orchestration_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_orchestration.html#test_pipeline_orchestration_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_orchestration.test_pipeline_orchestration_errors" title="Link to this definition"></a></dt>
+<dd><p>Port of Rust pipeline_orchestration_errors:
+- Validate return codes for valid/invalid pipeline &amp; connector actions.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_orchestration.test_pipeline_orchestration_scenarios">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_orchestration.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_orchestration_scenarios</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_orchestration.html#test_pipeline_orchestration_scenarios"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_orchestration.test_pipeline_orchestration_scenarios" title="Link to this definition"></a></dt>
+<dd><p>Tests for orchestration that the effects (i.e., pipeline and connector state) are
+indeed as expected after each scenario consisting of various start and pause steps.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_pipeline_builder">
+<span id="tests-platform-test-pipeline-builder-module"></span><h2>tests.platform.test_pipeline_builder module<a class="headerlink" href="#module-tests.platform.test_pipeline_builder" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_builder.TestPipelineBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_builder.</span></span><span class="sig-name descname"><span class="pre">TestPipelineBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_builder.html#TestPipelineBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_builder.TestPipelineBuilder" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_builder.TestPipelineBuilder.test_connector_orchestration">
+<span class="sig-name descname"><span class="pre">test_connector_orchestration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_builder.html#TestPipelineBuilder.test_connector_orchestration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_builder.TestPipelineBuilder.test_connector_orchestration" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_pipeline_configs">
+<span id="tests-platform-test-pipeline-configs-module"></span><h2>tests.platform.test_pipeline_configs module<a class="headerlink" href="#module-tests.platform.test_pipeline_configs" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_configs.test_pipeline_program_config">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_configs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_program_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_configs.html#test_pipeline_program_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_configs.test_pipeline_program_config" title="Link to this definition"></a></dt>
+<dd><p>Tests that the pipeline program configuration is validated and stored correctly,
+and that patching works on the field as whole.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_configs.test_pipeline_runtime_config">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_configs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_runtime_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_configs.html#test_pipeline_runtime_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_configs.test_pipeline_runtime_config" title="Link to this definition"></a></dt>
+<dd><p>Tests that the pipeline runtime configuration is validated and stored correctly,
+and that patching works on the field as whole.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_pipeline_crud">
+<span id="tests-platform-test-pipeline-crud-module"></span><h2>tests.platform.test_pipeline_crud module<a class="headerlink" href="#module-tests.platform.test_pipeline_crud" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_connector_endpoint_naming">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_connector_endpoint_naming</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_connector_endpoint_naming"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_connector_endpoint_naming" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_create_compile_delete">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_create_compile_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_create_compile_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_create_compile_delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_get">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_get" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_get_selector">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_get_selector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_get_selector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_get_selector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_name_conflict">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_name_conflict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_name_conflict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_name_conflict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_name_invalid">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_name_invalid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_name_invalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_name_invalid" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_pipeline_post">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_pipeline_post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_pipeline_post" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_pipeline_crud.test_refresh_version">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_pipeline_crud.</span></span><span class="sig-name descname"><span class="pre">test_refresh_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_pipeline_crud.html#test_refresh_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_pipeline_crud.test_refresh_version" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="tests-platform-test-pipeline-lifecycle-module">
+<h2>tests.platform.test_pipeline_lifecycle module<a class="headerlink" href="#tests-platform-test-pipeline-lifecycle-module" title="Link to this heading"></a></h2>
+</section>
+<section id="tests-platform-test-shared-pipeline-module">
+<h2>tests.platform.test_shared_pipeline module<a class="headerlink" href="#tests-platform-test-shared-pipeline-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.platform.test_shared_pipeline_stress">
+<span id="tests-platform-test-shared-pipeline-stress-module"></span><h2>tests.platform.test_shared_pipeline_stress module<a class="headerlink" href="#module-tests.platform.test_shared_pipeline_stress" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.test_shared_pipeline_stress.TestPipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.test_shared_pipeline_stress.</span></span><span class="sig-name descname"><span class="pre">TestPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_shared_pipeline_stress.html#TestPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_shared_pipeline_stress.TestPipeline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="tests.html#tests.shared_test_pipeline.SharedTestPipeline" title="tests.shared_test_pipeline.SharedTestPipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">SharedTestPipeline</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.test_shared_pipeline_stress.TestPipeline.test_create_pipeline">
+<span class="sig-name descname"><span class="pre">test_create_pipeline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_shared_pipeline_stress.html#TestPipeline.test_create_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_shared_pipeline_stress.TestPipeline.test_create_pipeline" title="Link to this definition"></a></dt>
+<dd><p>CREATE TABLE tbl(id INT) WITH (‘materialized’ = ‘true’);
+CREATE MATERIALIZED VIEW v0 AS SELECT * FROM tbl;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.test_shared_pipeline_stress.TestPipeline.test_get_pipeline_logs">
+<span class="sig-name descname"><span class="pre">test_get_pipeline_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_shared_pipeline_stress.html#TestPipeline.test_get_pipeline_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_shared_pipeline_stress.TestPipeline.test_get_pipeline_logs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.platform">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.platform" title="Link to this heading"></a></h2>
+<p>Platform tests package.</p>
+<p>This file makes the <cite>tests.platform</cite> directory a proper Python package so that
+relative imports like <cite>from .helper import …</cite> work when running pytest with
+<cite>PYTHONPATH</cite> pointing at the repository <cite>python</cite> directory.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tests.html" class="btn btn-neutral float-left" title="tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.runtime.html" class="btn btn-neutral float-right" title="tests.runtime package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

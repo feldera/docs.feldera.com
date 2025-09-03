@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.platform.test_metrics_logs &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.platform.test_metrics_logs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.platform.test_metrics_logs</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote_plus</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get</span><span class="p">,</span>
+    <span class="n">post_json</span><span class="p">,</span>
+    <span class="n">post_no_body</span><span class="p">,</span>
+    <span class="n">http_request</span><span class="p">,</span>
+    <span class="n">wait_for_program_success</span><span class="p">,</span>
+    <span class="n">api_url</span><span class="p">,</span>
+    <span class="n">start_pipeline</span><span class="p">,</span>
+    <span class="n">stop_pipeline</span><span class="p">,</span>
+    <span class="n">clear_pipeline</span><span class="p">,</span>
+    <span class="n">pause_pipeline</span><span class="p">,</span>
+    <span class="n">gen_pipeline_name</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ingest_lines</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">http_request</span><span class="p">(</span>
+        <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+        <span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/ingress/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">},</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">ACCEPTED</span><span class="p">),</span> <span class="p">(</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_adhoc_count</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">api_url</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/query?sql=</span><span class="si">{</span><span class="n">quote_plus</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT COUNT(*) AS c FROM </span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&amp;format=json&quot;</span>
+    <span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">txt</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">line</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>
+
+
+<div class="viewcode-block" id="test_pipeline_metrics">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_metrics">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_metrics</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests that circuit metrics can be retrieved from the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span>
+    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pause_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="c1"># Default</span>
+    <span class="n">r_default</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/metrics&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_default</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">text_default</span> <span class="o">=</span> <span class="n">r_default</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="c1"># Prometheus</span>
+    <span class="n">r_prom</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/metrics?format=prometheus&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_prom</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">text_prom</span> <span class="o">=</span> <span class="n">r_prom</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="c1"># JSON</span>
+    <span class="n">r_json</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/metrics?format=json&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_json</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">parsed_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r_json</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed_json</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span> <span class="s2">&quot;Expected JSON metrics array&quot;</span>
+
+    <span class="c1"># Invalid</span>
+    <span class="n">r_bad</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/metrics?format=does-not-exist&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_bad</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span>
+
+    <span class="c1"># Minimal checks</span>
+    <span class="k">assert</span> <span class="s2">&quot;# TYPE records_processed_total counter&quot;</span> <span class="ow">in</span> <span class="n">text_default</span>
+    <span class="k">assert</span> <span class="s2">&quot;# TYPE records_processed_total counter&quot;</span> <span class="ow">in</span> <span class="n">text_prom</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;records_processed_total&quot;</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">parsed_json</span><span class="p">),</span> <span class="p">(</span>
+        <span class="s2">&quot;records_processed_total missing in JSON metrics&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_pipeline_stats">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_stats">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests retrieving pipeline statistics via `/stats`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    CREATE TABLE t1(c1 INT) WITH (</span>
+<span class="s2">        &#39;materialized&#39;=&#39;true&#39;,</span>
+<span class="s2">        &#39;connectors&#39;=&#39;[{</span>
+<span class="s2">            &quot;transport&quot;:{</span>
+<span class="s2">                &quot;name&quot;:&quot;datagen&quot;,</span>
+<span class="s2">                &quot;config&quot;:{&quot;plan&quot;:[{&quot;limit&quot;:5,&quot;rate&quot;:1000}]}</span>
+<span class="s2">            }</span>
+<span class="s2">        }]&#39;</span>
+<span class="s2">    );</span>
+<span class="s2">    CREATE MATERIALIZED VIEW v1 AS SELECT * FROM t1;</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">sql</span><span class="p">})</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="c1"># Create output connector on v1 (egress)</span>
+    <span class="n">r_out</span> <span class="o">=</span> <span class="n">post_no_body</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/egress/v1&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r_out</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="p">(</span><span class="n">r_out</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r_out</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="c1"># Wait for datagen completion</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="n">_adhoc_count</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;t1&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cnt</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">_adhoc_count</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;t1&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;Did not ingest expected 5 rows&quot;</span>
+
+    <span class="n">r_stats</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/stats&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_stats</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="p">(</span><span class="n">r_stats</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">r_stats</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">stats</span> <span class="o">=</span> <span class="n">r_stats</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">assert</span> <span class="n">keys</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">,</span> <span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="s2">&quot;outputs&quot;</span><span class="p">,</span> <span class="s2">&quot;suspend_error&quot;</span><span class="p">]</span>
+
+    <span class="n">gm</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;Running&quot;</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_input_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_processed_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pipeline_complete&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffered_input_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">gm</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffered_input_bytes&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;t1&quot;</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffered_bytes&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;buffered_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_of_input&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_parse_errors&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;num_transport_errors&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_bytes&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">40</span>
+    <span class="k">assert</span> <span class="n">inp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;outputs&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;v1&quot;</span>
+    <span class="k">assert</span> <span class="n">out</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_processed_input_records&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+
+    <span class="c1"># /time_series</span>
+    <span class="n">r_ts</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/time_series&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r_ts</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">r_ts</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">r_ts</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Expected &gt;=2 samples, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">last</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span></div>
+
+
+
+<div class="viewcode-block" id="test_pipeline_logs">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_logs">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_logs</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    - Logs 404 before pipeline creation.</span>
+<span class="sd">    - Create pipeline; poll until logs return 200.</span>
+<span class="sd">    - Pause / start / stop / clear transitions keep logs accessible (200).</span>
+<span class="sd">    - After delete, logs eventually return 404 again.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 404 before creation</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span>
+
+    <span class="c1"># Create pipeline</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span>
+        <span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;CREATE TABLE t1(c1 INTEGER) WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Poll for logs availability</span>
+    <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">30</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected status while waiting for logs: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Logs did not become available in time&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Pause pipeline</span>
+    <span class="n">pause_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Start pipeline</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Stop force</span>
+    <span class="n">stop_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Clear storage</span>
+    <span class="n">clear_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+    <span class="c1"># Logs should remain accessible</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span>
+        <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Delete pipeline</span>
+    <span class="n">dr</span> <span class="o">=</span> <span class="n">http_request</span><span class="p">(</span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">dr</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">ACCEPTED</span><span class="p">),</span> <span class="p">(</span>
+        <span class="n">dr</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+        <span class="n">dr</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Poll until logs become unavailable (404)</span>
+    <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">30</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">),</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected status while waiting for logs to disappear: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Logs did not become unavailable after deletion&quot;</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

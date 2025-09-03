@@ -21,6 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tests.platform package" href="tests.platform.html" />
     <link rel="prev" title="feldera.rest package" href="feldera.rest.html" /> 
 </head>
 
@@ -54,9 +55,15 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">python</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="feldera.html">feldera package</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tests package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html">tests.platform package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html">tests.runtime package</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-tests.shared_test_pipeline">tests.shared_test_pipeline module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tests.shared_test_pipeline.SharedTestPipeline"><code class="docutils literal notranslate"><span class="pre">SharedTestPipeline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tests.shared_test_pipeline.sql"><code class="docutils literal notranslate"><span class="pre">sql()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-tests.test_uda">tests.test_uda module</a><ul>
@@ -101,6 +108,213 @@
              
   <section id="tests-package">
 <h1>tests package<a class="headerlink" href="#tests-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tests.platform.html">tests.platform package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.conftest">tests.platform.conftest module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.conftest.fixture_pipeline_name"><code class="docutils literal notranslate"><span class="pre">fixture_pipeline_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.helper">tests.platform.helper module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus"><code class="docutils literal notranslate"><span class="pre">HTTPStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.ACCEPTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.ACCEPTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.ALREADY_REPORTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.ALREADY_REPORTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.BAD_GATEWAY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.BAD_GATEWAY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.BAD_REQUEST"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.BAD_REQUEST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.CONFLICT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.CONFLICT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.CONTINUE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.CONTINUE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.CREATED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.CREATED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.EARLY_HINTS"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.EARLY_HINTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.EXPECTATION_FAILED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.EXPECTATION_FAILED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.FAILED_DEPENDENCY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.FAILED_DEPENDENCY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.FORBIDDEN"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.FORBIDDEN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.FOUND"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.FOUND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.GATEWAY_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.GATEWAY_TIMEOUT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.GONE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.GONE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.HTTP_VERSION_NOT_SUPPORTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.HTTP_VERSION_NOT_SUPPORTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.IM_A_TEAPOT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.IM_A_TEAPOT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.IM_USED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.IM_USED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.INSUFFICIENT_STORAGE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.INSUFFICIENT_STORAGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.INTERNAL_SERVER_ERROR"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.INTERNAL_SERVER_ERROR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.LENGTH_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.LENGTH_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.LOCKED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.LOCKED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.LOOP_DETECTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.LOOP_DETECTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.METHOD_NOT_ALLOWED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.METHOD_NOT_ALLOWED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.MISDIRECTED_REQUEST"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.MISDIRECTED_REQUEST</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.MOVED_PERMANENTLY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.MOVED_PERMANENTLY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.MULTIPLE_CHOICES"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.MULTIPLE_CHOICES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.MULTI_STATUS"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.MULTI_STATUS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NON_AUTHORITATIVE_INFORMATION"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NON_AUTHORITATIVE_INFORMATION</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_ACCEPTABLE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NOT_ACCEPTABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_EXTENDED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NOT_EXTENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NOT_FOUND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_IMPLEMENTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NOT_IMPLEMENTED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_MODIFIED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NOT_MODIFIED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.NO_CONTENT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.NO_CONTENT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.OK"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.OK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PARTIAL_CONTENT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PARTIAL_CONTENT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PAYMENT_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PAYMENT_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PERMANENT_REDIRECT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PERMANENT_REDIRECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PRECONDITION_FAILED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PRECONDITION_FAILED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PRECONDITION_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PRECONDITION_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PROCESSING"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PROCESSING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.PROXY_AUTHENTICATION_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.PROXY_AUTHENTICATION_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.REQUEST_ENTITY_TOO_LARGE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.REQUEST_ENTITY_TOO_LARGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.REQUEST_HEADER_FIELDS_TOO_LARGE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.REQUEST_TIMEOUT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.REQUEST_TIMEOUT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.REQUEST_URI_TOO_LONG"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.REQUEST_URI_TOO_LONG</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.RESET_CONTENT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.RESET_CONTENT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.SEE_OTHER"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.SEE_OTHER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.SERVICE_UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.SERVICE_UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.SWITCHING_PROTOCOLS"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.SWITCHING_PROTOCOLS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.TEMPORARY_REDIRECT"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.TEMPORARY_REDIRECT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.TOO_EARLY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.TOO_EARLY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.TOO_MANY_REQUESTS"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.TOO_MANY_REQUESTS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.UNAUTHORIZED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNAUTHORIZED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.UNAVAILABLE_FOR_LEGAL_REASONS"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNAVAILABLE_FOR_LEGAL_REASONS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.UNPROCESSABLE_ENTITY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNPROCESSABLE_ENTITY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.UNSUPPORTED_MEDIA_TYPE"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.UNSUPPORTED_MEDIA_TYPE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.UPGRADE_REQUIRED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.UPGRADE_REQUIRED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.USE_PROXY"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.USE_PROXY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.VARIANT_ALSO_NEGOTIATES"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.VARIANT_ALSO_NEGOTIATES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.is_client_error"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.is_client_error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.is_informational"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.is_informational</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.is_redirection"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.is_redirection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.is_server_error"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.is_server_error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.is_success"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.is_success</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.connector_action"><code class="docutils literal notranslate"><span class="pre">connector_action()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.delete"><code class="docutils literal notranslate"><span class="pre">delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.extract_object_by_name"><code class="docutils literal notranslate"><span class="pre">extract_object_by_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.gen_pipeline_name"><code class="docutils literal notranslate"><span class="pre">gen_pipeline_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.http_request"><code class="docutils literal notranslate"><span class="pre">http_request()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.patch_json"><code class="docutils literal notranslate"><span class="pre">patch_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.post_json"><code class="docutils literal notranslate"><span class="pre">post_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.put_json"><code class="docutils literal notranslate"><span class="pre">put_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.unique_pipeline_name"><code class="docutils literal notranslate"><span class="pre">unique_pipeline_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.wait_for_condition"><code class="docutils literal notranslate"><span class="pre">wait_for_condition()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.wait_for_program_success"><code class="docutils literal notranslate"><span class="pre">wait_for_program_success()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.negative_test">tests.platform.negative_test module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_errors0"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_errors0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_initialization_error"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_initialization_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_program_error0"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_program_error0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_program_error1"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_program_error1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_rust_error"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_rust_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.negative_test.NegativeCompilationTests.test_sql_error"><code class="docutils literal notranslate"><span class="pre">NegativeCompilationTests.test_sql_error()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#tests-platform-test-checkpoint-suspend-module">tests.platform.test_checkpoint_suspend module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_checkpoint_sync">tests.platform.test_checkpoint_sync module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_cluster_health">tests.platform.test_cluster_health module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_cluster_health.test_cluster_health_check"><code class="docutils literal notranslate"><span class="pre">test_cluster_health_check()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_cluster_health.test_health_check"><code class="docutils literal notranslate"><span class="pre">test_health_check()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_completion_tokens">tests.platform.test_completion_tokens module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_completion_tokens.test_completion_tokens"><code class="docutils literal notranslate"><span class="pre">test_completion_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_completion_tokens.test_completion_tokens_with_outputs"><code class="docutils literal notranslate"><span class="pre">test_completion_tokens_with_outputs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_ingress_formats">tests.platform.test_ingress_formats module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.JsonLineReader"><code class="docutils literal notranslate"><span class="pre">JsonLineReader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.JsonLineReader.read_events"><code class="docutils literal notranslate"><span class="pre">JsonLineReader.read_events()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.create_pipeline"><code class="docutils literal notranslate"><span class="pre">create_pipeline()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_case_sensitive_tables"><code class="docutils literal notranslate"><span class="pre">test_case_sensitive_tables()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_duplicate_outputs"><code class="docutils literal notranslate"><span class="pre">test_duplicate_outputs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_json_ingress"><code class="docutils literal notranslate"><span class="pre">test_json_ingress()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_map_column"><code class="docutils literal notranslate"><span class="pre">test_map_column()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_parse_datetime"><code class="docutils literal notranslate"><span class="pre">test_parse_datetime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_primary_keys"><code class="docutils literal notranslate"><span class="pre">test_primary_keys()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_quoted_columns"><code class="docutils literal notranslate"><span class="pre">test_quoted_columns()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_ingress_formats.test_upsert"><code class="docutils literal notranslate"><span class="pre">test_upsert()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_metrics_logs">tests.platform.test_metrics_logs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_logs"><code class="docutils literal notranslate"><span class="pre">test_pipeline_logs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_metrics"><code class="docutils literal notranslate"><span class="pre">test_pipeline_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_metrics_logs.test_pipeline_stats"><code class="docutils literal notranslate"><span class="pre">test_pipeline_stats()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_orchestration">tests.platform.test_orchestration module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_orchestration.test_pipeline_orchestration_basic"><code class="docutils literal notranslate"><span class="pre">test_pipeline_orchestration_basic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_orchestration.test_pipeline_orchestration_errors"><code class="docutils literal notranslate"><span class="pre">test_pipeline_orchestration_errors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_orchestration.test_pipeline_orchestration_scenarios"><code class="docutils literal notranslate"><span class="pre">test_pipeline_orchestration_scenarios()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_pipeline_builder">tests.platform.test_pipeline_builder module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_builder.TestPipelineBuilder"><code class="docutils literal notranslate"><span class="pre">TestPipelineBuilder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_builder.TestPipelineBuilder.test_connector_orchestration"><code class="docutils literal notranslate"><span class="pre">TestPipelineBuilder.test_connector_orchestration()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_pipeline_configs">tests.platform.test_pipeline_configs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_configs.test_pipeline_program_config"><code class="docutils literal notranslate"><span class="pre">test_pipeline_program_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_configs.test_pipeline_runtime_config"><code class="docutils literal notranslate"><span class="pre">test_pipeline_runtime_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_pipeline_crud">tests.platform.test_pipeline_crud module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_connector_endpoint_naming"><code class="docutils literal notranslate"><span class="pre">test_pipeline_connector_endpoint_naming()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_create_compile_delete"><code class="docutils literal notranslate"><span class="pre">test_pipeline_create_compile_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_get"><code class="docutils literal notranslate"><span class="pre">test_pipeline_get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_get_selector"><code class="docutils literal notranslate"><span class="pre">test_pipeline_get_selector()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_name_conflict"><code class="docutils literal notranslate"><span class="pre">test_pipeline_name_conflict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_name_invalid"><code class="docutils literal notranslate"><span class="pre">test_pipeline_name_invalid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_pipeline_post"><code class="docutils literal notranslate"><span class="pre">test_pipeline_post()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_pipeline_crud.test_refresh_version"><code class="docutils literal notranslate"><span class="pre">test_refresh_version()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#tests-platform-test-pipeline-lifecycle-module">tests.platform.test_pipeline_lifecycle module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#tests-platform-test-shared-pipeline-module">tests.platform.test_shared_pipeline module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.test_shared_pipeline_stress">tests.platform.test_shared_pipeline_stress module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.test_shared_pipeline_stress.TestPipeline"><code class="docutils literal notranslate"><span class="pre">TestPipeline</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.test_shared_pipeline_stress.TestPipeline.test_create_pipeline"><code class="docutils literal notranslate"><span class="pre">TestPipeline.test_create_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.test_shared_pipeline_stress.TestPipeline.test_get_pipeline_logs"><code class="docutils literal notranslate"><span class="pre">TestPipeline.test_get_pipeline_logs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.runtime.html">tests.runtime package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#module-tests.runtime.test_adhoc_queries">tests.runtime.test_adhoc_queries module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_adhoc_queries.TestAdhocQueries"><code class="docutils literal notranslate"><span class="pre">TestAdhocQueries</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_adhoc_queries.TestAdhocQueries.pipeline"><code class="docutils literal notranslate"><span class="pre">TestAdhocQueries.pipeline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_adhoc_queries.TestAdhocQueries.test_pipeline_adhoc_query"><code class="docutils literal notranslate"><span class="pre">TestAdhocQueries.test_pipeline_adhoc_query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_adhoc_queries.TestAdhocQueries.test_pipeline_adhoc_query_empty"><code class="docutils literal notranslate"><span class="pre">TestAdhocQueries.test_pipeline_adhoc_query_empty()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#module-tests.runtime.test_udf">tests.runtime.test_udf module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_udf.TestUDF"><code class="docutils literal notranslate"><span class="pre">TestUDF</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_udf.TestUDF.test_local"><code class="docutils literal notranslate"><span class="pre">TestUDF.test_local()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#module-tests.runtime">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
@@ -138,6 +352,12 @@
 <dd><p>Hook method for deconstructing the test fixture after testing it.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.shared_test_pipeline.sql">
+<span class="sig-prename descclassname"><span class="pre">tests.shared_test_pipeline.</span></span><span class="sig-name descname"><span class="pre">sql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_or_iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#sql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.sql" title="Link to this definition"></a></dt>
+<dd><p>Decorator to attach SQL (string or list/tuple of strings) to a test method.</p>
 </dd></dl>
 
 </section>
@@ -178,6 +398,7 @@ of the commit SHA or ‘local’ if not in CI.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="feldera.rest.html" class="btn btn-neutral float-left" title="feldera.rest package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.platform.html" class="btn btn-neutral float-right" title="tests.platform package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

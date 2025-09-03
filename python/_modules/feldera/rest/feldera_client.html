@@ -982,6 +982,7 @@
         <span class="n">backpressure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">case_sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Listen for updates to views for pipeline, yields the chunks of data</span>
@@ -997,6 +998,7 @@
 <span class="sd">            &quot;json&quot; format, the default value is False</span>
 
 <span class="sd">        :param timeout: The amount of time in seconds to listen to the stream for</span>
+<span class="sd">        :param case_sensitive: True if the table name is case sensitive or a reserved keyword, False by default</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -1006,6 +1008,8 @@
 
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+        <span class="n">table_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="n">table_name</span>
 
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/egress/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>

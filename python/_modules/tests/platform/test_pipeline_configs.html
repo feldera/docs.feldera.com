@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.platform.test_pipeline_configs &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.platform.test_pipeline_configs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.platform.test_pipeline_configs</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">API_PREFIX</span><span class="p">,</span>
+    <span class="n">post_json</span><span class="p">,</span>
+    <span class="n">put_json</span><span class="p">,</span>
+    <span class="n">patch_json</span><span class="p">,</span>
+    <span class="n">gen_pipeline_name</span><span class="p">,</span>
+    <span class="n">cleanup_pipeline</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pipeline_url</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_PREFIX</span><span class="si">}</span><span class="s2">/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<div class="viewcode-block" id="test_pipeline_runtime_config">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_pipeline_configs.test_pipeline_runtime_config">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_runtime_config</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests that the pipeline runtime configuration is validated and stored correctly,</span>
+<span class="sd">    and that patching works on the field as whole.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Valid runtime_config variants</span>
+    <span class="c1"># Each item: (runtime_config_field_value, predicate_to_validate)</span>
+    <span class="n">valid_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span>  <span class="c1"># explicit JSON null</span>
+            <span class="k">lambda</span> <span class="n">rc</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;workers&quot;</span> <span class="ow">in</span> <span class="n">rc</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">{},</span>
+            <span class="k">lambda</span> <span class="n">rc</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
+            <span class="k">lambda</span> <span class="n">rc</span><span class="p">:</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">12</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                    <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+                    <span class="s2">&quot;storage_class&quot;</span><span class="p">:</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+                <span class="p">},</span>
+            <span class="p">},</span>
+            <span class="k">lambda</span> <span class="n">rc</span><span class="p">:</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100</span>
+            <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+            <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_mb_max&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2000</span>
+            <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_class&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">runtime_config</span><span class="p">,</span> <span class="n">predicate</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">valid_cases</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;-- runtime config variant </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">runtime_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;runtime_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">runtime_config</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">put_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">),</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">predicate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;runtime_config&quot;</span><span class="p">)),</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Runtime config predicate failed for variant </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;runtime_config&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Invalid runtime_config cases</span>
+    <span class="n">invalid_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="s2">&quot;not-a-number&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="s2">&quot;not-a-number&quot;</span><span class="p">}},</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">invalid</span> <span class="ow">in</span> <span class="n">invalid_cases</span><span class="p">:</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;-- invalid variant&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="n">invalid</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">put_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="c1"># Rust test checks error_code == InvalidRuntimeConfig</span>
+        <span class="k">assert</span> <span class="n">err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_code&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;InvalidRuntimeConfig&quot;</span><span class="p">,</span> <span class="n">err</span>
+
+    <span class="c1"># Patching original (create with explicit rich config)</span>
+    <span class="n">pipeline_name_2</span> <span class="o">=</span> <span class="n">pipeline_name</span> <span class="o">+</span> <span class="s2">&quot;-2&quot;</span>
+    <span class="n">cleanup_pipeline</span><span class="p">(</span><span class="n">pipeline_name_2</span><span class="p">)</span>
+    <span class="n">original_body</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name_2</span><span class="p">,</span>
+        <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;-- patch original&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;unoptimized&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+    <span class="n">resp_orig</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_PREFIX</span><span class="si">}</span><span class="s2">/pipelines&quot;</span><span class="p">,</span> <span class="n">original_body</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">resp_orig</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">),</span> <span class="n">resp_orig</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="c1"># Patch modifying some nested fields</span>
+    <span class="n">patch_body</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">},</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">patch_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">patch_body</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">rc_modified</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;runtime_config&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">rc_modified</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;workers&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">rc_modified</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_mb_max&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">123</span></div>
+
+
+
+<div class="viewcode-block" id="test_pipeline_program_config">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_pipeline_configs.test_pipeline_program_config">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_program_config</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tests that the pipeline program configuration is validated and stored correctly,</span>
+<span class="sd">    and that patching works on the field as whole.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">valid_cases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;cache&quot;</span> <span class="ow">in</span> <span class="n">pc</span><span class="p">),</span>
+        <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)),</span>  <span class="c1"># explicit null path</span>
+        <span class="p">({},</span> <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)),</span>
+        <span class="p">({</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;dev&quot;</span><span class="p">},</span> <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="n">pc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;profile&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;dev&quot;</span><span class="p">),</span>
+        <span class="p">({</span><span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="n">pc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="k">lambda</span> <span class="n">pc</span><span class="p">:</span> <span class="n">pc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;profile&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;dev&quot;</span> <span class="ow">and</span> <span class="n">pc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">program_config</span><span class="p">,</span> <span class="n">predicate</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">valid_cases</span><span class="p">):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;sql-1 </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># SQL doesn&#39;t matter for this test</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">program_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;program_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">program_config</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">put_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">),</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">predicate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;program_config&quot;</span><span class="p">)),</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Program config predicate failed for variant </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;program_config&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Invalid program_config variants</span>
+    <span class="n">invalid_program_configs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;does-not-exist&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;unknown&quot;</span><span class="p">,</span> <span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">invalid</span> <span class="ow">in</span> <span class="n">invalid_program_configs</span><span class="p">:</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;-- invalid program config&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="n">invalid</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">put_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">err</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_code&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;InvalidProgramConfig&quot;</span><span class="p">,</span> <span class="n">err</span>
+
+    <span class="c1"># Original full config</span>
+    <span class="n">original_body</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;sql-2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="s2">&quot;unoptimized&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">put_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="n">original_body</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">),</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">pc_original</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;program_config&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">pc_original</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;profile&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;unoptimized&quot;</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">pc_original</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Patch no changes</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">patch_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="p">{})</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">pc_after_noop</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;program_config&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">pc_after_noop</span> <span class="o">==</span> <span class="n">pc_original</span>
+
+    <span class="c1"># Patch modify cache only</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">patch_json</span><span class="p">(</span><span class="n">_pipeline_url</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span>
+    <span class="k">assert</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">pc_modified</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;program_config&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">pc_modified</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cache&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

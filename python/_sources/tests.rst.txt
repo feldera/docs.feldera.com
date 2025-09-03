@@ -1,6 +1,15 @@
 tests package
 =============
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   tests.platform
+   tests.runtime
+
 Submodules
 ----------
 

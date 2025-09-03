@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.platform.test_ingress_formats &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">python</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.platform.test_ingress_formats</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.platform.test_ingress_formats</h1><div class="highlight"><pre>
+<span></span><span class="c1"># TODO: these tests should be part of runtime tests</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">post_json</span><span class="p">,</span>
+    <span class="n">http_request</span><span class="p">,</span>
+    <span class="n">wait_for_program_success</span><span class="p">,</span>
+    <span class="n">api_url</span><span class="p">,</span>
+    <span class="n">start_pipeline</span><span class="p">,</span>
+    <span class="n">gen_pipeline_name</span><span class="p">,</span>
+    <span class="n">adhoc_query_json</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_pipeline">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.create_pipeline">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sql</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">sql</span><span class="p">})</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ingress</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span><span class="p">,</span>
+    <span class="n">update_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="n">array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;format=</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;update_format=</span><span class="si">{</span><span class="n">update_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">array</span><span class="p">:</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;array=true&quot;</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">api_url</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline</span><span class="si">}</span><span class="s2">/ingress/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;?&quot;</span> <span class="o">+</span> <span class="s2">&quot;&amp;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">content_type</span><span class="p">:</span>
+        <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content_type</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;application/json&quot;</span> <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span> <span class="k">else</span> <span class="s2">&quot;text/plain&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">http_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_change_stream_start</span><span class="p">(</span><span class="n">pipeline</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">object_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="c1"># object_name may already has quotes around it; if so, percent-encode them.</span>
+    <span class="k">if</span> <span class="n">object_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">object_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">):</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">object_name</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">object_name</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">api_url</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline</span><span class="si">}</span><span class="s2">/egress/</span><span class="si">{</span><span class="n">encoded</span><span class="si">}</span><span class="s2">?format=json&amp;backpressure=true&quot;</span>
+    <span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">http_request</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_json_events</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">expected_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read expected_count JSON events from a streaming response.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;json_data&quot;</span><span class="p">):</span>
+                <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># noqa: BLE001</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid JSON line: </span><span class="si">{</span><span class="n">line</span><span class="si">!r}</span><span class="s2"> (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">expected_count</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Timeout reading events (wanted </span><span class="si">{</span><span class="n">expected_count</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">events</span>
+
+
+<div class="viewcode-block" id="JsonLineReader">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.JsonLineReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JsonLineReader</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resp</span> <span class="o">=</span> <span class="n">resp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iter</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">()</span>
+
+<div class="viewcode-block" id="JsonLineReader.read_events">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.JsonLineReader.read_events">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+        <span class="n">events</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iter</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="c1"># server closed the stream</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Timeout waiting for </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> events, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;json_data&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
+                    <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+                        <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid JSON line: </span><span class="si">{</span><span class="n">line</span><span class="si">!r}</span><span class="s2"> (</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">events</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="test_json_ingress">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_json_ingress">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_json_ingress</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Exercise raw inserts, insert_delete format, array format, parse errors,</span>
+<span class="sd">    debezium update, and CSV ingestion with parse error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CREATE TABLE t1(c1 integer, c2 bool, c3 varchar) &quot;</span>
+        <span class="s2">&quot;WITH (&#39;materialized&#39; = &#39;true&#39;); &quot;</span>
+        <span class="s2">&quot;CREATE MATERIALIZED VIEW v1 AS SELECT * FROM t1;&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="c1"># Raw format (missing some fields)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;c1&quot;:10,&quot;c2&quot;:true}</span><span class="se">\n</span><span class="s1">{&quot;c1&quot;:20,&quot;c3&quot;:&quot;foo&quot;}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># insert_delete format (delete and new insert)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;t1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;delete&quot;:{&quot;c1&quot;:10,&quot;c2&quot;:true}}</span><span class="se">\n</span><span class="s1">{&quot;insert&quot;:{&quot;c1&quot;:30,&quot;c3&quot;:&quot;bar&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Insert via JSON array style</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:[40,true,&quot;buzz&quot;]}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+
+    <span class="c1"># Use array of updates instead of newline-delimited JSON</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;[{&quot;delete&quot;:[40,true,&quot;buzz&quot;]},{&quot;insert&quot;:[50,true,&quot;&quot;]}]&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+        <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from T1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="c1"># Expect 20,30,50</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Trigger parse errors with array=true (some invalid types)</span>
+    <span class="n">bad_payload</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;[{&quot;insert&quot;:[35,true,&quot;&quot;]},&#39;</span>
+        <span class="s1">&#39;{&quot;delete&quot;:[40,&quot;foo&quot;,&quot;buzz&quot;]},&#39;</span>
+        <span class="s1">&#39;{&quot;insert&quot;:[true,true,&quot;&quot;]}]&#39;</span>
+    <span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="n">bad_payload</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+        <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">assert</span> <span class="s2">&quot;Errors parsing input data (2 errors)&quot;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+
+    <span class="c1"># Even records that are parsed successfully don&#39;t get ingested when</span>
+    <span class="c1"># using array format</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from T1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="c1"># Expect 20,30,50</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;bar&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Debezium CDC style (&#39;u&#39; update)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;payload&quot;:{&quot;op&quot;:&quot;u&quot;,&quot;before&quot;:[50,true,&quot;&quot;],&quot;after&quot;:[60,true,&quot;hello&quot;]}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;debezium&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="s2">&quot;hello&quot;</span><span class="p">}</span>
+
+    <span class="c1"># CSV with a parse error in the second row,</span>
+    <span class="c1"># (the second record is invalid, but the other two should</span>
+    <span class="c1"># get ingested).</span>
+    <span class="n">csv_body</span> <span class="o">=</span> <span class="s2">&quot;15,true,foo</span><span class="se">\n</span><span class="s2">not_a_number,true,ΑαΒβΓγΔδ</span><span class="se">\n</span><span class="s2">16,false,unicode🚲&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;t1&quot;</span><span class="p">,</span>
+        <span class="n">csv_body</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+        <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;text/csv&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Expect BAD_REQUEST due to parse error, but first and last ingested</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">assert</span> <span class="s2">&quot;Errors parsing input data (1 errors)&quot;</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by c1, c2, c3&quot;</span><span class="p">)</span>
+    <span class="c1"># Verify 15 &amp; 16 present along with earlier rows (20,30,60, etc.)</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;c1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">15</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">got</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;c1&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">16</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">got</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_map_column">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_map_column">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_map_column</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Table with column of type MAP</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CREATE TABLE t1(c1 integer, c2 bool, c3 MAP&lt;varchar,varchar&gt;) &quot;</span>
+        <span class="s2">&quot;WITH (&#39;materialized&#39;=&#39;true&#39;); CREATE VIEW v1 AS SELECT * FROM t1;&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;c1&quot;:10,&quot;c2&quot;:true,&quot;c3&quot;:{&quot;foo&quot;:&quot;1&quot;,&quot;bar&quot;:&quot;2&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;c1&quot;:20}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by c1&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}},</span>
+        <span class="p">{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span> <span class="s2">&quot;c2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;c3&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="test_parse_datetime">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_parse_datetime">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_parse_datetime</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;CREATE TABLE t1(t TIME, ts TIMESTAMP, d DATE) WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;t1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;t&quot;:&quot;13:22:00&quot;,&quot;ts&quot;:&quot;2021-05-20 12:12:33&quot;,&quot;d&quot;:&quot;2021-05-20&quot;}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="s1">&#39;{&quot;t&quot;:&quot; 11:12:33.483221092 &quot;,&quot;ts&quot;:&quot; 2024-02-25 12:12:33 &quot;,&quot;d&quot;:&quot; 2024-02-25 &quot;}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="c1"># Order by normalized</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by t, ts, d&quot;</span><span class="p">)</span>
+    <span class="c1"># Compare normalized strings</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;t&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;11:12:33.483221092&quot;</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">got</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;t&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;13:22:00&quot;</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">got</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_quoted_columns">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_quoted_columns">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_quoted_columns</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;CREATE TABLE t1(&quot;c1&quot; integer not null,&quot;C2&quot; bool not null,&quot;😁❤&quot; varchar not null,&#39;</span>
+        <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">αβγ</span><span class="se">\&quot;</span><span class="s2"> boolean not null, ΔΘ boolean not null) WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;c1&quot;:10,&quot;C2&quot;:true,&quot;😁❤&quot;:&quot;foo&quot;,&quot;αβγ&quot;:true,&quot;δθ&quot;:false}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s1">&#39;select * from t1 order by &quot;c1&quot;&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;c1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;😁❤&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;αβγ&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;δθ&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}]</span></div>
+
+
+
+<div class="viewcode-block" id="test_primary_keys">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_primary_keys">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_primary_keys</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Port of primary_keys: test insert/update/delete semantics with primary key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CREATE TABLE t1(id bigint not null, s varchar not null, primary key(id)) &quot;</span>
+        <span class="s2">&quot;WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="c1"># Insert two rows</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:1,&quot;s&quot;:&quot;1&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;insert&quot;:{&quot;id&quot;:2,&quot;s&quot;:&quot;2&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by id&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">}]</span>
+
+    <span class="c1"># Modify: insert (overwrite id=1) and update id=2</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:1,&quot;s&quot;:&quot;1-modified&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;update&quot;:{&quot;id&quot;:2,&quot;s&quot;:&quot;2-modified&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by id&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;1-modified&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;2-modified&quot;</span><span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Delete id=2</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;delete&quot;:{&quot;id&quot;:2}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">got</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from t1 order by id&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">got</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;1-modified&quot;</span><span class="p">}]</span></div>
+
+
+
+<div class="viewcode-block" id="test_case_sensitive_tables">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_case_sensitive_tables">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_case_sensitive_tables</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    - Distinguish between quoted and unquoted identifiers.</span>
+<span class="sd">    - Validate streaming outputs for two views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;CREATE TABLE &quot;TaBle1&quot;(id bigint not null);&#39;</span>
+        <span class="s2">&quot;CREATE TABLE table1(id bigint);&quot;</span>
+        <span class="s1">&#39;CREATE MATERIALIZED VIEW &quot;V1&quot; AS SELECT * FROM &quot;TaBle1&quot;;&#39;</span>
+        <span class="s1">&#39;CREATE MATERIALIZED VIEW &quot;v1&quot; AS SELECT * FROM table1;&#39;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="n">stream_v1</span> <span class="o">=</span> <span class="n">_change_stream_start</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s1">&#39;&quot;V1&quot;&#39;</span><span class="p">)</span>
+    <span class="n">stream_v1_lower</span> <span class="o">=</span> <span class="n">_change_stream_start</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s1">&#39;&quot;v1&quot;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Ingest into quoted &quot;TaBle1&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="n">quote</span><span class="p">(</span><span class="s1">&#39;&quot;TaBle1&quot;&#39;</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:1}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="c1"># Ingest into unquoted table1</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;table1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:2}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+
+    <span class="n">ev_v1</span> <span class="o">=</span> <span class="n">_read_json_events</span><span class="p">(</span><span class="n">stream_v1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ev_v1_lower</span> <span class="o">=</span> <span class="n">_read_json_events</span><span class="p">(</span><span class="n">stream_v1_lower</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ev_v1</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}}]</span>
+    <span class="k">assert</span> <span class="n">ev_v1_lower</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}]</span>
+
+    <span class="c1"># Validate adhoc queries respect case</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s1">&#39;select * from &quot;V1&quot;&#39;</span><span class="p">)</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="n">adhoc_query_json</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;select * from v1&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">q1</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}]</span>
+    <span class="k">assert</span> <span class="n">q2</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}]</span></div>
+
+
+
+<div class="viewcode-block" id="test_duplicate_outputs">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_duplicate_outputs">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_duplicate_outputs</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    multiple inserts producing duplicate output values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CREATE TABLE t1(id bigint not null, s varchar not null); &quot;</span>
+        <span class="s2">&quot;CREATE VIEW v1 AS SELECT s FROM t1;&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">_change_stream_start</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;V1&quot;</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">JsonLineReader</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+
+    <span class="c1"># First batch</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:1,&quot;s&quot;:&quot;1&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;insert&quot;:{&quot;id&quot;:2,&quot;s&quot;:&quot;2&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}},</span> <span class="p">{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">}}]</span>
+
+    <span class="c1"># Second batch</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:3,&quot;s&quot;:&quot;3&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;insert&quot;:{&quot;id&quot;:4,&quot;s&quot;:&quot;4&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">}},</span> <span class="p">{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">}}]</span>
+
+    <span class="c1"># Duplicates</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id&quot;:5,&quot;s&quot;:&quot;1&quot;}}</span><span class="se">\n</span><span class="s1">{&quot;insert&quot;:{&quot;id&quot;:6,&quot;s&quot;:&quot;2&quot;}}&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">}},</span> <span class="p">{</span><span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">}}]</span></div>
+
+
+
+<div class="viewcode-block" id="test_upsert">
+<a class="viewcode-back" href="../../../tests.platform.html#tests.platform.test_ingress_formats.test_upsert">[docs]</a>
+<span class="nd">@gen_pipeline_name</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_upsert</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    - Insert several rows with composite PK.</span>
+<span class="sd">    - Perform updates/inserts overwriting existing rows.</span>
+<span class="sd">    - Perform no-op updates and deletes of non-existing keys.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;CREATE TABLE t1(&quot;</span>
+        <span class="s2">&quot;id1 bigint not null,&quot;</span>
+        <span class="s2">&quot;id2 bigint not null,&quot;</span>
+        <span class="s2">&quot;str1 varchar not null,&quot;</span>
+        <span class="s2">&quot;str2 varchar,&quot;</span>
+        <span class="s2">&quot;int1 bigint not null,&quot;</span>
+        <span class="s2">&quot;int2 bigint,&quot;</span>
+        <span class="s2">&quot;primary key(id1,id2)) &quot;</span>
+        <span class="s2">&quot;WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
+    <span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
+    <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">_change_stream_start</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;T1&quot;</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">JsonLineReader</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+
+    <span class="c1"># Initial inserts (array=true)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;[{&quot;insert&quot;:{&quot;id1&quot;:1,&quot;id2&quot;:1,&quot;str1&quot;:&quot;1&quot;,&quot;int1&quot;:1}},&#39;</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id1&quot;:2,&quot;id2&quot;:1,&quot;str1&quot;:&quot;1&quot;,&quot;int1&quot;:1}},&#39;</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id1&quot;:3,&quot;id2&quot;:1,&quot;str1&quot;:&quot;1&quot;,&quot;int1&quot;:1}}]&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+        <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Mixed updates</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;[{&quot;update&quot;:{&quot;id1&quot;:1,&quot;id2&quot;:1,&quot;str1&quot;:&quot;2&quot;}},&#39;</span>
+        <span class="s1">&#39;{&quot;update&quot;:{&quot;id1&quot;:2,&quot;id2&quot;:1,&quot;str2&quot;:&quot;foo&quot;}},&#39;</span>
+        <span class="s1">&#39;{&quot;insert&quot;:{&quot;id1&quot;:3,&quot;id2&quot;:1,&quot;str1&quot;:&quot;1&quot;,&quot;str2&quot;:&quot;2&quot;,&quot;int1&quot;:3,&quot;int2&quot;:33}}]&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+        <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;delete&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;delete&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;delete&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+
+    <span class="c1"># No-op / mixed operations (some won&#39;t generate output)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_ingress</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;T1&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;[{&quot;update&quot;:{&quot;id1&quot;:1,&quot;id2&quot;:1}},&#39;</span>
+        <span class="s1">&#39;{&quot;update&quot;:{&quot;id1&quot;:2,&quot;id2&quot;:1,&quot;str2&quot;:null}},&#39;</span>
+        <span class="s1">&#39;{&quot;delete&quot;:{&quot;id1&quot;:3,&quot;id2&quot;:1}},&#39;</span>
+        <span class="s1">&#39;{&quot;delete&quot;:{&quot;id1&quot;:4,&quot;id2&quot;:1}},&#39;</span>
+        <span class="s1">&#39;{&quot;update&quot;:{&quot;id1&quot;:4,&quot;id2&quot;:1,&quot;int1&quot;:0,&quot;str1&quot;:&quot;&quot;}}]&#39;</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;json&quot;</span><span class="p">,</span>
+        <span class="n">update_format</span><span class="o">=</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
+        <span class="n">array</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span>
+    <span class="c1"># Expect 3 events: delete (id2=1 id1=2 old str2=foo), delete (id1=3...), insert (id1=2 updated str2 null)</span>
+    <span class="n">evs</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_events</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">evs</span> <span class="o">==</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;delete&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;delete&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="mi">33</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;insert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id1&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s2">&quot;id2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;str1&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;str2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">&quot;int1&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;int2&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
