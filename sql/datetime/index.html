@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.78176278.js" defer="defer"></script>
-<script src="/assets/js/main.9ee35950.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.ebb7ab69.js" defer="defer"></script>
+<script src="/assets/js/main.e39d896e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -67,7 +67,7 @@ For dates it always returns 0, since dates have no time component.</p>
 <p>Values of type <code>DATE</code> can be compared using <code>=</code>, <code>&lt;&gt;</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>,
 <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;=&gt;</code>, <code>BETWEEN</code>; the result is a Boolean.</p>
 <a id="date_timestampdiff"></a>
-<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference between
+<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference (right - left) between
 two dates values and expresses the result in the specified time units.
 The result is a 32-bit integer.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="times">Times<a href="#times" class="hash-link" aria-label="Direct link to Times" title="Direct link to Times">​</a></h2>
@@ -108,7 +108,7 @@ described above.  Result is always a <code>BIGINT</code> value.</p>
 <p>Values of type <code>TIME</code> can be compared using <code>=</code>, <code>&lt;&gt;</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>,
 <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;=&gt;</code>, <code>BETWEEN</code>; the result is a Boolean.</p>
 <a id="timestamp_timestampdiff"></a>
-<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference between
+<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference (right - left) between
 two time values and expresses the result in the specified time units.
 The result is a 32-bit integer.</p>
 <a id="time_floor"></a>
@@ -165,7 +165,7 @@ described above.  Result is always a <code>BIGINT</code> value.</p>
 <p>Values of type <code>TIMESTAMP</code> can be compared using <code>=</code>, <code>&lt;&gt;</code>, <code>!=</code>, <code>&lt;</code>,
 <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;=&gt;</code>, <code>BETWEEN</code>; the result is a Boolean.</p>
 <a id="timestamp_timestampdiff"></a>
-<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference between
+<p><code>TIMESTAMPDIFF(&lt;unit&gt;, left, right)</code> computes the difference (right - left) between
 two timestamps and expresses the result in the specified time units.
 The result is a 32-bit integer.  <code>DATEDIFF</code> is a synonym for
 <code>TIMESTAMPDIFF</code>.  One month is considered elapsed when the calendar
@@ -256,7 +256,7 @@ result.  A conjunction of such terms is also accepted if all terms
 involve the same expression (e.g.: <code>T.ts &gt;= NOW() - INTERVAL 1 DAYS AND T.ts &lt;= NOW() + INTERVAL 1 DAYS</code>).</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="date-parsing-and-formatting">Date parsing and formatting<a href="#date-parsing-and-formatting" class="hash-link" aria-label="Direct link to Date parsing and formatting" title="Direct link to Date parsing and formatting">​</a></h2>
 <p>We support the following functions for formatting and parsing date-like values:</p>
-<table><thead><tr><th>Operation</th><th>Arguments</th><th>Result</th><th>Example</th></tr></thead><tbody><tr><td><code>FORMAT_DATE</code></td><td>string_format, date</td><td>string</td><td><code>FORMAT_DATE(&#x27;%Y-%m&#x27;, DATE &#x27;2020-10-10&#x27;)</code> =&gt; 2020-10</td></tr><tr><td><code>PARSE_DATE</code></td><td>string_format, string</td><td>DATE</td><td><code>PARSE_DATE(&#x27; %Y-%m-%d&#x27;, &#x27;   2020-10-01&#x27;)</code> =&gt; <code>2020-10-01</code></td></tr><tr><td><code>PARSE_TIME</code></td><td>string_format, string</td><td>TIME</td><td><code>PARSE_TIME(&#x27;%H:%M&#x27;, &#x27;10:10&#x27;)</code> =&gt; <code>10:10:00</code></td></tr><tr><td><code>PARSE_TIMESTAMP</code></td><td>string_format, string</td><td>TIMESTAMP</td><td><code>PARSE_TIMESTAMP(&#x27;%Y-%m-%d %H:%M:%S&#x27;, &#x27;2020-10-01 00:00:00&#x27;)</code> =&gt; <code>2020-10-01 00:00:00</code></td></tr></tbody></table>
+<table><thead><tr><th>Operation</th><th>Arguments</th><th>Result</th><th>Example</th></tr></thead><tbody><tr><td><code>FORMAT_DATE</code></td><td>string_format, date</td><td>string</td><td><code>FORMAT_DATE(&#x27;%Y-%m&#x27;, DATE &#x27;2020-10-10&#x27;)</code> =&gt; <code>2020-10</code></td></tr><tr><td><code>PARSE_DATE</code></td><td>string_format, string</td><td>DATE</td><td><code>PARSE_DATE(&#x27; %Y-%m-%d&#x27;, &#x27;   2020-10-01&#x27;)</code> =&gt; <code>2020-10-01</code></td></tr><tr><td><code>PARSE_TIME</code></td><td>string_format, string</td><td>TIME</td><td><code>PARSE_TIME(&#x27;%H:%M&#x27;, &#x27;10:10&#x27;)</code> =&gt; <code>10:10:00</code></td></tr><tr><td><code>PARSE_TIMESTAMP</code></td><td>string_format, string</td><td>TIMESTAMP</td><td><code>PARSE_TIMESTAMP(&#x27;%Y-%m-%d %H:%M:%S&#x27;, &#x27;2020-10-01 00:00:00&#x27;)</code> =&gt; <code>2020-10-01 00:00:00</code></td></tr></tbody></table>
 <p>If the string cannot be parsed according to the specified format:</p>
 <ul>
 <li>a runtime error is produced if the format is incorrect for producing

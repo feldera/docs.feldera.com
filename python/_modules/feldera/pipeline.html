@@ -840,6 +840,7 @@
 <span class="sd">            checkpoint to complete syncing.</span>
 
 <span class="sd">        :raises FelderaAPIError: If no checkpoints have been made.</span>
+<span class="sd">        :raises RuntimeError: If syncing the checkpoint fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -857,6 +858,11 @@
 <span class="s2">pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;&quot;&quot;&quot;</span>
                 <span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Failure</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;failed to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;: &quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
+                <span class="p">)</span>
+
             <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="p">[</span><span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">InProgress</span><span class="p">,</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Unknown</span><span class="p">]:</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
                 <span class="k">continue</span>
@@ -874,6 +880,9 @@
 <span class="sd">        If the checkpoint is currently being synchronized, returns</span>
 <span class="sd">        `CheckpointStatus.Unknown`.</span>
 
+<span class="sd">        Failures are not raised as runtime errors and must be explicitly</span>
+<span class="sd">        checked.</span>
+
 <span class="sd">        :param uuid: The checkpoint uuid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -889,6 +898,7 @@
         <span class="k">if</span> <span class="n">uuid</span> <span class="o">==</span> <span class="n">fail</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uuid&quot;</span><span class="p">):</span>
             <span class="n">failure</span> <span class="o">=</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Failure</span>
             <span class="n">failure</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">fail</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">failure</span><span class="o">.</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">failure</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">UUID</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">UUID</span><span class="p">(</span><span class="n">success</span><span class="p">):</span>

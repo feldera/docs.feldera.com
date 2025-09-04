@@ -892,7 +892,10 @@ checkpoint to complete syncing.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If no checkpoints have been made.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If no checkpoints have been made.</p></li>
+<li><p><strong>RuntimeError</strong> – If syncing the checkpoint fails.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -903,6 +906,8 @@ checkpoint to complete syncing.</p></li>
 <dd><p>Checks the status of the given checkpoint sync operation.
 If the checkpoint is currently being synchronized, returns
 <cite>CheckpointStatus.Unknown</cite>.</p>
+<p>Failures are not raised as runtime errors and must be explicitly
+checked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>uuid</strong> – The checkpoint uuid.</p>
