@@ -439,7 +439,7 @@
                     <span class="sa">f</span><span class="s2">&quot; time </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s, timeout: </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span>
+            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">pipeline_complete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;received unknown metrics from the pipeline, pipeline_complete is None&quot;</span>
@@ -451,6 +451,22 @@
 
         <span class="k">if</span> <span class="n">force_stop</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.is_complete">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.is_complete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the pipeline has completed processing all input records.</span>
+
+<span class="sd">        Returns True if (1) all input connectors attached to the</span>
+<span class="sd">        pipeline have finished reading their input data sources and issued</span>
+<span class="sd">        end-of-input notifications to the pipeline, and (2) all inputs received</span>
+<span class="sd">        from these connectors have been fully processed and corresponding</span>
+<span class="sd">        outputs have been sent out through the output connectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.start">
@@ -774,6 +790,8 @@
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            checkpoint to complete.</span>
 
+<span class="sd">        :return: The checkpoint sequence number.</span>
+
 <span class="sd">        :raises FelderaAPIError: If enterprise features are not enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -796,9 +814,7 @@
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
                 <span class="k">continue</span>
 
-            <span class="k">return</span> <span class="n">status</span>
-
-        <span class="k">return</span> <span class="n">seq</span></div>
+            <span class="k">return</span> <span class="n">seq</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.checkpoint_status">
@@ -1067,6 +1083,41 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_code</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.modify">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.modify">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modify</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">sql</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">udf_rust</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">udf_toml</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">program_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">runtime_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Modify the pipeline.</span>
+
+<span class="sd">        Modify the values of pipeline attributes: SQL code, UDF Rust code,</span>
+<span class="sd">        UDF Rust dependencies (TOML), program config, runtime config, and</span>
+<span class="sd">        description. Only the provided attributes will be modified. Other</span>
+<span class="sd">        attributes will remain unchanged.</span>
+
+<span class="sd">        The pipeline must be in the STOPPED state to be modified.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a STOPPED state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">patch_pipeline</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">,</span>
+            <span class="n">udf_rust</span><span class="o">=</span><span class="n">udf_rust</span><span class="p">,</span>
+            <span class="n">udf_toml</span><span class="o">=</span><span class="n">udf_toml</span><span class="p">,</span>
+            <span class="n">program_config</span><span class="o">=</span><span class="n">program_config</span><span class="p">,</span>
+            <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.storage_status">
