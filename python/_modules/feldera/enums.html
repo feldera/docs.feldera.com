@@ -261,6 +261,39 @@
 
 
 
+<div class="viewcode-block" id="TransactionStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.TransactionStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransactionStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the transaction handling status of a pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">NoTransaction</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;There is currently no active transaction.&quot;&quot;&quot;</span>
+
+    <span class="n">TransactionInProgress</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;There is an active transaction in progress.&quot;&quot;&quot;</span>
+
+    <span class="n">CommitInProgress</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A commit is currently in progress.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TransactionStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.TransactionStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">TransactionStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">TransactionStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span></div>
+
+
+
 <div class="viewcode-block" id="ProgramStatus">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProgramStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>

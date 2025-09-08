@@ -225,7 +225,7 @@ If None, the function will wait indefinitely.</p></li>
 <li><p><strong>RuntimeError</strong> – If there is currently no transaction in progress.</p></li>
 <li><p><strong>ValueError</strong> – If the provided <cite>transaction_id</cite> does not match the current transaction.</p></li>
 <li><p><strong>TimeoutError</strong> – If the transaction does not commit within the specified timeout (when <cite>wait</cite> is True).</p></li>
-<li><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline fails to start a transaction.</p></li>
+<li><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline fails to commit a transaction.</p></li>
 </ul>
 </dd>
 </dl>

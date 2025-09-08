@@ -90,7 +90,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatus</span><span class="p">,</span> <span class="n">ProgramStatus</span><span class="p">,</span> <span class="n">CheckpointStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PipelineStatus</span><span class="p">,</span>
+    <span class="n">ProgramStatus</span><span class="p">,</span>
+    <span class="n">CheckpointStatus</span><span class="p">,</span>
+    <span class="n">TransactionStatus</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">StorageStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
@@ -699,15 +704,17 @@
 
 <div class="viewcode-block" id="Pipeline.start_transaction">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_transaction">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start a new transaction.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            Transaction ID.</span>
+<span class="sd">        :return: Transaction ID.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline fails to start a transaction, e.g., if the pipeline is not running or</span>
+<span class="sd">            there is already an active transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_transaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_transaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.commit_transaction">
@@ -719,7 +726,7 @@
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Commits the currently active transaction.</span>
+<span class="sd">        Commit the currently active transaction.</span>
 
 <span class="sd">        :param transaction_id: If provided, the function verifies that the currently active transaction matches this ID.</span>
 <span class="sd">            If the active transaction ID does not match, the function raises an error.</span>
@@ -733,10 +740,41 @@
 <span class="sd">        :raises RuntimeError: If there is currently no transaction in progress.</span>
 <span class="sd">        :raises ValueError: If the provided `transaction_id` does not match the current transaction.</span>
 <span class="sd">        :raises TimeoutError: If the transaction does not commit within the specified timeout (when `wait` is True).</span>
-<span class="sd">        :raises FelderaAPIError: If the pipeline fails to start a transaction.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline fails to commit a transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">commit_transaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">transaction_id</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.transaction_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.transaction_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transaction_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransactionStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get pipeline&#39;s transaction handling status.</span>
+
+<span class="sd">        :return: Current transaction handling status of the pipeline.</span>
+
+<span class="sd">        :raises FelderaAPIError: If pipeline&#39;s status couldn&#39;t be read, e.g., because the pipeline is not currently running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">transaction_status</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.transaction_id">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.transaction_id">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transaction_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the ID of the currently active transaction or None if there is no active transaction.</span>
+
+<span class="sd">        :return: The ID of the transaction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">transaction_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">transaction_id</span>
+
+        <span class="k">if</span> <span class="n">transaction_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">transaction_id</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.delete">

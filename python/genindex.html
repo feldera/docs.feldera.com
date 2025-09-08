@@ -164,12 +164,14 @@
         <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       </ul></li>
-      <li><a href="feldera.html#feldera.enums.CompilationProfile">CompilationProfile (class in feldera.enums)</a>
+      <li><a href="feldera.html#feldera.enums.TransactionStatus.CommitInProgress">CommitInProgress (feldera.enums.TransactionStatus attribute)</a>
 </li>
-      <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
+      <li><a href="feldera.html#feldera.enums.CompilationProfile">CompilationProfile (class in feldera.enums)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingSql">CompilingSql (feldera.enums.ProgramStatus attribute)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.config.Config">Config (class in feldera.rest.config)</a>
@@ -397,6 +399,8 @@
         <li><a href="feldera.html#feldera.enums.PipelineStatus.from_str">(feldera.enums.PipelineStatus static method)</a>
 </li>
         <li><a href="feldera.html#feldera.enums.StorageStatus.from_str">(feldera.enums.StorageStatus static method)</a>
+</li>
+        <li><a href="feldera.html#feldera.enums.TransactionStatus.from_str">(feldera.enums.TransactionStatus static method)</a>
 </li>
       </ul></li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.from_value">from_value() (feldera.enums.ProgramStatus static method)</a>
@@ -657,6 +661,8 @@
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_IMPLEMENTED">NOT_IMPLEMENTED (tests.platform.helper.HTTPStatus attribute)</a>
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.NOT_MODIFIED">NOT_MODIFIED (tests.platform.helper.HTTPStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.TransactionStatus.NoTransaction">NoTransaction (feldera.enums.TransactionStatus attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1016,8 +1022,6 @@
 </li>
       <li><a href="tests.platform.html#tests.platform.test_pipeline_builder.TestPipelineBuilder">TestPipelineBuilder (class in tests.platform.test_pipeline_builder)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tests
 
@@ -1025,6 +1029,8 @@
         <li><a href="tests.html#module-tests">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     tests.platform
 
@@ -1173,6 +1179,14 @@
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.TOO_EARLY">TOO_EARLY (tests.platform.helper.HTTPStatus attribute)</a>
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.TOO_MANY_REQUESTS">TOO_MANY_REQUESTS (tests.platform.helper.HTTPStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.transaction_id">transaction_id() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.transaction_status">transaction_status() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.TransactionStatus.TransactionInProgress">TransactionInProgress (feldera.enums.TransactionStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.TransactionStatus">TransactionStatus (class in feldera.enums)</a>
 </li>
   </ul></td>
 </tr></table>

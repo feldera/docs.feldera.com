@@ -696,7 +696,7 @@
 <span class="sd">        :raises RuntimeError: If there is currently no transaction in progress.</span>
 <span class="sd">        :raises ValueError: If the provided `transaction_id` does not match the current transaction.</span>
 <span class="sd">        :raises TimeoutError: If the transaction does not commit within the specified timeout (when `wait` is True).</span>
-<span class="sd">        :raises FelderaAPIError: If the pipeline fails to start a transaction.</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline fails to commit a transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># TODO: implement this without using /stats when we have a better pipeline status reporting API.</span>
