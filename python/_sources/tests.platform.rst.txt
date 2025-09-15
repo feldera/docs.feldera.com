@@ -4,14 +4,6 @@ tests.platform package
 Submodules
 ----------
 
-tests.platform.conftest module
-------------------------------
-
-.. automodule:: tests.platform.conftest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 tests.platform.helper module
 ----------------------------
 

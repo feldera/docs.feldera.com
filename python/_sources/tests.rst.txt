@@ -13,18 +13,18 @@ Subpackages
 Submodules
 ----------
 
-tests.shared\_test\_pipeline module
------------------------------------
+tests.conftest module
+---------------------
 
-.. automodule:: tests.shared_test_pipeline
+.. automodule:: tests.conftest
    :members:
    :undoc-members:
    :show-inheritance:
 
-tests.test\_uda module
-----------------------
+tests.shared\_test\_pipeline module
+-----------------------------------
 
-.. automodule:: tests.test_uda
+.. automodule:: tests.shared_test_pipeline
    :members:
    :undoc-members:
    :show-inheritance:

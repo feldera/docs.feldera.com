@@ -78,6 +78,7 @@
              
   <h1>Source code for tests.shared_test_pipeline</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.testutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_pipeline_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_CLIENT</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineBuilder</span><span class="p">,</span> <span class="n">Pipeline</span>
 
@@ -106,7 +107,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_ddls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">TEST_CLIENT</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;test_&quot;</span><span class="p">):</span>
                 <span class="k">continue</span>
@@ -157,7 +158,9 @@
 <a class="viewcode-back" href="../../tests.html#tests.shared_test_pipeline.SharedTestPipeline.new_pipeline_with_suffix">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">new_pipeline_with_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
+            <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+            <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span></div>
 </div>
 

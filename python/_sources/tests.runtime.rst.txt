@@ -12,6 +12,14 @@ tests.runtime.test\_adhoc\_queries module
    :undoc-members:
    :show-inheritance:
 
+tests.runtime.test\_uda module
+------------------------------
+
+.. automodule:: tests.runtime.test_uda
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.runtime.test\_udf module
 ------------------------------
 

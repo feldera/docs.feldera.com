@@ -61,13 +61,13 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-tests.conftest">tests.conftest module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tests.conftest.fixture_pipeline_name"><code class="docutils literal notranslate"><span class="pre">fixture_pipeline_name()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-tests.shared_test_pipeline">tests.shared_test_pipeline module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tests.shared_test_pipeline.SharedTestPipeline"><code class="docutils literal notranslate"><span class="pre">SharedTestPipeline</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tests.shared_test_pipeline.sql"><code class="docutils literal notranslate"><span class="pre">sql()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-tests.test_uda">tests.test_uda module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#tests.test_uda.TestUDA"><code class="docutils literal notranslate"><span class="pre">TestUDA</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-tests">Module contents</a><ul>
@@ -114,10 +114,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tests.platform.html">tests.platform package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tests.platform.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.conftest">tests.platform.conftest module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.conftest.fixture_pipeline_name"><code class="docutils literal notranslate"><span class="pre">fixture_pipeline_name()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="tests.platform.html#module-tests.platform.helper">tests.platform.helper module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus"><code class="docutils literal notranslate"><span class="pre">HTTPStatus</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tests.platform.html#tests.platform.helper.HTTPStatus.ACCEPTED"><code class="docutils literal notranslate"><span class="pre">HTTPStatus.ACCEPTED</span></code></a></li>
@@ -302,6 +298,10 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#module-tests.runtime.test_uda">tests.runtime.test_uda module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_uda.test_uda"><code class="docutils literal notranslate"><span class="pre">test_uda()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="tests.runtime.html#module-tests.runtime.test_udf">tests.runtime.test_udf module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_udf.TestUDF"><code class="docutils literal notranslate"><span class="pre">TestUDF</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="tests.runtime.html#tests.runtime.test_udf.TestUDF.test_local"><code class="docutils literal notranslate"><span class="pre">TestUDF.test_local()</span></code></a></li>
@@ -317,6 +317,14 @@
 </section>
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.conftest">
+<span id="tests-conftest-module"></span><h2>tests.conftest module<a class="headerlink" href="#module-tests.conftest" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.conftest.fixture_pipeline_name">
+<span class="sig-prename descclassname"><span class="pre">tests.conftest.</span></span><span class="sig-name descname"><span class="pre">fixture_pipeline_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/conftest.html#fixture_pipeline_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.conftest.fixture_pipeline_name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 <section id="module-tests.shared_test_pipeline">
 <span id="tests-shared-test-pipeline-module"></span><h2>tests.shared_test_pipeline module<a class="headerlink" href="#module-tests.shared_test_pipeline" title="Link to this heading"></a></h2>
@@ -358,20 +366,6 @@
 <dt class="sig sig-object py" id="tests.shared_test_pipeline.sql">
 <span class="sig-prename descclassname"><span class="pre">tests.shared_test_pipeline.</span></span><span class="sig-name descname"><span class="pre">sql</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_or_iterable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/shared_test_pipeline.html#sql"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.shared_test_pipeline.sql" title="Link to this definition"></a></dt>
 <dd><p>Decorator to attach SQL (string or list/tuple of strings) to a test method.</p>
-</dd></dl>
-
-</section>
-<section id="module-tests.test_uda">
-<span id="tests-test-uda-module"></span><h2>tests.test_uda module<a class="headerlink" href="#module-tests.test_uda" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.test_uda.TestUDA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_uda.</span></span><span class="sig-name descname"><span class="pre">TestUDA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_uda.html#TestUDA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_uda.TestUDA" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.test_uda.TestUDA.test_local">
-<span class="sig-name descname"><span class="pre">test_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/test_uda.html#TestUDA.test_local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.test_uda.TestUDA.test_local" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </section>
