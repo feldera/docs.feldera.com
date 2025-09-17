@@ -281,11 +281,11 @@
 
             <span class="k">if</span> <span class="n">extra_rows</span><span class="p">:</span>
                 <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Extra rows in Feldera output, but not in the ad hoc query output&quot;</span><span class="p">)</span>
-                <span class="n">log</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">extra_rows</span><span class="p">))</span>
+                <span class="n">log</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">extra_rows</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">missing_rows</span><span class="p">:</span>
                 <span class="n">log</span><span class="p">(</span><span class="s2">&quot;Extra rows in the ad hoc query output, but not in Feldera output&quot;</span><span class="p">)</span>
-                <span class="n">log</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">missing_rows</span><span class="p">))</span>
+                <span class="n">log</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">missing_rows</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error querying view &#39;</span><span class="si">{</span><span class="n">view</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ad-hoc Query: </span><span class="si">{</span><span class="n">view_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
