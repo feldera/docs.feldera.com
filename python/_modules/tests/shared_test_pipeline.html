@@ -138,7 +138,7 @@
 <a class="viewcode-back" href="../../tests.html#tests.shared_test_pipeline.SharedTestPipeline.setUp">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="p">),</span> <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span>
         <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span></div>
 
