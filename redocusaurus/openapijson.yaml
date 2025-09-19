@@ -54,7 +54,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.147.0
+  version: 0.148.0
 paths:
   /config/authentication:
     get:
@@ -375,12 +375,23 @@ paths:
                     rust_compilation: null
                     system_error: null
                   program_info: null
-                  deployment_status: Stopped
-                  deployment_status_since: '1970-01-01T00:00:00Z'
-                  deployment_desired_status: Stopped
                   deployment_error: null
                   refresh_version: 4
                   storage_status: Cleared
+                  deployment_id: null
+                  deployment_initial: null
+                  deployment_status: Stopped
+                  deployment_status_since: '1970-01-01T00:00:00Z'
+                  deployment_desired_status: Stopped
+                  deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                  deployment_resources_status: Stopped
+                  deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                  deployment_resources_desired_status: Stopped
+                  deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                  deployment_runtime_status: null
+                  deployment_runtime_status_since: null
+                  deployment_runtime_desired_status: null
+                  deployment_runtime_desired_status_since: null
                 - id: 67e55044-10b1-426f-9247-bb680e5fe0c9
                   name: example2
                   description: Description of the pipeline example2
@@ -436,12 +447,23 @@ paths:
                     rust_compilation: null
                     system_error: null
                   program_info: null
-                  deployment_status: Stopped
-                  deployment_status_since: '1970-01-01T00:00:00Z'
-                  deployment_desired_status: Stopped
                   deployment_error: null
                   refresh_version: 1
                   storage_status: Cleared
+                  deployment_id: null
+                  deployment_initial: null
+                  deployment_status: Stopped
+                  deployment_status_since: '1970-01-01T00:00:00Z'
+                  deployment_desired_status: Stopped
+                  deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                  deployment_resources_status: Stopped
+                  deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                  deployment_resources_desired_status: Stopped
+                  deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                  deployment_runtime_status: null
+                  deployment_runtime_status_since: null
+                  deployment_runtime_desired_status: null
+                  deployment_runtime_desired_status_since: null
         '500':
           description: ''
           content:
@@ -568,12 +590,23 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Stopped
-                deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                deployment_id: null
+                deployment_initial: null
+                deployment_status: Stopped
+                deployment_status_since: '1970-01-01T00:00:00Z'
+                deployment_desired_status: Stopped
+                deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_status: Stopped
+                deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_desired_status: Stopped
+                deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_runtime_status: null
+                deployment_runtime_status_since: null
+                deployment_runtime_desired_status: null
+                deployment_runtime_desired_status_since: null
         '400':
           description: ''
           content:
@@ -703,12 +736,23 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Stopped
-                deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                deployment_id: null
+                deployment_initial: null
+                deployment_status: Stopped
+                deployment_status_since: '1970-01-01T00:00:00Z'
+                deployment_desired_status: Stopped
+                deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_status: Stopped
+                deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_desired_status: Stopped
+                deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_runtime_status: null
+                deployment_runtime_status_since: null
+                deployment_runtime_desired_status: null
+                deployment_runtime_desired_status_since: null
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -855,12 +899,23 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Stopped
-                deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                deployment_id: null
+                deployment_initial: null
+                deployment_status: Stopped
+                deployment_status_since: '1970-01-01T00:00:00Z'
+                deployment_desired_status: Stopped
+                deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_status: Stopped
+                deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_desired_status: Stopped
+                deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_runtime_status: null
+                deployment_runtime_status_since: null
+                deployment_runtime_desired_status: null
+                deployment_runtime_desired_status_since: null
         '201':
           description: Pipeline successfully created
           content:
@@ -923,12 +978,23 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Stopped
-                deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                deployment_id: null
+                deployment_initial: null
+                deployment_status: Stopped
+                deployment_status_since: '1970-01-01T00:00:00Z'
+                deployment_desired_status: Stopped
+                deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_status: Stopped
+                deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_desired_status: Stopped
+                deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_runtime_status: null
+                deployment_runtime_status_since: null
+                deployment_runtime_desired_status: null
+                deployment_runtime_desired_status_since: null
         '400':
           description: ''
           content:
@@ -1105,12 +1171,23 @@ paths:
                   rust_compilation: null
                   system_error: null
                 program_info: null
-                deployment_status: Stopped
-                deployment_status_since: '1970-01-01T00:00:00Z'
-                deployment_desired_status: Stopped
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                deployment_id: null
+                deployment_initial: null
+                deployment_status: Stopped
+                deployment_status_since: '1970-01-01T00:00:00Z'
+                deployment_desired_status: Stopped
+                deployment_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_status: Stopped
+                deployment_resources_status_since: '1970-01-01T00:00:00Z'
+                deployment_resources_desired_status: Stopped
+                deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
+                deployment_runtime_status: null
+                deployment_runtime_status_since: null
+                deployment_runtime_desired_status: null
+                deployment_runtime_desired_status_since: null
         '400':
           description: ''
           content:
@@ -1167,13 +1244,21 @@ paths:
     post:
       tags:
         - Pipeline interaction
-      summary: Activates the pipeline if it is currently in standby mode.
+      summary: >-
+        Requests the pipeline to activate if it is currently in standby mode,
+        which it will do
       description: >-
+        asynchronously.
+
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
+
+
         This endpoint is only applicable when the pipeline is configured to
         start
 
-        from object store and launched in standby mode (`sync.standby: true`).
-      operationId: activate_pipeline
+        from object store and started as standby.
+      operationId: post_pipeline_activate
       parameters:
         - name: pipeline_name
           in: path
@@ -1245,13 +1330,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1355,13 +1439,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1462,13 +1545,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1567,13 +1649,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1672,13 +1753,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1779,13 +1859,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -1939,13 +2018,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2081,13 +2159,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2242,13 +2319,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2356,13 +2432,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2543,13 +2618,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2746,13 +2820,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2778,26 +2851,8 @@ paths:
     post:
       tags:
         - Pipeline management
-      summary: Pause the pipeline asynchronously by updating the desired state.
-      description: >-
-        The endpoint returns immediately after setting the desired state to
-        `Paused`.
-
-        The procedure to get to the desired state is performed asynchronously.
-
-        Progress should be monitored by polling the pipeline `GET` endpoints.
-
-
-        Note the following:
-
-        - A stopped pipeline can be started through calling either `/start` or
-        `/pause`
-
-        - Both starting as paused and pausing a pipeline is done by calling
-        `/pause`
-
-        - A pipeline which is in the process of suspending or stopping cannot be
-        paused
+      summary: Requests the pipeline to pause, which it will do asynchronously.
+      description: Progress should be monitored by polling the pipeline `GET` endpoints.
       operationId: post_pipeline_pause
       parameters:
         - name: pipeline_name
@@ -2817,15 +2872,15 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: >-
-                  Deployment status (current: 'Stopping', desired: 'Stopped')
-                  cannot have desired changed to 'Running'. Cannot restart the
-                  pipeline while it is stopping. Wait for it to stop before
-                  starting a new instance of the pipeline.
+                  Deployment resources status (current: 'Stopping', desired:
+                  'Stopped') cannot have desired changed to 'Provisioned'.
+                  Cannot restart the pipeline while it is stopping. Wait for it
+                  to stop before starting a new instance of the pipeline.
                 error_code: IllegalPipelineAction
                 details:
-                  pipeline_status: Stopping
+                  status: Stopping
                   current_desired_status: Stopped
-                  new_desired_status: Running
+                  new_desired_status: Provisioned
                   hint: >-
                     Cannot restart the pipeline while it is stopping. Wait for
                     it to stop before starting a new instance of the pipeline.
@@ -2945,13 +3000,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -2973,31 +3027,13 @@ paths:
                         error: Timeout while waiting for response)
       security:
         - JSON web token (JWT) or API key: []
-  /v0/pipelines/{pipeline_name}/start:
+  /v0/pipelines/{pipeline_name}/resume:
     post:
       tags:
         - Pipeline management
-      summary: Start the pipeline asynchronously by updating the desired state.
-      description: >-
-        The endpoint returns immediately after setting the desired state to
-        `Running`.
-
-        The procedure to get to the desired state is performed asynchronously.
-
-        Progress should be monitored by polling the pipeline `GET` endpoints.
-
-
-        Note the following:
-
-        - A stopped pipeline can be started through calling either `/start` or
-        `/pause`
-
-        - Both starting as running and resuming a pipeline is done by calling
-        `/start`
-
-        - A pipeline which is in the process of suspending or stopping cannot be
-        started
-      operationId: post_pipeline_start
+      summary: Requests the pipeline to resume, which it will do asynchronously.
+      description: Progress should be monitored by polling the pipeline `GET` endpoints.
+      operationId: post_pipeline_resume
       parameters:
         - name: pipeline_name
           in: path
@@ -3016,15 +3052,102 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: >-
-                  Deployment status (current: 'Stopping', desired: 'Stopped')
-                  cannot have desired changed to 'Running'. Cannot restart the
-                  pipeline while it is stopping. Wait for it to stop before
-                  starting a new instance of the pipeline.
+                  Deployment resources status (current: 'Stopping', desired:
+                  'Stopped') cannot have desired changed to 'Provisioned'.
+                  Cannot restart the pipeline while it is stopping. Wait for it
+                  to stop before starting a new instance of the pipeline.
                 error_code: IllegalPipelineAction
                 details:
-                  pipeline_status: Stopping
+                  status: Stopping
                   current_desired_status: Stopped
-                  new_desired_status: Running
+                  new_desired_status: Provisioned
+                  hint: >-
+                    Cannot restart the pipeline while it is stopping. Wait for
+                    it to stop before starting a new instance of the pipeline.
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/start:
+    post:
+      tags:
+        - Pipeline management
+      summary: Start the pipeline asynchronously by updating the desired status.
+      description: >-
+        The endpoint returns immediately after setting the desired status.
+
+        The procedure to get to the desired status is performed asynchronously.
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
+
+
+        Note the following:
+
+        - A stopped pipeline can be started through calling
+        `/start?initial=running`,
+
+        `/start?initial=paused`, or `/start?initial=standby`.
+
+        - If the pipeline is already (being) started (provisioned), it will
+        still return success
+
+        - It is not possible to call `/start` when the pipeline has already had
+        `/stop` called and is
+
+        in the process of suspending or stopping.
+      operationId: post_pipeline_start
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+        - name: initial
+          in: query
+          description: >-
+            The `initial` parameter determines whether to after provisioning the
+            pipeline make it
+
+            become `standby`, `paused` or `running` (only valid values).
+          required: false
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Action is accepted and is being performed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: >-
+                  Deployment resources status (current: 'Stopping', desired:
+                  'Stopped') cannot have desired changed to 'Provisioned'.
+                  Cannot restart the pipeline while it is stopping. Wait for it
+                  to stop before starting a new instance of the pipeline.
+                error_code: IllegalPipelineAction
+                details:
+                  status: Stopping
+                  current_desired_status: Stopped
+                  new_desired_status: Provisioned
                   hint: >-
                     Cannot restart the pipeline while it is stopping. Wait for
                     it to stop before starting a new instance of the pipeline.
@@ -3119,13 +3242,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -3226,13 +3348,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -3346,15 +3467,15 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
               example:
                 message: >-
-                  Deployment status (current: 'Stopping', desired: 'Stopped')
-                  cannot have desired changed to 'Running'. Cannot restart the
-                  pipeline while it is stopping. Wait for it to stop before
-                  starting a new instance of the pipeline.
+                  Deployment resources status (current: 'Stopping', desired:
+                  'Stopped') cannot have desired changed to 'Provisioned'.
+                  Cannot restart the pipeline while it is stopping. Wait for it
+                  to stop before starting a new instance of the pipeline.
                 error_code: IllegalPipelineAction
                 details:
-                  pipeline_status: Stopping
+                  status: Stopping
                   current_desired_status: Stopped
-                  new_desired_status: Running
+                  new_desired_status: Provisioned
                   hint: >-
                     Cannot restart the pipeline while it is stopping. Wait for
                     it to stop before starting a new instance of the pipeline.
@@ -3648,13 +3769,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -3767,13 +3887,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -3944,13 +4063,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -4049,13 +4167,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -4165,13 +4282,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -4284,13 +4400,12 @@ paths:
                   value:
                     message: >-
                       Unable to interact with pipeline because the deployment
-                      status ('stopped') is not one of the deployed statuses
-                      ('running', 'paused' or 'unavailable') -- to resolve this:
-                      wait for the pipeline to become running or paused
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned
                     error_code: PipelineInteractionNotDeployed
                     details:
                       status: Stopped
-                      desired_status: Running
+                      desired_status: Provisioned
                 Response timeout:
                   value:
                     message: >-
@@ -4631,6 +4746,29 @@ components:
           allOf:
             - $ref: '#/components/schemas/ColumnType'
           nullable: true
+    CombinedDesiredStatus:
+      type: string
+      enum:
+        - Stopped
+        - Unavailable
+        - Standby
+        - Paused
+        - Running
+        - Suspended
+    CombinedStatus:
+      type: string
+      enum:
+        - Stopped
+        - Provisioning
+        - Unavailable
+        - Standby
+        - Initializing
+        - Bootstrapping
+        - Replaying
+        - Paused
+        - Running
+        - Suspended
+        - Stopping
     CompilationProfile:
       type: string
       description: >-
@@ -7305,13 +7443,6 @@ components:
         (e.g., runtime configuration) and entries derived from the schema
         of the compiled program (e.g., connectors). Storage configuration,
         if applicable, is set by the runner.
-    PipelineDesiredStatus:
-      type: string
-      enum:
-        - Stopped
-        - Paused
-        - Running
-        - Suspended
     PipelineFieldSelector:
       type: string
       enum:
@@ -7342,23 +7473,65 @@ components:
         - program_status
         - program_status_since
         - program_error
+        - refresh_version
+        - storage_status
         - deployment_status
         - deployment_status_since
         - deployment_desired_status
-        - refresh_version
-        - storage_status
+        - deployment_desired_status_since
+        - deployment_resources_status
+        - deployment_resources_status_since
+        - deployment_resources_desired_status
+        - deployment_resources_desired_status_since
       properties:
         created_at:
           type: string
           format: date-time
         deployment_desired_status:
-          $ref: '#/components/schemas/PipelineDesiredStatus'
+          $ref: '#/components/schemas/CombinedDesiredStatus'
+        deployment_desired_status_since:
+          type: string
+          format: date-time
         deployment_error:
           allOf:
             - $ref: '#/components/schemas/ErrorResponse'
           nullable: true
+        deployment_id:
+          type: string
+          format: uuid
+          nullable: true
+        deployment_initial:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeDesiredStatus'
+          nullable: true
+        deployment_resources_desired_status:
+          $ref: '#/components/schemas/ResourcesDesiredStatus'
+        deployment_resources_desired_status_since:
+          type: string
+          format: date-time
+        deployment_resources_status:
+          $ref: '#/components/schemas/ResourcesStatus'
+        deployment_resources_status_since:
+          type: string
+          format: date-time
+        deployment_runtime_desired_status:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeDesiredStatus'
+          nullable: true
+        deployment_runtime_desired_status_since:
+          type: string
+          format: date-time
+          nullable: true
+        deployment_runtime_status:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeStatus'
+          nullable: true
+        deployment_runtime_status_since:
+          type: string
+          format: date-time
+          nullable: true
         deployment_status:
-          $ref: '#/components/schemas/PipelineStatus'
+          $ref: '#/components/schemas/CombinedStatus'
         deployment_status_since:
           type: string
           format: date-time
@@ -7418,23 +7591,65 @@ components:
         - program_version
         - program_status
         - program_status_since
+        - refresh_version
+        - storage_status
         - deployment_status
         - deployment_status_since
         - deployment_desired_status
-        - refresh_version
-        - storage_status
+        - deployment_desired_status_since
+        - deployment_resources_status
+        - deployment_resources_status_since
+        - deployment_resources_desired_status
+        - deployment_resources_desired_status_since
       properties:
         created_at:
           type: string
           format: date-time
         deployment_desired_status:
-          $ref: '#/components/schemas/PipelineDesiredStatus'
+          $ref: '#/components/schemas/CombinedDesiredStatus'
+        deployment_desired_status_since:
+          type: string
+          format: date-time
         deployment_error:
           allOf:
             - $ref: '#/components/schemas/ErrorResponse'
           nullable: true
+        deployment_id:
+          type: string
+          format: uuid
+          nullable: true
+        deployment_initial:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeDesiredStatus'
+          nullable: true
+        deployment_resources_desired_status:
+          $ref: '#/components/schemas/ResourcesDesiredStatus'
+        deployment_resources_desired_status_since:
+          type: string
+          format: date-time
+        deployment_resources_status:
+          $ref: '#/components/schemas/ResourcesStatus'
+        deployment_resources_status_since:
+          type: string
+          format: date-time
+        deployment_runtime_desired_status:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeDesiredStatus'
+          nullable: true
+        deployment_runtime_desired_status_since:
+          type: string
+          format: date-time
+          nullable: true
+        deployment_runtime_status:
+          allOf:
+            - $ref: '#/components/schemas/RuntimeStatus'
+          nullable: true
+        deployment_runtime_status_since:
+          type: string
+          format: date-time
+          nullable: true
         deployment_status:
-          $ref: '#/components/schemas/PipelineStatus'
+          $ref: '#/components/schemas/CombinedStatus'
         deployment_status_since:
           type: string
           format: date-time
@@ -7484,145 +7699,6 @@ components:
           nullable: true
         version:
           $ref: '#/components/schemas/Version'
-    PipelineStatus:
-      type: string
-      description: >-
-        Pipeline status.
-
-
-        This type represents the state of the pipeline tracked by the pipeline
-
-        runner and observed by the API client via the `GET /v0/pipelines/{name}`
-        endpoint.
-
-
-        ### The lifecycle of a pipeline
-
-
-        The following automaton captures the lifecycle of the pipeline.
-
-        Individual states and transitions of the automaton are described below.
-
-
-        * States labeled with the hourglass symbol (⌛) are **timed** states. The
-
-        automaton stays in timed state until the corresponding operation
-        completes
-
-        or until it transitions to become failed after the pre-defined timeout
-
-        period expires.
-
-
-        * State transitions labeled with API endpoint names (`/start`, `/pause`,
-
-        `/stop`) are triggered by invoking corresponding endpoint,
-
-        e.g., `POST /v0/pipelines/{name}/start`. Note that these only express
-
-        desired state, and are applied asynchronously by the automata.
-
-
-        ```text
-
-        Stopped ◄─────────── Stopping ◄───── All states can transition
-
-        │                   ▲            to Stopping by either:
-
-        /start or /pause │                   │            (1) user calling
-        /stop?force=true, or;
-
-        ▼                   │            (2) pipeline encountering a fatal
-
-        ⌛Provisioning         Suspending            resource or runtime error,
-
-        │                   ▲                having the system call
-        /stop?force=true
-
-        │                   │ /stop          effectively
-
-        │                   │  ?force=false
-
-        │                   │
-
-        ┌──────────────┼───────────────────┴─────┐
-
-        │              ▼                         │
-
-        │  ┌──► Initializing                     │
-
-        │  │           ▲  ▲                      │
-
-        │  │           │  └───────────┐          │
-
-        │  │           ▼              ▼          │
-
-        │  │        Paused  ◄──────► Unavailable │
-
-        │  │          │  ▲                ▲      │
-
-        │  │   /start │  │  /pause        │      │
-
-        │  │          ▼  │                │      │
-
-        │  └─────►  Running ◄─────────────┘      │
-
-        └────────────────────────────────────────┘
-
-        ```
-
-
-        ### Desired and actual status
-
-
-        We use the desired state model to manage the lifecycle of a pipeline.
-
-        In this model, the pipeline has two status attributes associated with
-
-        it at runtime: the **desired** status, which represents what the user
-
-        would like the pipeline to do, and the **current** status, which
-
-        represents the actual state of the pipeline.  The pipeline runner
-
-        service continuously monitors both fields and steers the pipeline
-
-        towards the desired state specified by the user.
-
-
-        Only four of the states in the pipeline automaton above can be
-
-        used as desired statuses: `Paused`, `Running`, `Suspended` and
-
-        `Stopped`. These statuses are selected by invoking REST endpoints
-
-        shown in the diagram (respectively, `/pause`, `/start`, and `/stop`).
-
-
-        The user can monitor the current state of the pipeline via the
-
-        `GET /v0/pipelines/{name}` endpoint. In a typical scenario,
-
-        the user first sets the desired state, e.g., by invoking the
-
-        `/start` endpoint, and then polls the `GET /v0/pipelines/{name}`
-
-        endpoint to monitor the actual status of the pipeline until its
-
-        `deployment_status` attribute changes to `Running` indicating
-
-        that the pipeline has been successfully initialized and is
-
-        processing data, or `Stopped` with `deployment_error` being set.
-      enum:
-        - Stopped
-        - Provisioning
-        - Initializing
-        - Paused
-        - Running
-        - Unavailable
-        - Suspending
-        - Stopping
     PostPutPipeline:
       type: object
       description: >-
@@ -8130,6 +8206,94 @@ components:
           default: null
           nullable: true
           minimum: 0
+    ResourcesDesiredStatus:
+      type: string
+      enum:
+        - Stopped
+        - Provisioned
+    ResourcesStatus:
+      type: string
+      description: >-
+        Pipeline resources status.
+
+
+        ```text
+
+        /start (early start failed)
+
+        ┌───────────────────┐
+
+        │                   ▼
+
+        Stopped ◄────────── Stopping
+
+        /start │                   ▲
+
+        │                   │ /stop?force=true
+
+        │                   │ OR: timeout (from Provisioning)
+
+        ▼                   │ OR: fatal runtime or resource error
+
+        ⌛Provisioning ────────────│ OR: runtime status is Suspended
+
+        │                   │
+
+        │                   │
+
+        ▼                   │
+
+        Provisioned ─────────────┘
+
+        ```
+
+
+        ### Desired and actual status
+
+
+        We use the desired state model to manage the lifecycle of a pipeline. In
+        this model, the
+
+        pipeline has two status attributes associated with it: the **desired**
+        status, which represents
+
+        what the user would like the pipeline to do, and the **current** status,
+        which represents the
+
+        actual (last observed) status of the pipeline. The pipeline runner
+        service continuously monitors
+
+        the desired status field to decide where to steer the pipeline towards.
+
+
+        There are two desired statuses:
+
+        - `Provisioned` (set by invoking `/start`)
+
+        - `Stopped` (set by invoking `/stop?force=true`)
+
+
+        The user can monitor the current status of the pipeline via the `GET
+        /v0/pipelines/{name}`
+
+        endpoint. In a typical scenario, the user first sets the desired status,
+        e.g., by invoking the
+
+        `/start` endpoint, and then polls the `GET /v0/pipelines/{name}`
+        endpoint to monitor the actual
+
+        status of the pipeline until its `deployment_resources_status` attribute
+        changes to
+
+        `Provisioned` indicating that the pipeline has been successfully
+        provisioned, or `Stopped` with
+
+        `deployment_error` being set.
+      enum:
+        - Stopped
+        - Provisioning
+        - Provisioned
+        - Stopping
     RestCatalogConfig:
       type: object
       description: Iceberg REST catalog config.
@@ -8612,6 +8776,33 @@ components:
             used during a step.
           default: 8
           minimum: 0
+    RuntimeDesiredStatus:
+      type: string
+      enum:
+        - Unavailable
+        - Standby
+        - Paused
+        - Running
+        - Suspended
+    RuntimeStatus:
+      type: string
+      description: >-
+        Runtime status of the pipeline.
+
+
+        Of the statuses, only `Unavailable` is determined by the runner. All
+        other statuses are
+
+        determined by the pipeline and taken over by the runner.
+      enum:
+        - Unavailable
+        - Standby
+        - Initializing
+        - Bootstrapping
+        - Replaying
+        - Paused
+        - Running
+        - Suspended
     RustCompilationInfo:
       type: object
       description: Rust compilation information.
@@ -9143,7 +9334,7 @@ components:
         Storage status.
 
 
-        The storage status can only transition when the pipeline status is
+        The storage status can only transition when the resources status is
         `Stopped`.
 
 

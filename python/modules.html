@@ -109,6 +109,10 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_desired_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_error"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_location"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_location()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_resources_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_resources_desired_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_resources_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_resources_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_runtime_desired_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_runtime_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_status_since"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_status_since()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.description"><code class="docutils literal notranslate"><span class="pre">Pipeline.description()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.errors"><code class="docutils literal notranslate"><span class="pre">Pipeline.errors()</span></code></a></li>
@@ -143,6 +147,8 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.runtime_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.runtime_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.set_runtime_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.set_runtime_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start"><code class="docutils literal notranslate"><span class="pre">Pipeline.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_paused"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_paused()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_standby"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_standby()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_transaction"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.stats"><code class="docutils literal notranslate"><span class="pre">Pipeline.stats()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.status"><code class="docutils literal notranslate"><span class="pre">Pipeline.status()</span></code></a></li>
@@ -186,6 +192,51 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile.UNOPTIMIZED"><code class="docutils literal notranslate"><span class="pre">CompilationProfile.UNOPTIMIZED</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.PROVISIONED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.PROVISIONED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.PROVISIONED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.PROVISIONED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.PROVISIONING"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.PROVISIONING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.STOPPING"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.STOPPING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.BOOTSTRAPPING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.BOOTSTRAPPING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.INITIALIZING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.INITIALIZING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.REPLAYING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.REPLAYING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.from_str()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel.AtLeastOnce"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel.AtLeastOnce</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel.ExactlyOnce"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel.ExactlyOnce</span></code></a></li>
@@ -193,14 +244,17 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.BOOTSTRAPPING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.BOOTSTRAPPING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.INITIALIZING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.INITIALIZING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.NOT_FOUND</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.PAUSED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.PROVISIONING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.PROVISIONING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.REPLAYING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.REPLAYING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STANDBY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STOPPED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STOPPING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STOPPING</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.SUSPENDING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.SUSPENDING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.SUSPENDED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.UNAVAILABLE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.from_str"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.from_str()</span></code></a></li>
 </ul>

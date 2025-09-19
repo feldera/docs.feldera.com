@@ -86,6 +86,8 @@
     <span class="n">post_no_body</span><span class="p">,</span>
     <span class="n">api_url</span><span class="p">,</span>
     <span class="n">start_pipeline</span><span class="p">,</span>
+    <span class="n">start_pipeline_as_paused</span><span class="p">,</span>
+    <span class="n">resume_pipeline</span><span class="p">,</span>
     <span class="n">pause_pipeline</span><span class="p">,</span>
     <span class="n">gen_pipeline_name</span><span class="p">,</span>
     <span class="n">cleanup_pipeline</span><span class="p">,</span>
@@ -147,7 +149,7 @@
         <span class="p">)</span>
         <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
         <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">cur_pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">pause_pipeline</span><span class="p">(</span><span class="n">cur_pipeline_name</span><span class="p">)</span>
+        <span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="n">cur_pipeline_name</span><span class="p">)</span>
 
         <span class="c1"># Initial: pipeline paused, connector running, processed=0</span>
         <span class="n">p_paused</span><span class="p">,</span> <span class="n">c_paused</span><span class="p">,</span> <span class="n">processed</span> <span class="o">=</span> <span class="n">_basic_orchestration_info</span><span class="p">(</span>
@@ -169,7 +171,7 @@
         <span class="k">assert</span> <span class="n">processed</span> <span class="o">==</span> <span class="mi">0</span>
 
         <span class="c1"># Start pipeline</span>
-        <span class="n">start_pipeline</span><span class="p">(</span><span class="n">cur_pipeline_name</span><span class="p">)</span>
+        <span class="n">resume_pipeline</span><span class="p">(</span><span class="n">cur_pipeline_name</span><span class="p">)</span>
         <span class="n">p_paused</span><span class="p">,</span> <span class="n">c_paused</span><span class="p">,</span> <span class="n">processed</span> <span class="o">=</span> <span class="n">_basic_orchestration_info</span><span class="p">(</span>
             <span class="n">cur_pipeline_name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span>
         <span class="p">)</span>
@@ -215,11 +217,11 @@
     <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">sql</span><span class="p">})</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
     <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">pause_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+    <span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
 
     <span class="c1"># ACCEPTED endpoints</span>
     <span class="k">for</span> <span class="n">endpoint</span> <span class="ow">in</span> <span class="p">[</span>
-        <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/resume&quot;</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
     <span class="p">]:</span>
         <span class="n">resp</span> <span class="o">=</span> <span class="n">post_no_body</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="n">endpoint</span><span class="p">))</span>
@@ -298,6 +300,7 @@
 
     <span class="k">class</span><span class="w"> </span><span class="nc">Step</span><span class="p">:</span>
         <span class="n">START_PIPELINE</span> <span class="o">=</span> <span class="s2">&quot;start_pipeline&quot;</span>
+        <span class="n">START_PIPELINE_AS_PAUSED</span> <span class="o">=</span> <span class="s2">&quot;start_pipeline_as_paused&quot;</span>
         <span class="n">PAUSE_PIPELINE</span> <span class="o">=</span> <span class="s2">&quot;pause_pipeline&quot;</span>
         <span class="n">START_CONNECTOR_1</span> <span class="o">=</span> <span class="s2">&quot;start_connector_1&quot;</span>
         <span class="n">PAUSE_CONNECTOR_1</span> <span class="o">=</span> <span class="s2">&quot;pause_connector_1&quot;</span>
@@ -306,12 +309,12 @@
 
     <span class="n">scenarios</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># Paused pipeline combinations</span>
-        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_PIPELINE</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_PIPELINE</span><span class="p">,</span> <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_1</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_PIPELINE</span><span class="p">,</span> <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_2</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE_AS_PAUSED</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE_AS_PAUSED</span><span class="p">,</span> <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_1</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">([</span><span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE_AS_PAUSED</span><span class="p">,</span> <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_2</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
         <span class="p">(</span>
             <span class="p">[</span>
-                <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_PIPELINE</span><span class="p">,</span>
+                <span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE_AS_PAUSED</span><span class="p">,</span>
                 <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_1</span><span class="p">,</span>
                 <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_CONNECTOR_2</span><span class="p">,</span>
             <span class="p">],</span>
@@ -361,6 +364,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">apply_step</span><span class="p">(</span><span class="n">step</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE</span><span class="p">:</span>
             <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">step</span> <span class="o">==</span> <span class="n">Step</span><span class="o">.</span><span class="n">START_PIPELINE_AS_PAUSED</span><span class="p">:</span>
+            <span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">step</span> <span class="o">==</span> <span class="n">Step</span><span class="o">.</span><span class="n">PAUSE_PIPELINE</span><span class="p">:</span>
             <span class="n">pause_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">step</span> <span class="o">==</span> <span class="n">Step</span><span class="o">.</span><span class="n">START_CONNECTOR_1</span><span class="p">:</span>

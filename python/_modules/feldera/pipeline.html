@@ -95,8 +95,13 @@
     <span class="n">ProgramStatus</span><span class="p">,</span>
     <span class="n">CheckpointStatus</span><span class="p">,</span>
     <span class="n">TransactionStatus</span><span class="p">,</span>
+    <span class="n">StorageStatus</span><span class="p">,</span>
+    <span class="n">DeploymentDesiredStatus</span><span class="p">,</span>
+    <span class="n">DeploymentResourcesDesiredStatus</span><span class="p">,</span>
+    <span class="n">DeploymentResourcesStatus</span><span class="p">,</span>
+    <span class="n">DeploymentRuntimeDesiredStatus</span><span class="p">,</span>
+    <span class="n">DeploymentRuntimeStatus</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">StorageStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CallbackRunnerInstruction</span><span class="p">,</span> <span class="n">CallbackRunner</span>
@@ -512,9 +517,7 @@
 
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_pipeline</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Unable to START the pipeline.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setup_output_listeners</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
@@ -634,6 +637,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">activate_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.start_paused">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_paused">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_paused</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the pipeline in the paused state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.start_standby">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_standby">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_standby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the pipeline in the standby state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_standby</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.pause">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -699,7 +722,7 @@
 <span class="sd">            pipeline to resume.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">resume_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.start_transaction">
@@ -1361,14 +1384,64 @@
 
 <div class="viewcode-block" id="Pipeline.deployment_desired_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_desired_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_desired_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_desired_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeploymentDesiredStatus</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the desired deployment status of the pipeline.</span>
 <span class="sd">        This is the next state that the pipeline should transition to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_desired_status</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">DeploymentDesiredStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_desired_status</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_resources_desired_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_resources_desired_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_resources_desired_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeploymentResourcesDesiredStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the desired status of the the deployment resources.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">DeploymentResourcesDesiredStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_resources_desired_status</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_resources_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_resources_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_resources_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeploymentResourcesStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the status of the deployment resources.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">DeploymentResourcesStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_resources_status</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_runtime_desired_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_runtime_desired_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeploymentRuntimeDesiredStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deployment runtime desired status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">DeploymentRuntimeDesiredStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_runtime_desired_status</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.deployment_runtime_status">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deployment_runtime_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DeploymentRuntimeStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the deployment runtime status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">DeploymentRuntimeStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_runtime_status</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.deployment_error">

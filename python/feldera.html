@@ -66,6 +66,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.BuildMode"><code class="docutils literal notranslate"><span class="pre">BuildMode</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CheckpointStatus"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentResourcesDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentResourcesStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.FaultToleranceModel"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.ProgramStatus"><code class="docutils literal notranslate"><span class="pre">ProgramStatus</span></code></a></li>
@@ -286,7 +291,7 @@ storage is still bound.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_desired_status">
-<span class="sig-name descname"><span class="pre">deployment_desired_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.PipelineStatus" title="feldera.enums.PipelineStatus"><span class="pre">PipelineStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_desired_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_desired_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">deployment_desired_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.DeploymentDesiredStatus" title="feldera.enums.DeploymentDesiredStatus"><span class="pre">DeploymentDesiredStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_desired_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_desired_status" title="Link to this definition"></a></dt>
 <dd><p>Return the desired deployment status of the pipeline.
 This is the next state that the pipeline should transition to.</p>
 </dd></dl>
@@ -304,6 +309,30 @@ Returns an empty string if there is no error.</p>
 <dd><p>Return the deployment location of the pipeline.
 Deployment location is the location where the pipeline can be reached
 at runtime (a TCP port number or a URI).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_resources_desired_status">
+<span class="sig-name descname"><span class="pre">deployment_resources_desired_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.DeploymentResourcesDesiredStatus" title="feldera.enums.DeploymentResourcesDesiredStatus"><span class="pre">DeploymentResourcesDesiredStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_resources_desired_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_resources_desired_status" title="Link to this definition"></a></dt>
+<dd><p>Return the desired status of the the deployment resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_resources_status">
+<span class="sig-name descname"><span class="pre">deployment_resources_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.DeploymentResourcesStatus" title="feldera.enums.DeploymentResourcesStatus"><span class="pre">DeploymentResourcesStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_resources_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_resources_status" title="Link to this definition"></a></dt>
+<dd><p>Return the status of the deployment resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_runtime_desired_status">
+<span class="sig-name descname"><span class="pre">deployment_runtime_desired_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeDesiredStatus" title="feldera.enums.DeploymentRuntimeDesiredStatus"><span class="pre">DeploymentRuntimeDesiredStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_runtime_desired_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_runtime_desired_status" title="Link to this definition"></a></dt>
+<dd><p>Return the deployment runtime desired status.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.deployment_runtime_status">
+<span class="sig-name descname"><span class="pre">deployment_runtime_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeStatus" title="feldera.enums.DeploymentRuntimeStatus"><span class="pre">DeploymentRuntimeStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.deployment_runtime_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.deployment_runtime_status" title="Link to this definition"></a></dt>
+<dd><p>Return the deployment runtime status.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -833,6 +862,18 @@ pipeline to start.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_paused">
+<span class="sig-name descname"><span class="pre">start_paused</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_paused"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_paused" title="Link to this definition"></a></dt>
+<dd><p>Starts the pipeline in the paused state.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_standby">
+<span class="sig-name descname"><span class="pre">start_standby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_standby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_standby" title="Link to this definition"></a></dt>
+<dd><p>Starts the pipeline in the standby state.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_transaction">
 <span class="sig-name descname"><span class="pre">start_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_transaction" title="Link to this definition"></a></dt>
 <dd><p>Start a new transaction.</p>
@@ -1152,6 +1193,191 @@ reached.</p></li>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">DeploymentDesiredStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentDesiredStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Deployment desired status of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.PAUSED">
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.PAUSED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.RUNNING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.STANDBY">
+<span class="sig-name descname"><span class="pre">STANDBY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.STANDBY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.STOPPED">
+<span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.STOPPED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.SUSPENDED">
+<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.UNAVAILABLE">
+<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentDesiredStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentDesiredStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentDesiredStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesDesiredStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">DeploymentResourcesDesiredStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentResourcesDesiredStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentResourcesDesiredStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>The desired status of deployment resources of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesDesiredStatus.PROVISIONED">
+<span class="sig-name descname"><span class="pre">PROVISIONED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesDesiredStatus.PROVISIONED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesDesiredStatus.STOPPED">
+<span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesDesiredStatus.STOPPED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesDesiredStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentResourcesDesiredStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentResourcesDesiredStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">DeploymentResourcesStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentResourcesStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>The desired status of deployment resources of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus.PROVISIONED">
+<span class="sig-name descname"><span class="pre">PROVISIONED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus.PROVISIONED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus.PROVISIONING">
+<span class="sig-name descname"><span class="pre">PROVISIONING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus.PROVISIONING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus.STOPPED">
+<span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus.STOPPED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus.STOPPING">
+<span class="sig-name descname"><span class="pre">STOPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus.STOPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentResourcesStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentResourcesStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentResourcesStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">DeploymentRuntimeDesiredStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentRuntimeDesiredStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Deployment runtime desired status of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.PAUSED">
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.PAUSED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.RUNNING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.STANDBY">
+<span class="sig-name descname"><span class="pre">STANDBY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.STANDBY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.SUSPENDED">
+<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.UNAVAILABLE">
+<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeDesiredStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentRuntimeDesiredStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentRuntimeDesiredStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">DeploymentRuntimeStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentRuntimeStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Deployment runtime status of the pipeline.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.BOOTSTRAPPING">
+<span class="sig-name descname"><span class="pre">BOOTSTRAPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.BOOTSTRAPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.INITIALIZING">
+<span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.INITIALIZING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.PAUSED">
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.PAUSED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.REPLAYING">
+<span class="sig-name descname"><span class="pre">REPLAYING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.REPLAYING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.RUNNING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.STANDBY">
+<span class="sig-name descname"><span class="pre">STANDBY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.STANDBY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.SUSPENDED">
+<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.UNAVAILABLE">
+<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.from_str">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#DeploymentRuntimeStatus.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.from_str" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="feldera.enums.FaultToleranceModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">FaultToleranceModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#FaultToleranceModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.FaultToleranceModel" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
@@ -1182,144 +1408,65 @@ input or output.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">PipelineStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#PipelineStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.PipelineStatus" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
 <p>Represents the state that this pipeline is currently in.</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>              Stopped ◄─────────── Stopping ◄───── All states can transition
-                 │                    ▲            to Stopping by either:
-/start or /pause │                    │            (1) user calling /stop?force=true, or;
-                 ▼                    │            (2) pipeline encountering a fatal
-          ⌛Provisioning          Suspending            resource or runtime error,
-                 │                    ▲                having the system call /stop?force=true
-                 ▼                    │ /stop          effectively
-          ⌛Initializing ─────────────┤  ?force=false
-                 │                    │
-       ┌─────────┼────────────────────┴─────┐
-       │         ▼                          │
-       │       Paused  ◄──────► Unavailable │
-       │        │   ▲                ▲      │
-       │ /start │   │  /pause        │      │
-       │        ▼   │                │      │
-       │       Running ◄─────────────┘      │
-       └────────────────────────────────────┘
-</pre></div>
-</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.BOOTSTRAPPING">
+<span class="sig-name descname"><span class="pre">BOOTSTRAPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.BOOTSTRAPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.INITIALIZING">
-<span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>
-<dd><p>The pipeline is initializing its internal state and connectors.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Initialization succeeds, transitioning to <cite>PAUSED</cite>.</p></li>
-<li><p>Initialization fails or times out, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>The user suspends the pipeline via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
-<li><p>The user stops the pipeline via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.NOT_FOUND">
 <span class="sig-name descname"><span class="pre">NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.NOT_FOUND" title="Link to this definition"></a></dt>
-<dd><p>The pipeline has not been created yet.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.PAUSED">
-<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PAUSED" title="Link to this definition"></a></dt>
-<dd><p>The pipeline is initialized but data processing is paused.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>The user starts it via <cite>/start</cite>, transitioning to <cite>RUNNING</cite>.</p></li>
-<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
-<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PAUSED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.PROVISIONING">
 <span class="sig-name descname"><span class="pre">PROVISIONING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.PROVISIONING" title="Link to this definition"></a></dt>
-<dd><p>Compute (and optionally storage) resources needed for running the pipeline
-are being provisioned.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Resources are provisioned successfully, transitioning to <cite>INITIALIZING</cite>.</p></li>
-<li><p>Provisioning fails or times out, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>The user cancels the pipeline via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.REPLAYING">
+<span class="sig-name descname"><span class="pre">REPLAYING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.REPLAYING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.RUNNING">
-<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.RUNNING" title="Link to this definition"></a></dt>
-<dd><p>The pipeline is processing data.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>The user pauses it via <cite>/pause</cite>, transitioning to <cite>PAUSED</cite>.</p></li>
-<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
-<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.RUNNING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.STANDBY">
+<span class="sig-name descname"><span class="pre">STANDBY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STANDBY" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.STOPPED">
 <span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STOPPED" title="Link to this definition"></a></dt>
-<dd><p>The pipeline has not (yet) been started or has been stopped either
-manually by the user or automatically by the system due to a
-resource or runtime error.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>The user starts it via <cite>/start</cite> or <cite>/pause</cite>, transitioning to <cite>PROVISIONING</cite>.</p></li>
-<li><p>Early start fails (e.g., compilation failure), transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.STOPPING">
-<span class="sig-name descname"><span class="pre">STOPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STOPPING" title="Link to this definition"></a></dt>
-<dd><p>The pipeline’s compute resources are being scaled down to zero.</p>
-<p>The pipeline remains in this state until deallocation completes,
-transitioning to <cite>STOPPED</cite>.</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">STOPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.STOPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDING">
-<span class="sig-name descname"><span class="pre">SUSPENDING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDING" title="Link to this definition"></a></dt>
-<dd><p>The pipeline is being suspended to storage.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Suspension succeeds, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-</dd></dl>
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDED">
+<span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.UNAVAILABLE">
-<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
-<dd><p>The pipeline was initialized at least once but is currently unreachable
-or not ready.</p>
-<p>The pipeline remains in this state until:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>A successful status check transitions it back to <cite>PAUSED</cite> or <cite>RUNNING</cite>.</p></li>
-<li><p>A runtime error occurs, transitioning to <cite>STOPPING</cite>.</p></li>
-<li><p>The user suspends it via <cite>/suspend</cite>, transitioning to <cite>SUSPENDING</cite>.</p></li>
-<li><p>The user stops it via <cite>/stop</cite>, transitioning to <cite>STOPPING</cite>.</p></li>
-</ol>
-</div></blockquote>
-<p>Note: While in this state, <cite>/start</cite> or <cite>/pause</cite> express desired state but
-are only applied once the pipeline becomes reachable.</p>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">UNAVAILABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.UNAVAILABLE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.from_str">
@@ -1603,7 +1750,10 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_parquet"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_parquet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_text"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_text()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline_as_paused"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline_as_paused()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline_as_standby"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline_as_standby()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.stop_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint()</span></code></a></li>

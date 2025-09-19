@@ -119,132 +119,160 @@
 
 
 
+<div class="viewcode-block" id="DeploymentDesiredStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentDesiredStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeploymentDesiredStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deployment desired status of the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">STOPPED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">5</span>
+
+<div class="viewcode-block" id="DeploymentDesiredStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentDesiredStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">DeploymentDesiredStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">DeploymentDesiredStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DeploymentResourcesDesiredStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentResourcesDesiredStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeploymentResourcesDesiredStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The desired status of deployment resources of the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">STOPPED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PROVISIONED</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="DeploymentResourcesDesiredStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">DeploymentResourcesDesiredStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">DeploymentResourcesDesiredStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DeploymentResourcesStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentResourcesStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeploymentResourcesStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The desired status of deployment resources of the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">STOPPED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PROVISIONING</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">PROVISIONED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">3</span>
+
+<div class="viewcode-block" id="DeploymentResourcesStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentResourcesStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">DeploymentResourcesStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">DeploymentResourcesStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DeploymentRuntimeDesiredStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeploymentRuntimeDesiredStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deployment runtime desired status of the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">4</span>
+
+<div class="viewcode-block" id="DeploymentRuntimeDesiredStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">DeploymentRuntimeDesiredStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">DeploymentRuntimeDesiredStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DeploymentRuntimeStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentRuntimeStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeploymentRuntimeStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deployment runtime status of the pipeline.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">7</span>
+
+<div class="viewcode-block" id="DeploymentRuntimeStatus.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentRuntimeStatus.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">DeploymentRuntimeStatus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">DeploymentRuntimeStatus</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="PipelineStatus">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PipelineStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents the state that this pipeline is currently in.</span>
-
-<span class="sd">    .. code-block:: text</span>
-
-<span class="sd">                    Stopped ◄─────────── Stopping ◄───── All states can transition</span>
-<span class="sd">                       │                    ▲            to Stopping by either:</span>
-<span class="sd">      /start or /pause │                    │            (1) user calling /stop?force=true, or;</span>
-<span class="sd">                       ▼                    │            (2) pipeline encountering a fatal</span>
-<span class="sd">                ⌛Provisioning          Suspending            resource or runtime error,</span>
-<span class="sd">                       │                    ▲                having the system call /stop?force=true</span>
-<span class="sd">                       ▼                    │ /stop          effectively</span>
-<span class="sd">                ⌛Initializing ─────────────┤  ?force=false</span>
-<span class="sd">                       │                    │</span>
-<span class="sd">             ┌─────────┼────────────────────┴─────┐</span>
-<span class="sd">             │         ▼                          │</span>
-<span class="sd">             │       Paused  ◄──────► Unavailable │</span>
-<span class="sd">             │        │   ▲                ▲      │</span>
-<span class="sd">             │ /start │   │  /pause        │      │</span>
-<span class="sd">             │        ▼   │                │      │</span>
-<span class="sd">             │       Running ◄─────────────┘      │</span>
-<span class="sd">             └────────────────────────────────────┘</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">NOT_FOUND</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline has not been created yet.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">STOPPED</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline has not (yet) been started or has been stopped either</span>
-<span class="sd">    manually by the user or automatically by the system due to a</span>
-<span class="sd">    resource or runtime error.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. The user starts it via `/start` or `/pause`, transitioning to `PROVISIONING`.</span>
-<span class="sd">        2. Early start fails (e.g., compilation failure), transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">PROVISIONING</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute (and optionally storage) resources needed for running the pipeline</span>
-<span class="sd">    are being provisioned.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. Resources are provisioned successfully, transitioning to `INITIALIZING`.</span>
-<span class="sd">        2. Provisioning fails or times out, transitioning to `STOPPING`.</span>
-<span class="sd">        3. The user cancels the pipeline via `/stop`, transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline is initializing its internal state and connectors.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. Initialization succeeds, transitioning to `PAUSED`.</span>
-<span class="sd">        2. Initialization fails or times out, transitioning to `STOPPING`.</span>
-<span class="sd">        3. The user suspends the pipeline via `/suspend`, transitioning to `SUSPENDING`.</span>
-<span class="sd">        4. The user stops the pipeline via `/stop`, transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline is initialized but data processing is paused.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. The user starts it via `/start`, transitioning to `RUNNING`.</span>
-<span class="sd">        2. A runtime error occurs, transitioning to `STOPPING`.</span>
-<span class="sd">        3. The user suspends it via `/suspend`, transitioning to `SUSPENDING`.</span>
-<span class="sd">        4. The user stops it via `/stop`, transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline is processing data.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. The user pauses it via `/pause`, transitioning to `PAUSED`.</span>
-<span class="sd">        2. A runtime error occurs, transitioning to `STOPPING`.</span>
-<span class="sd">        3. The user suspends it via `/suspend`, transitioning to `SUSPENDING`.</span>
-<span class="sd">        4. The user stops it via `/stop`, transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline was initialized at least once but is currently unreachable</span>
-<span class="sd">    or not ready.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. A successful status check transitions it back to `PAUSED` or `RUNNING`.</span>
-<span class="sd">        2. A runtime error occurs, transitioning to `STOPPING`.</span>
-<span class="sd">        3. The user suspends it via `/suspend`, transitioning to `SUSPENDING`.</span>
-<span class="sd">        4. The user stops it via `/stop`, transitioning to `STOPPING`.</span>
-
-<span class="sd">    Note: While in this state, `/start` or `/pause` express desired state but</span>
-<span class="sd">    are only applied once the pipeline becomes reachable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">SUSPENDING</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline is being suspended to storage.</span>
-
-<span class="sd">    The pipeline remains in this state until:</span>
-
-<span class="sd">        1. Suspension succeeds, transitioning to `STOPPING`.</span>
-<span class="sd">        2. A runtime error occurs, transitioning to `STOPPING`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The pipeline&#39;s compute resources are being scaled down to zero.</span>
-
-<span class="sd">    The pipeline remains in this state until deallocation completes,</span>
-<span class="sd">    transitioning to `STOPPED`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">11</span>
 
 <div class="viewcode-block" id="PipelineStatus.from_str">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus.from_str">[docs]</a>
