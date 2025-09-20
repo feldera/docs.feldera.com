@@ -72,6 +72,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentRuntimeStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.FaultToleranceModel"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.PipelineFieldSelector"><code class="docutils literal notranslate"><span class="pre">PipelineFieldSelector</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.ProgramStatus"><code class="docutils literal notranslate"><span class="pre">ProgramStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.StorageStatus"><code class="docutils literal notranslate"><span class="pre">StorageStatus</span></code></a></li>
@@ -754,11 +755,14 @@ state.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.refresh">
-<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.refresh" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.PipelineFieldSelector" title="feldera.enums.PipelineFieldSelector"><span class="pre">PipelineFieldSelector</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.refresh" title="Link to this definition"></a></dt>
 <dd><p>Calls the backend to get the updated, latest version of the pipeline.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>FelderaConnectionError</strong> – If there is an issue connecting to the backend.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_selector</strong> – Choose what pipeline information to refresh; see PipelineFieldSelector enum definition.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FelderaConnectionError</strong> – If there is an issue connecting to the backend.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1400,6 +1404,24 @@ input or output.</p>
 <dt class="sig sig-object py" id="feldera.enums.FaultToleranceModel.from_str">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#FaultToleranceModel.from_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.FaultToleranceModel.from_str" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.PipelineFieldSelector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">PipelineFieldSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#PipelineFieldSelector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.PipelineFieldSelector" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineFieldSelector.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'all'</span></em><a class="headerlink" href="#feldera.enums.PipelineFieldSelector.ALL" title="Link to this definition"></a></dt>
+<dd><p>Select all fields of a pipeline.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineFieldSelector.STATUS">
+<span class="sig-name descname"><span class="pre">STATUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'status'</span></em><a class="headerlink" href="#feldera.enums.PipelineFieldSelector.STATUS" title="Link to this definition"></a></dt>
+<dd><p>Select only the fields required to know the status of a pipeline.</p>
+</dd></dl>
 
 </dd></dl>
 

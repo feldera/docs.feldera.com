@@ -148,8 +148,8 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_PREFIX</span><span class="si">}</span><span class="s2">/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">API_PREFIX</span><span class="si">}</span><span class="s2">/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">?selector=</span><span class="si">{</span><span class="n">selector</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">post_no_body</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
@@ -188,7 +188,7 @@
     <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout_s</span>
     <span class="n">last</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
             <span class="k">continue</span>
@@ -257,7 +257,7 @@
     <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout_s</span>
     <span class="n">last</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
             <span class="k">continue</span>
@@ -279,7 +279,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">reset_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">stop_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">clear_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>

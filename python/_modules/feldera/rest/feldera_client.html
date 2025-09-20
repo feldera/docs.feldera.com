@@ -86,6 +86,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineFieldSelector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaTimeoutError</span><span class="p">,</span> <span class="n">FelderaAPIError</span>
@@ -179,14 +180,19 @@
 
 <div class="viewcode-block" id="FelderaClient.get_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_selector</span><span class="p">:</span> <span class="n">PipelineFieldSelector</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a pipeline by name</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline</span>
+<span class="sd">        :param field_selector: Choose what pipeline information to refresh; see PipelineFieldSelector enum definition.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">?selector=</span><span class="si">{</span><span class="n">field_selector</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Pipeline</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span></div>
 
@@ -223,12 +229,14 @@
         <span class="n">wait</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pending&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingSql&quot;</span><span class="p">,</span> <span class="s2">&quot;SqlCompiled&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingRust&quot;</span><span class="p">]</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Success&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">p</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wait</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
+
                 <span class="c1"># error handling for SQL compilation errors</span>
                 <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;SqlError&quot;</span><span class="p">:</span>
                     <span class="n">sql_errors</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_error</span><span class="p">[</span><span class="s2">&quot;sql_compilation&quot;</span><span class="p">][</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
@@ -274,7 +282,7 @@
                         <span class="sa">f</span><span class="s2">&quot;transition to &#39;</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&#39; state&quot;</span>
                     <span class="p">)</span>
 
-            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_status</span>
 
             <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
@@ -633,7 +641,9 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout_s</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span><span class="o">.</span><span class="n">deployment_status</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span>
+                <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">deployment_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span><span class="p">:</span>
                 <span class="k">return</span>
@@ -670,7 +680,9 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout_s</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span><span class="o">.</span><span class="n">storage_status</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span>
+                <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">storage_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Cleared&quot;</span><span class="p">:</span>
                 <span class="k">return</span>
