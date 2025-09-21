@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.149.0
+  version: 0.150.0
 paths:
   /config/authentication:
     get:
@@ -423,6 +423,29 @@ paths:
                   $ref: '#/components/schemas/Demo'
         '500':
           description: Failed to read demos from the demos directories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/config/session:
+    get:
+      tags:
+        - Configuration
+      summary: Retrieve current session information.
+      operationId: get_config_session
+      responses:
+        '200':
+          description: >-
+            The response body contains current session information including
+            tenant details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionInfo'
+        '500':
+          description: Request failed.
           content:
             application/json:
               schema:
@@ -4690,10 +4713,10 @@ components:
               $ref: '#/components/schemas/ProviderAwsCognito'
         - type: object
           required:
-            - GoogleIdentity
+            - GenericOidc
           properties:
-            GoogleIdentity:
-              $ref: '#/components/schemas/ProviderGoogleIdentity'
+            GenericOidc:
+              $ref: '#/components/schemas/ProviderGenericOidc'
     BuildInformation:
       type: object
       description: Information about the build of the platform.
@@ -7958,6 +7981,28 @@ components:
           description: The maximum number of records in a single buffer.
           nullable: true
           minimum: 0
+        on_conflict_do_nothing:
+          type: boolean
+          description: >-
+            Specifies how the connector handles conflicts when executing an
+            `INSERT`
+
+            into a table with a primary key. By default, an existing row with
+            the same
+
+            key is overwritten. Setting this flag to `true` preserves the
+            existing row
+
+            and ignores the new insert.
+
+
+            This setting does not affect `UPDATE` statements, which always
+            replace the
+
+            value associated with the key.
+
+
+            Default: `false`
         ssl_ca_pem:
           type: string
           description: The CA certificate in PEM format.
@@ -8156,25 +8201,30 @@ components:
     ProviderAwsCognito:
       type: object
       required:
-        - jwk_uri
+        - issuer
         - login_url
         - logout_url
       properties:
-        jwk_uri:
+        issuer:
           type: string
         login_url:
           type: string
         logout_url:
           type: string
-    ProviderGoogleIdentity:
+    ProviderGenericOidc:
       type: object
       required:
-        - jwk_uri
+        - issuer
         - client_id
+        - extra_oidc_scopes
       properties:
         client_id:
           type: string
-        jwk_uri:
+        extra_oidc_scopes:
+          type: array
+          items:
+            type: string
+        issuer:
           type: string
     PubSubInputConfig:
       type: object
@@ -9102,6 +9152,17 @@ components:
         unchanged_since:
           type: string
           format: date-time
+    SessionInfo:
+      type: object
+      required:
+        - tenant_id
+        - tenant_name
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        tenant_name:
+          type: string
+          description: Current user's tenant name
     SourcePosition:
       type: object
       required:
@@ -9762,6 +9823,9 @@ components:
             Default: 10
           nullable: true
           minimum: 0
+    TenantId:
+      type: string
+      format: uuid
     TimeSeries:
       type: object
       description: Time series to make graphs in the web console easier.

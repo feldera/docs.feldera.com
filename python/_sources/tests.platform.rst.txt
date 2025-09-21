@@ -4,6 +4,14 @@ tests.platform package
 Submodules
 ----------
 
+tests.platform.conftest module
+------------------------------
+
+.. automodule:: tests.platform.conftest
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.platform.helper module
 ----------------------------
 
@@ -64,6 +72,14 @@ tests.platform.test\_metrics\_logs module
 -----------------------------------------
 
 .. automodule:: tests.platform.test_metrics_logs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+tests.platform.test\_oidc\_auth\_simple module
+----------------------------------------------
+
+.. automodule:: tests.platform.test_oidc_auth_simple
    :members:
    :undoc-members:
    :show-inheritance:

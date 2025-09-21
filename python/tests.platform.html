@@ -101,6 +101,38 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
+<section id="module-tests.platform.conftest">
+<span id="tests-platform-conftest-module"></span><h2>tests.platform.conftest module<a class="headerlink" href="#module-tests.platform.conftest" title="Link to this heading"></a></h2>
+<p>pytest configuration for platform tests.</p>
+<p>Provides shared fixtures for OIDC authentication caching across pytest workers.
+Uses pytest-xdist hooks to ensure OIDC token fetching happens only once on the master node.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.conftest.is_master">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.conftest.</span></span><span class="sig-name descname"><span class="pre">is_master</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/tests/platform/conftest.html#is_master"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.conftest.is_master" title="Link to this definition"></a></dt>
+<dd><p>True if the code running is in the xdist master node or not using xdist at all.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.conftest.oidc_token_fixture">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.conftest.</span></span><span class="sig-name descname"><span class="pre">oidc_token_fixture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/conftest.html#oidc_token_fixture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.conftest.oidc_token_fixture" title="Link to this definition"></a></dt>
+<dd><p>Session-scoped fixture that verifies OIDC token setup.</p>
+<p>The actual token fetching is done by pytest_configure hooks and stored
+in environment variables for cross-process access.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.conftest.pytest_configure">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.conftest.</span></span><span class="sig-name descname"><span class="pre">pytest_configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/conftest.html#pytest_configure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.conftest.pytest_configure" title="Link to this definition"></a></dt>
+<dd><p>Configure hook: fetch OIDC token on master node only.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.conftest.pytest_configure_node">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.conftest.</span></span><span class="sig-name descname"><span class="pre">pytest_configure_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/conftest.html#pytest_configure_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.conftest.pytest_configure_node" title="Link to this definition"></a></dt>
+<dd><p>xdist hook: pass token data to worker nodes via workerinput for fixture access.</p>
+</dd></dl>
+
+</section>
 <section id="module-tests.platform.helper">
 <span id="tests-platform-helper-module"></span><h2>tests.platform.helper module<a class="headerlink" href="#module-tests.platform.helper" title="Link to this heading"></a></h2>
 <p>Helper utilities for platform tests.</p>
@@ -503,6 +535,16 @@ The decorated function will receive a ‘pipeline_name’ parameter.</p>
 <dt class="sig sig-object py" id="tests.platform.helper.http_request">
 <span class="sig-prename descclassname"><span class="pre">tests.platform.helper.</span></span><span class="sig-name descname"><span class="pre">http_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="_modules/tests/platform/helper.html#http_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.helper.http_request" title="Link to this definition"></a></dt>
 <dd><p>Low-level request wrapper (no retries). Raises only on network errors.</p>
+<dl>
+<dt>Args:</dt><dd><p>method: HTTP method (GET, POST, etc.)
+path: URL path
+base_headers: Optional override for base headers. If None (default), uses _base_headers().</p>
+<blockquote>
+<div><p>If empty dict {}, no base headers are applied (for testing unauthenticated requests).</p>
+</div></blockquote>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: Additional arguments passed to requests.request()</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -742,6 +784,53 @@ debezium update, and CSV ingestion with parse error.</p>
 <dt class="sig sig-object py" id="tests.platform.test_metrics_logs.test_pipeline_stats">
 <span class="sig-prename descclassname"><span class="pre">tests.platform.test_metrics_logs.</span></span><span class="sig-name descname"><span class="pre">test_pipeline_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_metrics_logs.html#test_pipeline_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_metrics_logs.test_pipeline_stats" title="Link to this definition"></a></dt>
 <dd><p>Tests retrieving pipeline statistics via <cite>/stats</cite>.</p>
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_oidc_auth_simple">
+<span id="tests-platform-test-oidc-auth-simple-module"></span><h2>tests.platform.test_oidc_auth_simple module<a class="headerlink" href="#module-tests.platform.test_oidc_auth_simple" title="Link to this heading"></a></h2>
+<p>Simplified OIDC Authentication Integration Tests</p>
+<p>Tests OIDC authentication using Resource Owner Password Flow only.</p>
+<p>Environment Variables Required:
+- OIDC_TEST_ISSUER: The issuer URL for the OIDC provider
+- OIDC_TEST_CLIENT_ID: Client ID for the test application
+- OIDC_TEST_CLIENT_SECRET: Client secret for Resource Owner Password Flow
+- OIDC_TEST_USERNAME: Username for test user
+- OIDC_TEST_PASSWORD: Password for test user</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_authenticated_endpoint_access">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_authenticated_endpoint_access</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_authenticated_endpoint_access"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_authenticated_endpoint_access" title="Link to this definition"></a></dt>
+<dd><p>Test that valid token allows access to protected endpoints</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_authentication_config_discovery">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_authentication_config_discovery</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_authentication_config_discovery"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_authentication_config_discovery" title="Link to this definition"></a></dt>
+<dd><p>Test that the authentication configuration endpoint returns GenericOidc configuration</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_malformed_token_rejection">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_malformed_token_rejection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_malformed_token_rejection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_malformed_token_rejection" title="Link to this definition"></a></dt>
+<dd><p>Test that malformed JWT tokens are rejected</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_obtain_access_token">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_obtain_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_obtain_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_obtain_access_token" title="Link to this definition"></a></dt>
+<dd><p>Test obtaining access token via Resource Owner Password Flow</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_oidc_discovery_endpoint">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_oidc_discovery_endpoint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_oidc_discovery_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_oidc_discovery_endpoint" title="Link to this definition"></a></dt>
+<dd><p>Test that the remote OIDC provider’s discovery endpoint is accessible</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.platform.test_oidc_auth_simple.test_unauthenticated_request_rejection">
+<span class="sig-prename descclassname"><span class="pre">tests.platform.test_oidc_auth_simple.</span></span><span class="sig-name descname"><span class="pre">test_unauthenticated_request_rejection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_oidc_auth_simple.html#test_unauthenticated_request_rejection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_oidc_auth_simple.test_unauthenticated_request_rejection" title="Link to this definition"></a></dt>
+<dd><p>Test that requests without authentication are rejected</p>
 </dd></dl>
 
 </section>
