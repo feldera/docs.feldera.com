@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.151.0
+  version: 0.152.0
 paths:
   /config/authentication:
     get:
@@ -6830,6 +6830,17 @@ components:
 
                 The number of offsets must match the number of partitions in the
                 topic.
+        - type: object
+          required:
+            - timestamp
+          properties:
+            timestamp:
+              type: integer
+              format: int64
+              description: |-
+                Start from a particular timestamp in the topic.
+
+                Kafka timestamps are in milliseconds since the epoch.
       description: Where to begin reading a Kafka topic.
     LicenseInformation:
       type: object
