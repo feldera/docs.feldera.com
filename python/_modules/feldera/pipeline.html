@@ -87,7 +87,6 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -105,7 +104,7 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CallbackRunnerInstruction</span><span class="p">,</span> <span class="n">CallbackRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackRunner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.output_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputHandler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_dataframe_has_columns</span><span class="p">,</span> <span class="n">chunk_dataframe</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
@@ -120,27 +119,12 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">:</span> <span class="n">InnerPipeline</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Queue</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_inner</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">InnerPipeline</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Pipeline&quot;</span><span class="p">:</span>
         <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
         <span class="n">pipeline</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="n">inner</span>
         <span class="k">return</span> <span class="n">pipeline</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__setup_output_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Internal function used to set up the output listeners.</span>
-
-<span class="sd">        :meta private:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">for</span> <span class="n">view_queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">view_queue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="c1"># sends a message to the callback runner to start listening</span>
-                <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">PipelineStarted</span><span class="p">)</span>
-                <span class="c1"># block until the callback runner is ready</span>
-                <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Pipeline.refresh">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.refresh">[docs]</a>
@@ -344,23 +328,21 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OutputHandler</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Follow the change stream (i.e., the output) of the provided view.</span>
-<span class="sd">        Returns an output handler to read the changes.</span>
+<span class="sd">        Returns an output handle to read the changes.</span>
 
-<span class="sd">        When the pipeline is stopped, these listeners are dropped.</span>
+<span class="sd">        When the pipeline is stopped, the handle is dropped.</span>
 
-<span class="sd">        You must call this method before starting the pipeline to get the entire output of the view.</span>
-<span class="sd">        If this method is called once the pipeline has started, you will only get the output from that point onwards.</span>
+<span class="sd">        The handle will only receive changes from the point in time when the listener is created.</span>
+<span class="sd">        In order to receive all changes since the pipeline started, you can create the pipeline in the `PAUSED` state</span>
+<span class="sd">        using :meth:`start_paused`, attach listeners and unpause the pipeline using :meth:`resume`.</span>
 
 <span class="sd">        :param view_name: The name of the view to listen to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">,</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">]:</span>
-            <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">view_name</span><span class="p">:</span> <span class="n">queue</span><span class="p">})</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running or paused to listen to output&quot;</span><span class="p">)</span>
 
-        <span class="n">handler</span> <span class="o">=</span> <span class="n">OutputHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">OutputHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">)</span>
         <span class="n">handler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">handler</span></div>
@@ -374,8 +356,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the given callback on each chunk of the output of the specified view.</span>
 
-<span class="sd">        You must call this method before starting the pipeline to operate on the entire output.</span>
-<span class="sd">        You can call this method after the pipeline has started, but you will only get the output from that point onwards.</span>
+<span class="sd">        The callback will only receive changes from the point in time when the listener is created.</span>
+<span class="sd">        In order to receive all changes since the pipeline started, you can create the pipeline in the `PAUSED` state</span>
+<span class="sd">        using :meth:`start_paused`, attach listeners and unpause the pipeline using :meth:`resume`.</span>
 
 <span class="sd">        :param view_name: The name of the view.</span>
 <span class="sd">        :param callback: The callback to run on each chunk. The callback should take two arguments:</span>
@@ -393,13 +376,10 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">]:</span>
-            <span class="n">queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">view_name</span><span class="p">:</span> <span class="n">queue</span><span class="p">})</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running or paused to listen to output&quot;</span><span class="p">)</span>
 
-        <span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
         <span class="n">handler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 
@@ -480,49 +460,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span></div>
-
-
-<div class="viewcode-block" id="Pipeline.start">
-<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        .. _start:</span>
-
-<span class="sd">        Starts this pipeline.</span>
-
-<span class="sd">        - The pipeline must be in STOPPED state to start.</span>
-<span class="sd">        - If the pipeline is in any other state, an error will be raised.</span>
-<span class="sd">        - If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
-
-<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
-<span class="sd">            pipeline to start.</span>
-<span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
-
-<span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">STOPPED</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;&quot;&quot;Cannot start pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; in state </span><span class="se">\</span>
-<span class="s2">&#39;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;. The pipeline must be in STOPPED state before it can be </span><span class="se">\</span>
-<span class="s2">started. You can either stop the pipeline using the `Pipeline.stop()` </span><span class="se">\</span>
-<span class="s2">method or use `Pipeline.resume()` to resume a paused pipeline.&quot;&quot;&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;cannot start with &#39;wait=False&#39; when output listeners are configured. Try setting &#39;wait=True&#39;.&quot;</span>
-                <span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">)</span>
-
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__setup_output_listeners</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resume</span><span class="p">(</span><span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.restart">
@@ -640,6 +577,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">activate_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.start">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        .. _start:</span>
+
+<span class="sd">        Starts this pipeline.</span>
+
+<span class="sd">        - The pipeline must be in STOPPED state to start.</span>
+<span class="sd">        - If the pipeline is in any other state, an error will be raised.</span>
+<span class="sd">        - If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
+
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to start.</span>
+<span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
+
+<span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.start_paused">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_paused">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_paused</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -694,20 +653,6 @@
 <span class="sd">            pipeline to stop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">view_queue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">view_queue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="c1"># sends a message to the callback runner to stop listening</span>
-                    <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">_CallbackRunnerInstruction</span><span class="o">.</span><span class="n">RanToCompletion</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="p">:</span>
-                    <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">views_tx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-                    <span class="k">for</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">queue</span> <span class="ow">in</span> <span class="n">view</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="c1"># block until the callback runner has been stopped</span>
-                        <span class="n">queue</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_pipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
         <span class="p">)</span></div>

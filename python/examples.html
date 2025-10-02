@@ -277,10 +277,10 @@ the following output:</p>
 <span class="n">df_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;students.csv&#39;</span><span class="p">)</span>
 <span class="n">df_grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;grades.csv&#39;</span><span class="p">)</span>
 
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
 <span class="c1"># subscribe to listen to outputs from a view</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;average_scores&quot;</span><span class="p">)</span>
-
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <span class="c1"># feed pandas dataframes as input</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;students&quot;</span><span class="p">,</span> <span class="n">df_students</span><span class="p">)</span>
@@ -328,11 +328,12 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 
+<span class="c1"># run the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
 <span class="c1"># register the callback for data received from the selected view</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">foreach_chunk</span><span class="p">(</span><span class="s2">&quot;view_name&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 
-<span class="c1"># run the pipeline</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
 
 <span class="c1"># wait for the pipeline to finish and stop</span>
@@ -416,8 +417,11 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;kafka_example&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 
+<span class="c1"># Start the pipeline in paused state, attach listener, then unpause the pipeline.</span>
+<span class="c1"># This ensures that the listener gets all the output from the view.</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start_paused</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;googl_stocks&quot;</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
 
 <span class="c1"># important: `wait_for_completion` will block forever here</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_idle</span><span class="p">()</span>

@@ -319,9 +319,9 @@
         <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 
         <span class="c1"># TODO: use .query() instead</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">start_paused</span><span class="p">()</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;v&quot;</span><span class="p">)</span>
-
-        <span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
 
         <span class="n">pipeline</span><span class="o">.</span><span class="n">input_json</span><span class="p">(</span>
             <span class="s2">&quot;t&quot;</span><span class="p">,</span>

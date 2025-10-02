@@ -78,9 +78,7 @@
              
   <h1>Source code for feldera.output_handler</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackRunner</span>
 
@@ -93,7 +91,6 @@
         <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">],</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes the output handler, but doesn&#39;t start it.</span>
@@ -103,7 +100,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">pipeline_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">view_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Queue</span><span class="p">]</span> <span class="o">=</span> <span class="n">queue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># the callback that is passed to the `CallbackRunner`</span>
@@ -113,7 +109,7 @@
 
         <span class="c1"># sets up the callback runner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">queue</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="OutputHandler.start">
