@@ -702,11 +702,6 @@ wait for completion, and validate resulting counts.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="tests.platform.test_ingress_formats.create_pipeline">
-<span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">create_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sql</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#create_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.create_pipeline" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="tests.platform.test_ingress_formats.test_case_sensitive_tables">
 <span class="sig-prename descclassname"><span class="pre">tests.platform.test_ingress_formats.</span></span><span class="sig-name descname"><span class="pre">test_case_sensitive_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_ingress_formats.html#test_case_sensitive_tables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_ingress_formats.test_case_sensitive_tables" title="Link to this definition"></a></dt>
 <dd><ul class="simple">
@@ -956,6 +951,23 @@ CREATE MATERIALIZED VIEW v0 AS SELECT * FROM tbl;</p>
 <dt class="sig sig-object py" id="tests.platform.test_shared_pipeline_stress.TestPipeline.test_get_pipeline_logs">
 <span class="sig-name descname"><span class="pre">test_get_pipeline_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_shared_pipeline_stress.html#TestPipeline.test_get_pipeline_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_shared_pipeline_stress.TestPipeline.test_get_pipeline_logs" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-tests.platform.test_update_runtime">
+<span id="tests-platform-test-update-runtime-module"></span><h2>tests.platform.test_update_runtime module<a class="headerlink" href="#module-tests.platform.test_update_runtime" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.platform.test_update_runtime.TestPipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.platform.test_update_runtime.</span></span><span class="sig-name descname"><span class="pre">TestPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_update_runtime.html#TestPipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_update_runtime.TestPipeline" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.platform.test_update_runtime.TestPipeline.test_update_runtime">
+<span class="sig-name descname"><span class="pre">test_update_runtime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tests/platform/test_update_runtime.html#TestPipeline.test_update_runtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tests.platform.test_update_runtime.TestPipeline.test_update_runtime" title="Link to this definition"></a></dt>
+<dd><p>Test the /update_runtime API.</p>
+<p>Pipeline’s platform version should only be updated to the current version on-demand
+(by calling /update_runtime) or when updating the pipeline code.</p>
+</dd></dl>
 
 </dd></dl>
 

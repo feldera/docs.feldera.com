@@ -140,6 +140,14 @@ tests.platform.test\_shared\_pipeline\_stress module
    :undoc-members:
    :show-inheritance:
 
+tests.platform.test\_update\_runtime module
+-------------------------------------------
+
+.. automodule:: tests.platform.test_update_runtime
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

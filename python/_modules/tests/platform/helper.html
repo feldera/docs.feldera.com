@@ -230,6 +230,15 @@
     <span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sql</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span>
+        <span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span>
+        <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">sql</span><span class="p">,</span> <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;logging&quot;</span><span class="p">:</span> <span class="s2">&quot;debug&quot;</span><span class="p">}},</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">start_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">post_no_body</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">))</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">ACCEPTED</span><span class="p">,</span> <span class="p">(</span>

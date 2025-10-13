@@ -1129,6 +1129,38 @@
         <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.update_runtime">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.update_runtime">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_runtime</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recompile a pipeline with the Feldera runtime version included in the</span>
+<span class="sd">        currently installed Feldera platform.</span>
+
+<span class="sd">        Use this endpoint after upgrading Feldera to rebuild pipelines that were</span>
+<span class="sd">        compiled with older platform versions. In most cases, recompilation is not</span>
+<span class="sd">        required—pipelines compiled with older versions will continue to run on the</span>
+<span class="sd">        upgraded platform.</span>
+
+<span class="sd">        Situations where recompilation may be necessary:</span>
+<span class="sd">        - To benefit from the latest bug fixes and performance optimizations.</span>
+<span class="sd">        - When backward-incompatible changes are introduced in Feldera. In this case,</span>
+<span class="sd">        attempting to start a pipeline compiled with an unsupported version will</span>
+<span class="sd">        result in an error.</span>
+
+<span class="sd">        If the pipeline is already compiled with the current platform version,</span>
+<span class="sd">        this operation is a no-op.</span>
+
+<span class="sd">        Note that recompiling the pipeline with a new platform version may change its</span>
+<span class="sd">        query plan. If the modified pipeline is started from an existing checkpoint,</span>
+<span class="sd">        it may require bootstrapping parts of its state from scratch.  See Feldera</span>
+<span class="sd">        documentation for details on the bootstrapping process.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a STOPPED state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">update_pipeline_runtime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.storage_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.storage_status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">storage_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StorageStatus</span><span class="p">:</span>
@@ -1155,6 +1187,21 @@
         <span class="k">return</span> <span class="n">ProgramStatus</span><span class="o">.</span><span class="n">from_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_status</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.testing_force_update_platform_version">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.testing_force_update_platform_version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">testing_force_update_platform_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform_version</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Used to simulate a pipeline compiled with a different platform version than the one currently in use.</span>
+<span class="sd">        This is useful for testing platform upgrade behavior without actually upgrading Feldera.</span>
+
+<span class="sd">        This method is only available when Feldera runs with the &quot;testing&quot; unstable feature enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">testing_force_update_platform_version</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">platform_version</span><span class="o">=</span><span class="n">platform_version</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.program_status_since">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.program_status_since">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">program_status_since</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
@@ -1164,6 +1211,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">program_status_since</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.platform_version">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.platform_version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">platform_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the Feldera platform witch which the program was compiled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">platform_version</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.udf_rust">

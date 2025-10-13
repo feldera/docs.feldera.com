@@ -83,11 +83,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote_plus</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.helper</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_pipeline</span><span class="p">,</span>
     <span class="n">get</span><span class="p">,</span>
-    <span class="n">post_json</span><span class="p">,</span>
     <span class="n">post_no_body</span><span class="p">,</span>
     <span class="n">http_request</span><span class="p">,</span>
-    <span class="n">wait_for_program_success</span><span class="p">,</span>
     <span class="n">api_url</span><span class="p">,</span>
     <span class="n">start_pipeline</span><span class="p">,</span>
     <span class="n">start_pipeline_as_paused</span><span class="p">,</span>
@@ -133,9 +132,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tests that circuit metrics can be retrieved from the pipeline.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span>
-    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span>
-    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">start_pipeline_as_paused</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
 
     <span class="c1"># Default</span>
@@ -186,9 +183,8 @@
 <span class="s2">    );</span>
 <span class="s2">    CREATE MATERIALIZED VIEW v1 AS SELECT * FROM t1;</span>
 <span class="s2">    &quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span><span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">sql</span><span class="p">})</span>
-    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
-    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
     <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
 
     <span class="c1"># Create output connector on v1 (egress)</span>
@@ -263,15 +259,9 @@
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span>
 
     <span class="c1"># Create pipeline</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">post_json</span><span class="p">(</span>
-        <span class="n">api_url</span><span class="p">(</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">),</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
-            <span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="s2">&quot;CREATE TABLE t1(c1 INTEGER) WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span><span class="p">,</span>
-        <span class="p">},</span>
+    <span class="n">create_pipeline</span><span class="p">(</span>
+        <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;CREATE TABLE t1(c1 INTEGER) WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
     <span class="p">)</span>
-    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
-    <span class="n">wait_for_program_success</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Poll for logs availability</span>
     <span class="n">deadline</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="mi">30</span>

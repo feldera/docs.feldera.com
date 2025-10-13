@@ -78,6 +78,7 @@
              
   <h1>Source code for tests.shared_test_pipeline</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.testutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_pipeline_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_CLIENT</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineBuilder</span><span class="p">,</span> <span class="n">Pipeline</span>
@@ -131,6 +132,9 @@
                 <span class="bp">cls</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">pipeline_name</span><span class="p">,</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">ddl</span><span class="p">,</span>
+                <span class="n">runtime_config</span><span class="o">=</span><span class="n">RuntimeConfig</span><span class="p">(</span>
+                    <span class="n">logging</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
             <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span></div>
 
 
@@ -138,7 +142,12 @@
 <a class="viewcode-back" href="../../tests.html#tests.shared_test_pipeline.SharedTestPipeline.setUp">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="p">),</span> <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
+            <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="p">),</span>
+            <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span><span class="p">,</span>
+            <span class="n">runtime_config</span><span class="o">=</span><span class="n">RuntimeConfig</span><span class="p">(</span>
+                <span class="n">logging</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span></div>
 
@@ -161,6 +170,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span>
             <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_testMethodName</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
             <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ddl</span><span class="p">,</span>
+            <span class="n">runtime_config</span><span class="o">=</span><span class="n">RuntimeConfig</span><span class="p">(</span>
+                <span class="n">logging</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
         <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span></div>
 </div>
 
