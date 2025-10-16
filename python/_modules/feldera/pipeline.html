@@ -379,7 +379,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running or paused to listen to output&quot;</span><span class="p">)</span>
 
-        <span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">CallbackRunner</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">exception</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="p">)</span>
         <span class="n">handler</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
 
 
