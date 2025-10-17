@@ -28,6 +28,14 @@ tests.platform.negative\_test module
    :undoc-members:
    :show-inheritance:
 
+tests.platform.test\_bootstrapping module
+-----------------------------------------
+
+.. automodule:: tests.platform.test_bootstrapping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.platform.test\_checkpoint\_suspend module
 -----------------------------------------------
 

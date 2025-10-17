@@ -78,6 +78,7 @@
              
   <h1>Source code for tests.platform.test_pipeline_builder</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.testutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_pipeline_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_CLIENT</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineBuilder</span>
 
@@ -105,13 +106,15 @@
 <span class="s2">        );</span>
 <span class="s2">        &quot;&quot;&quot;</span>
 
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;test_connector_orchestration&quot;</span>
+        <span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">unique_pipeline_name</span><span class="p">(</span><span class="s2">&quot;test_connector_orchestration&quot;</span><span class="p">)</span>
 
-        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">TEST_CLIENT</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
+            <span class="n">TEST_CLIENT</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
         <span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="n">pipeline</span><span class="o">.</span><span class="n">resume_connector</span><span class="p">(</span><span class="s2">&quot;numbers&quot;</span><span class="p">,</span> <span class="s2">&quot;c1&quot;</span><span class="p">)</span>
-        <span class="n">stats</span> <span class="o">=</span> <span class="n">TEST_CLIENT</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">TEST_CLIENT</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
         <span class="n">c1_status</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
             <span class="n">item</span><span class="p">[</span><span class="s2">&quot;paused&quot;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">]</span>
@@ -120,7 +123,7 @@
         <span class="k">assert</span> <span class="ow">not</span> <span class="n">c1_status</span>
 
         <span class="n">pipeline</span><span class="o">.</span><span class="n">pause_connector</span><span class="p">(</span><span class="s2">&quot;numbers&quot;</span><span class="p">,</span> <span class="s2">&quot;c1&quot;</span><span class="p">)</span>
-        <span class="n">stats</span> <span class="o">=</span> <span class="n">TEST_CLIENT</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">TEST_CLIENT</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
         <span class="n">c2_status</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
             <span class="n">item</span><span class="p">[</span><span class="s2">&quot;paused&quot;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">]</span>

@@ -233,12 +233,13 @@
 
     <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">6</span>
-    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">AWAITINGAPPROVAL</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">8</span>
 
 <div class="viewcode-block" id="DeploymentRuntimeStatus.from_str">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.DeploymentRuntimeStatus.from_str">[docs]</a>
@@ -266,13 +267,14 @@
     <span class="n">PROVISIONING</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">UNAVAILABLE</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">STANDBY</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">6</span>
-    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">7</span>
-    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">8</span>
-    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">9</span>
-    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">AWAITINGAPPROVAL</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">INITIALIZING</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">BOOTSTRAPPING</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">REPLAYING</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">SUSPENDED</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">STOPPING</span> <span class="o">=</span> <span class="mi">12</span>
 
 <div class="viewcode-block" id="PipelineStatus.from_str">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.PipelineStatus.from_str">[docs]</a>
@@ -500,6 +502,15 @@
 
     <span class="n">STATUS</span> <span class="o">=</span> <span class="s2">&quot;status&quot;</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select only the fields required to know the status of a pipeline.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="BootstrapPolicy">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.BootstrapPolicy">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BootstrapPolicy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">AWAIT_APPROVAL</span> <span class="o">=</span> <span class="s2">&quot;await_approval&quot;</span>
+    <span class="n">ALLOW</span> <span class="o">=</span> <span class="s2">&quot;allow&quot;</span>
+    <span class="n">REJECT</span> <span class="o">=</span> <span class="s2">&quot;reject&quot;</span></div>
 
 </pre></div>
 

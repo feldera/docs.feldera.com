@@ -85,8 +85,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineFieldSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="p">,</span> <span class="n">PipelineStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaTimeoutError</span><span class="p">,</span> <span class="n">FelderaAPIError</span>
@@ -199,16 +200,20 @@
 
 <div class="viewcode-block" id="FelderaClient.get_runtime_config">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_runtime_config">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_runtime_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the runtime config of a pipeline by name</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">resp</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;runtime_config&quot;</span><span class="p">)</span></div>
+        <span class="n">runtime_config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;runtime_config&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">runtime_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> has no runtime config&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">runtime_config</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.pipelines">
@@ -268,7 +273,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">300.0</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
@@ -299,6 +304,46 @@
 <span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
                 <span class="p">)</span>
 
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">pipeline_name</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">states</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Timed out waiting for pipeline </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> to&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;transition to one of the states: </span><span class="si">{</span><span class="n">states</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_status</span>
+
+            <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span> <span class="ow">or</span> <span class="p">{})</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                <span class="ow">and</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_desired_status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
+            <span class="p">):</span>
+                <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to START the pipeline:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">start</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span><span class="s2">Unable to transition the pipeline to one of the states: </span><span class="si">{</span><span class="n">states</span><span class="si">}</span><span class="s2">.</span>
+<span class="s2">Reason: The pipeline is in a STOPPED state due to the following error:</span>
+<span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                <span class="p">)</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">pipeline_name</span>
             <span class="p">)</span>
@@ -461,37 +506,37 @@
 <div class="viewcode-block" id="FelderaClient.activate_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.activate_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">activate_pipeline</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to activate</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to activate. True by</span>
 <span class="sd">            default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
-<span class="sd">            pipeline to activate. 300 seconds by default.</span>
+<span class="sd">            pipeline to activate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/activate&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="s2">&quot;AwaitingApproval&quot;</span><span class="p">],</span> <span class="n">timeout_s</span>
+        <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_inner_start_pipeline</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">initial</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span>
+        <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to start</span>
@@ -499,69 +544,90 @@
 <span class="sd">            by default.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
-<span class="sd">            pipeline to start. 300 seconds by default.</span>
+<span class="sd">            pipeline to start.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;initial&quot;</span><span class="p">:</span> <span class="n">initial</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">bootstrap_policy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;bootstrap_policy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bootstrap_policy</span><span class="o">.</span><span class="n">value</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
-            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;initial&quot;</span><span class="p">:</span> <span class="n">initial</span><span class="p">},</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">initial</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="s2">&quot;AwaitingApproval&quot;</span><span class="p">],</span> <span class="n">timeout_s</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="FelderaClient.start_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_pipeline</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to start</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start.</span>
 <span class="sd">            True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
-<span class="sd">            pipeline to start. 300 seconds by default.</span>
+<span class="sd">            pipeline to start.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.start_pipeline_as_paused">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline_as_paused">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_pipeline_as_paused</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
-    <span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param pipeline_name: The name of the pipeline to start as paused.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start as pause.</span>
 <span class="sd">            True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
-<span class="sd">            pipeline to start. 300 seconds by default.</span>
+<span class="sd">            pipeline to start.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.start_pipeline_as_standby">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline_as_standby">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_pipeline_as_standby</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param pipeline_name: The name of the pipeline to start as standby.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start as standby.</span>
 <span class="sd">            True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
-<span class="sd">            pipeline to start. 300 seconds by default.</span>
+<span class="sd">            pipeline to start.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;standby&quot;</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;standby&quot;</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.resume_pipeline">
@@ -570,7 +636,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Resume a pipeline</span>
@@ -578,11 +644,8 @@
 <span class="sd">        :param pipeline_name: The name of the pipeline to stop</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to pause. True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
-<span class="sd">            to pause. 300 seconds by default.</span>
+<span class="sd">            to pause.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/resume&quot;</span><span class="p">,</span>
@@ -600,7 +663,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pause a pipeline</span>
@@ -610,11 +673,8 @@
 <span class="sd">             STOPPED state due to a failure.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to pause. True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
-<span class="sd">            to pause. 300 seconds by default.</span>
+<span class="sd">            to pause.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
@@ -626,6 +686,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.approve_pipeline">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.approve_pipeline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">approve_pipeline</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/approve&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.stop_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">stop_pipeline</span><span class="p">(</span>
@@ -633,7 +704,7 @@
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop a pipeline</span>
@@ -643,11 +714,8 @@
 <span class="sd">            Set False to automatically checkpoint before stopping.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to stop. True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
-<span class="sd">            to stop. Default is 300 seconds.</span>
+<span class="sd">            to stop.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">force</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()}</span>
 
@@ -661,7 +729,12 @@
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
-        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not stop in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
+                <span class="p">)</span>
+
             <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span>
                 <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
             <span class="p">)</span><span class="o">.</span><span class="n">deployment_status</span>
@@ -673,34 +746,31 @@
                 <span class="s2">&quot;still stopping </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
                 <span class="n">pipeline_name</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-        <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not stop in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
-        <span class="p">)</span></div>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.clear_storage">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clears the storage from the pipeline.</span>
 <span class="sd">        This operation cannot be canceled.</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the storage</span>
-<span class="sd">            to clear. Default is 300 seconds.</span>
+<span class="sd">            to clear.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timeout_s</span> <span class="o">=</span> <span class="mi">300</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/clear&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
-        <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not clear storage in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
+                <span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span>
                 <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
             <span class="p">)</span><span class="o">.</span><span class="n">storage_status</span>
@@ -712,11 +782,7 @@
                 <span class="s2">&quot;still clearing </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
                 <span class="n">pipeline_name</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-
-        <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not clear storage in </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
-        <span class="p">)</span></div>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.start_transaction">
@@ -934,15 +1000,15 @@
                     <span class="n">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;insert&quot;</span><span class="p">,</span> <span class="p">{}))</span>
                     <span class="n">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">datum</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="p">{}))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">data</span>
+                <span class="n">data</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
                 <span class="n">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;insert&quot;</span><span class="p">,</span> <span class="p">{}))</span>
                 <span class="n">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="p">{}))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="c1"># python sends `True` which isn&#39;t accepted by the backend</span>
-        <span class="n">array</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
-        <span class="n">force</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">force</span><span class="p">)</span>
+        <span class="n">array</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+        <span class="n">force</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">force</span><span class="p">)</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;force&quot;</span><span class="p">:</span> <span class="n">force</span><span class="p">,</span>
@@ -985,7 +1051,7 @@
 <div class="viewcode-block" id="FelderaClient.wait_for_token">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_token</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">600</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Blocks until all records represented by this completion token have</span>
@@ -994,7 +1060,7 @@
 <span class="sd">        :param pipeline_name: The name of the pipeline</span>
 <span class="sd">        :param token: The token to check for completion</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
-<span class="sd">            to process these records. Default 600s</span>
+<span class="sd">            to process these records.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
@@ -1013,8 +1079,8 @@
                 <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">end</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;timeout error: pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; did not&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; process records represented by token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> within&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; process records represented by token </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> within&quot;</span>
+                        <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
 
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -1081,7 +1147,7 @@
 
         <span class="n">table_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="n">table_name</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">resp</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/egress/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
             <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1198,7 +1264,7 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_json">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">query_as_json</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes an ad-hoc query on the specified pipeline and returns the result as a generator that yields</span>
 <span class="sd">        rows of the query as Python dictionaries.</span>

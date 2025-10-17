@@ -112,14 +112,28 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.activate_pipeline">activate_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.PipelineFieldSelector.ALL">ALL (feldera.enums.PipelineFieldSelector attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.BootstrapPolicy.ALLOW">ALLOW (feldera.enums.BootstrapPolicy attribute)</a>
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.ALREADY_REPORTED">ALREADY_REPORTED (tests.platform.helper.HTTPStatus attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.approve">approve() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.approve_pipeline">approve_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.FaultToleranceModel.AtLeastOnce">AtLeastOnce (feldera.enums.FaultToleranceModel attribute)</a>
 </li>
+      <li><a href="feldera.html#feldera.enums.BootstrapPolicy.AWAIT_APPROVAL">AWAIT_APPROVAL (feldera.enums.BootstrapPolicy attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.DeploymentRuntimeStatus.AWAITINGAPPROVAL">AWAITINGAPPROVAL (feldera.enums.DeploymentRuntimeStatus attribute)</a>
+
+      <ul>
+        <li><a href="feldera.html#feldera.enums.PipelineStatus.AWAITINGAPPROVAL">(feldera.enums.PipelineStatus attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -130,14 +144,16 @@
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.BAD_REQUEST">BAD_REQUEST (tests.platform.helper.HTTPStatus attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.DeploymentRuntimeStatus.BOOTSTRAPPING">BOOTSTRAPPING (feldera.enums.DeploymentRuntimeStatus attribute)</a>
 
       <ul>
         <li><a href="feldera.html#feldera.enums.PipelineStatus.BOOTSTRAPPING">(feldera.enums.PipelineStatus attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.enums.BootstrapPolicy">BootstrapPolicy (class in feldera.enums)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.BuildMode">BuildMode (class in feldera.enums)</a>
 </li>
   </ul></td>
@@ -237,6 +253,8 @@
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status">deployment_runtime_desired_status() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status">deployment_runtime_status() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status_details">deployment_runtime_status_details() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_status_since">deployment_status_since() (feldera.pipeline.Pipeline method)</a>
 </li>
@@ -866,6 +884,8 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.refresh">refresh() (feldera.pipeline.Pipeline method)</a>
 </li>
+      <li><a href="feldera.html#feldera.enums.BootstrapPolicy.REJECT">REJECT (feldera.enums.BootstrapPolicy attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.DeploymentRuntimeStatus.REPLAYING">REPLAYING (feldera.enums.DeploymentRuntimeStatus attribute)</a>
 
       <ul>
@@ -1420,11 +1440,13 @@
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.wait_for_condition">wait_for_condition() (in module tests.platform.helper)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.wait_for_idle">wait_for_idle() (feldera.pipeline.Pipeline method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tests.platform.html#tests.platform.helper.wait_for_program_success">wait_for_program_success() (in module tests.platform.helper)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.wait_for_status">wait_for_status() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">wait_for_token() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
