@@ -84,6 +84,14 @@ tests.platform.test\_metrics\_logs module
    :undoc-members:
    :show-inheritance:
 
+tests.platform.test\_nowstream module
+-------------------------------------
+
+.. automodule:: tests.platform.test_nowstream
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 tests.platform.test\_oidc\_auth\_simple module
 ----------------------------------------------
 

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.166.0
+  version: 0.167.0
 paths:
   /config/authentication:
     get:
@@ -8887,13 +8887,39 @@ components:
 
 
             Default: `false`
+        ssl_ca_location:
+          type: string
+          description: >-
+            Path to a file containing a sequence of CA certificates in PEM
+            format.
+          nullable: true
         ssl_ca_pem:
           type: string
-          description: The CA certificate in PEM format.
+          description: A sequence of CA certificates in PEM format.
+          nullable: true
+        ssl_certificate_chain_location:
+          type: string
+          description: >-
+            The path to the certificate chain file.
+
+            The file must contain a sequence of PEM-formatted certificates,
+
+            the first being the leaf certificate, and the remainder forming
+
+            the chain of certificates up to and including the trusted root
+            certificate.
           nullable: true
         ssl_client_key:
           type: string
           description: The client certificate key in PEM format.
+          nullable: true
+        ssl_client_key_location:
+          type: string
+          description: Path to the client certificate key.
+          nullable: true
+        ssl_client_location:
+          type: string
+          description: Path to the client certificate.
           nullable: true
         ssl_client_pem:
           type: string
