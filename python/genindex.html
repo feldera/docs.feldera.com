@@ -114,12 +114,14 @@
 </li>
       <li><a href="feldera.html#feldera.enums.PipelineFieldSelector.ALL">ALL (feldera.enums.PipelineFieldSelector attribute)</a>
 </li>
-      <li><a href="feldera.html#feldera.enums.BootstrapPolicy.ALLOW">ALLOW (feldera.enums.BootstrapPolicy attribute)</a>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.all">all() (feldera.pipeline.Pipeline static method)</a>
 </li>
-      <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.ALREADY_REPORTED">ALREADY_REPORTED (tests.platform.helper.HTTPStatus attribute)</a>
+      <li><a href="feldera.html#feldera.enums.BootstrapPolicy.ALLOW">ALLOW (feldera.enums.BootstrapPolicy attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.ALREADY_REPORTED">ALREADY_REPORTED (tests.platform.helper.HTTPStatus attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.approve">approve() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.approve_pipeline">approve_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
@@ -192,11 +194,19 @@
 </li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile">CompilationProfile (class in feldera.enums)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingSql">CompilingSql (feldera.enums.ProgramStatus attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.enums.CompletionTokenStatus.COMPLETE">COMPLETE (feldera.enums.CompletionTokenStatus attribute)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed">completion_token_processed() (feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.completion_token_status">completion_token_status() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.CompletionTokenStatus">CompletionTokenStatus (class in feldera.enums)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.config.Config">Config (class in feldera.rest.config)</a>
 </li>
@@ -469,6 +479,12 @@
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.gen_pipeline_name">gen_pipeline_name() (in module tests.platform.helper)</a>
 </li>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token">generate_completion_token() (feldera.pipeline.Pipeline method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.generate_completion_token">(feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      </ul></li>
       <li><a href="feldera.html#feldera.enums.BuildMode.GET">GET (feldera.enums.BuildMode attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.get">get() (feldera.pipeline.Pipeline static method)</a>
@@ -528,6 +544,8 @@
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.IM_A_TEAPOT">IM_A_TEAPOT (tests.platform.helper.HTTPStatus attribute)</a>
 </li>
       <li><a href="tests.platform.html#tests.platform.helper.HTTPStatus.IM_USED">IM_USED (tests.platform.helper.HTTPStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.CompletionTokenStatus.IN_PROGRESS">IN_PROGRESS (feldera.enums.CompletionTokenStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.DeploymentRuntimeStatus.INITIALIZING">INITIALIZING (feldera.enums.DeploymentRuntimeStatus attribute)</a>
 
@@ -1463,8 +1481,12 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.wait_for_status">wait_for_status() (feldera.pipeline.Pipeline method)</a>
 </li>
-      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">wait_for_token() (feldera.rest.feldera_client.FelderaClient method)</a>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.wait_for_token">wait_for_token() (feldera.pipeline.Pipeline method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

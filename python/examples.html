@@ -59,6 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#starting-a-pipeline">Starting a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-pandas-dataframes">Using Pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-completion-tokens">Using Completion Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#executing-ad-hoc-sql-queries">Executing ad-hoc SQL Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#iterating-over-output-chunks">Iterating over Output Chunks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#waiting-for-completion">Waiting for Completion</a></li>
@@ -294,6 +295,29 @@ the following output:</p>
 
 <span class="c1"># clear the storage and delete the pipeline</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-completion-tokens">
+<h2>Using Completion Tokens<a class="headerlink" href="#using-completion-tokens" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.feldera.com/connectors/completion-tokens/#completion-tokens">Completion tokens</a> can be used to check whether
+all inputs ingested before the token was issued have been fully processed, and the resulting outputs have been written to all data sinks.</p>
+<p>The following methods automatically use completion tokens:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_json" title="feldera.pipeline.Pipeline.input_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.input_json()</span></code></a></p></li>
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_pandas" title="feldera.pipeline.Pipeline.input_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.input_pandas()</span></code></a></p></li>
+</ul>
+<p>To generate a completion token for a connector attached to the pipeline use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token" title="feldera.pipeline.Pipeline.generate_completion_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.generate_completion_token()</span></code></a>.
+To check the status of this completion token use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.completion_token_status" title="feldera.pipeline.Pipeline.completion_token_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.completion_token_status()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate completion token for table &quot;t0&quot; and connector &quot;myconnector&quot;</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">generate_completion_token</span><span class="p">(</span><span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;myconnector&quot;</span><span class="p">)</span>
+
+<span class="c1"># check the status of this completion token</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">completion_token_status</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+
+<span class="c1"># wait until the pipeline processes this completion token</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

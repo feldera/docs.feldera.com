@@ -67,6 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.BuildMode"><code class="docutils literal notranslate"><span class="pre">BuildMode</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CheckpointStatus"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.enums.CompletionTokenStatus"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentResourcesDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.enums.DeploymentResourcesStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus</span></code></a></li>
@@ -196,6 +197,20 @@ pipeline to pause.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.all">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient" title="feldera.rest.feldera_client.FelderaClient"><span class="pre">FelderaClient</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#feldera.pipeline.Pipeline" title="feldera.pipeline.Pipeline"><span class="pre">Pipeline</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.all" title="Link to this definition"></a></dt>
+<dd><p>Get all pipelines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>client</strong> – The FelderaClient instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of Pipeline objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.approve">
 <span class="sig-name descname"><span class="pre">approve</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.approve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.approve" title="Link to this definition"></a></dt>
 <dd><p>Approves the pipeline to proceed with bootstrapping.</p>
@@ -269,6 +284,12 @@ If None, the function will wait indefinitely.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.completion_token_status">
+<span class="sig-name descname"><span class="pre">completion_token_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CompletionTokenStatus" title="feldera.enums.CompletionTokenStatus"><span class="pre">CompletionTokenStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.completion_token_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.completion_token_status" title="Link to this definition"></a></dt>
+<dd><p>Returns the status of the completion token.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -431,6 +452,14 @@ will block the pipeline.</p>
 <li><p>The callback must be thread-safe as it will be run in a separate thread.</p></li>
 </ul>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.generate_completion_token">
+<span class="sig-name descname"><span class="pre">generate_completion_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.generate_completion_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.generate_completion_token" title="Link to this definition"></a></dt>
+<dd><p>Returns a completion token that can be passed to <a class="reference internal" href="#feldera.pipeline.Pipeline.completion_token_status" title="feldera.pipeline.Pipeline.completion_token_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.completion_token_status()</span></code></a> to
+check whether the pipeline has finished processing all inputs received from the connector before
+the token was generated.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1188,6 +1217,12 @@ reached.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.wait_for_token">
+<span class="sig-name descname"><span class="pre">wait_for_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.wait_for_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.wait_for_token" title="Link to this definition"></a></dt>
+<dd><p>Blocks until the pipeline processes all inputs represented by the completion token.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -1294,6 +1329,24 @@ reached.</p></li>
 <dt class="sig sig-object py" id="feldera.enums.CompilationProfile.UNOPTIMIZED">
 <span class="sig-name descname"><span class="pre">UNOPTIMIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'unoptimized'</span></em><a class="headerlink" href="#feldera.enums.CompilationProfile.UNOPTIMIZED" title="Link to this definition"></a></dt>
 <dd><p>The unoptimized compilation profile.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.enums.CompletionTokenStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.enums.</span></span><span class="sig-name descname"><span class="pre">CompletionTokenStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/enums.html#CompletionTokenStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.enums.CompletionTokenStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.CompletionTokenStatus.COMPLETE">
+<span class="sig-name descname"><span class="pre">COMPLETE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'complete'</span></em><a class="headerlink" href="#feldera.enums.CompletionTokenStatus.COMPLETE" title="Link to this definition"></a></dt>
+<dd><p>Feldera has completed processing all inputs represented by this token.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.CompletionTokenStatus.IN_PROGRESS">
+<span class="sig-name descname"><span class="pre">IN_PROGRESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'inprogress'</span></em><a class="headerlink" href="#feldera.enums.CompletionTokenStatus.IN_PROGRESS" title="Link to this definition"></a></dt>
+<dd><p>Feldera is still processing the inputs represented by this token.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1864,9 +1917,11 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage"><code class="docutils literal notranslate"><span class="pre">FelderaClient.clear_storage()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.commit_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed"><code class="docutils literal notranslate"><span class="pre">FelderaClient.completion_token_processed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_or_update_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.generate_completion_token"><code class="docutils literal notranslate"><span class="pre">FelderaClient.generate_completion_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_logs"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline_logs()</span></code></a></li>

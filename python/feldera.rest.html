@@ -238,6 +238,24 @@ If None, the function will wait indefinitely.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.completion_token_processed">
+<span class="sig-name descname"><span class="pre">completion_token_processed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.completion_token_processed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.completion_token_processed" title="Link to this definition"></a></dt>
+<dd><p>Check whether the pipeline has finished processing all inputs received from the connector before
+the token was generated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline</p></li>
+<li><p><strong>token</strong> – The token to check for completion</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the pipeline has finished processing all inputs represented by the token, False otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline">
 <span class="sig-name descname"><span class="pre">create_or_update_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_or_update_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline" title="Link to this definition"></a></dt>
 <dd><p>Create a pipeline if it doesn’t exist or update a pipeline and wait for
@@ -262,6 +280,26 @@ it to compile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>name</strong> – The name of the pipeline</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.generate_completion_token">
+<span class="sig-name descname"><span class="pre">generate_completion_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.generate_completion_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.generate_completion_token" title="Link to this definition"></a></dt>
+<dd><p>Generate a completion token that can be passed to <a class="reference internal" href="#feldera.rest.feldera_client.FelderaClient.completion_token_processed" title="feldera.rest.feldera_client.FelderaClient.completion_token_processed"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FelderaClient.completion_token_processed()</span></code></a> to
+check whether the pipeline has finished processing all inputs received from the connector before
+the token was generated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline</p></li>
+<li><p><strong>table_name</strong> – The name of the table associated with this connector.</p></li>
+<li><p><strong>connector_name</strong> – The name of the connector.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the connector cannot be found, or if the pipeline is not running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -428,7 +466,7 @@ to pause.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.pipelines">
-<span class="sig-name descname"><span class="pre">pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.pipelines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.pipelines" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pipelines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="feldera.html#feldera.enums.PipelineFieldSelector" title="feldera.enums.PipelineFieldSelector"><span class="pre">PipelineFieldSelector</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PipelineFieldSelector.STATUS</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.pipelines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.pipelines" title="Link to this definition"></a></dt>
 <dd><p>Get all pipelines</p>
 </dd></dl>
 

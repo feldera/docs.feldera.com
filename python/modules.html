@@ -99,11 +99,13 @@
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.pipeline">feldera.pipeline module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.activate"><code class="docutils literal notranslate"><span class="pre">Pipeline.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.all"><code class="docutils literal notranslate"><span class="pre">Pipeline.all()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.approve"><code class="docutils literal notranslate"><span class="pre">Pipeline.approve()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.clear_storage"><code class="docutils literal notranslate"><span class="pre">Pipeline.clear_storage()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.commit_transaction"><code class="docutils literal notranslate"><span class="pre">Pipeline.commit_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.completion_token_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.completion_token_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.created_at"><code class="docutils literal notranslate"><span class="pre">Pipeline.created_at()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.delete"><code class="docutils literal notranslate"><span class="pre">Pipeline.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_config()</span></code></a></li>
@@ -120,6 +122,7 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.errors"><code class="docutils literal notranslate"><span class="pre">Pipeline.errors()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.execute"><code class="docutils literal notranslate"><span class="pre">Pipeline.execute()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.foreach_chunk"><code class="docutils literal notranslate"><span class="pre">Pipeline.foreach_chunk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token"><code class="docutils literal notranslate"><span class="pre">Pipeline.generate_completion_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.get"><code class="docutils literal notranslate"><span class="pre">Pipeline.get()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.id"><code class="docutils literal notranslate"><span class="pre">Pipeline.id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_json"><code class="docutils literal notranslate"><span class="pre">Pipeline.input_json()</span></code></a></li>
@@ -172,6 +175,7 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_completion"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_completion()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_idle"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_idle()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_token"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_token()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -202,6 +206,11 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile.OPTIMIZED"><code class="docutils literal notranslate"><span class="pre">CompilationProfile.OPTIMIZED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile.SERVER_DEFAULT"><code class="docutils literal notranslate"><span class="pre">CompilationProfile.SERVER_DEFAULT</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile.UNOPTIMIZED"><code class="docutils literal notranslate"><span class="pre">CompilationProfile.UNOPTIMIZED</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus.COMPLETE"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus.COMPLETE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus.IN_PROGRESS"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus.IN_PROGRESS</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus</span></code></a><ul>

@@ -109,6 +109,43 @@
     <span class="nd">@sql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    CREATE TABLE not_materialized(id bigint not null);</span>
 
+<span class="s2">    -- Materialized because of PK constraint.</span>
+<span class="s2">    CREATE TABLE pk_table_materialized(id bigint not null primary key)</span>
+<span class="s2">    WITH (</span>
+<span class="s2">      &#39;connectors&#39; = &#39;[{</span>
+<span class="s2">        &quot;transport&quot;: {</span>
+<span class="s2">          &quot;name&quot;: &quot;datagen&quot;,</span>
+<span class="s2">          &quot;config&quot;: {</span>
+<span class="s2">            &quot;plan&quot;: [{</span>
+<span class="s2">              &quot;limit&quot;: 5</span>
+<span class="s2">            }]</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">      }]&#39;</span>
+<span class="s2">    );</span>
+
+<span class="s2">    -- Not materialized because of lateness attribute on the primary key column.</span>
+<span class="s2">    CREATE TABLE lateness_table1_not_materialized(id bigint not null primary key lateness 0)</span>
+<span class="s2">    WITH (</span>
+<span class="s2">      &#39;connectors&#39; = &#39;[{</span>
+<span class="s2">        &quot;transport&quot;: {</span>
+<span class="s2">          &quot;name&quot;: &quot;datagen&quot;,</span>
+<span class="s2">          &quot;config&quot;: {</span>
+<span class="s2">            &quot;plan&quot;: [{</span>
+<span class="s2">              &quot;limit&quot;: 5</span>
+<span class="s2">            }]</span>
+<span class="s2">          }</span>
+<span class="s2">        }</span>
+<span class="s2">      }]&#39;</span>
+<span class="s2">    );</span>
+
+<span class="s2">    -- Materialized because of explicit materialized attribute, despite lateness.</span>
+<span class="s2">    CREATE TABLE lateness_table2_materialized(id bigint not null primary key lateness 0)</span>
+<span class="s2">    WITH(&#39;materialized&#39; = &#39;true&#39;);</span>
+
+<span class="s2">    -- Materialized because lateness does not apply to primary key column.</span>
+<span class="s2">    CREATE TABLE lateness_table3_materialized(id bigint not null primary key, other int not null lateness 0);</span>
+
 <span class="s2">    CREATE TABLE t1 (</span>
 <span class="s2">      id INT NOT NULL,</span>
 <span class="s2">      dt DATE NOT NULL,</span>
@@ -156,6 +193,27 @@
 <span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">test_pipeline_adhoc_query</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO lateness_table2_materialized VALUES (10),(20),(30)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Dropped due to lateness.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO lateness_table2_materialized VALUES (1),(2),(3)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO lateness_table3_materialized VALUES (10, 10), (20, 20), (30, 30)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Dropped due to lateness.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;INSERT INTO lateness_table3_materialized VALUES (1,1),(2,2),(3,3)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Wait for all datagen and ad hoc connectors to finish.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
 
         <span class="n">ADHOC_SQL_A</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM joined&quot;</span>
         <span class="n">ADHOC_SQL_B</span> <span class="o">=</span> <span class="s2">&quot;SELECT t1.dt AS c1, t2.st AS c2, t1.uid as c3 FROM t1, t2 WHERE t1.id = t2.id&quot;</span>
@@ -260,7 +318,24 @@
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="k">assert</span> <span class="n">ins_nm</span> <span class="ow">and</span> <span class="n">ins_nm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS c FROM view_of_not_materialized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span></div>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS c FROM view_of_not_materialized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS c FROM pk_table_materialized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS c FROM lateness_table2_materialized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) AS c FROM lateness_table3_materialized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="p">)</span>
+
+        <span class="c1"># FIXME: this should raise an exception, but it currently doesn&#39;t.</span>
+        <span class="c1"># https://github.com/feldera/feldera/issues/4973</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="s2">&quot;SELECT COUNT(*) AS c FROM lateness_table1_not_materialized&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s2">&quot;Execution error&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="TestAdhocQueries.test_pipeline_adhoc_query_empty">

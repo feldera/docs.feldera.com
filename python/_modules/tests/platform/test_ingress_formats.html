@@ -414,10 +414,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Port of primary_keys: test insert/update/delete semantics with primary key.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;CREATE TABLE t1(id bigint not null, s varchar not null, primary key(id)) &quot;</span>
-        <span class="s2">&quot;WITH (&#39;materialized&#39;=&#39;true&#39;);&quot;</span>
-    <span class="p">)</span>
+
+    <span class="c1"># Tables with primary keys are automatically materialized, no need to specify &#39;materialized&#39;=&#39;true&#39;.</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;CREATE TABLE t1(id bigint not null, s varchar not null, primary key(id)) &quot;</span>
     <span class="n">create_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">sql</span><span class="p">)</span>
     <span class="n">start_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
 

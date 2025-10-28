@@ -218,13 +218,15 @@
 
 <div class="viewcode-block" id="FelderaClient.pipelines">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pipelines">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pipelines</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pipeline</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pipelines</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="n">PipelineFieldSelector</span> <span class="o">=</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Pipeline</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get all pipelines</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/pipelines&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines?selector=</span><span class="si">{</span><span class="n">selector</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="n">Pipeline</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span> <span class="k">for</span> <span class="n">pipeline</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">]</span></div>
@@ -1048,6 +1050,38 @@
         <span class="k">return</span> <span class="n">token</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.completion_token_processed">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completion_token_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check whether the pipeline has finished processing all inputs received from the connector before</span>
+<span class="sd">        the token was generated.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline</span>
+<span class="sd">        :param token: The token to check for completion</span>
+<span class="sd">        :return: True if the pipeline has finished processing all inputs represented by the token, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/completion_status&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;got empty status when checking for completion status for token: </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">resp</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.wait_for_token">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_token</span><span class="p">(</span>
@@ -1062,10 +1096,6 @@
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the pipeline</span>
 <span class="sd">            to process these records.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
-        <span class="p">}</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">timeout_s</span> <span class="k">if</span> <span class="n">timeout_s</span> <span class="k">else</span> <span class="kc">None</span>
@@ -1083,18 +1113,7 @@
                         <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
 
-            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/completion_status&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
-            <span class="p">)</span>
-
-            <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;got empty status when checking for completion status for token: </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">resp</span><span class="p">,</span>
-                <span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completion_token_processed</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
                 <span class="k">break</span>
 
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
@@ -1385,6 +1404,37 @@
                 <span class="n">buffer</span> <span class="o">+=</span> <span class="n">chunk</span>
 
         <span class="k">return</span> <span class="n">buffer</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.generate_completion_token">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.generate_completion_token">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_completion_token</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a completion token that can be passed to :meth:`.FelderaClient.completion_token_processed` to</span>
+<span class="sd">        check whether the pipeline has finished processing all inputs received from the connector before</span>
+<span class="sd">        the token was generated.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline</span>
+<span class="sd">        :param table_name: The name of the table associated with this connector.</span>
+<span class="sd">        :param connector_name: The name of the connector.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the connector cannot be found, or if the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/completion_token&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;got invalid response from feldera when generating completion token&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">token</span></div>
 </div>
 
 </pre></div>
