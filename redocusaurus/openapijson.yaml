@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.170.0
+  version: 0.171.0
 paths:
   /config/authentication:
     get:
@@ -5698,6 +5698,7 @@ components:
         - dev
         - unoptimized
         - optimized
+        - optimized_symbols
     CompletionStatus:
       type: string
       description: Completion token status returned by the `/completion_status` endpoint.

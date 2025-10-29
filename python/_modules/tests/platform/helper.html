@@ -245,7 +245,7 @@
         <span class="sa">f</span><span class="s2">&quot;Unexpected start response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-        <span class="n">wait_for_deployment_status</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Running&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="n">wait_for_deployment_status</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Running&quot;</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
 
 
@@ -265,7 +265,7 @@
         <span class="sa">f</span><span class="s2">&quot;Unexpected pause response: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-        <span class="n">wait_for_deployment_status</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Paused&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="n">wait_for_deployment_status</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Paused&quot;</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span>
 
 
