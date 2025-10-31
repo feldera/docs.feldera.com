@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.172.0
+  version: 0.173.0
 paths:
   /config/authentication:
     get:
@@ -5369,6 +5369,26 @@ components:
       enum:
         - Read
         - Write
+    Auth:
+      type: object
+      properties:
+        credentials:
+          allOf:
+            - $ref: '#/components/schemas/Credentials'
+          nullable: true
+        jwt:
+          type: string
+          nullable: true
+        nkey:
+          type: string
+          nullable: true
+        token:
+          type: string
+          nullable: true
+        user_and_password:
+          allOf:
+            - $ref: '#/components/schemas/UserAndPassword'
+          nullable: true
     AuthProvider:
       oneOf:
         - type: object
@@ -5810,6 +5830,15 @@ components:
           description: |-
             The version corresponding to the type of `edition`.
             Format is `x.y.z`.
+    ConnectOptions:
+      type: object
+      required:
+        - server_url
+      properties:
+        auth:
+          $ref: '#/components/schemas/Auth'
+        server_url:
+          type: string
     ConnectorConfig:
       allOf:
         - $ref: '#/components/schemas/OutputBufferConfig'
@@ -5970,6 +5999,61 @@ components:
             transport:
               $ref: '#/components/schemas/TransportConfig'
       description: A data connector's configuration
+    ConsumerConfig:
+      type: object
+      required:
+        - deliver_policy
+      properties:
+        deliver_policy:
+          $ref: '#/components/schemas/DeliverPolicy'
+        description:
+          type: string
+          nullable: true
+        filter_subjects:
+          type: array
+          items:
+            type: string
+        max_batch:
+          type: integer
+          format: int64
+          nullable: true
+        max_bytes:
+          type: integer
+          format: int64
+          nullable: true
+        max_expires:
+          type: string
+          nullable: true
+        max_waiting:
+          type: integer
+          format: int64
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        name:
+          type: string
+          nullable: true
+        rate_limit:
+          type: integer
+          format: int64
+          minimum: 0
+        replay_policy:
+          $ref: '#/components/schemas/ReplayPolicy'
+    Credentials:
+      oneOf:
+        - type: object
+          required:
+            - FromString
+          properties:
+            FromString:
+              type: string
+        - type: object
+          required:
+            - FromFile
+          properties:
+            FromFile:
+              $ref: '#/components/schemas/PathBuf'
     Dataflow:
       type: object
       description: The JSON representation of a dataflow graph.
@@ -6119,6 +6203,44 @@ components:
         - file_name
         - file_extension
         - dir_path
+    DeliverPolicy:
+      oneOf:
+        - type: string
+          enum:
+            - All
+        - type: string
+          enum:
+            - Last
+        - type: string
+          enum:
+            - New
+        - type: object
+          required:
+            - ByStartSequence
+          properties:
+            ByStartSequence:
+              type: object
+              required:
+                - start_sequence
+              properties:
+                start_sequence:
+                  type: integer
+                  format: int64
+                  minimum: 0
+        - type: object
+          required:
+            - ByStartTime
+          properties:
+            ByStartTime:
+              type: object
+              required:
+                - start_time
+              properties:
+                start_time:
+                  $ref: '#/components/schemas/OffsetDateTime'
+        - type: string
+          enum:
+            - LastPerSubject
     DeltaTableIngestMode:
       type: string
       description: >-
@@ -7715,6 +7837,19 @@ components:
           type: string
           nullable: true
       additionalProperties: {}
+    NatsInputConfig:
+      type: object
+      required:
+        - connection_config
+        - stream_name
+        - consumer_config
+      properties:
+        connection_config:
+          $ref: '#/components/schemas/ConnectOptions'
+        consumer_config:
+          $ref: '#/components/schemas/ConsumerConfig'
+        stream_name:
+          type: string
     NewApiKeyRequest:
       type: object
       description: Request to create a new API key.
@@ -9393,6 +9528,11 @@ components:
         A SQL table or view. It has a name and a list of fields.
 
         Matches the Calcite JSON format.
+    ReplayPolicy:
+      type: string
+      enum:
+        - Instant
+        - Original
     ResourceConfig:
       type: object
       properties:
@@ -10918,6 +11058,17 @@ components:
             - config
           properties:
             config:
+              $ref: '#/components/schemas/NatsInputConfig'
+            name:
+              type: string
+              enum:
+                - nats_input
+        - type: object
+          required:
+            - name
+            - config
+          properties:
+            config:
               $ref: '#/components/schemas/KafkaInputConfig'
             name:
               type: string
@@ -11146,6 +11297,16 @@ components:
             timeout, it will drop the network connection to the server. It will
             automatically reconnect when the input adapter starts running again.
           minimum: 0
+    UserAndPassword:
+      type: object
+      required:
+        - user
+        - password
+      properties:
+        password:
+          type: string
+        user:
+          type: string
     Version:
       type: integer
       format: int64
