@@ -21,7 +21,6 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="tests package" href="tests.html" />
     <link rel="prev" title="feldera package" href="feldera.html" /> 
 </head>
 
@@ -52,7 +51,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">python</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">feldera</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="feldera.html">feldera package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.pipeline_builder">feldera.pipeline_builder module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#module-feldera.pipeline">feldera.pipeline module</a></li>
@@ -65,7 +64,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
 </ul>
 </li>
 </ul>
@@ -84,7 +82,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">python</a></li>
+          <li class="breadcrumb-item"><a href="modules.html">feldera</a></li>
           <li class="breadcrumb-item"><a href="feldera.html">feldera package</a></li>
       <li class="breadcrumb-item active">feldera.rest package</li>
       <li class="wy-breadcrumbs-aside">
@@ -257,18 +255,32 @@ the token was generated.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline">
-<span class="sig-name descname"><span class="pre">create_or_update_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_or_update_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_or_update_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_or_update_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline" title="Link to this definition"></a></dt>
 <dd><p>Create a pipeline if it doesn’t exist or update a pipeline and wait for
 it to compile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline</strong> – The pipeline to create or update</p></li>
+<li><p><strong>wait</strong> – Whether to wait for the pipeline to compile. True by default</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created or updated pipeline</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.create_pipeline">
-<span class="sig-name descname"><span class="pre">create_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_pipeline" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.pipeline.Pipeline" title="feldera.rest.pipeline.Pipeline"><span class="pre">Pipeline</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_pipeline" title="Link to this definition"></a></dt>
 <dd><p>Create a pipeline if it doesn’t exist and wait for it to compile</p>
 <dl class="field-list simple">
-<dt class="field-odd">Name<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The name of the pipeline</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline</strong> – The pipeline to create</p></li>
+<li><p><strong>wait</strong> – Whether to wait for the pipeline to compile. True by default</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -846,7 +858,6 @@ instead of using the REST client directly.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="feldera.html" class="btn btn-neutral float-left" title="feldera package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tests.html" class="btn btn-neutral float-right" title="tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

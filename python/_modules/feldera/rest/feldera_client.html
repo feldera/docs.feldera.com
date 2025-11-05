@@ -49,7 +49,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">feldera</a></li>
 </ul>
 
         </div>
@@ -77,23 +77,23 @@
            <div itemprop="articleBody">
              
   <h1>Source code for feldera.rest.feldera_client</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="p">,</span> <span class="n">PipelineStatus</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaTimeoutError</span><span class="p">,</span> <span class="n">FelderaAPIError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">client_version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -353,12 +353,12 @@
 
 <div class="viewcode-block" id="FelderaClient.create_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a pipeline if it doesn&#39;t exist and wait for it to compile</span>
 
-
-<span class="sd">        :name: The name of the pipeline</span>
+<span class="sd">        :param pipeline: The pipeline to create</span>
+<span class="sd">        :param wait: Whether to wait for the pipeline to compile. True by default</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
@@ -376,15 +376,24 @@
             <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pipeline</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.create_or_update_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_or_update_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_or_update_pipeline</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline</span><span class="p">:</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a pipeline if it doesn&#39;t exist or update a pipeline and wait for</span>
 <span class="sd">        it to compile</span>
+
+<span class="sd">        :param pipeline: The pipeline to create or update</span>
+<span class="sd">        :param wait: Whether to wait for the pipeline to compile. True by default</span>
+<span class="sd">        :return: The created or updated pipeline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
@@ -401,6 +410,9 @@
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pipeline</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
