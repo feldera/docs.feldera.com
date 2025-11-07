@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.177.0
+  version: 0.178.0
 paths:
   /config/authentication:
     get:
@@ -5999,6 +5999,31 @@ components:
             transport:
               $ref: '#/components/schemas/TransportConfig'
       description: A data connector's configuration
+    ConnectorStats:
+      type: object
+      description: >-
+        Aggregated connector error statistics.
+
+
+        This structure contains the sum of all error counts across all input and
+        output connectors
+
+        for a pipeline.
+      required:
+        - num_errors
+      properties:
+        num_errors:
+          type: integer
+          format: int64
+          description: |-
+            Total number of errors across all connectors.
+
+            This is the sum of:
+            - `num_transport_errors` from all input connectors
+            - `num_parse_errors` from all input connectors
+            - `num_encode_errors` from all output connectors
+            - `num_transport_errors` from all output connectors
+          minimum: 0
     ConsumerConfig:
       type: object
       required:
@@ -6053,7 +6078,8 @@ components:
             - FromFile
           properties:
             FromFile:
-              $ref: '#/components/schemas/PathBuf'
+              type: string
+          example: /path/to/credentials.json
     Dataflow:
       type: object
       description: The JSON representation of a dataflow graph.
@@ -6237,7 +6263,9 @@ components:
                 - start_time
               properties:
                 start_time:
-                  $ref: '#/components/schemas/OffsetDateTime'
+                  type: string
+                  format: date-time
+                  example: '2023-01-15T09:30:00Z'
         - type: string
           enum:
             - LastPerSubject
@@ -8660,6 +8688,7 @@ components:
       enum:
         - all
         - status
+        - status_with_connectors
     PipelineId:
       type: string
       format: uuid
@@ -8814,6 +8843,10 @@ components:
         - deployment_resources_desired_status
         - deployment_resources_desired_status_since
       properties:
+        connectors:
+          allOf:
+            - $ref: '#/components/schemas/ConnectorStats'
+          nullable: true
         created_at:
           type: string
           format: date-time
