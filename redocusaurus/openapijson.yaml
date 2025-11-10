@@ -225,13 +225,14 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.178.0
+  version: 0.179.0
 paths:
   /config/authentication:
     get:
       tags:
-        - Configuration
-      summary: Retrieve authentication provider configuration.
+        - Platform
+      summary: Get Auth Config
+      description: Retrieve the authentication provider configuration.
       operationId: get_config_authentication
       responses:
         '200':
@@ -251,8 +252,9 @@ paths:
   /v0/api_keys:
     get:
       tags:
-        - API keys
-      summary: Retrieve the list of API keys.
+        - Platform
+      summary: List API Keys
+      description: Retrieve a list of your API keys.
       operationId: list_api_keys
       responses:
         '200':
@@ -273,8 +275,11 @@ paths:
         - JSON web token (JWT) or API key: []
     post:
       tags:
-        - API keys
-      summary: Create a new API key.
+        - Platform
+      summary: Create API Key
+      description: |-
+        Create a new API key with the specified name. The generated API key
+        will be returned in the response and cannot be retrieved again later.
       operationId: post_api_key
       requestBody:
         description: ''
@@ -305,8 +310,9 @@ paths:
   /v0/api_keys/{api_key_name}:
     get:
       tags:
-        - API keys
-      summary: Retrieve an API key.
+        - Platform
+      summary: Get API Key
+      description: Retrieve the metadata of a specific API key by its name.
       operationId: get_api_key
       parameters:
         - name: api_key_name
@@ -337,8 +343,9 @@ paths:
         - JSON web token (JWT) or API key: []
     delete:
       tags:
-        - API keys
-      summary: Delete an API key.
+        - Platform
+      summary: Delete API Key
+      description: Remove an API key by its name.
       operationId: delete_api_key
       parameters:
         - name: api_key_name
@@ -366,7 +373,9 @@ paths:
   /v0/cluster_healthz:
     get:
       tags:
-        - endpoints::cluster_healthz
+        - Platform
+      summary: Check Cluster Health
+      description: Retrieve the health status of the Feldera control-plane.
       operationId: get_health
       responses:
         '200':
@@ -386,8 +395,9 @@ paths:
   /v0/config:
     get:
       tags:
-        - Configuration
-      summary: Retrieve general configuration.
+        - Platform
+      summary: Get Platform Config
+      description: Retrieve configuration of the Feldera Platform.
       operationId: get_config
       responses:
         '200':
@@ -409,8 +419,9 @@ paths:
   /v0/config/demos:
     get:
       tags:
-        - Configuration
-      summary: Retrieve the list of demos.
+        - Platform
+      summary: List Demos
+      description: Retrieve the list of demos available in the WebConsole.
       operationId: get_config_demos
       responses:
         '200':
@@ -432,8 +443,9 @@ paths:
   /v0/config/session:
     get:
       tags:
-        - Configuration
-      summary: Retrieve current session information.
+        - Platform
+      summary: Get Session
+      description: Retrieve login session information for your current user session.
       operationId: get_config_session
       responses:
         '200':
@@ -455,9 +467,12 @@ paths:
   /v0/metrics:
     get:
       tags:
-        - Metrics
-      summary: Retrieve the metrics of all running pipelines belonging to this tenant.
+        - Metrics & Debugging
+      summary: List All Metrics
       description: >-
+        Retrieve the metrics of all running pipelines belonging to this tenant.
+
+
         The metrics are collected by making individual HTTP requests to
         `/metrics`
 
@@ -481,9 +496,11 @@ paths:
   /v0/pipelines:
     get:
       tags:
-        - Pipeline management
-      summary: Retrieve the list of pipelines.
+        - Pipeline CRUD
+      summary: List Pipelines
       description: >-
+        Retrieve the list of pipelines.
+
         Configure which fields are included using the `selector` query
         parameter.
       operationId: list_pipelines
@@ -674,8 +691,9 @@ paths:
         - JSON web token (JWT) or API key: []
     post:
       tags:
-        - Pipeline management
-      summary: Create a new pipeline.
+        - Pipeline CRUD
+      summary: Create Pipeline
+      description: Create a new pipeline with the provided configuration.
       operationId: post_pipeline
       requestBody:
         content:
@@ -848,9 +866,11 @@ paths:
   /v0/pipelines/{pipeline_name}:
     get:
       tags:
-        - Pipeline management
-      summary: Retrieve a pipeline.
+        - Pipeline CRUD
+      summary: Get Pipeline
       description: >-
+        Retrieve a pipeline.
+
         Configure which fields are included using the `selector` query
         parameter.
       operationId: get_pipeline
@@ -981,8 +1001,9 @@ paths:
         - JSON web token (JWT) or API key: []
     put:
       tags:
-        - Pipeline management
-      summary: >-
+        - Pipeline CRUD
+      summary: Upsert Pipeline
+      description: >-
         Fully update a pipeline if it already exists, otherwise create a new
         pipeline.
       operationId: put_pipeline
@@ -1251,8 +1272,9 @@ paths:
         - JSON web token (JWT) or API key: []
     delete:
       tags:
-        - Pipeline management
-      summary: Delete a pipeline.
+        - Pipeline CRUD
+      summary: Delete Pipeline
+      description: Delete an existing pipeline by name.
       operationId: delete_pipeline
       parameters:
         - name: pipeline_name
@@ -1297,8 +1319,9 @@ paths:
         - JSON web token (JWT) or API key: []
     patch:
       tags:
-        - Pipeline management
-      summary: Partially update a pipeline.
+        - Pipeline CRUD
+      summary: Patch Pipeline
+      description: Partially update a pipeline.
       operationId: patch_pipeline
       parameters:
         - name: pipeline_name
@@ -1458,11 +1481,12 @@ paths:
   /v0/pipelines/{pipeline_name}/activate:
     post:
       tags:
-        - Pipeline interaction
-      summary: >-
+        - Pipeline Lifecycle
+      summary: Activate Standby Pipeline
+      description: >-
         Requests the pipeline to activate if it is currently in standby mode,
         which it will do
-      description: >-
+
         asynchronously.
 
 
@@ -1593,9 +1617,12 @@ paths:
   /v0/pipelines/{pipeline_name}/approve:
     post:
       tags:
-        - Pipeline interaction
-      summary: Approves the pipeline to proceed with bootstrapping.
+        - Pipeline Lifecycle
+      summary: Approve Bootstrap
       description: >-
+        Approves the pipeline to proceed with bootstrapping.
+
+
         This endpoint is used when a pipeline has been started with
 
         `bootstrap_policy=await_approval`, it is resuming from an existing
@@ -1722,9 +1749,12 @@ paths:
   /v0/pipelines/{pipeline_name}/checkpoint:
     post:
       tags:
-        - Pipeline interaction
-      summary: Initiates checkpoint for a running or paused pipeline.
+        - Pipeline Lifecycle
+      summary: Checkpoint Now
       description: >-
+        Initiates checkpoint for a running or paused pipeline.
+
+
         Returns a checkpoint sequence number that can be used with
         `/checkpoint_status` to
 
@@ -1844,8 +1874,9 @@ paths:
   /v0/pipelines/{pipeline_name}/checkpoint/sync:
     post:
       tags:
-        - Pipeline interaction
-      summary: >-
+        - Pipeline Lifecycle
+      summary: Sync Checkpoints To S3
+      description: >-
         Syncs latest checkpoints to the object store configured in pipeline
         config.
       operationId: sync_checkpoint
@@ -1963,8 +1994,9 @@ paths:
   /v0/pipelines/{pipeline_name}/checkpoint/sync_status:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve status of checkpoint sync activity in a pipeline.
+        - Pipeline Lifecycle
+      summary: Get Checkpoint Sync Status
+      description: Retrieve status of checkpoint sync activity in a pipeline.
       operationId: get_checkpoint_sync_status
       parameters:
         - name: pipeline_name
@@ -2080,8 +2112,9 @@ paths:
   /v0/pipelines/{pipeline_name}/checkpoint_status:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve status of checkpoint activity in a pipeline.
+        - Pipeline Lifecycle
+      summary: Get Checkpoint Status
+      description: Retrieve status of checkpoint activity in a pipeline.
       operationId: get_checkpoint_status
       parameters:
         - name: pipeline_name
@@ -2197,8 +2230,9 @@ paths:
   /v0/pipelines/{pipeline_name}/circuit_profile:
     get:
       tags:
-        - Pipeline interaction
-      summary: >-
+        - Metrics & Debugging
+      summary: Get Performance Profile
+      description: >-
         Retrieve the circuit performance profile of a running or paused
         pipeline.
       operationId: get_pipeline_circuit_profile
@@ -2316,9 +2350,12 @@ paths:
   /v0/pipelines/{pipeline_name}/clear:
     post:
       tags:
-        - Pipeline management
-      summary: Clears the pipeline storage asynchronously.
+        - Pipeline Lifecycle
+      summary: Clear Storage
       description: >-
+        Clears the pipeline storage asynchronously.
+
+
         IMPORTANT: Clearing means disassociating the storage from the pipeline.
 
         Depending on the storage type this can include its deletion.
@@ -2380,8 +2417,9 @@ paths:
   /v0/pipelines/{pipeline_name}/commit_transaction:
     post:
       tags:
-        - Pipeline interaction
-      summary: Commit the current transaction.
+        - Pipeline Lifecycle
+      summary: Commit Transaction
+      description: Commit the current transaction.
       operationId: commit_transaction
       parameters:
         - name: pipeline_name
@@ -2488,11 +2526,13 @@ paths:
   /v0/pipelines/{pipeline_name}/completion_status:
     get:
       tags:
-        - Pipeline interaction
-      summary: >-
+        - Input Connectors
+      summary: Check Completion Status
+      description: >-
         Check the status of a completion token returned by the `/ingress` or
         `/completion_token`
-      description: endpoint.
+
+        endpoint.
       operationId: completion_status
       parameters:
         - name: pipeline_name
@@ -2642,9 +2682,12 @@ paths:
   /v0/pipelines/{pipeline_name}/egress/{table_name}:
     post:
       tags:
-        - Pipeline interaction
-      summary: Subscribe to a stream of updates from a SQL view or table.
+        - Output Connectors
+      summary: Subscribe to View
       description: >-
+        Subscribe to a stream of updates from a SQL view or table.
+
+
         The pipeline responds with a continuous stream of changes to the
         specified
 
@@ -2815,8 +2858,9 @@ paths:
   /v0/pipelines/{pipeline_name}/heap_profile:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve the heap profile of a running or paused pipeline.
+        - Metrics & Debugging
+      summary: Get Heap Profile
+      description: Retrieve the heap profile of a running or paused pipeline.
       operationId: get_pipeline_heap_profile
       parameters:
         - name: pipeline_name
@@ -2941,9 +2985,12 @@ paths:
   /v0/pipelines/{pipeline_name}/ingress/{table_name}:
     post:
       tags:
-        - Pipeline interaction
-      summary: Push data to a SQL table.
+        - Input Connectors
+      summary: Insert Data
       description: >-
+        Push data to a SQL table.
+
+
         The client sends data encoded using the format specified in the
         `?format=`
 
@@ -3140,9 +3187,12 @@ paths:
   /v0/pipelines/{pipeline_name}/logs:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve logs of a pipeline as a stream.
+        - Metrics & Debugging
+      summary: Stream Pipeline Logs
       description: >-
+        Retrieve logs of a pipeline as a stream.
+
+
         The logs stream catches up to the extent of the internally configured
         per-pipeline
 
@@ -3232,8 +3282,9 @@ paths:
   /v0/pipelines/{pipeline_name}/metrics:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve circuit metrics of a running or paused pipeline.
+        - Metrics & Debugging
+      summary: Get Pipeline Metrics
+      description: Retrieve the metrics of a running or paused pipeline.
       operationId: get_pipeline_metrics
       parameters:
         - name: pipeline_name
@@ -3355,9 +3406,12 @@ paths:
   /v0/pipelines/{pipeline_name}/pause:
     post:
       tags:
-        - Pipeline management
-      summary: Requests the pipeline to pause, which it will do asynchronously.
-      description: Progress should be monitored by polling the pipeline `GET` endpoints.
+        - Pipeline Lifecycle
+      summary: Pause Pipeline
+      description: |-
+        Requests the pipeline to pause, which it will do asynchronously.
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
       operationId: post_pipeline_pause
       parameters:
         - name: pipeline_name
@@ -3411,9 +3465,12 @@ paths:
   /v0/pipelines/{pipeline_name}/query:
     get:
       tags:
-        - Pipeline interaction
-      summary: Execute an ad-hoc SQL query in a running or paused pipeline.
-      description: The evaluation is not incremental.
+        - Pipeline Lifecycle
+      summary: Execute Ad-hoc SQL
+      description: |-
+        Execute ad-hoc SQL in a running or paused pipeline.
+
+        The evaluation is not incremental.
       operationId: pipeline_adhoc_sql
       parameters:
         - name: pipeline_name
@@ -3548,9 +3605,12 @@ paths:
   /v0/pipelines/{pipeline_name}/resume:
     post:
       tags:
-        - Pipeline management
-      summary: Requests the pipeline to resume, which it will do asynchronously.
-      description: Progress should be monitored by polling the pipeline `GET` endpoints.
+        - Pipeline Lifecycle
+      summary: Resume Pipeline
+      description: |-
+        Requests the pipeline to resume, which it will do asynchronously.
+
+        Progress should be monitored by polling the pipeline `GET` endpoints.
       operationId: post_pipeline_resume
       parameters:
         - name: pipeline_name
@@ -3604,9 +3664,12 @@ paths:
   /v0/pipelines/{pipeline_name}/start:
     post:
       tags:
-        - Pipeline management
-      summary: Start the pipeline asynchronously by updating the desired status.
+        - Pipeline Lifecycle
+      summary: Start Pipeline
       description: >-
+        Start the pipeline asynchronously by updating the desired status.
+
+
         The endpoint returns immediately after setting the desired status.
 
         The procedure to get to the desired status is performed asynchronously.
@@ -3696,8 +3759,9 @@ paths:
   /v0/pipelines/{pipeline_name}/start_transaction:
     post:
       tags:
-        - Pipeline interaction
-      summary: Start a transaction.
+        - Pipeline Lifecycle
+      summary: Begin Transaction
+      description: Start a new transaction.
       operationId: start_transaction
       parameters:
         - name: pipeline_name
@@ -3808,8 +3872,9 @@ paths:
   /v0/pipelines/{pipeline_name}/stats:
     get:
       tags:
-        - Pipeline interaction
-      summary: >-
+        - Metrics & Debugging
+      summary: Get Pipeline Stats
+      description: >-
         Retrieve statistics (e.g., performance counters) of a running or paused
         pipeline.
       operationId: get_pipeline_stats
@@ -3927,9 +3992,12 @@ paths:
   /v0/pipelines/{pipeline_name}/stop:
     post:
       tags:
-        - Pipeline management
-      summary: Stop the pipeline asynchronously by updating the desired state.
+        - Pipeline Lifecycle
+      summary: Stop Pipeline
       description: >-
+        Stop the pipeline asynchronously by updating the desired state.
+
+
         There are two variants:
 
         - `/stop?force=false` (default): the pipeline will first atomically
@@ -4087,9 +4155,12 @@ paths:
   /v0/pipelines/{pipeline_name}/support_bundle:
     get:
       tags:
-        - Pipeline interaction
-      summary: Generate a support bundle for a pipeline.
+        - Metrics & Debugging
+      summary: Download Support Bundle
       description: >-
+        Generate a support bundle for a pipeline.
+
+
         This endpoint collects various diagnostic data from the pipeline
         including
 
@@ -4229,9 +4300,12 @@ paths:
   /v0/pipelines/{pipeline_name}/tables/{table_name}/connectors/{connector_name}/completion_token:
     get:
       tags:
-        - Pipeline interaction
-      summary: Generate a completion token for an input connector.
+        - Input Connectors
+      summary: Get Completion Token
       description: >-
+        Generate a completion token for an input connector.
+
+
         Returns a token that can be passed to the `/completion_status` endpoint
 
         to check whether the pipeline has finished processing all inputs
@@ -4369,8 +4443,9 @@ paths:
   /v0/pipelines/{pipeline_name}/tables/{table_name}/connectors/{connector_name}/stats:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve the status of an input connector.
+        - Input Connectors
+      summary: Get Input Status
+      description: Retrieve the status of an input connector.
       operationId: get_pipeline_input_connector_status
       parameters:
         - name: pipeline_name
@@ -4500,9 +4575,12 @@ paths:
   /v0/pipelines/{pipeline_name}/tables/{table_name}/connectors/{connector_name}/{action}:
     post:
       tags:
-        - Pipeline interaction
-      summary: Start (resume) or pause the input connector.
+        - Input Connectors
+      summary: Control Input Connector
       description: >-
+        Start (resume) or pause the input connector.
+
+
         The following values of the `action` argument are accepted: `start` and
         `pause`.
 
@@ -4568,19 +4646,18 @@ paths:
             type: string
         - name: table_name
           in: path
-          description: Unique table name
+          description: SQL table name
           required: true
           schema:
             type: string
         - name: connector_name
           in: path
-          description: Unique input connector name
+          description: Input connector name
           required: true
           schema:
             type: string
         - name: action
           in: path
-          description: 'Input connector action (one of: start, pause)'
           required: true
           schema:
             type: string
@@ -4689,11 +4766,13 @@ paths:
   /v0/pipelines/{pipeline_name}/testing:
     post:
       tags:
-        - Pipeline management
-      summary: >-
+        - Metrics & Debugging
+      summary: Test Endpoint
+      description: >-
         This endpoint is used as part of the test harness. Only available if the
         `testing`
-      description: unstable feature is enabled. Do not use in production.
+
+        unstable feature is enabled. Do not use in production.
       operationId: post_pipeline_testing
       parameters:
         - name: pipeline_name
@@ -4735,8 +4814,9 @@ paths:
   /v0/pipelines/{pipeline_name}/time_series:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve time series for statistics of a running or paused pipeline.
+        - Metrics & Debugging
+      summary: Get Time Series Stats
+      description: Retrieve time series for statistics of a running or paused pipeline.
       operationId: get_pipeline_time_series
       parameters:
         - name: pipeline_name
@@ -4852,9 +4932,12 @@ paths:
   /v0/pipelines/{pipeline_name}/time_series_stream:
     get:
       tags:
-        - Pipeline interaction
-      summary: Stream time series for statistics of a running or paused pipeline.
+        - Metrics & Debugging
+      summary: Stream Time Series
       description: >-
+        Stream time series for statistics of a running or paused pipeline.
+
+
         Returns a snapshot of all existing time series data followed by a
         continuous stream of
 
@@ -4980,9 +5063,11 @@ paths:
   /v0/pipelines/{pipeline_name}/update_runtime:
     post:
       tags:
-        - Pipeline management
-      summary: Recompile a pipeline with the Feldera runtime version included in the
+        - Pipeline Lifecycle
+      summary: Recompile Pipeline
       description: >-
+        Recompile a pipeline with the Feldera runtime version included in the
+
         currently installed Feldera platform.
 
 
@@ -5159,8 +5244,9 @@ paths:
   /v0/pipelines/{pipeline_name}/views/{view_name}/connectors/{connector_name}/stats:
     get:
       tags:
-        - Pipeline interaction
-      summary: Retrieve the status of an output connector.
+        - Output Connectors
+      summary: Get Output Status
+      description: Retrieve the status of an output connector.
       operationId: get_pipeline_output_connector_status
       parameters:
         - name: pipeline_name
@@ -5171,13 +5257,13 @@ paths:
             type: string
         - name: view_name
           in: path
-          description: Unique SQL view name
+          description: SQL view name
           required: true
           schema:
             type: string
         - name: connector_name
           in: path
-          description: Unique output connector name
+          description: Output connector name
           required: true
           schema:
             type: string
@@ -6577,6 +6663,8 @@ components:
 
             queries using partitioning, Z-ordering, or liquid clustering.
           nullable: true
+        transaction_mode:
+          $ref: '#/components/schemas/DeltaTableTransactionMode'
         uri:
           type: string
           description: |-
@@ -6626,6 +6714,76 @@ components:
 
           * [Google Cloud Storage
           options](https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html)
+    DeltaTableTransactionMode:
+      type: string
+      description: >-
+        Delta table transaction mode.
+
+
+        Determines how the connector breaks up its input into transactions.
+
+
+        * `none` - the connector does not break up its input into transactions.
+
+        * `snapshot` - ingest the initial snapshot of the table in one or
+        several transactions. If the connector is
+
+        configured in the `snapshot_and_follow` mode, it will ingest the
+        transaction log of the table without transactions.
+
+        * `always` - all updates generated by the connector are broken up into
+        transactions, both during the initial snapshot
+
+        and when following the transaction log.
+
+
+        # How table snapshot is ingested using transactions
+
+
+        If the connector is configured in the `snapshot` or
+        `snapshot_and_follow` mode, and its
+
+        `transaction_mode` is set to `snapshot` or `always`, it will ingest the
+        snapshot of the
+
+        table in one or several transactions. The exact behavior depends on the
+        value of the `timestamp_column` option.
+
+        If `timestamp_column` is not set, the connector will ingest the snapshot
+        of the table in one big transaction.
+
+
+        If `timestamp_column` is set, the connector will ingest the snapshot of
+        the table in a series of batches, one for
+
+        each timestamp range of width equal to the `LATENESS` attribute of the
+        `timestamp_column`. Each range will be
+
+        ingested in a separate transaction.
+
+
+        See `timestamp_column` documentation for more details.
+
+
+        # How transaction log is ingested using transactions
+
+
+        If the connector is configured in the `follow`, `snapshot_and_follow`,
+        or `cdc` mode, and its
+
+        `transaction_mode` is set to `always`, it will ingest the transaction
+        log of the table in a series of transactions,
+
+        generating exactly one transaction for each entry in the table's
+        transaction log.
+
+
+        In other words, Feldera transaction boundaries will precisely match the
+        transaction boundaries of the Delta Lake table.
+      enum:
+        - none
+        - snapshot
+        - always
     DeltaTableWriteMode:
       type: string
       description: >-
