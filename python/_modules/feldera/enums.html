@@ -336,9 +336,12 @@
     <span class="n">RustError</span> <span class="o">=</span> <span class="mi">7</span>
     <span class="ne">SystemError</span> <span class="o">=</span> <span class="mi">8</span>
 
+<div class="viewcode-block" id="ProgramStatus.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span></div>
+
 
 <div class="viewcode-block" id="ProgramStatus.from_value">
 <a class="viewcode-back" href="../../feldera.html#feldera.enums.ProgramStatus.from_value">[docs]</a>
@@ -382,9 +385,12 @@
     <span class="n">InProgress</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">Unknown</span> <span class="o">=</span> <span class="mi">4</span>
 
+<div class="viewcode-block" id="CheckpointStatus.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.CheckpointStatus.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value_</span> <span class="o">=</span> <span class="n">value</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">value</span>

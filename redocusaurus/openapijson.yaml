@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.182.0
+  version: 0.183.0
 paths:
   /config/authentication:
     get:
@@ -10930,7 +10930,7 @@ components:
 
             values provide a threshold.  `usize::MAX` would effectively disable
 
-            storage for such batches.  The default is 1,048,576 (1 MiB).
+            storage for such batches.  The default is 10,048,576 (10 MiB).
           default: null
           nullable: true
           minimum: 0

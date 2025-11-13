@@ -129,6 +129,8 @@
 <span class="sd">    General configuration of the current Feldera instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="FelderaConfig.__init__">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_config.FelderaConfig.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">changelog_url</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;changelog_url&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edition</span> <span class="o">=</span> <span class="n">FelderaEdition</span><span class="o">.</span><span class="n">from_value</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edition&quot;</span><span class="p">))</span>
@@ -137,6 +139,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">telemetry</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;telemetry&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_info</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;update_info&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

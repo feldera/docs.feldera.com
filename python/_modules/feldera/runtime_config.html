@@ -97,6 +97,8 @@
 <span class="sd">    :param storage_mb_max: The  storage in Megabytes to reserve for an instance of the pipeline.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="Resources.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.Resources.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -117,6 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">storage_mb_max</span> <span class="o">=</span> <span class="n">storage_mb_max</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -128,6 +131,8 @@
 <span class="sd">    :param min_storage_bytes: The minimum estimated number of bytes in a batch of data to write it to storage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="Storage.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.Storage.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -138,6 +143,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_storage_bytes</span> <span class="o">=</span> <span class="n">min_storage_bytes</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -153,6 +159,8 @@
 <span class="sd">        https://docs.feldera.com/pipelines/configuration/#runtime-configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="RuntimeConfig.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -193,7 +201,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">storage</span><span class="si">}</span><span class="s2">&#39; for storage&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dev_tweaks</span> <span class="o">=</span> <span class="n">dev_tweaks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span></div>
+
 
 <div class="viewcode-block" id="RuntimeConfig.default">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.default">[docs]</a>

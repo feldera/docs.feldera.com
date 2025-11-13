@@ -119,9 +119,12 @@
 <div class="viewcode-block" id="Pipeline">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">:</span>
+<div class="viewcode-block" id="Pipeline.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">:</span> <span class="n">InnerPipeline</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">:</span> <span class="n">InnerPipeline</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_inner</span><span class="p">(</span><span class="n">inner</span><span class="p">:</span> <span class="n">InnerPipeline</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Pipeline&quot;</span><span class="p">:</span>

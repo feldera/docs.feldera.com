@@ -106,6 +106,8 @@
 <span class="sd">        fault tolerance, storage and :class:`.Resources`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="PipelineBuilder.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline_builder.PipelineBuilder.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span><span class="p">,</span>
@@ -128,7 +130,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">runtime_config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span><span class="p">,</span> <span class="n">runtime_version</span>
-        <span class="p">)</span>
+        <span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="PipelineBuilder.create">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline_builder.PipelineBuilder.create">[docs]</a>

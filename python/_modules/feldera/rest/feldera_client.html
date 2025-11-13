@@ -88,7 +88,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="p">,</span> <span class="n">PipelineStatus</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">client_version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">determine_client_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
@@ -119,12 +119,17 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FelderaClient</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A client for the Feldera HTTP API</span>
+<span class="sd">    A client for the Feldera HTTP API.</span>
 
-<span class="sd">    A client instance is needed for every Feldera API method to know the</span>
-<span class="sd">    location of Feldera and its permissions.</span>
+<span class="sd">    The client is initialized with the configuration needed for interacting with the</span>
+<span class="sd">    Feldera HTTP API, which it uses in its calls. Its methods are implemented</span>
+<span class="sd">    by issuing one or more HTTP requests to the API, and as such can provide higher</span>
+<span class="sd">    level operations (e.g., support waiting for the success of asynchronous HTTP API</span>
+<span class="sd">    functionality).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="FelderaClient.__init__">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -134,22 +139,33 @@
         <span class="n">requests_verify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param url: The url to Feldera API (ex: https://try.feldera.com). If</span>
-<span class="sd">            not set, attempts to read from the environment variable</span>
-<span class="sd">            `FELDERA_HOST`. Default: `http://localhost:8080`</span>
-<span class="sd">        :param api_key: The optional API key for Feldera</span>
-<span class="sd">        :param timeout: (optional) The amount of time in seconds that the</span>
-<span class="sd">            client will wait for a response before timing out.</span>
-<span class="sd">        :param connection_timeout: (optional) The amount of time in seconds</span>
-<span class="sd">            that the client will wait to establish connection before timing out</span>
-<span class="sd">        :param requests_verify: The `verify` parameter passed to the requests</span>
-<span class="sd">            library. `True` by default. To use a self signed certificate, set</span>
-<span class="sd">            it to the path to the certificate.</span>
+<span class="sd">        Constructs a Feldera client.</span>
+
+<span class="sd">        :param url: (Optional) URL to the Feldera API.</span>
+<span class="sd">            The default is read from the `FELDERA_HOST` environment variable;</span>
+<span class="sd">            if the variable is not set, the default is `&quot;http://localhost:8080&quot;`.</span>
+<span class="sd">        :param api_key: (Optional) API key to access Feldera (format: `&quot;apikey:...&quot;`).</span>
+<span class="sd">            The default is read from the `FELDERA_API_KEY` environment variable;</span>
+<span class="sd">            if the variable is not set, the default is `None` (no API key is provided).</span>
+<span class="sd">        :param timeout: (Optional) Duration in seconds that the client will wait to receive</span>
+<span class="sd">            a response of an HTTP request, after which it times out.</span>
+<span class="sd">            The default is `None` (wait indefinitely; no timeout is enforced).</span>
+<span class="sd">        :param connection_timeout: (Optional) Duration in seconds that the client will wait</span>
+<span class="sd">            to establish the connection of an HTTP request, after which it times out.</span>
+<span class="sd">            The default is `None` (wait indefinitely; no timeout is enforced).</span>
+<span class="sd">        :param requests_verify: (Optional) The `verify` parameter passed to the `requests` library,</span>
+<span class="sd">            which is used internally to perform HTTP requests.</span>
+<span class="sd">            See also: https://requests.readthedocs.io/en/latest/user/advanced/#ssl-cert-verification .</span>
+<span class="sd">            The default is based on the `FELDERA_HTTPS_TLS_CERT` or the `FELDERA_TLS_INSECURE` environment variable.</span>
+<span class="sd">            By setting `FELDERA_HTTPS_TLS_CERT` to a path, the default becomes the CA bundle it points to.</span>
+<span class="sd">            By setting `FELDERA_TLS_INSECURE` to `&quot;1&quot;`, `&quot;true&quot;` or `&quot;yes&quot;` (all case-insensitive), the default becomes</span>
+<span class="sd">            `False` which means to disable TLS verification by default. If both variables are set, the former takes</span>
+<span class="sd">            priority over the latter. If neither variable is set, the default is `True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span>
-            <span class="n">url</span><span class="p">,</span>
-            <span class="n">api_key</span><span class="p">,</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">api_key</span><span class="o">=</span><span class="n">api_key</span><span class="p">,</span>
             <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
             <span class="n">connection_timeout</span><span class="o">=</span><span class="n">connection_timeout</span><span class="p">,</span>
             <span class="n">requests_verify</span><span class="o">=</span><span class="n">requests_verify</span><span class="p">,</span>
@@ -157,16 +173,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span> <span class="o">=</span> <span class="n">HttpRequests</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
-            <span class="n">version</span> <span class="o">=</span> <span class="n">client_version</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="n">version</span><span class="p">:</span>
+            <span class="n">client_version</span> <span class="o">=</span> <span class="n">determine_client_version</span><span class="p">()</span>
+            <span class="n">server_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">client_version</span> <span class="o">!=</span> <span class="n">server_config</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Client is on version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2"> while server is at &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">. There could be incompatibilities.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Feldera client is on version </span><span class="si">{</span><span class="n">client_version</span><span class="si">}</span><span class="s2"> while server is at &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">server_config</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">. There could be incompatibilities.&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to connect to Feldera API: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">e</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
 
 <div class="viewcode-block" id="FelderaClient.localhost">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.localhost">[docs]</a>
@@ -1378,7 +1395,7 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FelderaConfig</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get general feldera configuration.</span>
+<span class="sd">        Retrieves the general Feldera server configuration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/config&quot;</span><span class="p">)</span>
