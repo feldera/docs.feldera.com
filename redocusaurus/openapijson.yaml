@@ -124,8 +124,8 @@ info:
     retry. When a response is returned, the decision whether to retry can
     generally depend on the status
 
-    code: especially the status codes 502, 503 and 504 should be considered as
-    transient errors.
+    code: especially the status codes 408, 502, 503 and 504 should be considered
+    as transient errors.
 
     Finer grained retry decisions should be made by taking into account the
     application-level
@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.184.0
+  version: 0.185.0
 paths:
   /config/authentication:
     get:
