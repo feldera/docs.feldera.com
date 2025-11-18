@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.187.0
+  version: 0.188.0
 paths:
   /config/authentication:
     get:
@@ -8762,6 +8762,18 @@ components:
           required:
             - inputs
           properties:
+            given_name:
+              type: string
+              description: >-
+                Name given by the tenant to the pipeline. It is only unique
+                within the same tenant, and can
+
+                be changed by the tenant when the pipeline is stopped.
+
+
+                Given a specific tenant, it can be used to find/identify a
+                specific pipeline of theirs.
+              nullable: true
             inputs:
               type: object
               description: Input endpoint configuration.
@@ -8769,7 +8781,18 @@ components:
                 $ref: '#/components/schemas/InputEndpointConfig'
             name:
               type: string
-              description: Pipeline name.
+              description: >-
+                Unique system-generated name of the pipeline (format:
+                `pipeline-<uuid>`).
+
+                It is unique across all tenants and cannot be changed.
+
+
+                The `<uuid>` is also used in the naming of various resources
+                that back the pipeline,
+
+                and as such this name is useful to find/identify corresponding
+                resources.
               nullable: true
             outputs:
               type: object
