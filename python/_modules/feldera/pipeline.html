@@ -1642,6 +1642,7 @@
         <span class="n">stats</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">pipeline_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">system_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">dataflow_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a support bundle containing diagnostic information from this pipeline.</span>
@@ -1659,6 +1660,7 @@
 <span class="sd">        :param stats: Whether to collect stats data (default: True)</span>
 <span class="sd">        :param pipeline_config: Whether to collect pipeline configuration data (default: True)</span>
 <span class="sd">        :param system_config: Whether to collect system configuration data (default: True)</span>
+<span class="sd">        :param dataflow_graph: Whether to collect dataflow graph (default: True)</span>
 <span class="sd">        :return: The support bundle as bytes (ZIP archive)</span>
 <span class="sd">        :raises FelderaAPIError: If the pipeline does not exist or if there&#39;s an error</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1679,6 +1681,8 @@
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;pipeline_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">system_config</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;system_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dataflow_graph</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;dataflow_graph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
 
         <span class="n">support_bundle_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_support_bundle</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
