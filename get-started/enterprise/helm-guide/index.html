@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.515030cf.js" defer="defer"></script>
-<script src="/assets/js/main.34a60758.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.268417a9.js" defer="defer"></script>
+<script src="/assets/js/main.459d41bd.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -119,11 +119,11 @@ the following:</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">#kubectl create namespace feldera  # If the namespace does not exist yet</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">kubectl apply -n feldera -f feldera-db-secret.yaml</span><br></span></code></pre></div></div>
 </li>
 <li>
-<p><strong>Optional: Add the TLS Certificate (<code>.pem</code> file) in a configmap</strong>: We use the Amazon bundled <code>.pem</code> file
-as an example (in case you want to connect to Amazon RDS):</p>
-<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">kubectl create configmap postgres-pem -n feldera --from-file=postgresql-ca.pem=global-bundle.pem</span><br></span></code></pre></div></div>
+<p><strong>Optional: Add the TLS Certificate (<code>.pem</code> file) in a configmap</strong>:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">wget https://example.com/your-bundle.pem</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">kubectl create configmap postgres-pem -n feldera --from-file=postgresql-ca.pem=your-bundle.pem</span><br></span></code></pre></div></div>
 <p>This step is optional, if no certificate is provided feldera will use the system certificates
-(<code>ca-certificates</code> package from debian 12) to validate the TLS connection.</p>
+(<code>ca-certificates</code> package from Ubuntu 24.04 and the Amazon RDS <code>global-bundle.pem</code> file)
+to validate the TLS connection.</p>
 <p><em>Note:</em> If necessary, you can override the file (<code>postgresql-ca.pem</code>) and configmap (<code>postgres-pem</code>)
 names by adjusting <code>postgresTlsCertificateFile</code> and <code>postgresTlsConfigMapRef</code> in <code>values.yaml</code>.</p>
 </li>
