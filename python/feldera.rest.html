@@ -389,6 +389,34 @@ the token was generated.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_cluster_event">
+<span class="sig-name descname"><span class="pre">get_cluster_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'status'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_cluster_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_cluster_event" title="Link to this definition"></a></dt>
+<dd><p>Retrieves a specific cluster event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_id</strong> – Identifier (UUID) of the event to retrieve, or <cite>latest</cite> for the latest event.</p></li>
+<li><p><strong>selector</strong> – (Optional) Limit the returned fields. Valid values: “all”, “status” (default).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Event (fields limited based on selector).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_cluster_events">
+<span class="sig-name descname"><span class="pre">get_cluster_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_cluster_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_cluster_events" title="Link to this definition"></a></dt>
+<dd><p>Retrieves all cluster events (status fields only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of cluster events.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_config">
 <span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.rest.feldera_config.FelderaConfig" title="feldera.rest.feldera_config.FelderaConfig"><span class="pre">FelderaConfig</span></a></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_config" title="Link to this definition"></a></dt>
 <dd><p>Retrieves the general Feldera server configuration.</p>

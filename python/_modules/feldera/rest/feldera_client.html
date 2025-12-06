@@ -1464,6 +1464,36 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">token</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.get_cluster_events">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_events">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cluster_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves all cluster events (status fields only).</span>
+
+<span class="sd">        :returns: List of cluster events.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/cluster/events&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.get_cluster_event">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_event">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cluster_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">selector</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a specific cluster event.</span>
+
+<span class="sd">        :param event_id: Identifier (UUID) of the event to retrieve, or `latest` for the latest event.</span>
+<span class="sd">        :param selector: (Optional) Limit the returned fields. Valid values: &quot;all&quot;, &quot;status&quot; (default).</span>
+
+<span class="sd">        :returns: Event (fields limited based on selector).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Selector of fields</span>
+        <span class="k">if</span> <span class="n">selector</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid selector: </span><span class="si">{</span><span class="n">selector</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Issue request and return response</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/cluster/events/</span><span class="si">{</span><span class="n">event_id</span><span class="si">}</span><span class="s2">?selector=</span><span class="si">{</span><span class="n">selector</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
