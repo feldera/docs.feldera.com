@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.201.0
+  version: 0.202.0
 paths:
   /config/authentication:
     get:
@@ -11014,6 +11014,17 @@ components:
 
 
             Recommended range: 1–10. Default: 8.
+          minimum: 0
+        max_retries:
+          type: integer
+          format: int32
+          description: >-
+            Retry `max_retries` times with exponential backoff.
+
+            If the object changes during a retry attempt, the remaining part of
+            the object will not be processed.
+
+            Recommended range: 3-10. Default: 5.
           minimum: 0
         no_sign_request:
           type: boolean
