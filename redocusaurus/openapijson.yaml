@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.203.0
+  version: 0.204.0
 paths:
   /config/authentication:
     get:
@@ -374,10 +374,12 @@ paths:
     get:
       tags:
         - Platform
-      summary: >-
-        List of retained cluster monitor events ordered from most recent to
-        least recent.
+      summary: List Cluster Events
       description: >-
+        Retrieve a list of retained cluster monitor events ordered from most
+        recent to least recent.
+
+
         The returned events only have limited details, the full details can be
         retrieved using
 
@@ -425,8 +427,11 @@ paths:
     get:
       tags:
         - Platform
-      summary: Get specific cluster monitor event.
+      summary: Get Cluster Event
       description: >-
+        Get specific cluster monitor event.
+
+
         The identifiers of the events can be retrieved via `GET
         /v0/cluster/events`.
 
