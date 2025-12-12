@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>python &mdash; Feldera Python SDK 0.0.1 documentation</title>
+  <title>feldera &mdash; Feldera Python SDK 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -52,9 +52,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">python</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">feldera</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html">feldera package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
 </ul>
 </li>
 </ul>
@@ -73,7 +72,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">python</li>
+      <li class="breadcrumb-item active">feldera</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -83,13 +82,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="python">
-<h1>python<a class="headerlink" href="#python" title="Link to this heading"></a></h1>
+  <section id="feldera">
+<h1>feldera<a class="headerlink" href="#feldera" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="feldera.html">feldera package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.pipeline_builder">feldera.pipeline_builder module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.pipeline_builder.PipelineBuilder"><code class="docutils literal notranslate"><span class="pre">PipelineBuilder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline_builder.PipelineBuilder.__init__"><code class="docutils literal notranslate"><span class="pre">PipelineBuilder.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline_builder.PipelineBuilder.create"><code class="docutils literal notranslate"><span class="pre">PipelineBuilder.create()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline_builder.PipelineBuilder.create_or_replace"><code class="docutils literal notranslate"><span class="pre">PipelineBuilder.create_or_replace()</span></code></a></li>
 </ul>
@@ -98,27 +98,44 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.pipeline">feldera.pipeline module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.__init__"><code class="docutils literal notranslate"><span class="pre">Pipeline.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.activate"><code class="docutils literal notranslate"><span class="pre">Pipeline.activate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.all"><code class="docutils literal notranslate"><span class="pre">Pipeline.all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.approve"><code class="docutils literal notranslate"><span class="pre">Pipeline.approve()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.checkpoint_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.checkpoint_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.clear_storage"><code class="docutils literal notranslate"><span class="pre">Pipeline.clear_storage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.commit_transaction"><code class="docutils literal notranslate"><span class="pre">Pipeline.commit_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.completion_token_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.completion_token_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.created_at"><code class="docutils literal notranslate"><span class="pre">Pipeline.created_at()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.delete"><code class="docutils literal notranslate"><span class="pre">Pipeline.delete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_desired_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_error"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_location"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_location()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_resources_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_resources_desired_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_resources_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_resources_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_runtime_desired_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_runtime_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status_details"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_runtime_status_details()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.deployment_status_since"><code class="docutils literal notranslate"><span class="pre">Pipeline.deployment_status_since()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.description"><code class="docutils literal notranslate"><span class="pre">Pipeline.description()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.errors"><code class="docutils literal notranslate"><span class="pre">Pipeline.errors()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.execute"><code class="docutils literal notranslate"><span class="pre">Pipeline.execute()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.foreach_chunk"><code class="docutils literal notranslate"><span class="pre">Pipeline.foreach_chunk()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token"><code class="docutils literal notranslate"><span class="pre">Pipeline.generate_completion_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.get"><code class="docutils literal notranslate"><span class="pre">Pipeline.get()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.id"><code class="docutils literal notranslate"><span class="pre">Pipeline.id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_json"><code class="docutils literal notranslate"><span class="pre">Pipeline.input_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_pandas"><code class="docutils literal notranslate"><span class="pre">Pipeline.input_pandas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.is_complete"><code class="docutils literal notranslate"><span class="pre">Pipeline.is_complete()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.listen"><code class="docutils literal notranslate"><span class="pre">Pipeline.listen()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.logs"><code class="docutils literal notranslate"><span class="pre">Pipeline.logs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.modify"><code class="docutils literal notranslate"><span class="pre">Pipeline.modify()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.name"><code class="docutils literal notranslate"><span class="pre">Pipeline.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.pause"><code class="docutils literal notranslate"><span class="pre">Pipeline.pause()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.pause_connector"><code class="docutils literal notranslate"><span class="pre">Pipeline.pause_connector()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_binary_url"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_binary_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.platform_version"><code class="docutils literal notranslate"><span class="pre">Pipeline.platform_version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_code"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_code()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_error"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_error()</span></code></a></li>
@@ -127,6 +144,7 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_status_since"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_status_since()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.program_version"><code class="docutils literal notranslate"><span class="pre">Pipeline.program_version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query"><code class="docutils literal notranslate"><span class="pre">Pipeline.query()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query_hash"><code class="docutils literal notranslate"><span class="pre">Pipeline.query_hash()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query_parquet"><code class="docutils literal notranslate"><span class="pre">Pipeline.query_parquet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.query_tabular"><code class="docutils literal notranslate"><span class="pre">Pipeline.query_tabular()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.refresh"><code class="docutils literal notranslate"><span class="pre">Pipeline.refresh()</span></code></a></li>
@@ -134,25 +152,55 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.resume"><code class="docutils literal notranslate"><span class="pre">Pipeline.resume()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.resume_connector"><code class="docutils literal notranslate"><span class="pre">Pipeline.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.runtime_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.runtime_config()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.shutdown"><code class="docutils literal notranslate"><span class="pre">Pipeline.shutdown()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.set_runtime_config"><code class="docutils literal notranslate"><span class="pre">Pipeline.set_runtime_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start"><code class="docutils literal notranslate"><span class="pre">Pipeline.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_paused"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_paused()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_standby"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_standby()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.start_transaction"><code class="docutils literal notranslate"><span class="pre">Pipeline.start_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.stats"><code class="docutils literal notranslate"><span class="pre">Pipeline.stats()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.status"><code class="docutils literal notranslate"><span class="pre">Pipeline.status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.stop"><code class="docutils literal notranslate"><span class="pre">Pipeline.stop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.storage_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.storage_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.support_bundle"><code class="docutils literal notranslate"><span class="pre">Pipeline.support_bundle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">Pipeline.sync_checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.sync_checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.tables"><code class="docutils literal notranslate"><span class="pre">Pipeline.tables()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.testing_force_update_platform_version"><code class="docutils literal notranslate"><span class="pre">Pipeline.testing_force_update_platform_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.transaction_id"><code class="docutils literal notranslate"><span class="pre">Pipeline.transaction_id()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.transaction_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.transaction_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.udf_rust"><code class="docutils literal notranslate"><span class="pre">Pipeline.udf_rust()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.udf_toml"><code class="docutils literal notranslate"><span class="pre">Pipeline.udf_toml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.update_runtime"><code class="docutils literal notranslate"><span class="pre">Pipeline.update_runtime()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.version"><code class="docutils literal notranslate"><span class="pre">Pipeline.version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.views"><code class="docutils literal notranslate"><span class="pre">Pipeline.views()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_completion"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_completion()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_idle"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_idle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_status"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_token"><code class="docutils literal notranslate"><span class="pre">Pipeline.wait_for_token()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.enums">feldera.enums module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.BootstrapPolicy"><code class="docutils literal notranslate"><span class="pre">BootstrapPolicy</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BootstrapPolicy.ALLOW"><code class="docutils literal notranslate"><span class="pre">BootstrapPolicy.ALLOW</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BootstrapPolicy.AWAIT_APPROVAL"><code class="docutils literal notranslate"><span class="pre">BootstrapPolicy.AWAIT_APPROVAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BootstrapPolicy.REJECT"><code class="docutils literal notranslate"><span class="pre">BootstrapPolicy.REJECT</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode"><code class="docutils literal notranslate"><span class="pre">BuildMode</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.CREATE"><code class="docutils literal notranslate"><span class="pre">BuildMode.CREATE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.GET"><code class="docutils literal notranslate"><span class="pre">BuildMode.GET</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.BuildMode.GET_OR_CREATE"><code class="docutils literal notranslate"><span class="pre">BuildMode.GET_OR_CREATE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Failure"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Failure</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.InProgress"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.InProgress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Success"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Success</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.Unknown"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.Unknown</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.__init__"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CheckpointStatus.get_error"><code class="docutils literal notranslate"><span class="pre">CheckpointStatus.get_error()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile"><code class="docutils literal notranslate"><span class="pre">CompilationProfile</span></code></a><ul>
@@ -162,15 +210,81 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompilationProfile.UNOPTIMIZED"><code class="docutils literal notranslate"><span class="pre">CompilationProfile.UNOPTIMIZED</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus.COMPLETE"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus.COMPLETE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.CompletionTokenStatus.IN_PROGRESS"><code class="docutils literal notranslate"><span class="pre">CompletionTokenStatus.IN_PROGRESS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.PROVISIONED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.PROVISIONED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.PROVISIONED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.PROVISIONED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.PROVISIONING"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.PROVISIONING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.STOPPING"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.STOPPING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentResourcesStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentResourcesStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeDesiredStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeDesiredStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.AWAITINGAPPROVAL"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.AWAITINGAPPROVAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.BOOTSTRAPPING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.BOOTSTRAPPING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.INITIALIZING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.INITIALIZING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.PAUSED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.REPLAYING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.REPLAYING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.RUNNING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.SUSPENDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.UNAVAILABLE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.DeploymentRuntimeStatus.from_str"><code class="docutils literal notranslate"><span class="pre">DeploymentRuntimeStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel.AtLeastOnce"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel.AtLeastOnce</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel.ExactlyOnce"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel.ExactlyOnce</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.FaultToleranceModel.from_str"><code class="docutils literal notranslate"><span class="pre">FaultToleranceModel.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.PipelineFieldSelector"><code class="docutils literal notranslate"><span class="pre">PipelineFieldSelector</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineFieldSelector.ALL"><code class="docutils literal notranslate"><span class="pre">PipelineFieldSelector.ALL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineFieldSelector.STATUS"><code class="docutils literal notranslate"><span class="pre">PipelineFieldSelector.STATUS</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus"><code class="docutils literal notranslate"><span class="pre">PipelineStatus</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.FAILED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.FAILED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.AWAITINGAPPROVAL"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.AWAITINGAPPROVAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.BOOTSTRAPPING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.BOOTSTRAPPING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.INITIALIZING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.INITIALIZING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.NOT_FOUND</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.PAUSED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.PROVISIONING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.PROVISIONING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.REPLAYING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.REPLAYING</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.RUNNING</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.SHUTDOWN"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.SHUTDOWN</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.SHUTTING_DOWN"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.SHUTTING_DOWN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STANDBY"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STANDBY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STOPPED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.STOPPING"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.STOPPING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.SUSPENDED"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.SUSPENDED</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.UNAVAILABLE"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.UNAVAILABLE</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.PipelineStatus.from_str"><code class="docutils literal notranslate"><span class="pre">PipelineStatus.from_str()</span></code></a></li>
 </ul>
@@ -184,14 +298,30 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.SqlError"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.SqlError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.Success"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.Success</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.SystemError"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.SystemError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.__init__"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.from_value"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.from_value()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.ProgramStatus.get_error"><code class="docutils literal notranslate"><span class="pre">ProgramStatus.get_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.StorageStatus"><code class="docutils literal notranslate"><span class="pre">StorageStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.StorageStatus.CLEARED"><code class="docutils literal notranslate"><span class="pre">StorageStatus.CLEARED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.StorageStatus.CLEARING"><code class="docutils literal notranslate"><span class="pre">StorageStatus.CLEARING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.StorageStatus.INUSE"><code class="docutils literal notranslate"><span class="pre">StorageStatus.INUSE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.StorageStatus.from_str"><code class="docutils literal notranslate"><span class="pre">StorageStatus.from_str()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.enums.TransactionStatus"><code class="docutils literal notranslate"><span class="pre">TransactionStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.TransactionStatus.CommitInProgress"><code class="docutils literal notranslate"><span class="pre">TransactionStatus.CommitInProgress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.TransactionStatus.NoTransaction"><code class="docutils literal notranslate"><span class="pre">TransactionStatus.NoTransaction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.TransactionStatus.TransactionInProgress"><code class="docutils literal notranslate"><span class="pre">TransactionStatus.TransactionInProgress</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.enums.TransactionStatus.from_str"><code class="docutils literal notranslate"><span class="pre">TransactionStatus.from_str()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.output_handler">feldera.output_handler module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler"><code class="docutils literal notranslate"><span class="pre">OutputHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler.__init__"><code class="docutils literal notranslate"><span class="pre">OutputHandler.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler.start"><code class="docutils literal notranslate"><span class="pre">OutputHandler.start()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler.to_dict"><code class="docutils literal notranslate"><span class="pre">OutputHandler.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler.to_pandas"><code class="docutils literal notranslate"><span class="pre">OutputHandler.to_pandas()</span></code></a></li>
@@ -200,12 +330,21 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#module-feldera.runtime_config">feldera.runtime_config module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.Resources"><code class="docutils literal notranslate"><span class="pre">Resources</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig.from_dict"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig.from_dict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.Resources"><code class="docutils literal notranslate"><span class="pre">Resources</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.Resources.__init__"><code class="docutils literal notranslate"><span class="pre">Resources.__init__()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.Storage"><code class="docutils literal notranslate"><span class="pre">Storage</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig.__init__"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig.default"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig.default()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig.from_dict"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.RuntimeConfig.to_dict"><code class="docutils literal notranslate"><span class="pre">RuntimeConfig.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.html#feldera.runtime_config.Storage"><code class="docutils literal notranslate"><span class="pre">Storage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.html#feldera.runtime_config.Storage.__init__"><code class="docutils literal notranslate"><span class="pre">Storage.__init__()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.html#subpackages">Subpackages</a><ul>
@@ -214,6 +353,7 @@
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.config">feldera.rest.config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.errors">feldera.rest.errors module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.feldera_client">feldera.rest.feldera_client module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.feldera_config">feldera.rest.feldera_config module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.pipeline">feldera.rest.pipeline module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.sql_table">feldera.rest.sql_table module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.sql_view">feldera.rest.sql_view module</a></li>
@@ -222,111 +362,6 @@
 </li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tests.aggregate_tests.html">tests.aggregate_tests package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-aggtst-base-module">tests.aggregate_tests.aggtst_base module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-atest-register-tests-module">tests.aggregate_tests.atest_register_tests module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-atest-run-module">tests.aggregate_tests.atest_run module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-main-module">tests.aggregate_tests.main module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-arg-max-module">tests.aggregate_tests.test_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-arg-min-module">tests.aggregate_tests.test_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-module">tests.aggregate_tests.test_array module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-arg-max-module">tests.aggregate_tests.test_array_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-arg-min-module">tests.aggregate_tests.test_array_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-arr-agg-module">tests.aggregate_tests.test_array_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-count-module">tests.aggregate_tests.test_array_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-count-col-module">tests.aggregate_tests.test_array_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-every-module">tests.aggregate_tests.test_array_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-max-module">tests.aggregate_tests.test_array_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-min-module">tests.aggregate_tests.test_array_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-some-module">tests.aggregate_tests.test_array_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-array-tbl-module">tests.aggregate_tests.test_array_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-avg-module">tests.aggregate_tests.test_avg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-arg-max-module">tests.aggregate_tests.test_binary_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-arg-min-module">tests.aggregate_tests.test_binary_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-arr-agg-module">tests.aggregate_tests.test_binary_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-count-module">tests.aggregate_tests.test_binary_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-count-col-module">tests.aggregate_tests.test_binary_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-every-module">tests.aggregate_tests.test_binary_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-max-module">tests.aggregate_tests.test_binary_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-min-module">tests.aggregate_tests.test_binary_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-some-module">tests.aggregate_tests.test_binary_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-binary-tbl-module">tests.aggregate_tests.test_binary_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-bit-and-module">tests.aggregate_tests.test_bit_and module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-bit-or-module">tests.aggregate_tests.test_bit_or module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-bit-xor-module">tests.aggregate_tests.test_bit_xor module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-count-module">tests.aggregate_tests.test_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-count-col-module">tests.aggregate_tests.test_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-arg-max-module">tests.aggregate_tests.test_decimal_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-arg-min-module">tests.aggregate_tests.test_decimal_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-arr-agg-module">tests.aggregate_tests.test_decimal_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-avg-module">tests.aggregate_tests.test_decimal_avg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-count-module">tests.aggregate_tests.test_decimal_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-count-col-module">tests.aggregate_tests.test_decimal_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-every-module">tests.aggregate_tests.test_decimal_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-max-module">tests.aggregate_tests.test_decimal_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-min-module">tests.aggregate_tests.test_decimal_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-some-module">tests.aggregate_tests.test_decimal_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-stddev-pop-module">tests.aggregate_tests.test_decimal_stddev_pop module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-stddev-samp-module">tests.aggregate_tests.test_decimal_stddev_samp module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-sum-module">tests.aggregate_tests.test_decimal_sum module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-decimal-table-module">tests.aggregate_tests.test_decimal_table module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-empty-set-module">tests.aggregate_tests.test_empty_set module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-every-module">tests.aggregate_tests.test_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-float-max-module">tests.aggregate_tests.test_float_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-float-min-module">tests.aggregate_tests.test_float_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-float-tbl-module">tests.aggregate_tests.test_float_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-int-table-module">tests.aggregate_tests.test_int_table module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-arg-max-module">tests.aggregate_tests.test_map_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-arg-min-module">tests.aggregate_tests.test_map_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-arr-agg-module">tests.aggregate_tests.test_map_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-count-module">tests.aggregate_tests.test_map_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-count-col-module">tests.aggregate_tests.test_map_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-every-module">tests.aggregate_tests.test_map_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-max-module">tests.aggregate_tests.test_map_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-min-module">tests.aggregate_tests.test_map_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-some-module">tests.aggregate_tests.test_map_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-map-tbl-module">tests.aggregate_tests.test_map_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-max-module">tests.aggregate_tests.test_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-min-module">tests.aggregate_tests.test_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-arg-max-module">tests.aggregate_tests.test_row_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-arg-min-module">tests.aggregate_tests.test_row_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-arr-agg-module">tests.aggregate_tests.test_row_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-count-col-module">tests.aggregate_tests.test_row_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-every-module">tests.aggregate_tests.test_row_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-max-module">tests.aggregate_tests.test_row_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-min-module">tests.aggregate_tests.test_row_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-some-module">tests.aggregate_tests.test_row_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-row-tbl-module">tests.aggregate_tests.test_row_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-some-module">tests.aggregate_tests.test_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-stddev-pop-module">tests.aggregate_tests.test_stddev_pop module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-stddev-samp-module">tests.aggregate_tests.test_stddev_samp module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-sum-module">tests.aggregate_tests.test_sum module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-arg-max-module">tests.aggregate_tests.test_varbinary_arg_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-arg-min-module">tests.aggregate_tests.test_varbinary_arg_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-arr-agg-module">tests.aggregate_tests.test_varbinary_arr_agg module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-count-module">tests.aggregate_tests.test_varbinary_count module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-count-col-module">tests.aggregate_tests.test_varbinary_count_col module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-every-module">tests.aggregate_tests.test_varbinary_every module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-max-module">tests.aggregate_tests.test_varbinary_max module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-min-module">tests.aggregate_tests.test_varbinary_min module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-some-module">tests.aggregate_tests.test_varbinary_some module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#tests-aggregate-tests-test-varbinary-tbl-module">tests.aggregate_tests.test_varbinary_tbl module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="tests.aggregate_tests.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-pipeline-module">tests.test_pipeline module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-pipeline-builder-module">tests.test_pipeline_builder module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-udf-module">tests.test_udf module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#tests-test-variant-module">tests.test_variant module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tests.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>

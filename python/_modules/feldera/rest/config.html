@@ -49,7 +49,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">feldera</a></li>
 </ul>
 
         </div>
@@ -77,38 +77,55 @@
            <div itemprop="articleBody">
              
   <h1>Source code for feldera.rest.config</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">requests_verify_from_env</span>
 
 
 <div class="viewcode-block" id="Config">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.config.Config">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :class:`.FelderaClient`&#39;s credentials and configuration parameters</span>
+<span class="sd">    :class:`.FelderaClient` configuration, which includes authentication information</span>
+<span class="sd">    and the address of the Feldera API the client will interact with.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="Config.__init__">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.config.Config.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">requests_verify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">connection_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">requests_verify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">health_recovery_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param url: The url to the Feldera API (ex: https://try.feldera.com)</span>
-<span class="sd">        :param api_key: The optional API key to access Feldera</span>
-<span class="sd">        :param version: The version of the API to use</span>
-<span class="sd">        :param timeout: The timeout for the HTTP requests</span>
-<span class="sd">        :param requests_verify: The `verify` parameter passed to the requests</span>
-<span class="sd">            library. `True` by default.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        See documentation of the `FelderaClient` constructor for the other arguments.</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">url</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">api_key</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="s2">&quot;v0&quot;</span>
+<span class="sd">        :param version: (Optional) Version of the API to use.</span>
+<span class="sd">            Default: `v0`.</span>
+<span class="sd">        :param health_recovery_timeout: (Optional) Maximum time in seconds to wait for cluster health recovery after a 502 error.</span>
+<span class="sd">            Default: `300` (5 minutes).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">url</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_HOST&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;http://localhost:8080&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_API_KEY&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">version</span> <span class="ow">or</span> <span class="s2">&quot;v0&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">timeout</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">requests_verify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">requests_verify</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">connection_timeout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health_recovery_timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">health_recovery_timeout</span> <span class="ow">or</span> <span class="mi">300</span>
+        <span class="n">env_verify</span> <span class="o">=</span> <span class="n">requests_verify_from_env</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requests_verify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">requests_verify</span> <span class="k">if</span> <span class="n">requests_verify</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">env_verify</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">requests_verify</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Feldera client: TLS verification is disabled!&quot;</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 

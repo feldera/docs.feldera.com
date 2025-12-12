@@ -49,7 +49,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">feldera</a></li>
 </ul>
 
         </div>
@@ -78,6 +78,7 @@
              
   <h1>Source code for feldera.runtime_config</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
 
 
 <div class="viewcode-block" id="Resources">
@@ -96,6 +97,8 @@
 <span class="sd">    :param storage_mb_max: The  storage in Megabytes to reserve for an instance of the pipeline.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="Resources.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.Resources.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -116,6 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">storage_mb_max</span> <span class="o">=</span> <span class="n">storage_mb_max</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -127,6 +131,8 @@
 <span class="sd">    :param min_storage_bytes: The minimum estimated number of bytes in a batch of data to write it to storage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="Storage.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.Storage.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -137,6 +143,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_storage_bytes</span> <span class="o">=</span> <span class="n">min_storage_bytes</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -145,12 +152,19 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">RuntimeConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runtime configuration class to define the configuration for a pipeline.</span>
+<span class="sd">    To create runtime config from a dictionary, use</span>
+<span class="sd">    :meth:`.RuntimeConfig.from_dict`.</span>
+
+<span class="sd">    Documentation:</span>
+<span class="sd">        https://docs.feldera.com/pipelines/configuration/#runtime-configuration</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="RuntimeConfig.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">workers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Storage</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">storage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Storage</span> <span class="o">|</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tracing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">tracing_endpoint_jaeger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">cpu_profiler</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -159,9 +173,12 @@
         <span class="n">clock_resolution_usecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">provisioning_timeout_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resources</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fault_tolerance_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FaultToleranceModel</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkpoint_interval_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dev_tweaks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">logging</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing</span> <span class="o">=</span> <span class="n">tracing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing_endpoint_jaeger</span> <span class="o">=</span> <span class="n">tracing_endpoint_jaeger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpu_profiler</span> <span class="o">=</span> <span class="n">cpu_profiler</span>
@@ -169,20 +186,48 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">min_batch_size_records</span> <span class="o">=</span> <span class="n">min_batch_size_records</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock_resolution_usecs</span> <span class="o">=</span> <span class="n">clock_resolution_usecs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">provisioning_timeout_secs</span> <span class="o">=</span> <span class="n">provisioning_timeout_secs</span>
+        <span class="k">if</span> <span class="n">fault_tolerance_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fault_tolerance</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fault_tolerance_model</span><span class="p">),</span>
+                <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">:</span> <span class="n">checkpoint_interval_secs</span><span class="p">,</span>
+            <span class="p">}</span>
         <span class="k">if</span> <span class="n">resources</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="k">if</span> <span class="n">storage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">storage</span><span class="p">,</span> <span class="n">Storage</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">storage</span><span class="si">}</span><span class="s2">&#39; for storage&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dev_tweaks</span> <span class="o">=</span> <span class="n">dev_tweaks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span></div>
+
+
+<div class="viewcode-block" id="RuntimeConfig.default">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.default">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;RuntimeConfig&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RuntimeConfig</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="n">Resources</span><span class="p">())</span></div>
+
 
 <div class="viewcode-block" id="RuntimeConfig.from_dict">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a `.RuntimeConfig` object from a dictionary.</span>
+<span class="sd">        Create a :class:`.RuntimeConfig` object from a dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">conf</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">d</span>
         <span class="k">return</span> <span class="n">conf</span></div>
+
+
+<div class="viewcode-block" id="RuntimeConfig.to_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

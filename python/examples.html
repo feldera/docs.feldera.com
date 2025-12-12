@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="python" href="modules.html" />
+    <link rel="next" title="feldera" href="modules.html" />
     <link rel="prev" title="Pandas Compatibility" href="pandas.html" /> 
 </head>
 
@@ -51,22 +51,27 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-feldera-sandbox">Connecting to Feldera Sandbox</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-feldera-on-localhost">Connecting to Feldera on localhost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tls-with-self-signed-certificates">TLS with Self Signed Certificates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setting-http-connection-timeouts">Setting HTTP Connection Timeouts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-overwriting-existing-pipelines">Creating a Pipeline (OVERWRITING existing pipelines)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-with-fault-tolerance-enabled">Creating a Pipeline with Fault Tolerance Enabled</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#runtime-configuration-of-a-pipeline">Runtime configuration of a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#starting-a-pipeline">Starting a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-pandas-dataframes">Using Pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-completion-tokens">Using Completion Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#executing-ad-hoc-sql-queries">Executing ad-hoc SQL Queries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#iterating-over-output-chunks">Iterating over Output Chunks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#waiting-for-completion">Waiting for Completion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#end-to-end-example-with-kafka-sink">End-to-End Example with Kafka Sink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieve-a-support-bundle-for-a-pipeline">Retrieve a support-bundle for a pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#specifying-data-sources-sinks">Specifying Data Sources / Sinks</a></li>
 </ul>
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">feldera</a></li>
 </ul>
 
         </div>
@@ -124,6 +129,16 @@
 </pre></div>
 </div>
 </section>
+<section id="tls-with-self-signed-certificates">
+<h2>TLS with Self Signed Certificates<a class="headerlink" href="#tls-with-self-signed-certificates" title="Link to this heading"></a></h2>
+<p>To use TLS with self signed certificates, set to the path of the CA bundle or
+the directory that contains the CA certificates.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="p">(</span><span class="s1">&#39;https://cluster.feldera.com&#39;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s1">&#39;path/to/cert&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 <section id="setting-http-connection-timeouts">
 <h2>Setting HTTP Connection Timeouts<a class="headerlink" href="#setting-http-connection-timeouts" title="Link to this heading"></a></h2>
 <p>To set a timeout for the HTTP connection, pass the timeout parameter to the <cite>.class:FelderaClient</cite> constructor.
@@ -138,7 +153,7 @@ This example sets the timeout for each HTTP request to 10 seconds.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This is for an individual HTTP request, and does not affect things like waiting for a pipeline to start,
-pause, resume and shutdown.
+pause, resume and stop.
 To set a timeout for these state transitions, set the parameter <cite>timeout_s</cite> in respective functions.</p>
 </div>
 </section>
@@ -160,8 +175,71 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
 <span class="s2">CREATE VIEW average_scores AS SELECT name, ((science + maths + art) / 3) as average FROM </span><span class="si">{TBL_NAMES[0]}</span><span class="s2"> JOIN </span><span class="si">{TBL_NAMES[1]}</span><span class="s2"> on id = student_id ORDER BY average DESC;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="c1"># This will shutdown and overwrite any existing pipeline with the same name.</span>
+<span class="c1"># This will stop and overwrite any existing pipeline with the same name.</span>
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-a-pipeline-with-fault-tolerance-enabled">
+<h2>Creating a Pipeline with Fault Tolerance Enabled<a class="headerlink" href="#creating-a-pipeline-with-fault-tolerance-enabled" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">()</span>
+<span class="n">runtime_config</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="p">(</span>
+    <span class="n">fault_tolerance_model</span><span class="o">=</span><span class="n">FaultToleranceModel</span><span class="o">.</span><span class="n">AtLeastOnce</span><span class="p">,</span>
+    <span class="n">checkpoint_interval_secs</span><span class="o">=</span><span class="mi">60</span>
+<span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="runtime-configuration-of-a-pipeline">
+<h2>Runtime configuration of a Pipeline<a class="headerlink" href="#runtime-configuration-of-a-pipeline" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">()</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;workers&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s2">&quot;storage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;min_step_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;compression&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cache_mib&quot;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;fault_tolerance&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;at_least_once&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">:</span> <span class="mi">60</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;cpu_profiler&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;tracing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;tracing_endpoint_jaeger&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;min_batch_size_records&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;cpu_cores_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;storage_class&quot;</span><span class="p">:</span> <span class="kc">None</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;pin_cpus&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;max_parallel_connector_init&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;init_containers&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;checkpoint_during_suspend&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;dev_tweaks&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="n">runtime_config</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
@@ -200,23 +278,46 @@ the following output:</p>
 <span class="n">df_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;students.csv&#39;</span><span class="p">)</span>
 <span class="n">df_grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;grades.csv&#39;</span><span class="p">)</span>
 
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
 <span class="c1"># subscribe to listen to outputs from a view</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;average_scores&quot;</span><span class="p">)</span>
-
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <span class="c1"># feed pandas dataframes as input</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;students&quot;</span><span class="p">,</span> <span class="n">df_students</span><span class="p">)</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;grades&quot;</span><span class="p">,</span> <span class="n">df_grades</span><span class="p">)</span>
 
-<span class="c1"># wait for the pipeline to complete and shutdown</span>
+<span class="c1"># wait for the pipeline to complete and stop</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># get the output of the view as a pandas dataframe</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 
-<span class="c1"># delete the pipeline</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-completion-tokens">
+<h2>Using Completion Tokens<a class="headerlink" href="#using-completion-tokens" title="Link to this heading"></a></h2>
+<p><a class="reference external" href="https://docs.feldera.com/connectors/completion-tokens/#completion-tokens">Completion tokens</a> can be used to check whether
+all inputs ingested before the token was issued have been fully processed, and the resulting outputs have been written to all data sinks.</p>
+<p>The following methods automatically use completion tokens:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_json" title="feldera.pipeline.Pipeline.input_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.input_json()</span></code></a></p></li>
+<li><p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.input_pandas" title="feldera.pipeline.Pipeline.input_pandas"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.input_pandas()</span></code></a></p></li>
+</ul>
+<p>To generate a completion token for a connector attached to the pipeline use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token" title="feldera.pipeline.Pipeline.generate_completion_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.generate_completion_token()</span></code></a>.
+To check the status of this completion token use <a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.completion_token_status" title="feldera.pipeline.Pipeline.completion_token_status"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.completion_token_status()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># generate completion token for table &quot;t0&quot; and connector &quot;myconnector&quot;</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">generate_completion_token</span><span class="p">(</span><span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="s2">&quot;myconnector&quot;</span><span class="p">)</span>
+
+<span class="c1"># check the status of this completion token</span>
+<span class="n">status</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">completion_token_status</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+
+<span class="c1"># wait until the pipeline processes this completion token</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -251,16 +352,19 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;notebook&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 
+<span class="c1"># run the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
 <span class="c1"># register the callback for data received from the selected view</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">foreach_chunk</span><span class="p">(</span><span class="s2">&quot;view_name&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="p">)</span>
 
-<span class="c1"># run the pipeline</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">input_pandas</span><span class="p">(</span><span class="s2">&quot;table_name&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
 
-<span class="c1"># wait for the pipeline to finish and shutdown</span>
+<span class="c1"># wait for the pipeline to finish and stop</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -270,8 +374,8 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Optionally, to shutdown the pipeline after completion:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">shutdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Optionally, to forcibly stop (without checkpointing) the pipeline after completion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_completion</span><span class="p">(</span><span class="n">force_stop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -290,7 +394,7 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 <span class="s2">        CREATE TABLE Stocks (</span>
 <span class="s2">        symbol VARCHAR NOT NULL,</span>
 <span class="s2">        price_time BIGINT NOT NULL,  -- UNIX timestamp</span>
-<span class="s2">        price DOUBLE NOT NULL</span>
+<span class="s2">        price DECIMAL(38, 2) NOT NULL</span>
 <span class="s2">        ) with (</span>
 <span class="s2">          &#39;connectors&#39; = &#39;[{</span>
 <span class="s2">            &quot;transport&quot;: {</span>
@@ -337,16 +441,85 @@ It takes a callback, and calls the callback on each chunk of received data.</p>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;kafka_example&quot;</span><span class="p">,</span> <span class="n">sql</span><span class="o">=</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
 
+<span class="c1"># Start the pipeline in paused state, attach listener, then unpause the pipeline.</span>
+<span class="c1"># This ensures that the listener gets all the output from the view.</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start_paused</span><span class="p">()</span>
 <span class="n">out</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;googl_stocks&quot;</span><span class="p">)</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">resume</span><span class="p">()</span>
 
 <span class="c1"># important: `wait_for_completion` will block forever here</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_idle</span><span class="p">()</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span>
 
+<span class="c1"># clear the storage and delete the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="retrieve-a-support-bundle-for-a-pipeline">
+<h2>Retrieve a support-bundle for a pipeline<a class="headerlink" href="#retrieve-a-support-bundle-for-a-pipeline" title="Link to this heading"></a></h2>
+<p>This example shows how to download a support bundle for a pipeline using the Python SDK.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a client (assuming Feldera is running on localhost:8080)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+
+<span class="c1"># Define a simple SQL program</span>
+<span class="n">sql_program</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">CREATE TABLE users(id INT, name STRING);</span>
+<span class="s2">CREATE MATERIALIZED VIEW user_count AS SELECT COUNT(*) as count FROM users;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Create a pipeline</span>
+<span class="n">pipeline_name</span> <span class="o">=</span> <span class="s2">&quot;support-bundle-example&quot;</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">,</span>
+    <span class="n">pipeline_name</span><span class="p">,</span>
+    <span class="n">sql_program</span>
+<span class="p">)</span><span class="o">.</span><span class="n">create_or_replace</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created pipeline: </span><span class="si">{</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Start the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline started&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate support bundle as bytes</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating support bundle...&quot;</span><span class="p">)</span>
+<span class="n">support_bundle_bytes</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">support_bundle</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle size: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">support_bundle_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify it&#39;s a valid ZIP file</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">support_bundle_bytes</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_file</span><span class="p">:</span>
+        <span class="n">file_list</span> <span class="o">=</span> <span class="n">zip_file</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle contains </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> files:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>  <span class="c1"># Show first 5 files</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ... and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="si">}</span><span class="s2"> more files&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">BadZipFile</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Support bundle is not a valid ZIP file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save support bundle to a file</span>
+<span class="n">output_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">-support-bundle.zip&quot;</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">support_bundle</span><span class="p">(</span><span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle saved to: </span><span class="si">{</span><span class="n">output_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Verify the saved file</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+    <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved file size: </span><span class="si">{</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Clean up</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cleaned up saved file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Stop the pipeline</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">()</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline stopped and deleted&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -362,7 +535,7 @@ Refer to the connector documentation at: <a class="reference external" href="htt
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pandas.html" class="btn btn-neutral float-left" title="Pandas Compatibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="feldera" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

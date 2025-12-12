@@ -28,6 +28,14 @@ feldera.rest.feldera\_client module
    :undoc-members:
    :show-inheritance:
 
+feldera.rest.feldera\_config module
+-----------------------------------
+
+.. automodule:: feldera.rest.feldera_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 feldera.rest.pipeline module
 ----------------------------
 

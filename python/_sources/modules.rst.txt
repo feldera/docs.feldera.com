@@ -1,8 +1,7 @@
-python
-======
+feldera
+=======
 
 .. toctree::
    :maxdepth: 4
 
    feldera
-   tests
