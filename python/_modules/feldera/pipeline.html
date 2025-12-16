@@ -78,38 +78,37 @@
              
   <h1>Source code for feldera.pipeline</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackRunner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">chunk_dataframe</span><span class="p">,</span> <span class="n">ensure_dataframe_has_columns</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BootstrapPolicy</span><span class="p">,</span>
-    <span class="n">CompletionTokenStatus</span><span class="p">,</span>
-    <span class="n">PipelineFieldSelector</span><span class="p">,</span>
-    <span class="n">PipelineStatus</span><span class="p">,</span>
-    <span class="n">ProgramStatus</span><span class="p">,</span>
     <span class="n">CheckpointStatus</span><span class="p">,</span>
-    <span class="n">TransactionStatus</span><span class="p">,</span>
-    <span class="n">StorageStatus</span><span class="p">,</span>
+    <span class="n">CompletionTokenStatus</span><span class="p">,</span>
     <span class="n">DeploymentDesiredStatus</span><span class="p">,</span>
     <span class="n">DeploymentResourcesDesiredStatus</span><span class="p">,</span>
     <span class="n">DeploymentResourcesStatus</span><span class="p">,</span>
     <span class="n">DeploymentRuntimeDesiredStatus</span><span class="p">,</span>
     <span class="n">DeploymentRuntimeStatus</span><span class="p">,</span>
+    <span class="n">PipelineFieldSelector</span><span class="p">,</span>
+    <span class="n">PipelineStatus</span><span class="p">,</span>
+    <span class="n">ProgramStatus</span><span class="p">,</span>
+    <span class="n">StorageStatus</span><span class="p">,</span>
+    <span class="n">TransactionStatus</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackRunner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.output_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputHandler</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">ensure_dataframe_has_columns</span><span class="p">,</span> <span class="n">chunk_dataframe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
@@ -1701,6 +1700,48 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Support bundle written to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">support_bundle_bytes</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.start_samply_profile">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_samply_profile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_samply_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts profiling this pipeline using samply.</span>
+
+<span class="sd">        :param duration: The duration of the profile in seconds (default: 30)</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline does not exist or if there&#39;s an error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_samply_profile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">duration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.get_samply_profile">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.get_samply_profile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_samply_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the gzip file of the samply profile as bytes.</span>
+
+<span class="sd">        The gzip file contains the samply profile that can be inspected by the samply tool.</span>
+
+<span class="sd">        :param output_path: Optional path to save the samply profile file. If None,</span>
+<span class="sd">            the samply profile is only returned as bytes.</span>
+<span class="sd">        :return: The samply profile as bytes (GZIP file)</span>
+<span class="sd">        :raises FelderaAPIError: If the pipeline does not exist or if there&#39;s an error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">samply_profile_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_samply_profile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.gz&quot;</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.gz&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">samply_profile_bytes</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Samply profile written to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">samply_profile_bytes</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.generate_completion_token">
