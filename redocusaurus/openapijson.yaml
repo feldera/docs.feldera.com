@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.213.0
+  version: 0.214.0
 paths:
   /config/authentication:
     get:
@@ -10317,6 +10317,17 @@ components:
 
             See:
             <https://docs.rs/tokio-postgres/0.7.12/tokio_postgres/config/struct.Config.html>
+    PostgresWriteMode:
+      type: string
+      description: >-
+        PostgreSQL write mode.
+
+
+        Determines how the PostgreSQL output connector writes data to the target
+        table.
+      enum:
+        - materialized
+        - cdc
     PostgresWriterConfig:
       type: object
       description: Postgres output connector configuration.
@@ -10324,6 +10335,34 @@ components:
         - uri
         - table
       properties:
+        cdc_op_column:
+          type: string
+          description: |-
+            Name of the operation metadata column in CDC mode.
+
+            Only used when `mode = "cdc"`. This column will contain:
+            - `"i"` for insert operations
+            - `"u"` for upsert operations
+            - `"d"` for delete operations
+
+            Default: `"__feldera_op"`
+          default: __feldera_op
+        cdc_ts_column:
+          type: string
+          description: >-
+            Name of the timestamp metadata column in CDC mode.
+
+
+            Only used when `mode = "cdc"`. This column will contain the
+            timestamp
+
+            (in RFC 3339 format) when the batch of updates was output
+
+            by the pipeline.
+
+
+            Default: `"__feldera_ts"`
+          default: __feldera_ts
         max_buffer_size_bytes:
           type: integer
           description: |-
@@ -10338,6 +10377,10 @@ components:
           description: The maximum number of records in a single buffer.
           nullable: true
           minimum: 0
+        mode:
+          allOf:
+            - $ref: '#/components/schemas/PostgresWriteMode'
+          default: materialized
         on_conflict_do_nothing:
           type: boolean
           description: >-
@@ -10357,6 +10400,14 @@ components:
             replace the
 
             value associated with the key.
+
+
+            This setting is not supported when `mode = "cdc"`, since all
+            operations
+
+            are performed as append-only `INSERT`s into the target table.
+
+            Any conflict in CDC mode will result in an error.
 
 
             Default: `false`
