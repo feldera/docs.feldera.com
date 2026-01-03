@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.216.0
+  version: 0.217.0
 paths:
   /config/authentication:
     get:
@@ -12351,6 +12351,17 @@ components:
 
             Default: 10 seconds
           default: 10
+          minimum: 0
+        push_interval:
+          type: integer
+          format: int64
+          description: >-
+            The interval (in seconds) between each push of checkpoints to object
+            store.
+
+
+            Default: disabled (no periodic push).
+          nullable: true
           minimum: 0
         region:
           type: string

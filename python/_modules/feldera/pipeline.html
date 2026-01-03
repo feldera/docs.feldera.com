@@ -1010,10 +1010,11 @@
 
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">)</span>
 
         <span class="n">fail</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failure&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="n">uuid</span> <span class="o">==</span> <span class="n">success</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">uuid</span> <span class="o">==</span> <span class="n">success</span> <span class="ow">or</span> <span class="n">uuid</span> <span class="o">==</span> <span class="n">periodic</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Success</span>
 
         <span class="n">fail</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;failure&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
@@ -1027,6 +1028,29 @@
             <span class="k">return</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">InProgress</span>
 
         <span class="k">return</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Unknown</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.last_successful_checkpoint_sync">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.last_successful_checkpoint_sync">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_successful_checkpoint_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UUID</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the UUID of the last successfully synced checkpoint.</span>
+
+<span class="sd">        :return: The UUID of the last successfully synced checkpoint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;no checkpoints have been synced yet&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">success</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="n">periodic</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UUID</span><span class="p">(</span><span class="n">success</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">success</span><span class="p">),</span> <span class="n">UUID</span><span class="p">(</span><span class="n">periodic</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.query">
