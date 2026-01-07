@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.854ca8c1.js" defer="defer"></script>
-<script src="/assets/js/main.bfc58c67.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.859cb0f8.js" defer="defer"></script>
+<script src="/assets/js/main.05df0ee5.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -151,6 +151,58 @@ might not be able to honor CPU pinning requests.</p>
 <p>CPU pinning can make pipelines run faster and perform more consistently,
 as long as different pipelines running on the same machine are pinned to
 different CPUs.</p>
+</div></div></div></td></tr><tr class=""><td kind="field" title="pipeline_template_configmap" class="sc-kHNKno sc-frmfij sc-iyUCga cdqHkU bEMUez hxQkCm"><span class="sc-hLyRwt kzJYht"></span><button aria-label="expand pipeline_template_configmap"><span class="property-name">pipeline_template_configmap</span><svg class="sc-dibcMh kbEUBj" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-groBii inPiBP"><div><div><span class="sc-byRegH sc-budtlk lfpluU kqsZlC"></span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC">object or null</span></div><div><span class="sc-byRegH lfpluU"> <!-- -->Default:<!-- --> </span> <span class="sc-byRegH sc-dEAvcG lfpluU IvJiA">null</span></div> <div><div html="&lt;p&gt;Configuration for supplying a custom pipeline StatefulSet template via a Kubernetes ConfigMap.&lt;/p&gt;
+&lt;p&gt;Operators can provide a custom StatefulSet YAML that the Kubernetes runner will use when
+creating pipeline StatefulSets for a pipeline. The custom template must be stored as the
+value of a key in a ConfigMap in the same namespace as the pipeline; set &lt;code&gt;name&lt;/code&gt; to the
+ConfigMap name and &lt;code&gt;key&lt;/code&gt; to the entry that contains the template.&lt;/p&gt;
+&lt;p&gt;Recommendations and requirements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Start from the default template and modify it as needed.&lt;/strong&gt; The default template is present
+in ConfigMap named as &lt;code&gt;&amp;lt;release-name&amp;gt;-pipeline-template&lt;/code&gt;, with key &lt;code&gt;pipelineTemplate&lt;/code&gt; in the release
+namespace and should be used as a reference.&lt;/li&gt;
+&lt;li&gt;The template must contain a valid Kubernetes &lt;code&gt;StatefulSet&lt;/code&gt; manifest in YAML form. The
+runner substitutes variables in the template before parsing; therefore the final YAML
+must be syntactically valid.&lt;/li&gt;
+&lt;li&gt;The runner performs simple string substitution for the following placeholders. Please ensure these
+placeholders are placed at appropriate location for their semantics:&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{id}&lt;/code&gt;: pipeline Kubernetes name (used for object names and labels)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{namespace}&lt;/code&gt;: Kubernetes namespace where the pipeline runs&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{pipeline_executor_image}&lt;/code&gt;: container image used to run the pipeline executor&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{binary_ref}&lt;/code&gt;: program binary reference passed as an argument&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{program_info_ref}&lt;/code&gt;: program info reference passed as an argument&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{pipeline_storage_path}&lt;/code&gt;: mount path for persistent pipeline storage&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{storage_class_name}&lt;/code&gt;: storage class name to use for PVCs (if applicable)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{deployment_id}&lt;/code&gt;: UUID identifying the deployment instance&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{deployment_initial}&lt;/code&gt;: initial desired runtime status (e.g., &lt;code&gt;provisioning&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{bootstrap_policy}&lt;/code&gt;: bootstrap policy value when applicable&lt;/li&gt;
+&lt;/ul&gt;
+" class="sc-faJlkc sc-fdduAw JEUrA AkGJk"><p>Configuration for supplying a custom pipeline StatefulSet template via a Kubernetes ConfigMap.</p>
+<p>Operators can provide a custom StatefulSet YAML that the Kubernetes runner will use when
+creating pipeline StatefulSets for a pipeline. The custom template must be stored as the
+value of a key in a ConfigMap in the same namespace as the pipeline; set <code>name</code> to the
+ConfigMap name and <code>key</code> to the entry that contains the template.</p>
+<p>Recommendations and requirements:</p>
+<ul>
+<li><strong>Start from the default template and modify it as needed.</strong> The default template is present
+in ConfigMap named as <code>&lt;release-name&gt;-pipeline-template</code>, with key <code>pipelineTemplate</code> in the release
+namespace and should be used as a reference.</li>
+<li>The template must contain a valid Kubernetes <code>StatefulSet</code> manifest in YAML form. The
+runner substitutes variables in the template before parsing; therefore the final YAML
+must be syntactically valid.</li>
+<li>The runner performs simple string substitution for the following placeholders. Please ensure these
+placeholders are placed at appropriate location for their semantics:</li>
+<li><code>{id}</code>: pipeline Kubernetes name (used for object names and labels)</li>
+<li><code>{namespace}</code>: Kubernetes namespace where the pipeline runs</li>
+<li><code>{pipeline_executor_image}</code>: container image used to run the pipeline executor</li>
+<li><code>{binary_ref}</code>: program binary reference passed as an argument</li>
+<li><code>{program_info_ref}</code>: program info reference passed as an argument</li>
+<li><code>{pipeline_storage_path}</code>: mount path for persistent pipeline storage</li>
+<li><code>{storage_class_name}</code>: storage class name to use for PVCs (if applicable)</li>
+<li><code>{deployment_id}</code>: UUID identifying the deployment instance</li>
+<li><code>{deployment_initial}</code>: initial desired runtime status (e.g., <code>provisioning</code>)</li>
+<li><code>{bootstrap_policy}</code>: bootstrap policy value when applicable</li>
+</ul>
 </div></div></div></td></tr><tr class=""><td kind="field" title="provisioning_timeout_secs" class="sc-kHNKno sc-frmfij cdqHkU bEMUez"><span class="sc-hLyRwt kzJYht"></span><span class="property-name">provisioning_timeout_secs</span></td><td class="sc-groBii inPiBP"><div><div><span class="sc-byRegH sc-budtlk lfpluU kqsZlC"></span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC">integer or null</span><span class="sc-byRegH sc-fJvEKN lfpluU kIPVZC"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-byRegH sc-fYNhqQ lfpluU fhBxBv"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-byRegH lfpluU"> <!-- -->Default:<!-- --> </span> <span class="sc-byRegH sc-dEAvcG lfpluU IvJiA">null</span></div> <div><div html="&lt;p&gt;Timeout in seconds for the &lt;code&gt;Provisioning&lt;/code&gt; phase of the pipeline.
 Setting this value will override the default of the runner.&lt;/p&gt;
 " class="sc-faJlkc sc-fdduAw JEUrA AkGJk"><p>Timeout in seconds for the <code>Provisioning</code> phase of the pipeline.
