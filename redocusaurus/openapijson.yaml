@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.219.0
+  version: 0.220.0
 paths:
   /config/authentication:
     get:
@@ -723,6 +723,7 @@ paths:
                   deployment_desired_status: Stopped
                   deployment_desired_status_since: '1970-01-01T00:00:00Z'
                   deployment_resources_status: Stopped
+                  deployment_resources_status_details: null
                   deployment_resources_status_since: '1970-01-01T00:00:00Z'
                   deployment_resources_desired_status: Stopped
                   deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
@@ -799,6 +800,7 @@ paths:
                   deployment_desired_status: Stopped
                   deployment_desired_status_since: '1970-01-01T00:00:00Z'
                   deployment_resources_status: Stopped
+                  deployment_resources_status_details: null
                   deployment_resources_status_since: '1970-01-01T00:00:00Z'
                   deployment_resources_desired_status: Stopped
                   deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
@@ -950,10 +952,12 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_runtime_status: null
+                deployment_runtime_status_details: null
                 deployment_runtime_status_since: null
                 deployment_runtime_desired_status: null
                 deployment_runtime_desired_status_since: null
@@ -1101,6 +1105,7 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
@@ -1272,10 +1277,12 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_runtime_status: null
+                deployment_runtime_status_details: null
                 deployment_runtime_status_since: null
                 deployment_runtime_desired_status: null
                 deployment_runtime_desired_status_since: null
@@ -1354,10 +1361,12 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_runtime_status: null
+                deployment_runtime_status_details: null
                 deployment_runtime_status_since: null
                 deployment_runtime_desired_status: null
                 deployment_runtime_desired_status_since: null
@@ -1552,10 +1561,12 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_runtime_status: null
+                deployment_runtime_status_details: null
                 deployment_runtime_status_since: null
                 deployment_runtime_desired_status: null
                 deployment_runtime_desired_status_since: null
@@ -5714,10 +5725,12 @@ paths:
                 deployment_desired_status: Stopped
                 deployment_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_status: Stopped
+                deployment_resources_status_details: null
                 deployment_resources_status_since: '1970-01-01T00:00:00Z'
                 deployment_resources_desired_status: Stopped
                 deployment_resources_desired_status_since: '1970-01-01T00:00:00Z'
                 deployment_runtime_status: null
+                deployment_runtime_status_details: null
                 deployment_runtime_status_since: null
                 deployment_runtime_desired_status: null
                 deployment_runtime_desired_status_since: null
@@ -10064,6 +10077,8 @@ components:
           format: date-time
         deployment_resources_status:
           $ref: '#/components/schemas/ResourcesStatus'
+        deployment_resources_status_details:
+          nullable: true
         deployment_resources_status_since:
           type: string
           format: date-time
@@ -10078,6 +10093,8 @@ components:
         deployment_runtime_status:
           allOf:
             - $ref: '#/components/schemas/RuntimeStatus'
+          nullable: true
+        deployment_runtime_status_details:
           nullable: true
         deployment_runtime_status_since:
           type: string
@@ -10186,6 +10203,8 @@ components:
           format: date-time
         deployment_resources_status:
           $ref: '#/components/schemas/ResourcesStatus'
+        deployment_resources_status_details:
+          nullable: true
         deployment_resources_status_since:
           type: string
           format: date-time
