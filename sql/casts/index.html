@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.beb74452.js" defer="defer"></script>
-<script src="/assets/js/main.9e6cf23f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.781247ed.js" defer="defer"></script>
+<script src="/assets/js/main.91579016.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -32,24 +32,32 @@ in this case insert implicit type conversion operations, also called
 <p>The rules for implicit casts are complex; we <a href="https://calcite.apache.org/docs/reference.html#conversion-contexts-and-strategies" target="_blank" rel="noopener noreferrer">inherit these
 rules</a>
 from Calcite.</p>
-<p>In general SQL casts may discard low order digits but never high order
-digits.  A cast form a wide to a narrow datatype which cannot
-represent the value in the target type will generate a runtime error.
-Note however that casts to floating point values never generate
-runtime errors, since they use &quot;infinity&quot; values to represent out of
-range values.</p>
+<p>In general SQL casts may discard low order digits.  A cast form a wide
+to a narrow datatype which cannot represent the value in the target
+type will generate a runtime error.  Note however that casts to
+floating point values never generate runtime errors, since they use
+&quot;infinity&quot; values to represent out of range values.</p>
 <p>Conversions from decimal and floating point types to integer types
 always truncate the decimal digits (round towards zero).  For example,
 <code>CAST(2.9 AS INTEGER)</code> returns 2, while <code>CAST(-2.9 AS INTEGER)</code>
 returns -2.</p>
 <p>Casts of strings to numeric types produce a runtime error when the
-string cannot be interpreted as a number.</p>
+string cannot be interpreted as a number.  Use <code>SAFE_CAST</code> if runtime
+errors are undesired.</p>
 <p>Casts of strings to <code>DATE</code>, <code>TIME</code>, <code>TIMESTAMP</code> produce the result
 <code>NULL</code> when the string does not have the correct format.</p>
 <p>Casting a <code>NULL</code> value to any type produces a <code>NULL</code> result.</p>
 <p>A value of type <code>VARIANT</code> can be cast to any type and will produce a
 nullable result; this kind of cast will never fail at runtime.</p>
 <p>A value of any type can be cast to a <code>VARIANT</code> type.</p>
+<p>A cast from an <code>INTEGER</code> or <code>INTEGER UNSIGNED</code> to a <code>BINARY</code> or
+<code>VARBINARY</code> value will produce a big-endian result, which is truncated
+or padded on the <em>left</em> if it is too large.  Casts between <code>BINARY</code>
+values truncate and pad on the <em>right</em>.  Casts of a string value to a
+<code>BINARY</code> of <code>VARBINARY</code> value will attempt to parse the string as a
+hexadecimal value, and it will truncate the value on the <em>right</em> if
+its too large.  Casts from <code>BINARY</code> to <code>INTEGER</code> types are not
+supported.</p>
 <p>A cast to a <code>ROW</code> type is only allowed for compatible <code>ROW</code> types, or
 for <code>VARIANT</code> types.  Such a cast will cast recursively each field of
 the source value to the corresponding type of the destination field.
