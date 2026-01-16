@@ -858,6 +858,16 @@ state.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.rebalance">
+<span class="sig-name descname"><span class="pre">rebalance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.rebalance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.rebalance" title="Link to this definition"></a></dt>
+<dd><p>Initiate rebalancing.</p>
+<p>Initiate immediate rebalancing of the pipeline. Normally rebalancing is initiated automatically
+when the drift in the size of joined relations exceeds a threshold. This method forces the balancer
+to reevaluate and apply an optimal partitioning policy regardless of the threshold.</p>
+<p>This operation is a no-op unless the <cite>adaptive_joins</cite> feature is enabled in <cite>dev_tweaks</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.refresh">
 <span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_selector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.PipelineFieldSelector" title="feldera.enums.PipelineFieldSelector"><span class="pre">PipelineFieldSelector</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.refresh" title="Link to this definition"></a></dt>
 <dd><p>Calls the backend to get the updated, latest version of the pipeline.</p>
@@ -2055,6 +2065,7 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_json"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_parquet"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_parquet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_text"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_text()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rebalance_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.rebalance_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline()</span></code></a></li>

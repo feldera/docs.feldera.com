@@ -1768,6 +1768,22 @@
         <span class="k">return</span> <span class="n">samply_profile_bytes</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.rebalance">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.rebalance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rebalance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initiate rebalancing.</span>
+
+<span class="sd">        Initiate immediate rebalancing of the pipeline. Normally rebalancing is initiated automatically</span>
+<span class="sd">        when the drift in the size of joined relations exceeds a threshold. This method forces the balancer</span>
+<span class="sd">        to reevaluate and apply an optimal partitioning policy regardless of the threshold.</span>
+
+<span class="sd">        This operation is a no-op unless the `adaptive_joins` feature is enabled in `dev_tweaks`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">rebalance_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.generate_completion_token">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.generate_completion_token">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_completion_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
