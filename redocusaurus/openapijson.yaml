@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.224.0
+  version: 0.225.0
 paths:
   /config/authentication:
     get:
@@ -7410,6 +7410,25 @@ components:
             Table URI.
 
             Example: "s3://feldera-fraud-detection-data/demographics_train"
+        verbose:
+          type: integer
+          format: int32
+          description: >-
+            Enable verbose logging.
+
+
+            When enabled, the connector will log detailed information at INFO
+            level.
+
+
+            Supported values:
+
+            * 0 - no verbose logging
+
+            * 1 - log all Delta log entries in follow and cdc modes.
+
+            * >1 - reserved for future use
+          minimum: 0
         version:
           type: integer
           format: int64
