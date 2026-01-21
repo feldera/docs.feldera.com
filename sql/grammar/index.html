@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.344675f6.js" defer="defer"></script>
-<script src="/assets/js/main.417b0801.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.f3a0a7b4.js" defer="defer"></script>
+<script src="/assets/js/main.761171dc.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -94,6 +94,37 @@ tables</a></p>
 <p>The property <code>expected_size</code> can be used to pass information to the
 SQL compiler about the expected size of a table in steady state
 operation.  The value of this property should be an integer value.</p>
+<a id="skip-unused-columns"></a>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="ignoring-unused-columns">Ignoring unused columns<a href="#ignoring-unused-columns" class="hash-link" aria-label="Direct link to Ignoring unused columns" title="Direct link to Ignoring unused columns">​</a></h4>
+<p>The <code>skip_unused_columns</code> is an optional Boolean property that can be
+applied to tables.  Pipelines can ingest data from external persistent
+sources, such as databases or data lakes, where the Feldera pipeline
+is not the only consumer of the data.  In some circumstances, the
+views defined may not need all the columns present in the data
+sources.</p>
+<p>When set to <code>true</code>, this option instructs the connector to avoid
+reading columns from the input that are not used in any view
+definitions. To be skipped, the columns must be either nullable or
+have default values. This can improve ingestion performance,
+especially for wide tables.  Not all connectors support this feature;
+currently only the Delta table connectors can take advantage of this
+feature.</p>
+<p>Note: The simplest way to exclude unused columns is to omit them from
+the Feldera SQL table declaration. The connector never reads columns
+that aren&#x27;t declared in the SQL schema. Additionally, the SQL compiler
+emits warnings for declared but unused columns—use these as a guide to
+optimize your schema.</p>
+<p>Why not always skip unused columns?  When a table is materialized, the
+pipeline stores internally the contents of the table ingested so far.
+Pipelines can be stopped, modified, and restarted; future versions of
+a pipeline may actually process columns that are unused in the current
+version.</p>
+<p>Note that changing the value of this attribute for a paused pipeline
+is considered a change to the table, and will cause the entire table
+to be re-ingested from scratch:
+<a href="https://docs.feldera.com/pipelines/modifying/#limitation-3-table-evolution-is-not-yet-supported" target="_blank" rel="noopener noreferrer">https://docs.feldera.com/pipelines/modifying/#limitation-3-table-evolution-is-not-yet-supported</a></p>
+<p>Example:</p>
+<div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token keyword" style="color:#00009f">CREATE</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">TABLE</span><span class="token plain"> T</span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">x </span><span class="token keyword" style="color:#00009f">INT</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> unused </span><span class="token keyword" style="color:#00009f">INT</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">DEFAULT</span><span class="token plain"> </span><span class="token number" style="color:#36acaa">0</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token keyword" style="color:#00009f">WITH</span><span class="token plain"> </span><span class="token punctuation" style="color:#393A34">(</span><span class="token string" style="color:#e3116c">&#x27;skip_unused_columns&#x27;</span><span class="token plain"> </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> </span><span class="token string" style="color:#e3116c">&#x27;true&#x27;</span><span class="token punctuation" style="color:#393A34">)</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="lateness">LATENESS<a href="#lateness" class="hash-link" aria-label="Direct link to LATENESS" title="Direct link to LATENESS">​</a></h3>
 <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">latenessStatement</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">  :   LATENESS view &#x27;.&#x27; column expression</span><br></span></code></pre></div></div>
 <p>See <a href="/sql/streaming#lateness-expressions">Streaming SQL Extensions, LATENESS</a></p>
