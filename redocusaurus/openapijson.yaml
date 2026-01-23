@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.226.0
+  version: 0.227.0
 paths:
   /config/authentication:
     get:
@@ -663,6 +663,7 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 16
+                    hosts: 1
                     storage:
                       backend:
                         name: default
@@ -740,6 +741,7 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 10
+                    hosts: 1
                     storage:
                       backend:
                         name: default
@@ -833,6 +835,7 @@ paths:
               description: Description of the pipeline example1
               runtime_config:
                 workers: 16
+                hosts: 1
                 storage:
                   backend:
                     name: default
@@ -892,6 +895,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -1045,6 +1049,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -1158,6 +1163,7 @@ paths:
               description: Description of the pipeline example1
               runtime_config:
                 workers: 16
+                hosts: 1
                 storage:
                   backend:
                     name: default
@@ -1217,6 +1223,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -1301,6 +1308,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -1501,6 +1509,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -1653,7 +1662,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
+            $ref: '#/components/schemas/RuntimeDesiredStatus'
       responses:
         '202':
           description: Pipeline activation initiated
@@ -5713,6 +5722,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  hosts: 1
                   storage:
                     backend:
                       name: default
@@ -6443,6 +6453,7 @@ components:
         - Stopped
         - Provisioning
         - Unavailable
+        - Coordination
         - Standby
         - AwaitingApproval
         - Initializing
@@ -8120,8 +8131,7 @@ components:
         transaction_initiators:
           $ref: '#/components/schemas/TransactionInitiators'
         transaction_status:
-          type: string
-          description: Status of the current transaction.
+          $ref: '#/components/schemas/TransactionStatus'
         uptime_msecs:
           type: integer
           format: int64
@@ -9132,6 +9142,28 @@ components:
         - InitialUnhealthy
         - Unhealthy
         - Healthy
+    MultihostConfig:
+      type: object
+      description: |-
+        Configuration for a multihost Feldera pipeline.
+
+        This configuration is primarily for the coordinator.
+      required:
+        - hosts
+      properties:
+        hosts:
+          type: integer
+          description: >-
+            Number of hosts to launch.
+
+
+            For the configuration to be truly multihost, this should be at least
+            2.
+
+            A value of 1 still runs the multihost coordinator but it only
+
+            coordinates a single host.
+          minimum: 0
     NatsInputConfig:
       type: object
       required:
@@ -9755,6 +9787,18 @@ components:
               default:
                 model: none
                 checkpoint_interval_secs: 60
+            hosts:
+              type: integer
+              description: >-
+                Number of DBSP hosts.
+
+
+                The worker threads are evenly divided among the hosts.  For
+                single-host
+
+                deployments, this should be 1 (the default).
+              default: 1
+              minimum: 0
             http_workers:
               type: integer
               format: int64
@@ -9990,6 +10034,10 @@ components:
               description: Input endpoint configuration.
               additionalProperties:
                 $ref: '#/components/schemas/InputEndpointConfig'
+            multihost:
+              allOf:
+                - $ref: '#/components/schemas/MultihostConfig'
+              nullable: true
             name:
               type: string
               description: >-
@@ -11552,6 +11600,18 @@ components:
           default:
             model: none
             checkpoint_interval_secs: 60
+        hosts:
+          type: integer
+          description: >-
+            Number of DBSP hosts.
+
+
+            The worker threads are evenly divided among the hosts.  For
+            single-host
+
+            deployments, this should be 1 (the default).
+          default: 1
+          minimum: 0
         http_workers:
           type: integer
           format: int64
@@ -11754,6 +11814,7 @@ components:
       type: string
       enum:
         - Unavailable
+        - Coordination
         - Standby
         - Paused
         - Running
@@ -11770,6 +11831,7 @@ components:
         determined by the pipeline and taken over by the runner.
       enum:
         - Unavailable
+        - Coordination
         - Standby
         - Initializing
         - AwaitingApproval
@@ -12661,6 +12723,9 @@ components:
           properties:
             InputEndpointBarrier:
               type: string
+        - type: string
+          enum:
+            - Coordination
       description: Reasons why a pipeline cannot be suspended at this time.
     TenantId:
       type: string
@@ -12714,6 +12779,13 @@ components:
       enum:
         - Started
         - Committed
+    TransactionStatus:
+      type: string
+      description: Transaction status summarized as a single value.
+      enum:
+        - NoTransaction
+        - TransactionInProgress
+        - CommitInProgress
     TransportConfig:
       oneOf:
         - type: object
