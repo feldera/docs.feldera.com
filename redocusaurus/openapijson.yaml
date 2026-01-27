@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.229.0
+  version: 0.230.0
 paths:
   /config/authentication:
     get:
@@ -4005,7 +4005,12 @@ paths:
       tags:
         - Metrics & Debugging
       summary: Get Samply Profile
-      description: Retrieve the most recent samply profile of a running pipeline.
+      description: >-
+        Retrieve the last samply profile of a pipeline, regardless of whether
+        profiling is currently in progress.
+
+        If ?latest parameter is specified and Samply profile collection is in
+        progress, returns HTTP 307 with Retry-After header.
       operationId: get_pipeline_samply_profile
       parameters:
         - name: pipeline_name
@@ -4014,11 +4019,22 @@ paths:
           required: true
           schema:
             type: string
+        - name: latest
+          in: query
+          description: >-
+            If true, returns 204 redirect with Retry-After header if profile
+            collection is in progress.
+
+            If false or not provided, returns the last collected profile.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: >-
             Samply profile as a gzip containing the profile that can be
-            inspected by the samply tool
+            inspected by the samply tool. Note: may return 204 No Content with
+            Retry-After header if latest=true and profiling is in progress.
           content:
             application/gzip:
               schema:
@@ -4027,8 +4043,7 @@ paths:
         '400':
           description: >-
             No samply profile exists for the pipeline, create one by calling
-            `POST
-            /pipelines/{pipeline_name}/samply_profile/start?duration_secs=30`
+            `POST /pipelines/{pipeline_name}/samply_profile?duration_secs=30`
           content:
             application/json:
               schema:
@@ -4151,7 +4166,7 @@ paths:
             format: int64
             minimum: 0
       responses:
-        '200':
+        '202':
           description: Started profiling the pipeline with the Samply tool
         '404':
           description: Pipeline with that name does not exist
@@ -4164,6 +4179,12 @@ paths:
                 error_code: UnknownPipelineName
                 details:
                   pipeline_name: non-existent-pipeline
+        '409':
+          description: Samply profile collection is already in progress
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: ''
           content:
@@ -6578,9 +6599,15 @@ components:
         - runtime_revision
         - changelog_url
         - build_info
+        - build_source
       properties:
         build_info:
           $ref: '#/components/schemas/BuildInformation'
+        build_source:
+          type: string
+          description: >-
+            Build source: "ci" for GitHub Actions builds, "source" for local
+            builds
         changelog_url:
           type: string
           description: URL that navigates to the changelog of the current version
@@ -7659,7 +7686,6 @@ components:
         - details
       properties:
         details:
-          type: object
           description: |-
             Detailed error metadata.
             The contents of this field is determined by `error_code`.
