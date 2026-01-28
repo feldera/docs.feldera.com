@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.6f950881.js" defer="defer"></script>
-<script src="/assets/js/main.9361c328.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.26fe1788.js" defer="defer"></script>
+<script src="/assets/js/main.ecda278c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -21,6 +21,7 @@
 <div style="text-align:center"><img src="/img/enterprise-architecture.png" alt="Feldera Enterprise Architecture" style="width:70%;max-width:800px"></div>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="one-pipeline--one-pod">One Pipeline = One Pod<a href="#one-pipeline--one-pod" class="hash-link" aria-label="Direct link to One Pipeline = One Pod" title="Direct link to One Pipeline = One Pod">​</a></h3>
 <p>Each Pipeline runs in its own Kubernetes Pod, resource- and fault-isolated from other pipelines and the control plane. Each Pipeline can use a <strong>Persistent Volume</strong> or <strong>S3 bucket</strong> for its storage.</p>
+<p>Pipelines that run in multiple pods, to scale out resource-hungry computations across multiple machines, are a preview feature.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="fine-grained-resource-management">Fine-Grained Resource Management<a href="#fine-grained-resource-management" class="hash-link" aria-label="Direct link to Fine-Grained Resource Management" title="Direct link to Fine-Grained Resource Management">​</a></h3>
 <p>The control plane and each Pipeline can be configured with resource reservations and limits for CPU, memory, and storage. When using Persistent Volumes for storage, Pipelines can also specify the specific storage class to use. These controls help enforce SLAs and deal with noisy neighbours in shared clusters.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="least-privilege-access-and-security-controls">Least-privilege access and security controls<a href="#least-privilege-access-and-security-controls" class="hash-link" aria-label="Direct link to Least-privilege access and security controls" title="Direct link to Least-privilege access and security controls">​</a></h3>

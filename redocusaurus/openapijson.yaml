@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.230.0
+  version: 0.231.0
 paths:
   /config/authentication:
     get:
@@ -9823,6 +9823,9 @@ components:
                 single-host
 
                 deployments, this should be 1 (the default).
+
+
+                Multihost pipelines are an enterprise-only preview feature.
               default: 1
               minimum: 0
             http_workers:
@@ -11636,6 +11639,9 @@ components:
             single-host
 
             deployments, this should be 1 (the default).
+
+
+            Multihost pipelines are an enterprise-only preview feature.
           default: 1
           minimum: 0
         http_workers:
