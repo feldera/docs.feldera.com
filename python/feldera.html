@@ -273,6 +273,12 @@ checkpoint to complete.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.checkpoints">
+<span class="sig-name descname"><span class="pre">checkpoints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">CheckpointMetadata</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoints" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of checkpoints for this pipeline.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.clear_storage">
 <span class="sig-name descname"><span class="pre">clear_storage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.clear_storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.clear_storage" title="Link to this definition"></a></dt>
 <dd><p>Clears the storage of the pipeline if it is currently in use.
@@ -2045,6 +2051,7 @@ To create runtime config from a dictionary, use
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.generate_completion_token"><code class="docutils literal notranslate"><span class="pre">FelderaClient.generate_completion_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_checkpoints"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_checkpoints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_event"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_cluster_event()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_events"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_cluster_events()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_config()</span></code></a></li>

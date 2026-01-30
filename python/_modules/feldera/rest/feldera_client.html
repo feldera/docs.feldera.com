@@ -1546,6 +1546,12 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rebalance_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rebalance_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/rebalance&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.get_checkpoints">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_checkpoints">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoints&quot;</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -113,6 +113,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatistics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointMetadata</span>
 
 
 <div class="viewcode-block" id="Pipeline">
@@ -1819,6 +1820,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.checkpoints">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoints">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CheckpointMetadata</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the list of checkpoints for this pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">CheckpointMetadata</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">chk</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">chk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="p">]</span></div>
 </div>
 
 </pre></div>
