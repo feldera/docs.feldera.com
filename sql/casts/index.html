@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.4917cfc5.js" defer="defer"></script>
-<script src="/assets/js/main.ac8a0983.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.c383276e.js" defer="defer"></script>
+<script src="/assets/js/main.524cf46e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -31,7 +31,11 @@ in this case insert implicit type conversion operations, also called
 </ul>
 <p>The rules for implicit casts are complex; we <a href="https://calcite.apache.org/docs/reference.html#conversion-contexts-and-strategies" target="_blank" rel="noopener noreferrer">inherit these
 rules</a>
-from Calcite.</p>
+from Calcite.  We strongly recommend avoiding casts whhen possible,
+and using explicit conversion functions.  For example, avoid
+converting using casts between integers and <code>TIME</code>, <code>TIMESTAMP</code>,
+<code>DATE</code>, <code>INTERVAL</code> values; these casts are not portable between SQL
+dialects, and may have surprising behaviors.</p>
 <p>In general SQL casts may discard low order digits.  A cast form a wide
 to a narrow datatype which cannot represent the value in the target
 type will generate a runtime error.  Note however that casts to
@@ -41,6 +45,9 @@ floating point values never generate runtime errors, since they use
 always truncate the decimal digits (round towards zero).  For example,
 <code>CAST(2.9 AS INTEGER)</code> returns 2, while <code>CAST(-2.9 AS INTEGER)</code>
 returns -2.</p>
+<p>Casts from a short interval to a numeric type return the length of the
+inteval in milliseconds.  Cast of a long interval to a numeric type
+return the length of the interval in months.</p>
 <p>Casts of strings to numeric types produce a runtime error when the
 string cannot be interpreted as a number.  Use <code>SAFE_CAST</code> if runtime
 errors are undesired.</p>
