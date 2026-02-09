@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.240.0
+  version: 0.241.0
 paths:
   /config/authentication:
     get:
@@ -6911,33 +6911,31 @@ components:
               type: integer
               format: int64
               description: >-
-                Maximum batch size, in records.
+                Maximum number of records from this connector to process in a
+                single batch.
 
 
-                This is the maximum number of records to process in one batch
-                through
+                When set, this caps how many records are taken from the
+                connector’s input
 
-                the circuit.  The time and space cost of processing a batch is
-
-                asymptotically superlinear in the size of the batch, but very
-                small
-
-                batches are less efficient due to constant factors.
+                buffer and pushed through the circuit at once.
 
 
-                This should usually be less than `max_queued_records`, to give
-                the
+                This is typically configured lower than `max_queued_records` to
+                allow the
 
-                connector a round-trip time to restart and refill the buffer
-                while
+                connector time to restart and refill its buffer while a batch is
+                being
 
-                batches are being processed.
-
-
-                Some input adapters might not honor this setting.
+                processed.
 
 
-                The default is 10,000.
+                Not all input adapters honor this limit.
+
+
+                If this is not set, the batch size is derived from
+                `max_worker_batch_size`.
+              nullable: true
               minimum: 0
             max_queued_records:
               type: integer
@@ -6983,6 +6981,37 @@ components:
 
 
                 The default is 1 million.
+              minimum: 0
+            max_worker_batch_size:
+              type: integer
+              format: int64
+              description: >-
+                Maximum number of records processed per batch, per worker
+                thread.
+
+
+                When `max_batch_size` is not set, this setting is used to cap
+
+                the number of records that can be taken from the connector’s
+                input
+
+                buffer and pushed through the circuit at once.  The effective
+                batch size is computed as:
+
+                `max_worker_batch_size × workers`.
+
+
+                This provides an alternative to `max_batch_size` that
+                automatically adjusts batch
+
+                size as the number of worker threads changes to maintain
+                constant amount of
+
+                work per worker per batch.
+
+
+                Defaults to 10,000 records per worker.
+              nullable: true
               minimum: 0
             paused:
               type: boolean
