@@ -334,8 +334,10 @@
         <span class="n">states</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">ignore_deployment_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">poll_interval_s</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -357,6 +359,14 @@
                 <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span> <span class="ow">or</span> <span class="p">{})</span> <span class="o">&gt;</span> <span class="mi">0</span>
                 <span class="ow">and</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_desired_status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
             <span class="p">):</span>
+                <span class="k">if</span> <span class="n">ignore_deployment_error</span><span class="p">:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;ignoring stopped deployment error while waiting for </span><span class="si">%s</span><span class="s2"> to start: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">pipeline_name</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to START the pipeline:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">start</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span><span class="s2">Unable to transition the pipeline to one of the states: </span><span class="si">{</span><span class="n">states</span><span class="si">}</span><span class="s2">.</span>
@@ -366,7 +376,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">pipeline_name</span>
             <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FelderaClient.create_pipeline">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline">[docs]</a>
@@ -567,6 +577,7 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_deployment_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -576,6 +587,9 @@
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
 <span class="sd">            pipeline to start.</span>
+<span class="sd">        :param ignore_deployment_error: Set True to ignore deployment errors while waiting for</span>
+<span class="sd">            START transition. If `timeout_s` is not provided, a default timeout is</span>
+<span class="sd">            used to avoid indefinite waiting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;initial&quot;</span><span class="p">:</span> <span class="n">initial</span><span class="p">}</span>
@@ -590,8 +604,22 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+        <span class="n">effective_timeout_s</span> <span class="o">=</span> <span class="n">timeout_s</span>
+        <span class="k">if</span> <span class="n">ignore_deployment_error</span> <span class="ow">and</span> <span class="n">effective_timeout_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># ignore_deployment_error can intentionally skip the stopped+error failure guard.</span>
+            <span class="c1"># Bound the wait so callers don&#39;t get an unbounded polling loop.</span>
+            <span class="n">effective_timeout_s</span> <span class="o">=</span> <span class="mf">60.0</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;start_pipeline(ignore_deployment_error=True) called without timeout; &quot;</span>
+                <span class="s2">&quot;defaulting to </span><span class="si">%.0f</span><span class="s2">s&quot;</span><span class="p">,</span>
+                <span class="n">effective_timeout_s</span><span class="p">,</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
-            <span class="n">pipeline_name</span><span class="p">,</span> <span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="s2">&quot;AwaitingApproval&quot;</span><span class="p">],</span> <span class="n">timeout_s</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="s2">&quot;AwaitingApproval&quot;</span><span class="p">],</span>
+            <span class="n">effective_timeout_s</span><span class="p">,</span>
+            <span class="n">ignore_deployment_error</span><span class="o">=</span><span class="n">ignore_deployment_error</span><span class="p">,</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="FelderaClient.start_pipeline">
@@ -602,6 +630,7 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_deployment_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -610,10 +639,17 @@
 <span class="sd">            True by default</span>
 <span class="sd">        :param timeout_s: The amount of time in seconds to wait for the</span>
 <span class="sd">            pipeline to start.</span>
+<span class="sd">        :param ignore_deployment_error: Set True to ignore deployment errors while waiting</span>
+<span class="sd">            for START transition.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
-            <span class="n">pipeline_name</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;running&quot;</span><span class="p">,</span>
+            <span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">wait</span><span class="p">,</span>
+            <span class="n">timeout_s</span><span class="p">,</span>
+            <span class="n">ignore_deployment_error</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 

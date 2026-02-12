@@ -606,6 +606,7 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_deployment_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. _start:</span>
@@ -620,12 +621,18 @@
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
+<span class="sd">        :param ignore_deployment_error: Set True to ignore deployment errors while waiting</span>
+<span class="sd">            for START transition. False by default.</span>
 
 <span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
+            <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
+            <span class="n">ignore_deployment_error</span><span class="o">=</span><span class="n">ignore_deployment_error</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 

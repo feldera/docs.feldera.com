@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.8a1912d3.js" defer="defer"></script>
-<script src="/assets/js/main.19dd826b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.ff9f1a48.js" defer="defer"></script>
+<script src="/assets/js/main.614f0010.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -108,6 +108,11 @@ on an expanded node will contract it.</p>
 <p>Unfortunately, expanding a node that has many components may change
 the layout of the overall layout of the graph on the screen
 significantly.</p>
+<p>The metrics displayed for a composite node are derived from the values
+of the metrics of the component nodes.  Some metrics are the sum of
+the metrics for the component nodes (e.g., time, storage), while other
+metrics are the <em>maximum</em> value across all components (e.g.,
+&quot;average&quot;, &quot;percentage&quot;, &quot;min&quot;, or &quot;max&quot; values).</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="displaying-node-metrics">Displaying node metrics<a href="#displaying-node-metrics" class="hash-link" aria-label="Direct link to Displaying node metrics" title="Direct link to Displaying node metrics">​</a></h3>
 <p>The user can mouse-over a node to display various measurements
 collected for the node.  The measurements are displayed in a table.</p>
@@ -123,11 +128,13 @@ information displayed currently stops at back-edges.</p>
 <p><img decoding="async" loading="lazy" alt="Node reachability information" src="/assets/images/reachability-9e774dc61be2a26a874c7ff8944ece94.png" width="1737" height="1216" class="img_ev3q"></p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="the-table-displaying-node-metrics">The table displaying node metrics<a href="#the-table-displaying-node-metrics" class="hash-link" aria-label="Direct link to The table displaying node metrics" title="Direct link to The table displaying node metrics">​</a></h3>
 <p>The metrics collected for a node are displayed as a table:</p>
-<p><img decoding="async" loading="lazy" alt="Table with node measurements" src="/assets/images/table-2635e577c39da92fd7da541c95fe894d.png" width="1542" height="961" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Table with node measurements" src="/assets/images/table-04cf1debfca813a2b6d3a1b554f816f3.png" width="1618" height="1128" class="img_ev3q"></p>
 <p>The table has one row for each measurement type.  Related measurements
 are grouped together in <em>sections</em> which can be collapsed by clicking
-on the section header.  The previous figure highlights the CPU
-section.</p>
+on the section header.  The previous figure highlights the &quot;State&quot;
+section, containing metrics related to the internal state storage.</p>
+<p>Some metrics are considered &quot;advanced&quot;, and are only displayed when
+the &quot;advanced metrics&quot; checkbox is selected.</p>
 <p>By default the table has one column for each worker thread that
 executes the operator (this can be controlled as described below).
 Differences between workers indicate data skew.  The last two columns
@@ -202,8 +209,15 @@ dataflow graph node, or multiple dataflow graph nodes may be used to
 implement a single source SQL statement.  Some dataflow graphs do not
 directly correspond to any SQL statement.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="profiling-pipelines-using-samply">Profiling pipelines using samply<a href="#profiling-pipelines-using-samply" class="hash-link" aria-label="Direct link to Profiling pipelines using samply" title="Direct link to Profiling pipelines using samply">​</a></h2>
-<div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>Samply fork requirement</div><div class="admonitionContent_BuS1"><p>Currently, Feldera uses a fork at <a href="https://github.com/feldera/samply" target="_blank" rel="noopener noreferrer">feldera/samply</a> as the upstream version doesn&#x27;t work in EKS environments.
-To inspect the profiles generated by pipelines, you must install <a href="https://github.com/feldera/samply/releases/tag/v0.13.2" target="_blank" rel="noopener noreferrer">v0.13.2</a> or later of the fork, as some previously unstable features have changed between upstream release <a href="https://github.com/mstange/samply/releases/tag/samply-v0.13.1" target="_blank" rel="noopener noreferrer">v0.13.1</a> and our fork.</p></div></div>
+<div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>Samply fork requirement</div><div class="admonitionContent_BuS1"><p>Currently, Feldera uses a fork at
+<a href="https://github.com/feldera/samply" target="_blank" rel="noopener noreferrer">feldera/samply</a> as the upstream
+version doesn&#x27;t work in EKS environments.  To inspect the profiles
+generated by pipelines, you must install
+<a href="https://github.com/feldera/samply/releases/tag/v0.13.2" target="_blank" rel="noopener noreferrer">v0.13.2</a> or
+later of the fork, as some previously unstable features have changed
+between upstream release
+<a href="https://github.com/mstange/samply/releases/tag/samply-v0.13.1" target="_blank" rel="noopener noreferrer">v0.13.1</a>
+and our fork.</p></div></div>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="local-environments">Local environments<a href="#local-environments" class="hash-link" aria-label="Direct link to Local environments" title="Direct link to Local environments">​</a></h3>
 <p>Before profiling in local environments, ensure the following requirements are met:</p>
 <ol>
