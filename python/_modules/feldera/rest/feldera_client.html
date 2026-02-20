@@ -1439,6 +1439,29 @@
         <span class="k">return</span> <span class="n">FelderaConfig</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.create_api_key">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_api_key">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_api_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new API key with the specified name.</span>
+
+<span class="sd">        The generated API key is returned in the response and cannot be retrieved</span>
+<span class="sd">        again later, so store it securely.</span>
+
+<span class="sd">        :param name: The API key name to create.</span>
+<span class="sd">        :returns: A dict with keys: `id` (UUID string), `name`, and `api_key`.</span>
+<span class="sd">        :raises FelderaAPIError: If a key with the same name already exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;API key name must be a non-empty string&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/api_keys&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.get_pipeline_support_bundle">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline_support_bundle</span><span class="p">(</span>
