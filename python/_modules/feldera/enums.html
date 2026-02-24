@@ -521,7 +521,17 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">BootstrapPolicy</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">AWAIT_APPROVAL</span> <span class="o">=</span> <span class="s2">&quot;await_approval&quot;</span>
     <span class="n">ALLOW</span> <span class="o">=</span> <span class="s2">&quot;allow&quot;</span>
-    <span class="n">REJECT</span> <span class="o">=</span> <span class="s2">&quot;reject&quot;</span></div>
+    <span class="n">REJECT</span> <span class="o">=</span> <span class="s2">&quot;reject&quot;</span>
+
+<div class="viewcode-block" id="BootstrapPolicy.from_str">
+<a class="viewcode-back" href="../../feldera.html#feldera.enums.BootstrapPolicy.from_str">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_str</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">BootstrapPolicy</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&#39; for enum </span><span class="si">{</span><span class="n">BootstrapPolicy</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
 
 
 

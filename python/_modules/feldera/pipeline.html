@@ -606,7 +606,7 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ignore_deployment_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. _start:</span>
@@ -621,9 +621,8 @@
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
-<span class="sd">        :param ignore_deployment_error: Set True to ignore deployment errors while waiting</span>
-<span class="sd">            for START transition. False by default.</span>
-
+<span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
+<span class="sd">            set False to make it fail in that case. True by default.</span>
 <span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -632,7 +631,7 @@
             <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
-            <span class="n">ignore_deployment_error</span><span class="o">=</span><span class="n">ignore_deployment_error</span><span class="p">,</span>
+            <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -643,13 +642,18 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the paused state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
+            <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
+            <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -660,13 +664,18 @@
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the standby state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_standby</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
+            <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
+            <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -676,6 +685,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Restarts the pipeline.</span>
@@ -687,10 +697,16 @@
 <span class="sd">        :param bootstrap_policy: The bootstrap policy to use.</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            pipeline to restart.</span>
+<span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
+<span class="sd">            set False to make it fail in that case. True by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
+            <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
+            <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.pause">
@@ -730,6 +746,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">stop_pipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.dismiss_error">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.dismiss_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dismiss_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dismisses the `deployment_error` of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">dismiss_error_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.approve">
@@ -1515,6 +1541,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">deployment_config</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.bootstrap_policy">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.bootstrap_policy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the bootstrap policy of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">bootstrap_policy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BootstrapPolicy</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">bootstrap_policy</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.deployment_desired_status">

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.250.0
+  version: 0.251.0
 paths:
   /config/authentication:
     get:
@@ -3096,6 +3096,58 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/dismiss_error:
+    post:
+      tags:
+        - Pipeline Lifecycle
+      summary: Dismiss Pipeline Deployment Error
+      description: >-
+        Clears the `deployment_error` field of the pipeline, such that a
+        subsequent call to
+
+        `/start?dismiss_error=false` succeeds. It will return an error if the
+        pipeline is not fully
+
+        stopped (i.e., both current and desired status must be `Stopped`) AND a
+        deployment error
+
+        is present.
+      operationId: post_pipeline_dismiss_error
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deployment error has been dismissed
+        '400':
+          description: Action could not be performed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Pipeline with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Unknown pipeline name 'non-existent-pipeline'
+                error_code: UnknownPipelineName
+                details:
+                  pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/egress/{table_name}:
     post:
       tags:
@@ -4453,6 +4505,11 @@ paths:
           required: false
           schema:
             $ref: '#/components/schemas/BootstrapPolicy'
+        - name: dismiss_error
+          in: query
+          required: false
+          schema:
+            type: boolean
       responses:
         '202':
           description: Action is accepted and is being performed

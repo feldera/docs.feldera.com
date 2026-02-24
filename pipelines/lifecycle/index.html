@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.6b0c5225.css">
-<script src="/assets/js/runtime~main.eeea7e3b.js" defer="defer"></script>
-<script src="/assets/js/main.2b637b3f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.5e0c99d7.js" defer="defer"></script>
+<script src="/assets/js/main.4e9f51ab.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><defs>
@@ -67,8 +67,11 @@ state is tracked by the storage status.</p>
 <ul>
 <li><code>deployment_id</code> (set becoming <code>Provisioning</code>, unset becoming <code>Stopping</code>)</li>
 <li><code>deployment_config</code> (set becoming <code>Provisioning</code>, unset becoming <code>Stopping</code>)</li>
-<li><code>deployment_error</code> (set becoming <code>Stopping</code> (if error), unset becoming <code>Provisioning</code>)</li>
+<li><code>deployment_error</code> (set becoming <code>Stopping</code> (if error), must be unset to have desired status
+become <code>Provisioned</code> (either via <code>/start?dismiss_error=true</code> (default) or <code>/dismiss_error</code>))</li>
 <li><code>deployment_initial</code> (set when desired status becomes <code>Provisioned</code>, unset becoming <code>Stopping</code>
+or desired status becomes <code>Stopped</code> while status is still <code>Stopped</code>)</li>
+<li><code>bootstrap_policy</code> (set when desired status becomes <code>Provisioned</code>, unset becoming <code>Stopping</code>
 or desired status becomes <code>Stopped</code> while status is still <code>Stopped</code>)</li>
 <li><code>deployment_resources_status</code></li>
 <li><code>deployment_resources_status_details</code> (unset becoming <code>Stopped</code>)</li>
@@ -112,12 +115,14 @@ to control the initial state. Once set to <code>Paused</code> or <code>Running</
 <li><strong>Graceful stop:</strong> Use <code>/stop?force=false</code> (default) to request the pipeline to stop cleanly: shut down the circuit
 and checkpoint before compute is deprovisioned. Only applies when resources are <code>Provisioned</code>; the <code>force</code> parameter
 is ignored otherwise.</li>
+<li><strong>Error dismissal:</strong> the <code>deployment_error</code> must be dismissed before starting again. This can be done
+using <code>/start?dismiss_error=true</code> (default) or by calling <code>/dismiss_error</code> in advance.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="storage-status">Storage status<a href="#storage-status" class="hash-link" aria-label="Direct link to Storage status" title="Direct link to Storage status">​</a></h2>
 <p>Storage is created when the pipeline enters <code>Provisioning</code>, but is not removed during <code>Stopping</code>.
 This lets you stop and restart a pipeline while keeping existing storage.
 When the pipeline is <code>Stopped</code>, you can explicitly choose to deprovision (“clear”) the storage.
-What “clearing” does depends on the edition.</p>
+What “clearing  ” does depends on the edition.</p>
 <ul>
 <li><strong>OSS edition:</strong> removing the local directory.</li>
 <li><strong>Enterprise edition:</strong> deleting the Kubernetes PersistentVolumeClaim.</li>
