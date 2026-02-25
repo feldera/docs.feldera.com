@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.251.0
+  version: 0.252.0
 paths:
   /config/authentication:
     get:
@@ -6717,6 +6717,45 @@ components:
         - Running
         - Suspended
         - Stopping
+    CommitProgressSummary:
+      type: object
+      description: Summary of transaction commit progress.
+      required:
+        - completed
+        - in_progress
+        - remaining
+        - in_progress_processed_records
+        - in_progress_total_records
+      properties:
+        completed:
+          type: integer
+          format: int64
+          description: Number of operators that have been fully flushed.
+          minimum: 0
+        in_progress:
+          type: integer
+          format: int64
+          description: Number of operators that are currently being flushed.
+          minimum: 0
+        in_progress_processed_records:
+          type: integer
+          format: int64
+          description: >-
+            Number of records processed by operators that are currently being
+            flushed.
+          minimum: 0
+        in_progress_total_records:
+          type: integer
+          format: int64
+          description: >-
+            Total number of records that operators that are currently being
+            flushed need to process.
+          minimum: 0
+        remaining:
+          type: integer
+          format: int64
+          description: Number of operators that haven't started flushing.
+          minimum: 0
     CompilationProfile:
       type: string
       description: >-
@@ -7308,6 +7347,21 @@ components:
             apart from setting a seed, `workers` also needs to remain unchanged.
 
             - The input will arrive in non-deterministic order if `workers > 1`.
+          default: null
+          nullable: true
+          minimum: 0
+        transaction_size:
+          type: integer
+          description: >-
+            By default, the data generator does not request [transactions].  Set
+
+            this to a nonzero value for the data generator to automatically
+
+            orchestrate transactions of approximately the specified number of
+            rows.
+
+
+            [transactions]: https://docs.feldera.com/pipelines/transactions
           default: null
           nullable: true
           minimum: 0
@@ -8378,6 +8432,10 @@ components:
           format: int64
           description: Total number of records currently buffered by all endpoints.
           minimum: 0
+        commit_progress:
+          allOf:
+            - $ref: '#/components/schemas/CommitProgressSummary'
+          nullable: true
         cpu_msecs:
           type: integer
           format: int64
@@ -9229,6 +9287,103 @@ components:
             offsets that are now available.
         start_from:
           $ref: '#/components/schemas/KafkaStartFromConfig'
+        synchronize_partitions:
+          type: boolean
+          description: >-
+            When lateness is enabled on a Feldera table, Feldera only produces
+
+            correct output if input arrives approximately in order within the
+            bounds
+
+            of the lateness.  The Feldera Kafka input connector can reorder
+            input
+
+            when there are multiple partitions:
+
+
+            - If partitions start at different times, then reading all the
+
+            partitions in parallel will naturally consume data out of order.
+
+
+            - Even if they start at the same time, partitions might contain
+            events
+
+            at different rates.
+
+
+            - Even if the partitions start at the same time and have the same
+            number
+
+            of events per unit time, if partitions are spread across brokers,
+
+            different brokers may fetch data at different rates.
+
+
+            - Even if all of the partitions are on a single broker, one cannot
+
+            expect all of the partitions to naturally remain exactly in sync
+
+            forever.
+
+
+            Setting this option to `true` addresses the issue by synchronizing
+
+            ingestion across partitions, ingesting records in order of their
+            Kafka
+
+            event timestamps.
+
+
+            Pitfalls of this solution include:
+
+
+            - Kafka event timestamps are not necessarily monotonically
+            increasing
+
+            even within a single partition.  If timestamps jump backward beyond
+
+            the lateness, then this can also cause correctness problems.
+
+
+            (This can be avoided by keeping clocks on Kafka producers and
+            brokers
+
+            synchronized.)
+
+
+            - If an event with a timestamp far in the future is added to a
+
+            partition, that event, and all those that follow it, will never be
+
+            processed.
+
+
+            - If one or a few partitions have timestamps far behind the others,
+            only
+
+            those partitions will be processed until all the old events are
+
+            processed.  (This is the flip side of the previous pitfall.)
+
+
+            - One or more empty partitions will prevent any data from being
+
+            processed at all, because there is no way to know the timestamp for
+
+            the first event that will be added to that partition.
+
+
+            - In a topic with `N` nonempty partitions, at least `N - 1` events
+            will
+
+            always be left unprocessed (one in each of `N - 1` partitions),
+            because
+
+            there is no way to know the timestamp for the next event to be added
+            to
+
+            the partition whose events have been completely processed.
         topic:
           type: string
           description: Topic to subscribe to.
