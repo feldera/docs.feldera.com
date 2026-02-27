@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.253.0
+  version: 0.254.0
 paths:
   /config/authentication:
     get:
@@ -8413,6 +8413,7 @@ components:
         - total_processed_records
         - total_processed_bytes
         - total_completed_records
+        - output_stall_msecs
         - total_initiated_steps
         - total_completed_steps
         - pipeline_complete
@@ -8451,6 +8452,31 @@ components:
           description: >-
             Time at which the pipeline process from which we resumed started, in
             seconds since the epoch.
+          minimum: 0
+        output_stall_msecs:
+          type: integer
+          format: int64
+          description: >-
+            If the pipeline is stalled because one or more output connectors'
+            output
+
+            buffers are full, this is the number of milliseconds that the
+            current
+
+            stall has lasted.
+
+
+            If this is nonzero, then the output connectors causing the stall can
+            be
+
+            identified by noticing
+            `ExternalOutputEndpointMetrics::queued_records`
+
+            is greater than or equal to `ConnectorConfig::max_queued_records`.
+
+
+            In the ordinary case, the pipeline is not stalled, and this value is
+            0.
           minimum: 0
         pipeline_complete:
           type: boolean
