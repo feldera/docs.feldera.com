@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.257.0
+  version: 0.258.0
 paths:
   /config/authentication:
     get:
@@ -11406,6 +11406,14 @@ components:
             table:
               type: string
               description: The table to write the output to.
+            threads:
+              type: integer
+              description: |-
+                The number of threads to use during encoding.
+
+                Default: 1
+              default: 1
+              minimum: 0
             uri:
               type: string
               description: >-
