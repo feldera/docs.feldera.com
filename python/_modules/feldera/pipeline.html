@@ -176,14 +176,13 @@
 <span class="sd">        :param timeout: Maximum time to wait in seconds. If None, waits forever (default: None)</span>
 <span class="sd">        :raises TimeoutError: If the expected status is not reached within the timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">current_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">current_status</span> <span class="o">==</span> <span class="n">expected_status</span><span class="p">:</span>
                 <span class="k">return</span>
 
-            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;=</span> <span class="n">timeout</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span> <span class="o">&gt;=</span> <span class="n">timeout</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Pipeline did not reach </span><span class="si">{</span><span class="n">expected_status</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> status within </span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
                 <span class="p">)</span>
@@ -517,7 +516,7 @@
 <span class="sd">        have been processed).</span>
 
 <span class="sd">        :param idle_interval_s: Idle interval duration (default is 5.0 seconds).</span>
-<span class="sd">        :param timeout_s: Timeout waiting for idle (default is 600.0 seconds).</span>
+<span class="sd">        :param timeout_s: Timeout waiting for idle (`None` = no timeout is enforced).</span>
 <span class="sd">        :param poll_interval_s: Polling interval, should be set substantially</span>
 <span class="sd">            smaller than the idle interval (default is 0.2 seconds).</span>
 <span class="sd">        :raises ValueError: If idle interval is larger than timeout, poll interval</span>
@@ -646,6 +645,13 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the paused state.</span>
+
+<span class="sd">        :param bootstrap_policy: The bootstrap policy to use.</span>
+<span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to start (defaults to `None` = no timeout is enforced).</span>
+<span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
+<span class="sd">            set False to make it fail in that case. True by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span>
@@ -668,6 +674,13 @@
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the standby state.</span>
+
+<span class="sd">        :param bootstrap_policy: The bootstrap policy to use.</span>
+<span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            pipeline to start (defaults to `None` = no timeout is enforced).</span>
+<span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
+<span class="sd">            set False to make it fail in that case. True by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_standby</span><span class="p">(</span>
@@ -926,7 +939,7 @@
 
 <span class="sd">        :param wait: If true, will block until the checkpoint completes.</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
-<span class="sd">            checkpoint to complete.</span>
+<span class="sd">            checkpoint to complete (defaults to `None` = no timeout is enforced).</span>
 
 <span class="sd">        :return: The checkpoint sequence number.</span>
 

@@ -95,6 +95,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_no_none_keys</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -176,12 +178,12 @@
             <span class="n">client_version</span> <span class="o">=</span> <span class="n">determine_client_version</span><span class="p">()</span>
             <span class="n">server_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">client_version</span> <span class="o">!=</span> <span class="n">server_config</span><span class="o">.</span><span class="n">version</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Feldera client is on version </span><span class="si">{</span><span class="n">client_version</span><span class="si">}</span><span class="s2"> while server is at &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">server_config</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">. There could be incompatibilities.&quot;</span>
                 <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to connect to Feldera API: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to connect to Feldera API: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">e</span></div>
 
 
@@ -249,15 +251,38 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">Pipeline</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">pipeline</span><span class="p">)</span> <span class="k">for</span> <span class="n">pipeline</span> <span class="ow">in</span> <span class="n">resp</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_compilation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wait_for_compilation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">expected_program_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Pipeline</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for pipeline compilation -- internal use only.&quot;&quot;&quot;</span>
         <span class="n">wait</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pending&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingSql&quot;</span><span class="p">,</span> <span class="s2">&quot;SqlCompiled&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingRust&quot;</span><span class="p">]</span>
-
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Timed out waiting for pipeline &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to compile &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(expected program_version &gt;= </span><span class="si">{</span><span class="n">expected_program_version</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="p">)</span>
+
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
             <span class="n">status</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Success&quot;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">expected_program_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
+
+                <span class="n">current_version</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_version</span> <span class="ow">or</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">current_version</span> <span class="o">==</span> <span class="n">expected_program_version</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;program version (</span><span class="si">{</span><span class="n">current_version</span><span class="si">}</span><span class="s2">) != expected program version (</span><span class="si">{</span><span class="n">expected_program_version</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="p">)</span>
             <span class="k">elif</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wait</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
 
@@ -285,8 +310,12 @@
 
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;still compiling </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still compiling </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="n">poll_interval_s</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_pipeline_state</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -294,6 +323,7 @@
         <span class="n">state</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
@@ -323,10 +353,12 @@
 <span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">pipeline_name</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
+                <span class="n">pipeline_name</span><span class="p">,</span>
+                <span class="n">poll_interval_s</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -334,9 +366,9 @@
         <span class="n">states</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
-        <span class="n">poll_interval_s</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -364,8 +396,10 @@
 <span class="s2">Reason: The pipeline is in a STOPPED state due to the following error:</span>
 <span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
                 <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span> <span class="n">pipeline_name</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
+                <span class="n">pipeline_name</span><span class="p">,</span>
+                <span class="n">poll_interval_s</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
@@ -397,7 +431,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pipeline</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.create_or_update_pipeline">
@@ -432,7 +466,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pipeline</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_compilation</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.patch_pipeline">
@@ -810,7 +844,7 @@
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span><span class="p">:</span>
                 <span class="k">return</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="s2">&quot;still stopping </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
                 <span class="n">pipeline_name</span><span class="p">,</span>
             <span class="p">)</span>
@@ -1197,7 +1231,7 @@
                 <span class="k">break</span>
 
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;still waiting for inputs represented by </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> to be processed; elapsed: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s&quot;</span>
             <span class="p">)</span>
 

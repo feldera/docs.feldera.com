@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.dc809b01.js" defer="defer"></script>
-<script src="/assets/js/main.25db3be1.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.108af4cb.js" defer="defer"></script>
+<script src="/assets/js/main.4374135a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -22,7 +22,7 @@
 in a configuration suitable for demos, development, and testing.  For production
 use, check out <a class="" href="/get-started/enterprise">Feldera Enterprise</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="docker-quickstart">Docker Quickstart<a href="#docker-quickstart" class="hash-link" aria-label="Direct link to Docker Quickstart" title="Direct link to Docker Quickstart" translate="no">​</a></h2>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">docker run --pull always -p 8080:8080 --tty --rm -it ghcr.io/feldera/pipeline-manager:latest</span><br></span></code></pre></div></div>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">docker run --pull always -p 8080:8080 --tty --rm -it images.feldera.com/feldera/pipeline-manager:latest</span><br></span></code></pre></div></div>
 <p>Once you see the Feldera logo on your terminal, go ahead and open the Web Console
 at <code>http://127.0.0.1:8080</code> and try out one of our pre-packaged demo pipelines.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="optional-docker-compose-quickstart">Optional: Docker Compose Quickstart<a href="#optional-docker-compose-quickstart" class="hash-link" aria-label="Direct link to Optional: Docker Compose Quickstart" title="Direct link to Optional: Docker Compose Quickstart" translate="no">​</a></h2>

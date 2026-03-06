@@ -255,7 +255,7 @@ before proceeding with the bootstrapping process.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>wait</strong> – If true, will block until the checkpoint completes.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
-checkpoint to complete.</p></li>
+checkpoint to complete (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1009,6 +1009,18 @@ set False to make it fail in that case. True by default.</p></li>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_paused">
 <span class="sig-name descname"><span class="pre">start_paused</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_paused"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_paused" title="Link to this definition"></a></dt>
 <dd><p>Starts the pipeline in the paused state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
+<li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to start (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
+<li><p><strong>dismiss_error</strong> – Set True to dismiss any deployment error before starting;
+set False to make it fail in that case. True by default.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1029,6 +1041,18 @@ set False to make it fail in that case. True by default.</p></li>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_standby">
 <span class="sig-name descname"><span class="pre">start_standby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_standby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_standby" title="Link to this definition"></a></dt>
 <dd><p>Starts the pipeline in the standby state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
+<li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+pipeline to start (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
+<li><p><strong>dismiss_error</strong> – Set True to dismiss any deployment error before starting;
+set False to make it fail in that case. True by default.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1281,7 +1305,7 @@ have been processed).</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>idle_interval_s</strong> – Idle interval duration (default is 5.0 seconds).</p></li>
-<li><p><strong>timeout_s</strong> – Timeout waiting for idle (default is 600.0 seconds).</p></li>
+<li><p><strong>timeout_s</strong> – Timeout waiting for idle (<cite>None</cite> = no timeout is enforced).</p></li>
 <li><p><strong>poll_interval_s</strong> – Polling interval, should be set substantially
 smaller than the idle interval (default is 0.2 seconds).</p></li>
 </ul>
