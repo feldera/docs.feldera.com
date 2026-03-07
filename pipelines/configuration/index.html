@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.108af4cb.js" defer="defer"></script>
-<script src="/assets/js/main.4374135a.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.d28fa6b3.js" defer="defer"></script>
+<script src="/assets/js/main.f8f58d9c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -53,6 +53,16 @@ available, or on their behavior.&lt;/p&gt;
 <p>The available key-value pairs change from one version of Feldera to
 another, so users should not depend on particular settings being
 available, or on their behavior.</p>
+</div></div></div></td></tr><tr class=""><td class="sc-dLMFT sc-eldPxw sc-hCPjZN cDTcFX ctseiS gUkphw" kind="field" title="env"><span class="sc-gFqAkO cizMxb"></span><button aria-label="expand env"><span class="property-name">env</span><svg class="sc-cwHptO hmpCUy" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fPXMVh hlPAHx"><div><div><span class="sc-Nxspg sc-cfxfcL iYwZMS hGKYax"></span><span class="sc-Nxspg sc-gFAWRa iYwZMS guiolH">object</span></div><div><span class="sc-Nxspg iYwZMS"> <!-- -->Default:<!-- --> </span> <span class="sc-Nxspg sc-ddjGPF iYwZMS cMXdAW">{}</span></div> <div><div html="&lt;p&gt;Environment variables for the pipeline process.&lt;/p&gt;
+&lt;p&gt;These are key-value pairs injected into the pipeline process environment.
+Some variable names are reserved by the platform and cannot be overridden
+(for example &lt;code&gt;RUST_LOG&lt;/code&gt;, and variables in the &lt;code&gt;FELDERA_&lt;/code&gt;,
+&lt;code&gt;KUBERNETES_&lt;/code&gt;, and &lt;code&gt;TOKIO_&lt;/code&gt; namespaces).&lt;/p&gt;
+" class="sc-eeDRCX sc-eBMEMD kJfpmH dhIiaU"><p>Environment variables for the pipeline process.</p>
+<p>These are key-value pairs injected into the pipeline process environment.
+Some variable names are reserved by the platform and cannot be overridden
+(for example <code>RUST_LOG</code>, and variables in the <code>FELDERA_</code>,
+<code>KUBERNETES_</code>, and <code>TOKIO_</code> namespaces).</p>
 </div></div></div></td></tr><tr class=""><td class="sc-dLMFT sc-eldPxw sc-hCPjZN cDTcFX ctseiS gUkphw" kind="field" title="fault_tolerance"><span class="sc-gFqAkO cizMxb"></span><button aria-label="expand fault_tolerance"><span class="property-name">fault_tolerance</span><svg class="sc-cwHptO hmpCUy" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fPXMVh hlPAHx"><div><div><span class="sc-Nxspg sc-cfxfcL iYwZMS hGKYax"></span><span class="sc-Nxspg sc-gFAWRa iYwZMS guiolH">object</span></div><div><span class="sc-Nxspg iYwZMS"> <!-- -->Default:<!-- --> </span> <span class="sc-Nxspg sc-ddjGPF iYwZMS cMXdAW">{&quot;model&quot;:&quot;none&quot;,&quot;checkpoint_interval_secs&quot;:60}</span></div> <div><div html="&lt;p&gt;Fault-tolerance configuration.&lt;/p&gt;
 &lt;p&gt;The default [FtConfig] (via [FtConfig::default]) disables fault tolerance,
 which is the configuration that one gets if [RuntimeConfig] omits fault

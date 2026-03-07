@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.260.0
+  version: 0.261.0
 paths:
   /config/authentication:
     get:
@@ -696,6 +696,7 @@ paths:
                     checkpoint_during_suspend: true
                     http_workers: null
                     io_workers: null
+                    env: {}
                     dev_tweaks: {}
                     logging: null
                     pipeline_template_configmap: null
@@ -774,6 +775,7 @@ paths:
                     checkpoint_during_suspend: false
                     http_workers: null
                     io_workers: null
+                    env: {}
                     dev_tweaks: {}
                     logging: null
                     pipeline_template_configmap: null
@@ -868,6 +870,7 @@ paths:
                 checkpoint_during_suspend: true
                 http_workers: null
                 io_workers: null
+                env: {}
                 dev_tweaks: {}
                 logging: null
                 pipeline_template_configmap: null
@@ -928,6 +931,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -1082,6 +1086,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -1196,6 +1201,7 @@ paths:
                 checkpoint_during_suspend: true
                 http_workers: null
                 io_workers: null
+                env: {}
                 dev_tweaks: {}
                 logging: null
                 pipeline_template_configmap: null
@@ -1256,6 +1262,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -1341,6 +1348,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -1542,6 +1550,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -5964,6 +5973,7 @@ paths:
                   checkpoint_during_suspend: true
                   http_workers: null
                   io_workers: null
+                  env: {}
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
@@ -10397,6 +10407,24 @@ components:
                 available, or on their behavior.
               default: {}
               additionalProperties: {}
+            env:
+              type: object
+              description: >-
+                Environment variables for the pipeline process.
+
+
+                These are key-value pairs injected into the pipeline process
+                environment.
+
+                Some variable names are reserved by the platform and cannot be
+                overridden
+
+                (for example `RUST_LOG`, and variables in the `FELDERA_`,
+
+                `KUBERNETES_`, and `TOKIO_` namespaces).
+              default: {}
+              additionalProperties:
+                type: string
             fault_tolerance:
               allOf:
                 - $ref: '#/components/schemas/FtConfig'
@@ -12325,6 +12353,24 @@ components:
             available, or on their behavior.
           default: {}
           additionalProperties: {}
+        env:
+          type: object
+          description: >-
+            Environment variables for the pipeline process.
+
+
+            These are key-value pairs injected into the pipeline process
+            environment.
+
+            Some variable names are reserved by the platform and cannot be
+            overridden
+
+            (for example `RUST_LOG`, and variables in the `FELDERA_`,
+
+            `KUBERNETES_`, and `TOKIO_` namespaces).
+          default: {}
+          additionalProperties:
+            type: string
         fault_tolerance:
           allOf:
             - $ref: '#/components/schemas/FtConfig'
