@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.262.0
+  version: 0.263.0
 paths:
   /config/authentication:
     get:
@@ -5287,7 +5287,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/InputEndpointStatus'
         '404':
           description: Pipeline, table and/or input connector with that name does not exist
           content:
@@ -6085,7 +6085,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/OutputEndpointStatus'
         '404':
           description: Pipeline, view and/or output connector with that name does not exist
           content:
@@ -6795,11 +6795,13 @@ components:
       properties:
         completed_at:
           type: string
+          format: date-time
           description: >-
             Timestamp when all outputs produced from this input have been pushed
             to all output endpoints.
         ingested_at:
           type: string
+          format: date-time
           description: Timestamp when the data was ingested from the wire.
         metadata:
           type: object
@@ -6808,6 +6810,7 @@ components:
             Kafka partition/offset pairs).
         processed_at:
           type: string
+          format: date-time
           description: Timestamp when the data was processed by the circuit.
     CompletionStatus:
       type: string
@@ -7145,6 +7148,11 @@ components:
                 Create connector in paused state.
 
                 The default is `false`.
+            preprocessor:
+              type: array
+              items:
+                $ref: '#/components/schemas/PreprocessorConfig'
+              nullable: true
             start_after:
               type: array
               items:
@@ -7163,6 +7171,45 @@ components:
             transport:
               $ref: '#/components/schemas/TransportConfig'
       description: A data connector's configuration
+    ConnectorError:
+      type: object
+      required:
+        - timestamp
+        - index
+        - message
+      properties:
+        index:
+          type: integer
+          format: int64
+          description: >-
+            Sequence number of the error.
+
+
+            The client can use this field to detect gaps in the error list
+            reported
+
+            by the pipeline. When the connector reports a large number of
+            errors, the
+
+            pipeline will only preserve and report the most recent errors of
+            each kind.
+          minimum: 0
+        message:
+          type: string
+          description: Error message.
+        tag:
+          type: string
+          description: |-
+            Optional tag for the error.
+
+            The tag is used to group errors by their type.
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+          description: >-
+            Timestamp when the error occurred, serialized as RFC3339 with
+            microseconds.
     ConnectorStats:
       type: object
       description: >-
@@ -9001,9 +9048,21 @@ components:
           nullable: true
         metrics:
           $ref: '#/components/schemas/InputEndpointMetrics'
+        parse_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorError'
+          description: Recent parse errors on this endpoint.
+          nullable: true
         paused:
           type: boolean
           description: Endpoint has been paused by the user.
+        transport_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorError'
+          description: Recent transport errors on this endpoint.
+          nullable: true
     IntervalUnit:
       type: string
       description: >-
@@ -10265,6 +10324,12 @@ components:
       properties:
         config:
           $ref: '#/components/schemas/ShortEndpointConfig'
+        encode_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorError'
+          description: Recent encoding errors on this endpoint.
+          nullable: true
         endpoint_name:
           type: string
           description: Endpoint name.
@@ -10274,6 +10339,12 @@ components:
           nullable: true
         metrics:
           $ref: '#/components/schemas/OutputEndpointMetrics'
+        transport_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorError'
+          description: Recent transport errors on this endpoint.
+          nullable: true
     PartialProgramInfo:
       type: object
       description: Program information is the result of the SQL compilation.
