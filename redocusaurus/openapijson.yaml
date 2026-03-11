@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.264.0
+  version: 0.265.0
 paths:
   /config/authentication:
     get:
@@ -7210,6 +7210,21 @@ components:
           description: >-
             Timestamp when the error occurred, serialized as RFC3339 with
             microseconds.
+    ConnectorHealth:
+      type: object
+      required:
+        - status
+      properties:
+        description:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ConnectorHealthStatus'
+    ConnectorHealthStatus:
+      type: string
+      enum:
+        - Healthy
+        - Unhealthy
     ConnectorStats:
       type: object
       description: >-
@@ -8010,6 +8025,31 @@ components:
       required:
         - uri
       properties:
+        max_retries:
+          type: integer
+          format: int32
+          description: >-
+            Maximum number of retries for failed operations.
+
+
+            The connector performs retries on several levels: individual S3
+            operations, Delta Lake transaction commits,
+
+            and overall operation retries. This setting controls the overall
+            operation retries. When a write to the table
+
+            fails, because of an S3 timeout or any other reason that was not
+            resolved by lower-level retries, the connector
+
+            will retry the entire operation.
+
+
+            When not specified, the connector performs infinite retries. When
+            set to 0, the connector doesn't
+
+            retry failed operations.
+          nullable: true
+          minimum: 0
         mode:
           $ref: '#/components/schemas/DeltaTableWriteMode'
         uri:
@@ -9045,6 +9085,10 @@ components:
         fatal_error:
           type: string
           description: The first fatal error that occurred at the endpoint.
+          nullable: true
+        health:
+          allOf:
+            - $ref: '#/components/schemas/ConnectorHealth'
           nullable: true
         metrics:
           $ref: '#/components/schemas/InputEndpointMetrics'
@@ -10336,6 +10380,10 @@ components:
         fatal_error:
           type: string
           description: The first fatal error that occurred at the endpoint.
+          nullable: true
+        health:
+          allOf:
+            - $ref: '#/components/schemas/ConnectorHealth'
           nullable: true
         metrics:
           $ref: '#/components/schemas/OutputEndpointMetrics'

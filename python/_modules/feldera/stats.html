@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>feldera.stats &mdash; Feldera Python SDK 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Feldera Python SDK
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pandas.html">Pandas Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">feldera</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Feldera Python SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">feldera.stats</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for feldera.stats</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">expect_bool</span><span class="p">,</span>
+    <span class="n">expect_int</span><span class="p">,</span>
+    <span class="n">expect_mapping</span><span class="p">,</span>
+    <span class="n">expect_str</span><span class="p">,</span>
+    <span class="n">parse_datetime</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">PipelineStatus</span><span class="p">,</span> <span class="n">TransactionStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+
+
+<div class="viewcode-block" id="PipelineStatistics">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.PipelineStatistics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineStatistics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents statistics reported by a pipeline&#39;s &quot;/stats&quot; endpoint.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PipelineStatistics.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.PipelineStatistics.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes as an empty set of statistics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_metrics</span><span class="p">:</span> <span class="n">GlobalPipelineMetrics</span> <span class="o">=</span> <span class="n">GlobalPipelineMetrics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suspend_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">InputEndpointStatus</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">OutputEndpointStatus</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<div class="viewcode-block" id="PipelineStatistics.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.PipelineStatistics.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">pipeline</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">global_metrics</span> <span class="o">=</span> <span class="n">GlobalPipelineMetrics</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">])</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">InputEndpointStatus</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;inputs&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="n">pipeline</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">OutputEndpointStatus</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;outputs&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">pipeline</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="GlobalPipelineMetrics">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.GlobalPipelineMetrics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GlobalPipelineMetrics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the &quot;global_metrics&quot; object within the pipeline&#39;s</span>
+<span class="sd">    &quot;/stats&quot; endpoint reply.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GlobalPipelineMetrics.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.GlobalPipelineMetrics.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes as an empty set of metrics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bootstrap_in_progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TransactionStatus</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commit_progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CommitProgressSummary</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_initiators</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TransactionInitiators</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rss_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpu_msecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uptime_msecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage_mb_secs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">runtime_elapsed_msecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_input_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_input_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_input_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_input_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_processed_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_processed_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_completed_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_stall_msecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_initiated_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_completed_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_complete</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="GlobalPipelineMetrics.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.GlobalPipelineMetrics.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">])</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">])</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">initial_start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">])</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="n">transaction_status</span> <span class="o">=</span> <span class="n">TransactionStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;transaction_status&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">metrics</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ConnectorError">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConnectorError</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a connector error item reported by connector status endpoints.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConnectorError.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ConnectorError.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorError.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span><span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">),</span> <span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">expect_int</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">)</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid optional field &#39;tag&#39;: expected string or null&quot;</span><span class="p">)</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="n">error</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;message&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ConnectorHealth">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorHealth">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConnectorHealth</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Health status reported for a connector.&quot;&quot;&quot;</span>
+
+    <span class="n">HEALTHY</span> <span class="o">=</span> <span class="s2">&quot;Healthy&quot;</span>
+    <span class="n">UNHEALTHY</span> <span class="o">=</span> <span class="s2">&quot;Unhealthy&quot;</span>
+
+<div class="viewcode-block" id="ConnectorHealth.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorHealth.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">HEALTHY</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ConnectorHealth.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorHealth.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">health</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">HEALTHY</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid field &#39;health.status&#39;: expected string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">HEALTHY</span><span class="p">,</span> <span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">UNHEALTHY</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid field &#39;health.status&#39;: expected &#39;Healthy&#39; or &#39;Unhealthy&#39;&quot;</span>
+            <span class="p">)</span>
+        <span class="n">health</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid optional field &#39;health.description&#39;: expected string or null&quot;</span>
+            <span class="p">)</span>
+        <span class="n">health</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="k">return</span> <span class="n">health</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CompletedWatermark">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CompletedWatermark">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CompletedWatermark</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Latest completed watermark reported by input connector status.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CompletedWatermark.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CompletedWatermark.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ingested_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processed_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CompletedWatermark.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CompletedWatermark.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">watermark</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;metadata&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing required field &#39;metadata&#39;&quot;</span><span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">ingested_at</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span>
+            <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;ingested_at&quot;</span><span class="p">),</span> <span class="s2">&quot;ingested_at&quot;</span>
+        <span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">processed_at</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span>
+            <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;processed_at&quot;</span><span class="p">),</span> <span class="s2">&quot;processed_at&quot;</span>
+        <span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">completed_at</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span>
+            <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;completed_at&quot;</span><span class="p">),</span> <span class="s2">&quot;completed_at&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">watermark</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="InputEndpointStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InputEndpointStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents one member of the &quot;inputs&quot; array within the</span>
+<span class="sd">    pipeline&#39;s &quot;/stats&quot; endpoint reply.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InputEndpointStatus.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointStatus.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty status.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">InputEndpointMetrics</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fatal_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ConnectorError</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transport_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ConnectorError</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectorHealth</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barrier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_frontier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CompletedWatermark</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="InputEndpointStatus.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointStatus.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">endpoint_name</span> <span class="o">=</span> <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;endpoint_name&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">expect_mapping</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">InputEndpointMetrics</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">expect_mapping</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;metrics&quot;</span><span class="p">))</span>
+        <span class="n">fatal_error</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fatal_error&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fatal_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fatal_error</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid optional field &#39;fatal_error&#39;: expected string or null&quot;</span>
+            <span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">fatal_error</span> <span class="o">=</span> <span class="n">fatal_error</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="n">expect_bool</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;paused&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">barrier</span> <span class="o">=</span> <span class="n">expect_bool</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;barrier&quot;</span><span class="p">)</span>
+        <span class="n">parse_errors</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parse_errors&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">parse_errors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">ConnectorError</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">parse_errors</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parse_errors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">transport_errors</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transport_errors&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">transport_errors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">ConnectorError</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">transport_errors</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transport_errors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">health</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;health&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">health</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">health</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">health</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">completed_frontier</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completed_frontier&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">completed_frontier</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">CompletedWatermark</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">completed_frontier</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">completed_frontier</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="InputEndpointMetrics">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointMetrics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InputEndpointMetrics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the &quot;metrics&quot; member within an input endpoint status</span>
+<span class="sd">    in the pipeline&#39;s &quot;/stats&quot; endpoint reply.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InputEndpointMetrics.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointMetrics.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_transport_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_parse_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_of_input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="InputEndpointMetrics.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointMetrics.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">metrics</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="OutputEndpointStatus">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OutputEndpointStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents one member of the &quot;outputs&quot; array within the</span>
+<span class="sd">    pipeline&#39;s &quot;/stats&quot; endpoint reply.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OutputEndpointStatus.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointStatus.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty status.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">endpoint_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OutputEndpointMetrics</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fatal_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encode_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ConnectorError</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transport_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">ConnectorError</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">health</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectorHealth</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="OutputEndpointStatus.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointStatus.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">endpoint_name</span> <span class="o">=</span> <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;endpoint_name&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">expect_mapping</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;config&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">OutputEndpointMetrics</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">expect_mapping</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;metrics&quot;</span><span class="p">))</span>
+        <span class="n">fatal_error</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fatal_error&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fatal_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fatal_error</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;invalid optional field &#39;fatal_error&#39;: expected string or null&quot;</span>
+            <span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">fatal_error</span> <span class="o">=</span> <span class="n">fatal_error</span>
+        <span class="n">encode_errors</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;encode_errors&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">encode_errors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">ConnectorError</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">encode_errors</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">encode_errors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">transport_errors</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transport_errors&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">transport_errors</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">ConnectorError</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">transport_errors</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transport_errors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">health</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;health&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">health</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">ConnectorHealth</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">health</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">health</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="OutputEndpointMetrics">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointMetrics">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OutputEndpointMetrics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents the &quot;metrics&quot; member within an output endpoint status</span>
+<span class="sd">    in the pipeline&#39;s &quot;/stats&quot; endpoint reply.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OutputEndpointMetrics.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointMetrics.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmitted_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transmitted_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queued_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffered_batches</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_encode_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_transport_errors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_processed_input_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_processed_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="OutputEndpointMetrics.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.OutputEndpointMetrics.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">metrics</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">metrics</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CommitProgressSummary">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CommitProgressSummary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommitProgressSummary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Progress of a transaction commit.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommitProgressSummary.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CommitProgressSummary.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty status.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remaining</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_progress_processed_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_progress_total_records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="CommitProgressSummary.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CommitProgressSummary.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TransactionInitiators">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.TransactionInitiators">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransactionInitiators</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initiators for an ongoing transaction.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TransactionInitiators.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.TransactionInitiators.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty status.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initiated_by_api</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initiated_by_connectors</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ConnectorTransactionPhase</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="TransactionInitiators.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.TransactionInitiators.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">initiated_by_connectors</span> <span class="o">=</span> <span class="n">ConnectorTransactionPhase</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;initiated_by_connectors&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ConnectorTransactionPhase">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorTransactionPhase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConnectorTransactionPhase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connector transaction phase with optional label&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConnectorTransactionPhase.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorTransactionPhase.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes an empty status.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ConnectorTransactionPhase.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.ConnectorTransactionPhase.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">status</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">status</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Feldera.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

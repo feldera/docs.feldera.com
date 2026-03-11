@@ -87,6 +87,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -141,6 +142,30 @@
         <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.__init__">(feldera.runtime_config.RuntimeConfig method)</a>
 </li>
         <li><a href="feldera.html#feldera.runtime_config.Storage.__init__">(feldera.runtime_config.Storage method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.CommitProgressSummary.__init__">(feldera.stats.CommitProgressSummary method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.CompletedWatermark.__init__">(feldera.stats.CompletedWatermark method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorError.__init__">(feldera.stats.ConnectorError method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorHealth.__init__">(feldera.stats.ConnectorHealth method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorTransactionPhase.__init__">(feldera.stats.ConnectorTransactionPhase method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.GlobalPipelineMetrics.__init__">(feldera.stats.GlobalPipelineMetrics method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.InputEndpointMetrics.__init__">(feldera.stats.InputEndpointMetrics method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.InputEndpointStatus.__init__">(feldera.stats.InputEndpointStatus method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.OutputEndpointMetrics.__init__">(feldera.stats.OutputEndpointMetrics method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.OutputEndpointStatus.__init__">(feldera.stats.OutputEndpointStatus method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.PipelineStatistics.__init__">(feldera.stats.PipelineStatistics method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.TransactionInitiators.__init__">(feldera.stats.TransactionInitiators method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -231,15 +256,19 @@
       </ul></li>
       <li><a href="feldera.html#feldera.enums.TransactionStatus.CommitInProgress">CommitInProgress (feldera.enums.TransactionStatus attribute)</a>
 </li>
+      <li><a href="feldera.html#feldera.stats.CommitProgressSummary">CommitProgressSummary (class in feldera.stats)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile">CompilationProfile (class in feldera.enums)</a>
+</li>
+      <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingRust">CompilingRust (feldera.enums.ProgramStatus attribute)</a>
-</li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingSql">CompilingSql (feldera.enums.ProgramStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.CompletionTokenStatus.COMPLETE">COMPLETE (feldera.enums.CompletionTokenStatus attribute)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.CompletedWatermark">CompletedWatermark (class in feldera.stats)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed">completion_token_processed() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
@@ -248,6 +277,12 @@
       <li><a href="feldera.html#feldera.enums.CompletionTokenStatus">CompletionTokenStatus (class in feldera.enums)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.config.Config">Config (class in feldera.rest.config)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.ConnectorError">ConnectorError (class in feldera.stats)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.ConnectorHealth">ConnectorHealth (class in feldera.stats)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.ConnectorTransactionPhase">ConnectorTransactionPhase (class in feldera.stats)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.BuildMode.CREATE">CREATE (feldera.enums.BuildMode attribute)</a>
 </li>
@@ -425,13 +460,18 @@
         <li><a href="feldera.rest.html#module-feldera.rest.sql_view">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     feldera.runtime_config
 
       <ul>
         <li><a href="feldera.html#module-feldera.runtime_config">module</a>
+</li>
+      </ul></li>
+      <li>
+    feldera.stats
+
+      <ul>
+        <li><a href="feldera.html#module-feldera.stats">module</a>
 </li>
       </ul></li>
       <li><a href="feldera.rest.html#feldera.rest.errors.FelderaAPIError">FelderaAPIError</a>
@@ -440,6 +480,8 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.errors.FelderaCommunicationError">FelderaCommunicationError</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaConfig">FelderaConfig (class in feldera.rest.feldera_config)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition">FelderaEdition (class in feldera.rest.feldera_config)</a>
@@ -458,6 +500,30 @@
         <li><a href="feldera.rest.html#feldera.rest.sql_view.SQLView.from_dict">(feldera.rest.sql_view.SQLView class method)</a>
 </li>
         <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.from_dict">(feldera.runtime_config.RuntimeConfig class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.CommitProgressSummary.from_dict">(feldera.stats.CommitProgressSummary class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.CompletedWatermark.from_dict">(feldera.stats.CompletedWatermark class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorError.from_dict">(feldera.stats.ConnectorError class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorHealth.from_dict">(feldera.stats.ConnectorHealth class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.ConnectorTransactionPhase.from_dict">(feldera.stats.ConnectorTransactionPhase class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.GlobalPipelineMetrics.from_dict">(feldera.stats.GlobalPipelineMetrics class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.InputEndpointMetrics.from_dict">(feldera.stats.InputEndpointMetrics class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.InputEndpointStatus.from_dict">(feldera.stats.InputEndpointStatus class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.OutputEndpointMetrics.from_dict">(feldera.stats.OutputEndpointMetrics class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.OutputEndpointStatus.from_dict">(feldera.stats.OutputEndpointStatus class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.PipelineStatistics.from_dict">(feldera.stats.PipelineStatistics class method)</a>
+</li>
+        <li><a href="feldera.html#feldera.stats.TransactionInitiators.from_dict">(feldera.stats.TransactionInitiators class method)</a>
 </li>
       </ul></li>
       <li><a href="feldera.html#feldera.enums.BootstrapPolicy.from_str">from_str() (feldera.enums.BootstrapPolicy static method)</a>
@@ -538,6 +604,16 @@
         <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_samply_profile">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       </ul></li>
+      <li><a href="feldera.html#feldera.stats.GlobalPipelineMetrics">GlobalPipelineMetrics (class in feldera.stats)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.stats.ConnectorHealth.HEALTHY">HEALTHY (feldera.stats.ConnectorHealth attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -567,6 +643,10 @@
       <li><a href="feldera.html#feldera.pipeline.Pipeline.input_json">input_json() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.input_pandas">input_pandas() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.InputEndpointMetrics">InputEndpointMetrics (class in feldera.stats)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.InputEndpointStatus">InputEndpointStatus (class in feldera.stats)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.StorageStatus.INUSE">INUSE (feldera.enums.StorageStatus attribute)</a>
 </li>
@@ -630,6 +710,8 @@
 </li>
         <li><a href="feldera.html#module-feldera.runtime_config">feldera.runtime_config</a>
 </li>
+        <li><a href="feldera.html#module-feldera.stats">feldera.stats</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -657,14 +739,18 @@
 </li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile.OPTIMIZED_SYMBOLS">OPTIMIZED_SYMBOLS (feldera.enums.CompilationProfile attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.output_connector_stats">output_connector_stats() (feldera.pipeline.Pipeline method)</a>
 
       <ul>
         <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.output_connector_stats">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.stats.OutputEndpointMetrics">OutputEndpointMetrics (class in feldera.stats)</a>
+</li>
+      <li><a href="feldera.html#feldera.stats.OutputEndpointStatus">OutputEndpointStatus (class in feldera.stats)</a>
+</li>
       <li><a href="feldera.html#feldera.output_handler.OutputHandler">OutputHandler (class in feldera.output_handler)</a>
 </li>
   </ul></td>
@@ -711,6 +797,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.stats.PipelineStatistics">PipelineStatistics (class in feldera.stats)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.PipelineStatus">PipelineStatus (class in feldera.enums)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.platform_version">platform_version() (feldera.pipeline.Pipeline method)</a>
@@ -971,6 +1059,8 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.transaction_status">transaction_status() (feldera.pipeline.Pipeline method)</a>
 </li>
+      <li><a href="feldera.html#feldera.stats.TransactionInitiators">TransactionInitiators (class in feldera.stats)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.TransactionStatus.TransactionInProgress">TransactionInProgress (feldera.enums.TransactionStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.TransactionStatus">TransactionStatus (class in feldera.enums)</a>
@@ -997,6 +1087,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.stats.ConnectorHealth.UNHEALTHY">UNHEALTHY (feldera.stats.ConnectorHealth attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.CheckpointStatus.Unknown">Unknown (feldera.enums.CheckpointStatus attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile.UNOPTIMIZED">UNOPTIMIZED (feldera.enums.CompilationProfile attribute)</a>
