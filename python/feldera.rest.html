@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest package &mdash; Feldera Python SDK 0.0.1 documentation</title>
+  <title>feldera.rest package &mdash; Feldera Python SDK 0.266.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/documentation_options.js?v=85c16125"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -267,15 +267,19 @@ pipeline to activate.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.clear_storage">
-<span class="sig-name descname"><span class="pre">clear_storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.clear_storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.clear_storage" title="Link to this definition"></a></dt>
-<dd><p>Clears the storage from the pipeline.
-This operation cannot be canceled.</p>
+<span class="sig-name descname"><span class="pre">clear_storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_interval_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.clear_storage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.clear_storage" title="Link to this definition"></a></dt>
+<dd><p>Clears the storage of the pipeline.
+Once started, this action cannot be canceled, and will delete all the pipeline storage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pipeline_name</strong> – The name of the pipeline</p></li>
-<li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the storage
-to clear.</p></li>
+<li><p><strong>pipeline_name</strong> – Name of the pipeline.</p></li>
+<li><p><strong>wait</strong> – Set <cite>True</cite> to wait for the pipeline storage to become cleared,
+or set <cite>False</cite> to immediately return. Default is <cite>True</cite>.</p></li>
+<li><p><strong>timeout_s</strong> – Timeout waiting for storage to become cleared.
+<cite>None</cite> = no timeout is enforced (default). Not used if <cite>wait=False</cite>.</p></li>
+<li><p><strong>poll_interval_s</strong> – Polling interval at which to check while waiting
+if storage is cleared (default is every 0.25 seconds). Not used if <cite>wait=False</cite>.</p></li>
 </ul>
 </dd>
 </dl>

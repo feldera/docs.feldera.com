@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.265.0
+  version: 0.266.0
 paths:
   /config/authentication:
     get:
@@ -8694,6 +8694,43 @@ components:
           description: ID of the current transaction or 0 if no transaction is in progress.
         transaction_initiators:
           $ref: '#/components/schemas/TransactionInitiators'
+        transaction_msecs:
+          type: integer
+          format: int64
+          description: >-
+            Elapsed time in milliseconds, according to `transaction_status`:
+
+
+            - [TransactionStatus::TransactionInProgress]: Time that this
+            transaction
+
+            has been in progress.
+
+
+            - [TransactionStatus::CommitInProgress]: Time that this transaction
+            has
+
+            been committing.
+          nullable: true
+          minimum: 0
+        transaction_records:
+          type: integer
+          format: int64
+          description: >-
+            Number of records in this transaction, according to
+
+            `transaction_status`:
+
+
+            - [TransactionStatus::TransactionInProgress]: Number of records
+            added so
+
+            far.  More records might be added.
+
+
+            - [TransactionStatus::CommitInProgress]: Final number of records.
+          nullable: true
+          minimum: 0
         transaction_status:
           $ref: '#/components/schemas/TransactionStatus'
         uptime_msecs:
@@ -13507,6 +13544,20 @@ components:
             Default: disabled (no periodic push).
           nullable: true
           minimum: 0
+        read_bucket:
+          type: string
+          description: |-
+            A read-only bucket used as a fallback checkpoint source.
+
+            When the pipeline has no local checkpoint and `bucket` contains no
+            checkpoint either, it will attempt to fetch the checkpoint from this
+            location instead.  All connection settings (`endpoint`, `region`,
+            `provider`, `access_key`, `secret_key`) are shared with `bucket`.
+
+            The pipeline **never writes** to `read_bucket`.
+
+            Must point to a different location than `bucket`.
+          nullable: true
         region:
           type: string
           description: |-

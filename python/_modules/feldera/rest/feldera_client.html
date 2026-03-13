@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.0.1 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.266.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../../_static/documentation_options.js?v=85c16125"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -867,21 +867,33 @@
 
 <div class="viewcode-block" id="FelderaClient.clear_storage">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clears the storage from the pipeline.</span>
-<span class="sd">        This operation cannot be canceled.</span>
+<span class="sd">        Clears the storage of the pipeline.</span>
+<span class="sd">        Once started, this action cannot be canceled, and will delete all the pipeline storage.</span>
 
-<span class="sd">        :param pipeline_name: The name of the pipeline</span>
-<span class="sd">        :param timeout_s: The amount of time in seconds to wait for the storage</span>
-<span class="sd">            to clear.</span>
+<span class="sd">        :param pipeline_name: Name of the pipeline.</span>
+<span class="sd">        :param wait: Set `True` to wait for the pipeline storage to become cleared,</span>
+<span class="sd">            or set `False` to immediately return. Default is `True`.</span>
+<span class="sd">        :param timeout_s: Timeout waiting for storage to become cleared.</span>
+<span class="sd">            `None` = no timeout is enforced (default). Not used if `wait=False`.</span>
+<span class="sd">        :param poll_interval_s: Polling interval at which to check while waiting</span>
+<span class="sd">            if storage is cleared (default is every 0.25 seconds). Not used if `wait=False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/clear&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="k">return</span>
 
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
@@ -894,11 +906,12 @@
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Cleared&quot;</span><span class="p">:</span>
                 <span class="k">return</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still clearing </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;still clearing </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
                 <span class="n">pipeline_name</span><span class="p">,</span>
+                <span class="n">poll_interval_s</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.start_transaction">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.0.1 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.266.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../../_static/documentation_options.js?v=85c16125"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -1258,15 +1258,27 @@
 
 <div class="viewcode-block" id="Pipeline.clear_storage">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.clear_storage">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_storage</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clears the storage of the pipeline if it is currently in use.</span>
-<span class="sd">        This action cannot be canceled, and will delete all the pipeline</span>
-<span class="sd">        storage.</span>
+<span class="sd">        Clears the storage of the pipeline.</span>
+<span class="sd">        Once started, this action cannot be canceled, and will delete all the pipeline storage.</span>
+
+<span class="sd">        :param wait: Set `True` to wait for the pipeline storage to become cleared,</span>
+<span class="sd">            or set `False` to immediately return. Default is `True`.</span>
+<span class="sd">        :param timeout_s: Timeout waiting for storage to become cleared.</span>
+<span class="sd">            `None` = no timeout is enforced (default). Not used if `wait=False`.</span>
+<span class="sd">        :param poll_interval_s: Polling interval at which to check while waiting</span>
+<span class="sd">            if storage is cleared (default is every 0.25 seconds). Not used if `wait=False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_status</span><span class="p">()</span> <span class="o">==</span> <span class="n">StorageStatus</span><span class="o">.</span><span class="n">INUSE</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">clear_storage</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span> <span class="n">poll_interval_s</span><span class="o">=</span><span class="n">poll_interval_s</span>
+        <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
