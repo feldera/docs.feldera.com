@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.266.0
+  version: 0.267.0
 paths:
   /config/authentication:
     get:
@@ -9893,6 +9893,20 @@ components:
           $ref: '#/components/schemas/ConnectOptions'
         consumer_config:
           $ref: '#/components/schemas/ConsumerConfig'
+        inactivity_timeout_secs:
+          type: integer
+          format: int64
+          description: |-
+            Maximum time in seconds to wait for the next message before running
+            a stream/server health check. Must be at least 1.
+          minimum: 0
+        retry_interval_secs:
+          type: integer
+          format: int64
+          description: |-
+            Delay between automatic reconnect attempts while in retry mode.
+            Must be at least 1.
+          minimum: 0
         stream_name:
           type: string
     NewApiKeyRequest:
