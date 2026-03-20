@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.110bdfdc.js" defer="defer"></script>
-<script src="/assets/js/main.af2a6f82.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b6a97aba.js" defer="defer"></script>
+<script src="/assets/js/main.53687ddf.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,15 +21,14 @@
 <p>You can run ad-hoc SQL queries on a running or paused pipeline. Unlike Feldera SQL programs that define pipelines and
 are evaluated incrementally, ad-hoc queries are evaluated in batch mode,
 using the <a href="https://datafusion.apache.org" target="_blank" rel="noopener noreferrer" class="">datafusion engine</a>.</p>
-<p>Ad-hoc queries provide a way to query the state of a <a class="" href="/sql/materialized">materialized</a> tables and views. They are designed to aid
+<p>Ad-hoc queries provide a way to query the state of <a class="" href="/sql/materialized">materialized</a> tables and views. They are designed to aid
 development and debugging, so you need to be aware of their limitations to avoid potential confusion.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="limitations">Limitations<a href="#limitations" class="hash-link" aria-label="Direct link to Limitations" title="Direct link to Limitations" translate="no">​</a></h2>
 <div class="theme-admonition theme-admonition-info admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>info</div><div class="admonitionContent_BuS1"><p>Tables and views are only accessible to <code>SELECT</code> ad-hoc queries if they are declared as <a class="" href="/sql/materialized">materialized</a>.</p></div></div>
 <p>As of now, there are differences between the SQL dialects of Feldera SQL programs and ad-hoc queries.
 This is because they use different engines (Apache Calcite for Feldera SQL vs. Apache Datafusion for ad-hoc queries).
 See below for some examples.</p>
-<p>Currently, only <code>SELECT</code> and <code>INSERT</code> statements are supported. You can not create or alter tables and views using
-ad-hoc SQL.</p>
+<p>Currently, only <code>SELECT</code> and <code>INSERT</code> statements are supported. You cannot create or alter tables and views using ad-hoc SQL.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="differences-between-feldera-sql-and-ad-hoc-queries">Differences between Feldera SQL and Ad-hoc Queries<a href="#differences-between-feldera-sql-and-ad-hoc-queries" class="hash-link" aria-label="Direct link to Differences between Feldera SQL and Ad-hoc Queries" title="Direct link to Differences between Feldera SQL and Ad-hoc Queries" translate="no">​</a></h3>
 <p>For the common subset of SQL, results should be consistent, aside from minor differences
 like floating-point rounding or decimal precision handling.</p>
@@ -44,7 +43,7 @@ ad-hoc queries that need to be taken into account:</p>
 in Feldera SQL.
 (<code>SELECT 1729595568::TIMESTAMP;</code> will yield <code>2024-10-22T11:12:48</code> in ad-hoc queries and
 <code>1970-01-21 00:26:35</code> in Feldera SQL).</li>
-<li class="">Ad-hoc SQL can not perform as-of joins.</li>
+<li class="">Ad-hoc SQL cannot perform as-of joins.</li>
 </ul>
 <p>We will continue to improve the consistency between the two engines in future releases.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="usage">Usage<a href="#usage" class="hash-link" aria-label="Direct link to Usage" title="Direct link to Usage" translate="no">​</a></h2>
@@ -53,7 +52,7 @@ in Feldera SQL.
 <p>You can issue ad-hoc queries by opening the &quot;Ad-hoc query&quot; tab of the pipeline and typing a SQL <code>SELECT</code> or <code>INSERT</code>
 query in the input text field. To submit the query, press <code>Enter</code> or the Play <icon icon="bx:play"></icon> button next
 to the query. To start a new line, press <code>Shift + Enter</code>. After successful execution of the query you will see a table
-containing the results. You can abort a long-running query by clicking the Stop <icon icon="bx:play"></icon> button or
+containing the results. You can abort a long-running query by clicking the Stop <icon icon="bx:stop"></icon> button or
 pressing <code>Ctrl + C</code>.</p>
 <p><img decoding="async" loading="lazy" alt="Browsing a materialized view in the Web Console" src="/assets/images/materialized-1-d2b157d15aa11b0b8a78355b9300672e.png" width="1566" height="677" class="img_ev3q"></p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="feldera-cli">Feldera CLI<a href="#feldera-cli" class="hash-link" aria-label="Direct link to Feldera CLI" title="Direct link to Feldera CLI" translate="no">​</a></h3>
@@ -63,7 +62,7 @@ pressing <code>Ctrl + C</code>.</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">fda shell pipeline-name</span><br></span></code></pre></div></div>
 <p>Refer to <a class="" href="/interface/cli">CLI docs</a> for more details.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="feldera-python-sdk">Feldera Python SDK<a href="#feldera-python-sdk" class="hash-link" aria-label="Direct link to Feldera Python SDK" title="Direct link to Feldera Python SDK" translate="no">​</a></h3>
-<p>You can execute adhoc queries via the Python SDK using the <a href="/python/feldera.html#feldera.pipeline.Pipeline.query" target="_blank" rel="noopener noreferrer" class="">.query</a> method, which returns a generator of Python Dictionaries:</p>
+<p>You can execute ad-hoc queries via the Python SDK using the <a href="/python/feldera.html#feldera.pipeline.Pipeline.query" target="_blank" rel="noopener noreferrer" class="">.query</a> method, which returns a generator of Python Dictionaries:</p>
 <div class="language-py codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-py codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">gen_obj </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> pipeline</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">query</span><span class="token punctuation" style="color:#393A34">(</span><span class="token string" style="color:#e3116c">&quot;SELECT * FROM materialized_view;&quot;</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">output </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> </span><span class="token builtin">list</span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">gen_obj</span><span class="token punctuation" style="color:#393A34">)</span><br></span></code></pre></div></div>
 <p>There are variations of the <code>.query</code> method that return response in different formats:</p>
 <ul>
