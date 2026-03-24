@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.61130ae4.js" defer="defer"></script>
-<script src="/assets/js/main.fd1dbd51.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.790b14e9.js" defer="defer"></script>
+<script src="/assets/js/main.9393e477.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -68,7 +68,7 @@ across partitions.  Refer to the documentation for more information.</p><h2 clas
 are not compatible with versions 0.227.0 and above.
 When upgrading to a version &gt;=0.227, existing pipelines should be backfilled
 rather than starting from a previous checkpoint.</p><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="02260">0.226.0<a href="#02260" class="hash-link" aria-label="Direct link to 0.226.0" title="Direct link to 0.226.0" translate="no">​</a></h2><p>The Delta Lake connector&#x27;s <code>skip_unused_columns</code> property has been deprecated. Use
-table-level <a href="https://docs.feldera.com/sql/grammar#skip-unused-columns" target="_blank" rel="noopener noreferrer" class=""><code>skip_unused_colums</code></a>
+table-level <a href="https://docs.feldera.com/sql/grammar#ignoring-unused-columns" target="_blank" rel="noopener noreferrer" class=""><code>skip_unused_colums</code></a>
 instead.</p><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="02010">0.201.0<a href="#02010" class="hash-link" aria-label="Direct link to 0.201.0" title="Direct link to 0.201.0" translate="no">​</a></h2><p>Cluster monitoring: Feldera now monitors the control plane components (api-server,
 kubernetes-runner and compiler-server) health and stores these as events in the
 database. They are exposed via <code>/v0/cluster/events</code> and further details of a specific
