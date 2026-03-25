@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.273.0
+  version: 0.274.0
 paths:
   /config/authentication:
     get:
@@ -663,6 +663,7 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 16
+                    max_rss_mb: null
                     hosts: 1
                     storage:
                       backend:
@@ -742,6 +743,7 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 10
+                    max_rss_mb: null
                     hosts: 1
                     storage:
                       backend:
@@ -837,6 +839,7 @@ paths:
               description: Description of the pipeline example1
               runtime_config:
                 workers: 16
+                max_rss_mb: null
                 hosts: 1
                 storage:
                   backend:
@@ -898,6 +901,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -1053,6 +1057,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -1168,6 +1173,7 @@ paths:
               description: Description of the pipeline example1
               runtime_config:
                 workers: 16
+                max_rss_mb: null
                 hosts: 1
                 storage:
                   backend:
@@ -1229,6 +1235,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -1315,6 +1322,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -1517,6 +1525,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -5940,6 +5949,7 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
+                  max_rss_mb: null
                   hosts: 1
                   storage:
                     backend:
@@ -8495,6 +8505,8 @@ components:
         - transaction_id
         - transaction_initiators
         - rss_bytes
+        - memory_pressure
+        - memory_pressure_epoch
         - cpu_msecs
         - uptime_msecs
         - start_time
@@ -8549,6 +8561,13 @@ components:
           description: >-
             Time at which the pipeline process from which we resumed started, in
             seconds since the epoch.
+          minimum: 0
+        memory_pressure:
+          $ref: '#/components/schemas/MemoryPressure'
+        memory_pressure_epoch:
+          type: integer
+          format: int64
+          description: Memory pressure epoch.
           minimum: 0
         output_stall_msecs:
           type: integer
@@ -9787,6 +9806,41 @@ components:
                 the request that checks with
 
                 the server failed (e.g., if it could not reach the server).
+    MemoryPressure:
+      type: string
+      description: >-
+        Memory pressure level.
+
+
+        The current memory pressure level is computed as a function of the
+        current process
+
+        resident set size (RSS) and the user-configured memory limit
+        (`max_rss`).
+
+
+        As the memory pressure level increases, the system will apply increasing
+        backpressure to
+
+        push state cached in memory to storage.
+
+
+        - `Low`: less than 85% of the user-configured memory limit has been
+        allocated.
+
+        - `Moderate`: between 85% and 90% of the user-configured memory limit
+        has been allocated.
+
+        - `High`: between 90% and 95% of the user-configured memory limit has
+        been allocated.
+
+        - `Critical`: more than 95% of the user-configured memory limit has been
+        allocated.
+      enum:
+        - low
+        - moderate
+        - high
+        - critical
     MetricsFormat:
       type: string
       description: >-
@@ -10713,6 +10767,57 @@ components:
 
 
                 The default is 10.
+              default: null
+              nullable: true
+              minimum: 0
+            max_rss_mb:
+              type: integer
+              format: int64
+              description: >-
+                The maximum amount of memory, in Megabytes, that the pipeline is
+                allowed to use
+
+                on each host.
+
+
+                Setting this property activates memory pressure monitoring and
+                backpressure
+
+                mechanisms. The pipeline will track the amount of remaining
+                memory and
+
+                report the memory pressure level via the `memory_pressure`
+                metric.
+
+
+                As the memory pressure increases, the system will apply
+                increasing backpressure
+
+                to push state cached in memory to storage, preventing the
+                pipeline from running
+
+                out of memory at the cost of some performance degradation.
+
+
+                It is strongly recommended to set this property to prevent the
+                pipeline from
+
+                running out of memory. The setting should not exceed the memory
+                limit of the pipeline
+
+                instance.
+
+
+                When `max_rss_mb` is not specified but `resources.memory_mb_max`
+                is set, the
+
+                latter is used as the effective memory cap for the pipeline.
+
+
+                See [documentation on the pipeline's memory
+                usage](https://docs.feldera.com/operations/memory)
+
+                for more details.
               default: null
               nullable: true
               minimum: 0
@@ -12675,6 +12780,56 @@ components:
 
 
             The default is 10.
+          default: null
+          nullable: true
+          minimum: 0
+        max_rss_mb:
+          type: integer
+          format: int64
+          description: >-
+            The maximum amount of memory, in Megabytes, that the pipeline is
+            allowed to use
+
+            on each host.
+
+
+            Setting this property activates memory pressure monitoring and
+            backpressure
+
+            mechanisms. The pipeline will track the amount of remaining memory
+            and
+
+            report the memory pressure level via the `memory_pressure` metric.
+
+
+            As the memory pressure increases, the system will apply increasing
+            backpressure
+
+            to push state cached in memory to storage, preventing the pipeline
+            from running
+
+            out of memory at the cost of some performance degradation.
+
+
+            It is strongly recommended to set this property to prevent the
+            pipeline from
+
+            running out of memory. The setting should not exceed the memory
+            limit of the pipeline
+
+            instance.
+
+
+            When `max_rss_mb` is not specified but `resources.memory_mb_max` is
+            set, the
+
+            latter is used as the effective memory cap for the pipeline.
+
+
+            See [documentation on the pipeline's memory
+            usage](https://docs.feldera.com/operations/memory)
+
+            for more details.
           default: null
           nullable: true
           minimum: 0

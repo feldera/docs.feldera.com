@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.790b14e9.js" defer="defer"></script>
-<script src="/assets/js/main.9393e477.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0c3900aa.js" defer="defer"></script>
+<script src="/assets/js/main.93cab2ec.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -143,6 +143,36 @@ To accelerate the process, multiple connectors are initialized concurrently.
 This option controls the maximum number of connectors that can be initialized
 in parallel.</p>
 <p>The default is 10.</p>
+</div></div></div></td></tr><tr class=""><td kind="field" title="max_rss_mb" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">max_rss_mb</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer or null</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;The maximum amount of memory, in Megabytes, that the pipeline is allowed to use
+on each host.&lt;/p&gt;
+&lt;p&gt;Setting this property activates memory pressure monitoring and backpressure
+mechanisms. The pipeline will track the amount of remaining memory and
+report the memory pressure level via the &lt;code&gt;memory_pressure&lt;/code&gt; metric.&lt;/p&gt;
+&lt;p&gt;As the memory pressure increases, the system will apply increasing backpressure
+to push state cached in memory to storage, preventing the pipeline from running
+out of memory at the cost of some performance degradation.&lt;/p&gt;
+&lt;p&gt;It is strongly recommended to set this property to prevent the pipeline from
+running out of memory. The setting should not exceed the memory limit of the pipeline
+instance.&lt;/p&gt;
+&lt;p&gt;When &lt;code&gt;max_rss_mb&lt;/code&gt; is not specified but &lt;code&gt;resources.memory_mb_max&lt;/code&gt; is set, the
+latter is used as the effective memory cap for the pipeline.&lt;/p&gt;
+&lt;p&gt;See &lt;a href=&quot;https://docs.feldera.com/operations/memory&quot;&gt;documentation on the pipeline&amp;#39;s memory usage&lt;/a&gt;
+for more details.&lt;/p&gt;
+" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>The maximum amount of memory, in Megabytes, that the pipeline is allowed to use
+on each host.</p>
+<p>Setting this property activates memory pressure monitoring and backpressure
+mechanisms. The pipeline will track the amount of remaining memory and
+report the memory pressure level via the <code>memory_pressure</code> metric.</p>
+<p>As the memory pressure increases, the system will apply increasing backpressure
+to push state cached in memory to storage, preventing the pipeline from running
+out of memory at the cost of some performance degradation.</p>
+<p>It is strongly recommended to set this property to prevent the pipeline from
+running out of memory. The setting should not exceed the memory limit of the pipeline
+instance.</p>
+<p>When <code>max_rss_mb</code> is not specified but <code>resources.memory_mb_max</code> is set, the
+latter is used as the effective memory cap for the pipeline.</p>
+<p>See <a href="https://docs.feldera.com/operations/memory">documentation on the pipeline&#39;s memory usage</a>
+for more details.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="min_batch_size_records" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">min_batch_size_records</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">0</span></div> <div><div html="&lt;p&gt;Minimal input batch size.&lt;/p&gt;
 &lt;p&gt;The controller delays pushing input records to the circuit until at
 least &lt;code&gt;min_batch_size_records&lt;/code&gt; records have been received (total
