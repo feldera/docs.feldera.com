@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.274.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.275.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=74adc98d"></script>
+        <script src="../../_static/documentation_options.js?v=057883d4"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -271,7 +271,7 @@
         <span class="n">update_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
         <span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Push this JSON data to the specified table of the pipeline.</span>
 
@@ -286,6 +286,8 @@
 <span class="sd">        :param force: `True` to push data even if the pipeline is paused. `False` by default.</span>
 <span class="sd">        :param wait: If True, blocks until this input has been processed by the pipeline</span>
 
+<span class="sd">        :returns: The completion token to this input.</span>
+
 <span class="sd">        :raises ValueError: If the update format is invalid.</span>
 <span class="sd">        :raises FelderaAPIError: If the pipeline is not in a valid state to push data.</span>
 <span class="sd">        :raises RuntimeError: If the pipeline is paused and `force` is not set to `True`.</span>
@@ -299,7 +301,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;update_format must be one of raw or insert_delete&quot;</span><span class="p">)</span>
 
         <span class="n">array</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">push_to_pipeline</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">push_to_pipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">table_name</span><span class="p">,</span>
             <span class="s2">&quot;json&quot;</span><span class="p">,</span>
