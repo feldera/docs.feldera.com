@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.284.0
+  version: 0.285.0
 paths:
   /config/authentication:
     get:
@@ -8082,6 +8082,30 @@ components:
       required:
         - uri
       properties:
+        checkpoint_interval:
+          type: integer
+          format: int32
+          description: >-
+            Checkpoint interval (i.e., the number of commits after which a new
+            checkpoint should be created) for newly created Delta tables.
+
+
+            The option is only available when creating the Delta table (`mode =
+            append` and there
+
+            is no existing table at the target location or `mode = truncate`).
+            It configures the `checkpointInterval`
+
+            table property, which determines the number of commits after which a
+            new checkpoint should be created.
+
+
+            0 means no checkpoints are created.
+
+
+            Default: 10.
+          nullable: true
+          minimum: 0
         max_retries:
           type: integer
           format: int32
