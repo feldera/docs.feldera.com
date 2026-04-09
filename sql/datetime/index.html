@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.ecbf655d.js" defer="defer"></script>
-<script src="/assets/js/main.8d321f01.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.accb263d.js" defer="defer"></script>
+<script src="/assets/js/main.179b5519.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -130,6 +130,12 @@ Values BC or values greater than 10,000 years are not supported.</p>
 value as an (big integer) number of milliseconds since the Unix epoch.
 Conversely, a cast from a <code>TIMESTAMP</code> to a numeric value retrieves the
 number of milliseconds since the Unix epoch from the timestamp.</p>
+<p><a id="convert_timezone"></a> <code>CONVERT_TIMEZONE</code>(tz1, tz2, timestamp).
+Converts the value of a timestamp from timezone tz1 to timezone tz2.
+The timezones are specified as <code>CHAR</code> values.  Example: <code>SELECT CONVERT_TIMEZONE(&#x27;America/New_York&#x27;, &#x27;America/Los_Angeles&#x27;, TIMESTAMP &#x27;2008-03-05 12:25:29&#x27;)</code> returns <code>2008-03-05 09:25:29</code>.  If the
+conversion fails, or if a timezone cannot be parsed as as IANA
+timezone or as a fixed offset timezone (e.g, <code>+08:00</code>), the result is
+<code>NULL</code>.</p>
 <a id="timestamp_trunc"></a>
 <p><code>TIMESTAMP_TRUNC(timestamp, &lt;unit&gt;)</code>, where <code>&lt;unit&gt;</code> is a time unit,
 as described above, between <code>MILLENNIUM</code> and <code>SECOND</code>.  Result is a
