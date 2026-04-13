@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.286.0
+  version: 0.287.0
 paths:
   /config/authentication:
     get:
@@ -6063,6 +6063,145 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/views/{view_name}/connectors/{connector_name}/reset:
+    post:
+      tags:
+        - Output Connectors
+      summary: Reset Output Connector
+      description: >-
+        Reset an output connector configured in `snapshot_and_follow` mode.
+
+
+        This clears buffered output, asks the sink to reset itself, and then
+        replays
+
+        a full snapshot before resuming incremental updates.
+      operationId: post_pipeline_output_connector_reset
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+        - name: view_name
+          in: path
+          description: SQL view name
+          required: true
+          schema:
+            type: string
+        - name: connector_name
+          in: path
+          description: Output connector name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Output connector reset request has been processed
+        '400':
+          description: The output connector does not support reset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Pipeline, view and/or output connector with that name does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Pipeline with that name does not exist:
+                  value:
+                    message: Unknown pipeline name 'non-existent-pipeline'
+                    error_code: UnknownPipelineName
+                    details:
+                      pipeline_name: non-existent-pipeline
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                Disconnected during response:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: the pipeline
+                      disconnected while it was processing this HTTP request.
+                      This could be because the pipeline either (a) encountered
+                      a fatal error or panic, (b) was stopped, or (c)
+                      experienced network issues -- retrying might help in the
+                      last case. Alternatively, check the pipeline logs. Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        the pipeline disconnected while it was processing this
+                        HTTP request. This could be because the pipeline either
+                        (a) encountered a fatal error or panic, (b) was stopped,
+                        or (c) experienced network issues -- retrying might help
+                        in the last case. Alternatively, check the pipeline
+                        logs.
+                Pipeline is currently unavailable:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: deployment status
+                      is currently 'unavailable' -- wait for it to become
+                      'running' or 'paused' again Failed request: /pause
+                      pipeline-id=N/A pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        deployment status is currently 'unavailable' -- wait for
+                        it to become 'running' or 'paused' again
+                Pipeline is not deployed:
+                  value:
+                    message: >-
+                      Unable to interact with pipeline because the deployment
+                      status (stopped) indicates it is not (yet) fully
+                      provisioned pipeline-id=N/A pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionNotDeployed
+                    details:
+                      pipeline_name: my_pipeline
+                      status: Stopped
+                      desired_status: Provisioned
+                Response timeout:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: timeout (10s) was
+                      reached: this means the pipeline took too long to respond
+                      -- this can simply be because the request was too
+                      difficult to process in time, or other reasons (e.g.,
+                      deadlock): the pipeline logs might contain additional
+                      information (original send request error: Timeout while
+                      waiting for response) Failed request: /pause
+                      pipeline-id=N/A pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionUnreachable
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        timeout (10s) was reached: this means the pipeline took
+                        too long to respond -- this can simply be because the
+                        request was too difficult to process in time, or other
+                        reasons (e.g., deadlock): the pipeline logs might
+                        contain additional information (original send request
+                        error: Timeout while waiting for response)
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/views/{view_name}/connectors/{connector_name}/stats:
     get:
       tags:
@@ -7780,6 +7919,33 @@ components:
 
 
             The default value is 6.
+          nullable: true
+          minimum: 0
+        max_retries:
+          type: integer
+          format: int32
+          description: >-
+            Maximum number of retries for failed object store operations.
+
+
+            Controls how many times the connector retries high-level storage
+            operations,
+
+            such as reading a Delta log entry or a Parquet file.
+
+
+            This is in addition to lower-level retries (e.g., individual S3
+            operation retries governed
+
+            by storage options like `retry_timeout`). If those retries are
+            exhausted
+
+            or the failure is otherwise unrecoverable at the storage layer, the
+
+            connector retries the entire operation.
+
+
+            Defaults to unlimited retries. Set to 0 to disable retries.
           nullable: true
           minimum: 0
         mode:
