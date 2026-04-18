@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.287.0
+  version: 0.288.0
 paths:
   /config/authentication:
     get:
@@ -6555,16 +6555,71 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Rel'
+    CheckpointActivity:
+      oneOf:
+        - type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              enum:
+                - idle
+        - type: object
+          description: |-
+            A checkpoint has been requested but is delayed for temporary reasons
+            (e.g. replaying, bootstrapping, transaction in progress, or input
+            endpoint barriers that require the coordinator to run steps).
+          required:
+            - reasons
+            - delayed_since
+            - status
+          properties:
+            delayed_since:
+              type: string
+              format: date-time
+              description: When the delay started (serialized as ISO 8601).
+            reasons:
+              type: array
+              items:
+                $ref: '#/components/schemas/TemporarySuspendError'
+              description: Why the checkpoint cannot proceed yet.
+            status:
+              type: string
+              enum:
+                - delayed
+        - type: object
+          description: A checkpoint is currently being written to storage.
+          required:
+            - started_at
+            - status
+          properties:
+            started_at:
+              type: string
+              format: date-time
+              description: When the checkpoint write started (serialized as ISO 8601).
+            status:
+              type: string
+              enum:
+                - in_progress
+      description: Current checkpoint activity state.
+      discriminator:
+        propertyName: status
     CheckpointFailure:
       type: object
       description: Information about a failed checkpoint.
       required:
         - sequence_number
         - error
+        - failed_at
       properties:
         error:
           type: string
           description: Error message associated with the failure.
+        failed_at:
+          type: string
+          format: date-time
+          description: When the failure occurred (serialized as ISO 8601).
         sequence_number:
           type: integer
           format: int64
@@ -7520,6 +7575,10 @@ components:
         - inputs
         - outputs
       properties:
+        checkpoint_activity:
+          allOf:
+            - $ref: '#/components/schemas/CheckpointActivity'
+          nullable: true
         global_metrics:
           $ref: '#/components/schemas/GlobalControllerMetrics'
         inputs:
@@ -7532,6 +7591,20 @@ components:
           items:
             $ref: '#/components/schemas/OutputEndpointStatus'
           description: Output endpoint configs and metrics.
+        permanent_checkpoint_errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermanentSuspendError'
+          description: >-
+            If the pipeline fundamentally cannot checkpoint (e.g. storage is not
+
+            configured, or an input endpoint does not support suspend), the
+            reasons
+
+            are listed here.  Unlike a checkpoint failure, this means *no*
+
+            checkpoint can succeed until the pipeline configuration changes.
+          nullable: true
         suspend_error:
           allOf:
             - $ref: '#/components/schemas/SuspendError'
@@ -8689,6 +8762,13 @@ components:
           default: null
           nullable: true
           minimum: 0
+      additionalProperties:
+        description: |-
+          Options not understood by this particular version.
+
+          This allows the pipeline manager to take options that a custom or old
+          runtime version accepts.
+        default: {}
     DisplaySchedule:
       oneOf:
         - type: string
@@ -10952,6 +11032,16 @@ components:
         - total_processed_steps
         - memory
       properties:
+        batch_records_written:
+          type: integer
+          format: int64
+          description: |-
+            Number of records written so far while the connector is processing a
+            batch of updates.  Resets to 0 after the batch is committed.
+
+            `None` when the connector does not support batch-progress reporting.
+          nullable: true
+          minimum: 0
         buffered_batches:
           type: integer
           format: int64
@@ -12230,6 +12320,19 @@ components:
 
                 Default: `"__feldera_ts"`
               default: __feldera_ts
+            extra_columns:
+              type: array
+              items:
+                type: string
+              description: >-
+                The names of the extra columns in the Postgres table that are
+                not part of the view schema.
+
+
+                These connector can write user-defined values, configured using
+                the `set_extra_columns` connector command,
+
+                to these columns.
             max_buffer_size_bytes:
               type: integer
               description: >-
