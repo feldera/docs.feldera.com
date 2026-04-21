@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.288.0
+  version: 0.289.0
 paths:
   /config/authentication:
     get:
@@ -719,6 +719,7 @@ paths:
                   deployment_error: null
                   refresh_version: 4
                   storage_status: Cleared
+                  storage_status_details: null
                   deployment_id: null
                   deployment_initial: null
                   deployment_status: Stopped
@@ -799,6 +800,7 @@ paths:
                   deployment_error: null
                   refresh_version: 1
                   storage_status: Cleared
+                  storage_status_details: null
                   deployment_id: null
                   deployment_initial: null
                   deployment_status: Stopped
@@ -957,6 +959,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -1113,6 +1116,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -1291,6 +1295,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -1378,6 +1383,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -1581,6 +1587,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -6005,6 +6012,7 @@ paths:
                 deployment_error: null
                 refresh_version: 4
                 storage_status: Cleared
+                storage_status_details: null
                 deployment_id: null
                 deployment_initial: null
                 deployment_status: Stopped
@@ -11839,6 +11847,8 @@ components:
           $ref: '#/components/schemas/RuntimeConfig'
         storage_status:
           $ref: '#/components/schemas/StorageStatus'
+        storage_status_details:
+          nullable: true
         udf_rust:
           type: string
         udf_toml:
@@ -11972,6 +11982,8 @@ components:
           nullable: true
         storage_status:
           $ref: '#/components/schemas/StorageStatus'
+        storage_status_details:
+          nullable: true
         udf_rust:
           type: string
           nullable: true
