@@ -44,6 +44,14 @@ feldera.rest.pipeline module
    :undoc-members:
    :show-inheritance:
 
+feldera.rest.retry module
+-------------------------
+
+.. automodule:: feldera.rest.retry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 feldera.rest.sql\_table module
 ------------------------------
 
