@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.76afc8cd.js" defer="defer"></script>
-<script src="/assets/js/main.ab73d067.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1106d35d.js" defer="defer"></script>
+<script src="/assets/js/main.c44e8454.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -32,7 +32,19 @@ repeated updates.</p>
 <p><strong>Atomic updates.</strong> Unique keys allow updates to be applied as single atomic
 operations, rather than as separate delete and insert events.</p>
 </li>
+<li class="">
+<p><strong>Ignoring deleted rows that do not exist.</strong> Many connectors can
+provide table updates in the form of insertions or deletions. If a
+table has a primary key, deleting a non-existent record will have no
+effect. The engine does <em>not</em> reject deletions of non-existent records
+from tables <em>without</em> primary keys. Deleting a non-existent record for
+such tables will produce unexpected results or even pipeline crashes.</p>
+</li>
 </ol>
+<p>::: danger</p>
+<p>Deleting records that do not exist from a table without a primary key is
+an undefined operation, and can produce incorrect results or crashes.</p>
+<p>:::</p>
 <p>Below, we describe how unique keys are defined and used for tables and views in Feldera.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="ingesting-data-into-tables-with-primary-keys">Ingesting Data into Tables with Primary Keys<a href="#ingesting-data-into-tables-with-primary-keys" class="hash-link" aria-label="Direct link to Ingesting Data into Tables with Primary Keys" title="Direct link to Ingesting Data into Tables with Primary Keys" translate="no">​</a></h2>
 <p>Feldera supports <code>PRIMARY KEY</code> constraints on tables using standard SQL
