@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.292.0
+  version: 0.293.0
 paths:
   /config/authentication:
     get:
@@ -8946,6 +8946,15 @@ components:
 
             If this doesn't cause regression we will remove this option
             in the future.
+          default: null
+          nullable: true
+        enable_roaring:
+          type: boolean
+          description: >-
+            Whether file-backed batches may use roaring membership filters when
+            the
+
+            key type supports them.
           default: null
           nullable: true
         fbuf_slab_bytes_per_class:
