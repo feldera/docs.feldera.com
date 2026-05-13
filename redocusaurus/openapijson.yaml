@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.295.0
+  version: 0.296.0
 paths:
   /config/authentication:
     get:
@@ -8942,6 +8942,11 @@ components:
           default: null
           nullable: true
           minimum: 0
+        disable_auto_transaction:
+          type: boolean
+          description: Don't automatically start a transaction for every step.
+          default: null
+          nullable: true
         eager_evict:
           type: boolean
           description: |-
