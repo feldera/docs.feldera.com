@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.296.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.297.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=6fa235b3"></script>
+        <script src="../../../_static/documentation_options.js?v=1e777fea"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -85,6 +85,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.ipc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="p">,</span> <span class="n">PipelineStatus</span>
@@ -938,6 +940,45 @@
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.advance_clock">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.advance_clock">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">advance_clock</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">delta_ms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Advance the externally-driven `NOW()` clock and return its new value.</span>
+
+<span class="sd">        Requires `dev_tweaks.now_http_driven = True` on the pipeline.  The</span>
+<span class="sd">        clock is forward-only.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline.</span>
+
+<span class="sd">        :param delta_ms: Milliseconds to add to `NOW()`.  ``0`` reads the</span>
+<span class="sd">            current value without moving the clock; ``None`` (the default)</span>
+<span class="sd">            advances by one ``clock_resolution`` (one configured tick).</span>
+<span class="sd">            Must be non-negative.  Non-zero values round up to the next</span>
+<span class="sd">            ``clock_resolution`` boundary, so a sub-resolution delta still</span>
+<span class="sd">            moves the clock by one full tick.</span>
+
+<span class="sd">        The returned ``now_ms`` is the value the worker will emit on its</span>
+<span class="sd">        next pipeline step; queries against materialized views may</span>
+<span class="sd">        observe the previous ``NOW()`` until that step completes.  Poll</span>
+<span class="sd">        the view if you need read-after-write semantics.</span>
+
+<span class="sd">        :return: A dict ``{&quot;now_ms&quot;: &lt;int&gt;, &quot;now&quot;: &lt;RFC 3339 str&gt;}``.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the clock is not in http-driven mode,</span>
+<span class="sd">            the body is malformed, or the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/clock/advance&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;delta_ms&quot;</span><span class="p">:</span> <span class="n">delta_ms</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.commit_transaction">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">commit_transaction</span><span class="p">(</span>
@@ -1412,6 +1453,38 @@
         <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.query_as_arrow">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_arrow">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_as_arrow</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">RecordBatch</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc query on the specified pipeline and returns the result</span>
+<span class="sd">        as a generator that yields PyArrow RecordBatches.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline to query.</span>
+<span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :return: A generator that yields each query batch as a ``pyarrow.RecordBatch``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;pipeline_name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;sql&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;arrow_ipc&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">resp</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/query&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">batch</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">resp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.query_as_json">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_json">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">query_as_json</span><span class="p">(</span>
@@ -1699,6 +1772,12 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rebalance_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">rebalance_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/rebalance&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.start_compaction_pipeline">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_compaction_pipeline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_compaction_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start_compaction&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.get_checkpoints">

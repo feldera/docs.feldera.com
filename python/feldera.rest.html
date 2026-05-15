@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest package &mdash; Feldera Python SDK 0.296.0 documentation</title>
+  <title>feldera.rest package &mdash; Feldera Python SDK 0.297.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=6fa235b3"></script>
+        <script src="_static/documentation_options.js?v=1e777fea"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -237,6 +237,40 @@ default</p></li>
 <li><p><strong>timeout_s</strong> – The amount of time in seconds to wait for the
 pipeline to activate.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.advance_clock">
+<span class="sig-name descname"><span class="pre">advance_clock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.advance_clock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.advance_clock" title="Link to this definition"></a></dt>
+<dd><p>Advance the externally-driven <cite>NOW()</cite> clock and return its new value.</p>
+<p>Requires <cite>dev_tweaks.now_http_driven = True</cite> on the pipeline.  The
+clock is forward-only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline.</p></li>
+<li><p><strong>delta_ms</strong> – Milliseconds to add to <cite>NOW()</cite>.  <code class="docutils literal notranslate"><span class="pre">0</span></code> reads the
+current value without moving the clock; <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default)
+advances by one <code class="docutils literal notranslate"><span class="pre">clock_resolution</span></code> (one configured tick).
+Must be non-negative.  Non-zero values round up to the next
+<code class="docutils literal notranslate"><span class="pre">clock_resolution</span></code> boundary, so a sub-resolution delta still
+moves the clock by one full tick.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The returned <code class="docutils literal notranslate"><span class="pre">now_ms</span></code> is the value the worker will emit on its
+next pipeline step; queries against materialized views may
+observe the previous <code class="docutils literal notranslate"><span class="pre">NOW()</span></code> until that step completes.  Poll
+the view if you need read-after-write semantics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dict <code class="docutils literal notranslate"><span class="pre">{&quot;now_ms&quot;:</span> <span class="pre">&lt;int&gt;,</span> <span class="pre">&quot;now&quot;:</span> <span class="pre">&lt;RFC</span> <span class="pre">3339</span> <span class="pre">str&gt;}</span></code>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the clock is not in http-driven mode,
+the body is malformed, or the pipeline is not running.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -720,6 +754,24 @@ inputs to be processed by the pipeline. None by default</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.query_as_arrow">
+<span class="sig-name descname"><span class="pre">query_as_arrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">RecordBatch</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.query_as_arrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.query_as_arrow" title="Link to this definition"></a></dt>
+<dd><p>Executes an ad-hoc query on the specified pipeline and returns the result
+as a generator that yields PyArrow RecordBatches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pipeline_name</strong> – The name of the pipeline to query.</p></li>
+<li><p><strong>query</strong> – The SQL query to be executed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A generator that yields each query batch as a <code class="docutils literal notranslate"><span class="pre">pyarrow.RecordBatch</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.query_as_hash">
 <span class="sig-name descname"><span class="pre">query_as_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.query_as_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.query_as_hash" title="Link to this definition"></a></dt>
 <dd><p>Executes an ad-hoc query on the specified pipeline and returns a hash of the result.</p>
@@ -831,6 +883,11 @@ to pause.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.start_compaction_pipeline">
+<span class="sig-name descname"><span class="pre">start_compaction_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.start_compaction_pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.start_compaction_pipeline" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.start_pipeline">
