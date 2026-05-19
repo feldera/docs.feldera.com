@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.297.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.298.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=1e777fea"></script>
+        <script src="_static/documentation_options.js?v=a864d06e"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -866,8 +866,12 @@ Rust code to a binary.</p>
 <dd><p>Executes an ad-hoc SQL query on this pipeline and returns a generator
 that yields the rows of the result as Python dictionaries. For
 <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> queries, consider using <a class="reference internal" href="#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a>
-instead. All floating-point numbers are deserialized as Decimal objects
+instead. All floating-point numbers are deserialized as <code class="docutils literal notranslate"><span class="pre">Decimal</span></code>
 to avoid precision loss.</p>
+<p>For new code, prefer <a class="reference internal" href="#feldera.pipeline.Pipeline.query_arrow" title="feldera.pipeline.Pipeline.query_arrow"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query_arrow()</span></code></a>: Arrow IPC keeps full
+SQL type fidelity, lets <code class="docutils literal notranslate"><span class="pre">MAP</span></code> keys be non-string values, and
+returns every column even when two share a name. See
+<a class="reference external" href="https://github.com/feldera/feldera/issues/4219">https://github.com/feldera/feldera/issues/4219</a>.</p>
 <dl class="simple">
 <dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
 </dd>
@@ -917,6 +921,33 @@ state.</p></li>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A generator that yields <code class="docutils literal notranslate"><span class="pre">pyarrow.RecordBatch</span></code> objects.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.query_arrow_dicts">
+<span class="sig-name descname"><span class="pre">query_arrow_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query_arrow_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query_arrow_dicts" title="Link to this definition"></a></dt>
+<dd><p>Executes an ad-hoc SQL query on this pipeline and returns a generator
+that yields the result as a sequence of Dictionaries.</p>
+<dl class="simple">
+<dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> – The SQL query to be executed.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline is not in a RUNNING or PAUSED
+state.</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If querying a non materialized table or view.</p></li>
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the query is invalid.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A generator that yields <code class="docutils literal notranslate"><span class="pre">pyarrow.Mapping</span></code> objects.</p>
 </dd>
 </dl>
 </dd></dl>

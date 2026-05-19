@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.ce020af4.js" defer="defer"></script>
-<script src="/assets/js/main.6d5db007.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.2a6f78bf.js" defer="defer"></script>
+<script src="/assets/js/main.5370b847.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -116,6 +116,15 @@ CREATE INDEX statement that defines
 the unique key for the view. This allows the connector to combine related
 insert and delete events into a single atomic update.
 See <a class="" href="/connectors/unique_keys">Uniqueness Constraints</a>.</p>
+</li>
+<li class="">
+<p><code>send_snapshot</code> – <em>(Output connectors only)</em> When <code>true</code>, the connector
+emits a full snapshot of the materialized view the first time it runs,
+before streaming incremental updates. The view must be materialized
+(declared with <code>CREATE MATERIALIZED VIEW</code>). The default is <code>false</code>.</p>
+<p>The snapshot is sent exactly once: resuming from a checkpoint does not
+re-send it. Modifying the connector configuration causes a fresh
+snapshot to be replayed on the next start.</p>
 </li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="configuring-the-output-buffer">Configuring the output buffer<a href="#configuring-the-output-buffer" class="hash-link" aria-label="Direct link to Configuring the output buffer" title="Direct link to Configuring the output buffer" translate="no">​</a></h3>

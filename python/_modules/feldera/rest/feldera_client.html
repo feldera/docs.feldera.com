@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.297.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.298.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=1e777fea"></script>
+        <script src="../../../_static/documentation_options.js?v=a864d06e"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -81,6 +81,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">quote</span>
@@ -1308,6 +1309,7 @@
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">send_snapshot</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">backpressure</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">array</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1319,6 +1321,9 @@
 <span class="sd">        :param pipeline_name: The name of the pipeline</span>
 <span class="sd">        :param table_name: The name of the table to listen to</span>
 <span class="sd">        :param format: The format of the data, either &quot;json&quot; or &quot;csv&quot;</span>
+<span class="sd">        :param send_snapshot: When True, the connector delivers a full snapshot</span>
+<span class="sd">            of the materialized view before streaming incremental updates. The</span>
+<span class="sd">            view must be materialized. Defaults to False.</span>
 <span class="sd">        :param backpressure: When the flag is True (the default), this method waits for the consumer to receive each</span>
 <span class="sd">            chunk and blocks the pipeline if the consumer cannot keep up. When this flag is False, the pipeline drops</span>
 <span class="sd">            data chunks if the consumer is not keeping up with its output. This prevents a slow consumer from slowing</span>
@@ -1334,6 +1339,9 @@
             <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="nb">format</span><span class="p">,</span>
             <span class="s2">&quot;backpressure&quot;</span><span class="p">:</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">backpressure</span><span class="p">),</span>
         <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">send_snapshot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;send_snapshot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">send_snapshot</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;array&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_prepare_boolean_input</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -1462,6 +1470,11 @@
 <span class="sd">        Executes an ad-hoc query on the specified pipeline and returns the result</span>
 <span class="sd">        as a generator that yields PyArrow RecordBatches.</span>
 
+<span class="sd">        Arrow IPC preserves SQL type fidelity that the JSON format cannot:</span>
+<span class="sd">        integers wider than 53 bits, ``MAP`` keys that are not strings, and</span>
+<span class="sd">        result sets where two columns share a name. Prefer this method over</span>
+<span class="sd">        :meth:`.query_as_json` when programmatically inspecting results.</span>
+
 <span class="sd">        :param pipeline_name: The name of the pipeline to query.</span>
 <span class="sd">        :param query: The SQL query to be executed.</span>
 <span class="sd">        :return: A generator that yields each query batch as a ``pyarrow.RecordBatch``.</span>
@@ -1485,20 +1498,13 @@
             <span class="n">resp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="FelderaClient.query_as_json">
-<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_json">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">query_as_json</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_json_stream</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Executes an ad-hoc query on the specified pipeline and returns the result as a generator that yields</span>
-<span class="sd">        rows of the query as Python dictionaries.</span>
-<span class="sd">        All floating-point numbers are deserialized as Decimal objects to avoid precision loss.</span>
-
-<span class="sd">        :param pipeline_name: The name of the pipeline to query.</span>
-<span class="sd">        :param query: The SQL query to be executed.</span>
-<span class="sd">        :return: A generator that yields each row of the result as a Python dictionary, deserialized from JSON.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal JSON streaming used by both `query_as_json` and the</span>
+<span class="sd">        higher-level dict-returning APIs. Does not emit a deprecation</span>
+<span class="sd">        warning so callers within Feldera can keep delegating to it</span>
+<span class="sd">        without making user code noisy.&quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;pipeline_name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
             <span class="s2">&quot;sql&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span>
@@ -1513,7 +1519,42 @@
 
         <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="n">Decimal</span><span class="p">)</span></div>
+                <span class="k">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">parse_float</span><span class="o">=</span><span class="n">Decimal</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FelderaClient.query_as_json">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_json">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_as_json</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes an ad-hoc query on the specified pipeline and returns the result as a generator that yields</span>
+<span class="sd">        rows of the query as Python dictionaries.</span>
+
+<span class="sd">        Finite floating-point numbers are decoded with ``decimal.Decimal``</span>
+<span class="sd">        so the digits printed on the JSON line round-trip exactly. JSON</span>
+<span class="sd">        cannot represent ``NaN``, ``Infinity`` or ``-Infinity``; the</span>
+<span class="sd">        server emits those as ``null`` and they arrive here as ``None``.</span>
+
+<span class="sd">        .. deprecated::</span>
+<span class="sd">            The JSON format coerces numbers to ``f64`` (losing precision for</span>
+<span class="sd">            wide integers), drops ``NaN`` and infinities, cannot represent</span>
+<span class="sd">            SQL ``MAP`` keys that are not strings, and silently drops</span>
+<span class="sd">            result columns that share a name. Use</span>
+<span class="sd">            :meth:`.query_as_arrow` instead. See</span>
+<span class="sd">            https://github.com/feldera/feldera/issues/4219.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline to query.</span>
+<span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :return: A generator that yields each row of the result as a Python dictionary, deserialized from JSON.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;query_as_json is deprecated; switch to query_as_arrow for &quot;</span>
+            <span class="s2">&quot;type-faithful results. See &quot;</span>
+            <span class="s2">&quot;https://github.com/feldera/feldera/issues/4219.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_json_stream</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.input_connector_stats">
