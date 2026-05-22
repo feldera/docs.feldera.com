@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.298.0
+  version: 0.299.0
 paths:
   /config/authentication:
     get:
@@ -9147,16 +9147,13 @@ components:
             If set, the maximum amount of storage, in MiB, for the POSIX backend
             to
 
-            allow to be in use before failing all writes with [StorageFull]. 
+            allow to be in use before failing all writes with `StorageFull`. 
             This
 
             is useful for testing on top of storage that does not implement its
             own
 
             quota mechanism.
-
-
-            [StorageFull]: std::io::ErrorKind::StorageFull
           default: null
           nullable: true
           minimum: 0
