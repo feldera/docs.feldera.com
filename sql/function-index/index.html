@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.cd26ddab.js" defer="defer"></script>
-<script src="/assets/js/main.41163347.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6157040a.js" defer="defer"></script>
+<script src="/assets/js/main.3aff193e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -114,6 +114,7 @@
 <li class=""><code>DEGREES</code>: <a class="" href="/sql/float#degrees">float</a></li>
 <li class=""><code>DENSE_RANK</code> (aggregate): <a class="" href="/sql/aggregates#dense_rank">aggregates</a></li>
 <li class=""><code>DESC</code>: <a class="" href="/sql/grammar#order">grammar</a></li>
+<li class=""><code>DIV_NULL</code>: <a class="" href="/sql/integer#div_null">integer</a>, <a class="" href="/sql/decimal#div_null">decimal</a>, <a class="" href="/sql/float#div_null">float</a></li>
 <li class=""><code>DOW</code>: <a class="" href="/sql/datetime#date_dayofweek">datetime</a>, <a class="" href="/sql/datetime#timestamp_dayofweek">datetime</a></li>
 <li class=""><code>DOY</code>: <a class="" href="/sql/datetime#doy">datetime</a></li>
 <li class=""><code>ELEMENT</code>: <a class="" href="/sql/array#element">array</a></li>
@@ -126,6 +127,7 @@
 <li class=""><code>EXP</code>: <a class="" href="/sql/float#exp">float</a></li>
 <li class=""><code>EXTRACT</code>: <a class="" href="/sql/datetime#time_extract">datetime</a>, <a class="" href="/sql/datetime#date_extract">datetime</a>, <a class="" href="/sql/datetime#timestamp_extract">datetime</a></li>
 <li class=""><code>FILTER</code>: <a class="" href="/sql/aggregates#filter">aggregates</a></li>
+<li class=""><code>FINITE_OR_NULL</code>: <a class="" href="/sql/float#finite_or_null">float</a></li>
 <li class=""><code>FLOOR</code>: <a class="" href="/sql/decimal#floor">decimal</a>, <a class="" href="/sql/float#floor">float</a>, <a class="" href="/sql/datetime#date_floor">datetime</a>, <a class="" href="/sql/datetime#timestamp_floor">datetime</a>, <a class="" href="/sql/datetime#time_floor">datetime</a></li>
 <li class=""><code>FORMAT_DATE</code>: <a class="" href="/sql/datetime#format_date">datetime</a></li>
 <li class=""><code>FORMAT_TIME</code>: <a class="" href="/sql/datetime#format_time">datetime</a></li>
@@ -217,6 +219,7 @@
 <li class=""><code>REPEAT</code>: <a class="" href="/sql/string#repeat">string</a></li>
 <li class=""><code>REPLACE</code>: <a class="" href="/sql/string#replace">string</a></li>
 <li class=""><code>RESPECT NULLS</code>: <a class="" href="/sql/grammar#window-aggregates">grammar</a></li>
+<li class=""><code>REVERSE</code>: <a class="" href="/sql/string#reverse">string</a></li>
 <li class=""><code>RIGHT</code>: <a class="" href="/sql/string#right">string</a>, <a class="" href="/sql/binary#right">binary</a></li>
 <li class=""><code>RLIKE</code>: <a class="" href="/sql/string#rlike">string</a></li>
 <li class=""><code>RLIKE</code>: <a class="" href="/sql/string#rlike-function">string</a></li>
@@ -268,6 +271,7 @@
 <li class=""><code>UPPER</code>: <a class="" href="/sql/string#upper">string</a></li>
 <li class=""><code>VALUES</code>: <a class="" href="/sql/grammar#values">grammar</a></li>
 <li class=""><code>WEEK</code>: <a class="" href="/sql/datetime#week">datetime</a></li>
+<li class=""><code>XXHASH</code>: <a class="" href="/sql/string#xxhash">string</a>, <a class="" href="/sql/binary#xxhash">binary</a></li>
 <li class=""><code>YEAR</code>: <a class="" href="/sql/datetime#year">datetime</a></li>
 <li class=""><code>||</code>: <a class="" href="/sql/string#concat">string</a>, <a class="" href="/sql/binary#concat">binary</a></li>
 </ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/sql/float"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Floating Point Operations</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/sql/integer"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Integer Operations</div></a></nav></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>

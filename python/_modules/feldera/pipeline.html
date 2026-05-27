@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.299.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.300.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=d9b19a37"></script>
+        <script src="../../_static/documentation_options.js?v=e9ab6da8"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -643,6 +643,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -657,6 +658,7 @@
 <span class="sd">        - If the pipeline is in PAUSED state, use `.meth:resume` instead.</span>
 
 <span class="sd">        :param bootstrap_policy: The bootstrap policy to use.</span>
+<span class="sd">        :param silent_bootstrap: Set True to bootstrap the pipeline with output connectors disabled. False by default.</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
@@ -668,6 +670,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
@@ -679,6 +682,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start_paused</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -697,6 +701,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
@@ -708,6 +713,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">start_standby</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -726,6 +732,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_standby</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
@@ -737,6 +744,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">restart</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
@@ -757,6 +765,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
             <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">bootstrap_policy</span><span class="p">,</span>
+            <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
         <span class="p">)</span></div>
@@ -813,7 +822,7 @@
 
 <div class="viewcode-block" id="Pipeline.approve">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.approve">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">approve</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">approve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Approves the pipeline to proceed with bootstrapping.</span>
 
@@ -821,9 +830,13 @@
 <span class="sd">        `bootstrap_policy=BootstrapPolicy.AWAIT_APPROVAL` and is currently in the</span>
 <span class="sd">        AWAITINGAPPROVAL state. The pipeline will wait for explicit user approval</span>
 <span class="sd">        before proceeding with the bootstrapping process.</span>
+
+<span class="sd">        :param silent_bootstrap: Set True to bootstrap with output connectors</span>
+<span class="sd">            disabled, so no records are emitted during the bootstrap phase.</span>
+<span class="sd">            False by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">approve_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">approve_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.resume">
@@ -1866,6 +1879,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
+        <span class="n">collect</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">circuit_profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">heap_profile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">metrics</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1874,6 +1889,7 @@
         <span class="n">pipeline_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">system_config</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">dataflow_graph</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">pipeline_events</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a support bundle containing diagnostic information from this pipeline.</span>
@@ -1884,6 +1900,9 @@
 
 <span class="sd">        :param output_path: Optional path to save the support bundle file. If None,</span>
 <span class="sd">            the support bundle is only returned as bytes.</span>
+<span class="sd">        :param collect: Whether to collect fresh data from the pipeline (default: True).</span>
+<span class="sd">            Set to False to download only previously stored collections.</span>
+<span class="sd">        :param limit: If set, include only the N most recent collections.</span>
 <span class="sd">        :param circuit_profile: Whether to collect circuit profile data (default: True)</span>
 <span class="sd">        :param heap_profile: Whether to collect heap profile data (default: True)</span>
 <span class="sd">        :param metrics: Whether to collect metrics data (default: True)</span>
@@ -1892,12 +1911,17 @@
 <span class="sd">        :param pipeline_config: Whether to collect pipeline configuration data (default: True)</span>
 <span class="sd">        :param system_config: Whether to collect system configuration data (default: True)</span>
 <span class="sd">        :param dataflow_graph: Whether to collect dataflow graph (default: True)</span>
+<span class="sd">        :param pipeline_events: Whether to collect pipeline monitor events (default: True)</span>
 <span class="sd">        :return: The support bundle as bytes (ZIP archive)</span>
 <span class="sd">        :raises FelderaAPIError: If the pipeline does not exist or if there&#39;s an error</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Build query parameters</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">collect</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;collect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">circuit_profile</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;circuit_profile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">heap_profile</span><span class="p">:</span>
@@ -1914,6 +1938,8 @@
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;system_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dataflow_graph</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;dataflow_graph&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pipeline_events</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;pipeline_events&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
 
         <span class="n">support_bundle_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_support_bundle</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>

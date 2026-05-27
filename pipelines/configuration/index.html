@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.cd26ddab.js" defer="defer"></script>
-<script src="/assets/js/main.41163347.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6157040a.js" defer="defer"></script>
+<script src="/assets/js/main.3aff193e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -45,6 +45,36 @@ recomputation at most each <code>clock_resolution_usecs</code> microseconds.  If
 &lt;p&gt;The default value is &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Enable CPU profiler.</p>
 <p>The default value is <code>true</code>.</p>
+</div></div></div></td></tr><tr class=""><td kind="field" title="datafusion_memory_mb" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">datafusion_memory_mb</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer or null</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;DataFusion memory pool size, in MB, shared by the ad-hoc query
+engine and the Delta Lake / Iceberg connectors.&lt;/p&gt;
+&lt;p&gt;Carved out of &lt;code&gt;max_rss_mb&lt;/code&gt; (falling back to
+&lt;code&gt;resources.memory_mb_max&lt;/code&gt;); the remainder goes to the DBSP circuit,
+so the two do not double-book RAM.&lt;/p&gt;
+&lt;p&gt;Unset: defaults to 5% of the effective budget, capped at 2 GB.
+Pipelines that don&amp;#39;t run heavy ad-hoc / Delta / Iceberg workloads
+can leave this unset.&lt;/p&gt;
+&lt;p&gt;Sort/aggregate-heavy ad-hoc queries (especially at high &lt;code&gt;workers&lt;/code&gt;
+counts) should set this explicitly. An under-sized pool surfaces as
+&lt;code&gt;ResourcesExhausted&lt;/code&gt; on the failing query — the pipeline keeps
+running and only that query fails.&lt;/p&gt;
+&lt;p&gt;No pool limit applied if no overall budget is configured.&lt;/p&gt;
+&lt;p&gt;See &lt;a href=&quot;https://docs.feldera.com/operations/memory&quot;&gt;documentation on the pipeline&amp;#39;s memory usage&lt;/a&gt;
+for more details.&lt;/p&gt;
+" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>DataFusion memory pool size, in MB, shared by the ad-hoc query
+engine and the Delta Lake / Iceberg connectors.</p>
+<p>Carved out of <code>max_rss_mb</code> (falling back to
+<code>resources.memory_mb_max</code>); the remainder goes to the DBSP circuit,
+so the two do not double-book RAM.</p>
+<p>Unset: defaults to 5% of the effective budget, capped at 2 GB.
+Pipelines that don&#39;t run heavy ad-hoc / Delta / Iceberg workloads
+can leave this unset.</p>
+<p>Sort/aggregate-heavy ad-hoc queries (especially at high <code>workers</code>
+counts) should set this explicitly. An under-sized pool surfaces as
+<code>ResourcesExhausted</code> on the failing query — the pipeline keeps
+running and only that query fails.</p>
+<p>No pool limit applied if no overall budget is configured.</p>
+<p>See <a href="https://docs.feldera.com/operations/memory">documentation on the pipeline&#39;s memory usage</a>
+for more details.</p>
 </div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="dev_tweaks"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand dev_tweaks"><span class="property-name">dev_tweaks</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{}</span></div> <div><div html="&lt;p&gt;Optional settings for tweaking Feldera internals.&lt;/p&gt;
 &lt;p&gt;These settings reflect experiments that may come and go and change from
 version to version.  Users should not consider them to be stable.&lt;/p&gt;

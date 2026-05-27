@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_GKR68l5zo531AD1R3cnE3MCPEBPXTqgYax4q053LVBD",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.cd26ddab.js" defer="defer"></script>
-<script src="/assets/js/main.41163347.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6157040a.js" defer="defer"></script>
+<script src="/assets/js/main.3aff193e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -33,13 +33,13 @@ supported.
 See <a href="https://github.com/feldera/feldera/issues/3918" target="_blank" rel="noopener noreferrer" class="">#3918</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="no-string-or-double-types-in-over-ordering">No <code>STRING</code> or <code>DOUBLE</code> types in <code>OVER</code> ordering<a href="#no-string-or-double-types-in-over-ordering" class="hash-link" aria-label="Direct link to no-string-or-double-types-in-over-ordering" title="Direct link to no-string-or-double-types-in-over-ordering" translate="no">​</a></h3>
 <p>Window functions using <code>ORDER BY</code> on <code>VARCHAR</code>/<code>STRING</code> or
-<code>DOUBLE</code>/<code>FLOAT</code> columns are not yet supported.  This limitation
-affects TPC-DS queries q35, q47, q49, q51, q57, q70, and q86.
+<code>DOUBLE</code>/<code>FLOAT</code> columns are not yet supported.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="rows-frame-type-not-supported"><code>ROWS</code> frame type not supported<a href="#rows-frame-type-not-supported" class="hash-link" aria-label="Direct link to rows-frame-type-not-supported" title="Direct link to rows-frame-type-not-supported" translate="no">​</a></h3>
 <p>The <code>ROWS</code> frame specification in window functions is not yet
-supported.  Only <code>RANGE</code> frames are currently accepted.
-See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
+supported.  Only <code>RANGE</code> frames are currently accepted.  See
+<a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.  This
+limitation affects TPC-DS query q51.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="exclude-clause-not-supported"><code>EXCLUDE</code> clause not supported<a href="#exclude-clause-not-supported" class="hash-link" aria-label="Direct link to exclude-clause-not-supported" title="Direct link to exclude-clause-not-supported" translate="no">​</a></h3>
 <p>The <code>EXCLUDE</code> clause in window frame specifications is not supported.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
@@ -48,14 +48,16 @@ See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel=
 supported.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="constant-window-boundaries">Constant Window Boundaries<a href="#constant-window-boundaries" class="hash-link" aria-label="Direct link to Constant Window Boundaries" title="Direct link to Constant Window Boundaries" translate="no">​</a></h3>
-<p>Window boundaries must be constant expressions. For example, <code>RANGE BETWEEN INTERVAL 1 DAY PRECEDING AND CURRENT ROW</code> is valid. But <code>RANGE BETWEEN INTERVAL 1 MONTH PRECEDING AND CURRENT ROW</code> is not, because a month is a not a constant time interval.</p>
+<p>Window boundaries must be constant expressions. For example, <code>RANGE BETWEEN INTERVAL 1 DAY PRECEDING AND CURRENT ROW</code> is valid. But <code>RANGE BETWEEN INTERVAL 1 MONTH PRECEDING AND CURRENT ROW</code> is not, because a
+month is a not a constant time interval.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="correlated-subqueries">Correlated subqueries<a href="#correlated-subqueries" class="hash-link" aria-label="Direct link to Correlated subqueries" title="Direct link to Correlated subqueries" translate="no">​</a></h2>
 <p>Some forms of correlated subqueries are not yet implemented and will
 fail with a &quot;Not yet implemented&quot; error.  For example, using <code>UNNEST</code>
 on a column from an outer query inside an <code>ARRAY</code> subquery is not
 supported:</p>
 <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token comment" style="color:#999988;font-style:italic">-- NOT supported: correlated UNNEST inside ARRAY subquery</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token keyword" style="color:#00009f">SELECT</span><span class="token plain"> s</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">id</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> ARRAY</span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain"></span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token keyword" style="color:#00009f">SELECT</span><span class="token plain"> sp</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">cell</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token keyword" style="color:#00009f">FROM</span><span class="token plain"> UNNEST</span><span class="token punctuation" style="color:#393A34">(</span><span class="token plain">s</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">mentions</span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">AS</span><span class="token plain"> mention_id</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain">    </span><span class="token keyword" style="color:#00009f">JOIN</span><span class="token plain"> spreadsheet sp </span><span class="token keyword" style="color:#00009f">ON</span><span class="token plain"> sp</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">id </span><span class="token operator" style="color:#393A34">=</span><span class="token plain"> mention_id</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token punctuation" style="color:#393A34">)</span><span class="token plain"> </span><span class="token keyword" style="color:#00009f">AS</span><span class="token plain"> mentioned_cells</span><br></span><span class="token-line" style="color:#393A34"><span class="token plain"></span><span class="token keyword" style="color:#00009f">FROM</span><span class="token plain"> spreadsheet s</span><span class="token punctuation" style="color:#393A34">;</span><br></span></code></pre></div></div>
-<p>In some instances, Feldera cannot decorrelate complex nested subqueries. In these cases, we recommend users refactor the query.</p>
+<p>In some instances, Feldera cannot decorrelate complex nested
+subqueries. In these cases, we recommend users refactor the query.</p>
 <p>See <a href="https://github.com/feldera/feldera/issues/2555" target="_blank" rel="noopener noreferrer" class="">#2555</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="map-functions">Map functions<a href="#map-functions" class="hash-link" aria-label="Direct link to Map functions" title="Direct link to Map functions" translate="no">​</a></h2>
 <p>Several <code>MAP</code> functions are not yet implemented:</p>
@@ -66,7 +68,10 @@ See <a href="https://github.com/feldera/feldera/issues/1907" target="_blank" rel
 <p>The <code>MATCH_RECOGNIZE</code> clause for pattern matching over rows is not yet
 supported.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pivot--unpivot"><code>PIVOT</code> &amp; <code>UNPIVOT</code><a href="#pivot--unpivot" class="hash-link" aria-label="Direct link to pivot--unpivot" title="Direct link to pivot--unpivot" translate="no">​</a></h2>
-<p><code>PIVOT</code> is supported if the user provides a fixed set of columns. Refer to <a class="" href="/sql/aggregates#pivots">PIVOT documentation</a> for example usage. Dynamic <code>PIVOT</code> is not yet supported. <code>UNPIVOT</code> is not yet supported.</p>
+<p><code>PIVOT</code> is supported if the user provides a fixed set of
+columns. Refer to <a class="" href="/sql/aggregates#pivots">PIVOT documentation</a> for
+example usage. Dynamic <code>PIVOT</code> is not yet supported. <code>UNPIVOT</code> is not
+yet supported.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="intersect-all-and-except-all"><code>INTERSECT ALL</code> and <code>EXCEPT ALL</code><a href="#intersect-all-and-except-all" class="hash-link" aria-label="Direct link to intersect-all-and-except-all" title="Direct link to intersect-all-and-except-all" translate="no">​</a></h2>
 <p><code>INTERSECT ALL</code> and <code>EXCEPT ALL</code> operations are not yet supported.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="multiset-data-type"><code>MULTISET</code> Data Type<a href="#multiset-data-type" class="hash-link" aria-label="Direct link to multiset-data-type" title="Direct link to multiset-data-type" translate="no">​</a></h2>
