@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.301.0
+  version: 0.302.0
 paths:
   /config/authentication:
     get:
@@ -3265,12 +3265,14 @@ paths:
         - Simple configuration of the format may be provided using query
         parameters.
 
-        Use `format` to specify `csv` or `json` output and, for `json` only,
-        `array`
+        Specify `backpressure` to specify behavior when the HTTP client cannot
 
-        to specify whether to group updates into JSON arrays.  Specify
+        keep up.  Use `format` to specify `csv` or `json` output.  For `json`
 
-        `backpressure` to specify behavior when the HTTP client cannot keep up.
+        output format, `update_format` and `json_flavor` may be provided (with
+        the
+
+        same possible values as in JSON format configuration for connectors).
 
 
         - Comprehensive configuration may be provided by providing a connector
@@ -9306,6 +9308,14 @@ components:
           default: null
           nullable: true
           minimum: 0
+        streaming_exchange:
+          type: boolean
+          description: |-
+            Enable streaming exchange.
+
+            `false`
+          default: null
+          nullable: true
       additionalProperties:
         description: |-
           Options not understood by this particular version.

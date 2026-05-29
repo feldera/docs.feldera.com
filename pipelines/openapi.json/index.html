@@ -260,8 +260,8 @@ It contains the following fields:
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.92ce256b.js" defer="defer"></script>
-<script src="/assets/js/main.ecf62d94.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.f90d9f7a.js" defer="defer"></script>
+<script src="/assets/js/main.e1902ca1.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -1071,7 +1071,7 @@ html([data-theme='dark']) data-styled.g138[id="sc-dsqyIE"]{content:"kMdjdW,"}/*!
           55.627 l 55.6165,55.627 -231.245496,231.24803 c -127.185,127.1864
           -231.5279,231.248 -231.873,231.248 -0.3451,0 -104.688,
           -104.0616 -231.873,-231.248 z
-        " fill="currentColor"></path></g></svg></div></div><div class="sc-epzIaI kPnOTp api-content"><div class="sc-dsLRjI ylWLO"><div class="sc-la-DyAJ cPxlza"><div class="sc-fQpSrZ erEcGM api-info"><h1 class="sc-iCZxss sc-kyZUkZ gLjxfz ggRXlx">Feldera API<!-- --> <span>(<!-- -->0.301.0<!-- -->)</span></h1><p>Download OpenAPI specification<!-- -->:<a download="" target="_blank" href="https://docs.feldera.com/redocusaurus/openapijson.yaml" rel="noreferrer" class="sc-ggPMIW wiXqA">Download</a></p><div class="sc-euGquI sc-exazLc fCYcYT epGFRW"><div class="sc-fyEVcM exmIUt"><div class="sc-jNXgCp dkJvmf"><span class="sc-kwhYiz grLtag">Feldera Team<!-- -->:<!-- --> <a href="mailto:dev@feldera.com">dev@feldera.com</a></span> <!-- --> <span class="sc-kwhYiz grLtag">License:<!-- --> <a>MIT OR Apache-2.0</a></span> </div></div></div><div data-role="redoc-summary" html="" class="sc-euGquI sc-exazLc fCYcYT epGFRW"></div><div data-role="redoc-description" html="&lt;p&gt;With Feldera, users create data pipelines out of SQL programs.
+        " fill="currentColor"></path></g></svg></div></div><div class="sc-epzIaI kPnOTp api-content"><div class="sc-dsLRjI ylWLO"><div class="sc-la-DyAJ cPxlza"><div class="sc-fQpSrZ erEcGM api-info"><h1 class="sc-iCZxss sc-kyZUkZ gLjxfz ggRXlx">Feldera API<!-- --> <span>(<!-- -->0.302.0<!-- -->)</span></h1><p>Download OpenAPI specification<!-- -->:<a download="" target="_blank" href="https://docs.feldera.com/redocusaurus/openapijson.yaml" rel="noreferrer" class="sc-ggPMIW wiXqA">Download</a></p><div class="sc-euGquI sc-exazLc fCYcYT epGFRW"><div class="sc-fyEVcM exmIUt"><div class="sc-jNXgCp dkJvmf"><span class="sc-kwhYiz grLtag">Feldera Team<!-- -->:<!-- --> <a href="mailto:dev@feldera.com">dev@feldera.com</a></span> <!-- --> <span class="sc-kwhYiz grLtag">License:<!-- --> <a>MIT OR Apache-2.0</a></span> </div></div></div><div data-role="redoc-summary" html="" class="sc-euGquI sc-exazLc fCYcYT epGFRW"></div><div data-role="redoc-description" html="&lt;p&gt;With Feldera, users create data pipelines out of SQL programs.
 A SQL program comprises tables and views, and includes as well the definition of
 input and output connectors for each respectively. A connector defines a data
 source or data sink to feed input data into tables or receive output data
@@ -2304,9 +2304,10 @@ Running           Running            Yes
 table or view.  The stream is configurable two ways:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;Simple configuration of the format may be provided using query parameters.
-Use &lt;code&gt;format&lt;/code&gt; to specify &lt;code&gt;csv&lt;/code&gt; or &lt;code&gt;json&lt;/code&gt; output and, for &lt;code&gt;json&lt;/code&gt; only, &lt;code&gt;array&lt;/code&gt;
-to specify whether to group updates into JSON arrays.  Specify
-&lt;code&gt;backpressure&lt;/code&gt; to specify behavior when the HTTP client cannot keep up.&lt;/p&gt;
+Specify &lt;code&gt;backpressure&lt;/code&gt; to specify behavior when the HTTP client cannot
+keep up.  Use &lt;code&gt;format&lt;/code&gt; to specify &lt;code&gt;csv&lt;/code&gt; or &lt;code&gt;json&lt;/code&gt; output.  For &lt;code&gt;json&lt;/code&gt;
+output format, &lt;code&gt;update_format&lt;/code&gt; and &lt;code&gt;json_flavor&lt;/code&gt; may be provided (with the
+same possible values as in JSON format configuration for connectors).&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Comprehensive configuration may be provided by providing a connector
 configuration as a JSON body.  In this case, no query parameters are
@@ -2321,9 +2322,10 @@ connection or the pipeline is stopped.&lt;/p&gt;
 table or view.  The stream is configurable two ways:</p>
 <ul>
 <li><p>Simple configuration of the format may be provided using query parameters.
-Use <code>format</code> to specify <code>csv</code> or <code>json</code> output and, for <code>json</code> only, <code>array</code>
-to specify whether to group updates into JSON arrays.  Specify
-<code>backpressure</code> to specify behavior when the HTTP client cannot keep up.</p>
+Specify <code>backpressure</code> to specify behavior when the HTTP client cannot
+keep up.  Use <code>format</code> to specify <code>csv</code> or <code>json</code> output.  For <code>json</code>
+output format, <code>update_format</code> and <code>json_flavor</code> may be provided (with the
+same possible values as in JSON format configuration for connectors).</p>
 </li>
 <li><p>Comprehensive configuration may be provided by providing a connector
 configuration as a JSON body.  In this case, no query parameters are
