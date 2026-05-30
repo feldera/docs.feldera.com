@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.f90d9f7a.js" defer="defer"></script>
-<script src="/assets/js/main.e1902ca1.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8a78e947.js" defer="defer"></script>
+<script src="/assets/js/main.f1b4112a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -67,7 +67,7 @@ state is tracked by the storage status.</p>
 <ul>
 <li class=""><code>deployment_id</code> (set becoming <code>Provisioning</code>, unset becoming <code>Stopping</code>)</li>
 <li class=""><code>deployment_config</code> (set becoming <code>Provisioning</code>, unset becoming <code>Stopping</code>)</li>
-<li class=""><code>deployment_error</code> (set becoming <code>Stopping</code> (if error), must be unset to have desired status
+<li class=""><code>deployment_error</code> (set becoming <code>Stopping</code> or <code>Stopped</code> (if error), must be unset to have desired status
 become <code>Provisioned</code> (either via <code>/start?dismiss_error=true</code> (default) or <code>/dismiss_error</code>))</li>
 <li class=""><code>deployment_initial</code> (set when desired status becomes <code>Provisioned</code>, unset becoming <code>Stopping</code>
 or desired status becomes <code>Stopped</code> while status is still <code>Stopped</code>)</li>
@@ -82,12 +82,13 @@ or desired status becomes <code>Stopped</code> while status is still <code>Stopp
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="resources-status-table">Resources status table<a href="#resources-status-table" class="hash-link" aria-label="Direct link to Resources status table" title="Direct link to Resources status table" translate="no">​</a></h3>
 <table><thead><tr><th>Resources status</th><th>Compute resources</th><th>Storage resources</th><th>Storage status</th><th>Program status</th><th>Runtime status</th></tr></thead><tbody><tr><td><strong>Stopped</strong>*</td><td>Deprovisioned.</td><td>Any</td><td>Any</td><td>Any</td><td>-</td></tr><tr><td><strong>Provisioning</strong></td><td>Being provisioned.</td><td>Already provisioned or being provisioned.</td><td>InUse</td><td>Success</td><td>-</td></tr><tr><td><strong>Provisioned</strong>*</td><td>Provisioned.</td><td>Provisioned.</td><td>InUse</td><td>Success</td><td>Any</td></tr><tr><td><strong>Stopping</strong></td><td>Being deprovisioned.</td><td>Provisioned.</td><td>InUse</td><td>Success</td><td>-</td></tr><tr><td>(*) Also a possible desired status</td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="resources-status-diagram">Resources status diagram<a href="#resources-status-diagram" class="hash-link" aria-label="Direct link to Resources status diagram" title="Direct link to Resources status diagram" translate="no">​</a></h3>
-<p><img decoding="async" loading="lazy" alt="Resources status diagram" src="/assets/images/resources_status-8d19f002f6be429c5555862dcea4a009.png" width="532" height="362" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Resources status diagram" src="/assets/images/resources_status-cdc7be21d96dd99d0891f3ae0822f7e3.png" width="533" height="363" class="img_ev3q"></p>
 <p><strong>Resource status diagram notes:</strong></p>
 <ul>
 <li class=""><strong>Compilation requirement:</strong> A pipeline must be compiled (program status <code>Success</code>) before it can move
 from <code>Stopped</code> → <code>Provisioning</code>. If <code>/start</code> is called before compilation (&quot;early start&quot;), it waits until
-compilation succeeds (then goes to <code>Provisioning</code>) or fails (then goes to <code>Stopping</code>).</li>
+compilation succeeds (then goes to <code>Provisioning</code>) or fails (remains <code>Stopped</code> but with an error).
+If the pipeline already failed to compile, <code>/start</code> will directly return an error.</li>
 <li class=""><strong>Provisioning timeout:</strong> <strong>Provisioning</strong> has a max time limit (e.g., waiting for Kubernetes objects to
 become healthy). If it times out, the pipeline automatically stops.<!-- -->
 <ul>

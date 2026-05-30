@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.302.0
+  version: 0.303.0
 paths:
   /config/authentication:
     get:
@@ -13759,11 +13759,11 @@ components:
 
         ```text
 
-        /start (early start failed)
+        /start (early start or provision check failed)
 
-        ┌───────────────────┐
+        ┌───┐
 
-        │                   ▼
+        │   ▼
 
         Stopped ◄────────── Stopping
 
