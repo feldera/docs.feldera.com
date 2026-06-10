@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.306.0
+  version: 0.307.0
 paths:
   /config/authentication:
     get:
@@ -7736,7 +7736,6 @@ components:
 
 
                 The default is 1 million.
-              nullable: true
               minimum: 0
             max_worker_batch_size:
               type: integer
@@ -14868,6 +14867,10 @@ components:
           description: SQL `TIMESTAMP` type.
           enum:
             - Timestamp
+        - type: string
+          description: SQL `TIMESTAMP WITH TIME ZONE` type.
+          enum:
+            - TimestampTz
         - type: object
           required:
             - Interval
