@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.309.0
+  version: 0.310.0
 paths:
   /config/authentication:
     get:
@@ -709,6 +709,7 @@ paths:
                     profile: optimized
                     cache: true
                     runtime_version: null
+                    use_platform_compiler: false
                   program_version: 2
                   program_status: Pending
                   program_status_since: '1970-01-01T00:00:00Z'
@@ -791,6 +792,7 @@ paths:
                     profile: unoptimized
                     cache: true
                     runtime_version: null
+                    use_platform_compiler: false
                   program_version: 1
                   program_status: Pending
                   program_status_since: '1970-01-01T00:00:00Z'
@@ -889,6 +891,7 @@ paths:
                 profile: optimized
                 cache: true
                 runtime_version: null
+                use_platform_compiler: false
         required: true
       responses:
         '201':
@@ -952,6 +955,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -1118,6 +1122,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -1236,6 +1241,7 @@ paths:
                 profile: optimized
                 cache: true
                 runtime_version: null
+                use_platform_compiler: false
         required: true
       responses:
         '200':
@@ -1299,6 +1305,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -1388,6 +1395,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -1601,6 +1609,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -6434,6 +6443,7 @@ paths:
                   profile: optimized
                   cache: true
                   runtime_version: null
+                  use_platform_compiler: false
                 program_version: 2
                 program_status: Pending
                 program_status_since: '1970-01-01T00:00:00Z'
@@ -11632,16 +11642,14 @@ components:
             same record can overwrite or cancel previous updates.
 
 
-            By default, the buffer can grow indefinitely until one of
-
-            the other output conditions is satisfied.
+            The default is 10,000,000.
 
 
             NOTE: this configuration option requires the `enable_output_buffer`
             flag
 
             to be set.
-          default: 18446744073709552000
+          default: 10000000
           minimum: 0
         max_output_buffer_time_millis:
           type: integer
@@ -13352,6 +13360,43 @@ components:
             platform version.
           default: null
           nullable: true
+        use_platform_compiler:
+          type: boolean
+          description: >-
+            Use the platform SQL compiler when a non-platform `runtime_version`
+            is specified.
+
+
+            Warning: This setting is experimental and may change in the future.
+
+            Requires the platform to run with the unstable feature
+            `runtime_version` enabled.
+
+
+            When `false` (default), the SQL compiler matching the
+            `runtime_version` is
+
+            downloaded and used. When `true`, the platform's SQL compiler is
+            used instead.
+
+
+            Setting this to `true` avoids downloading the
+            runtime-version-specific SQL
+
+            compiler JAR (e.g., when network access is unavailable or slow), at
+            the cost
+
+            of potentially using a mismatched SQL compiler. The Rust runtime
+            sources are
+
+            still checked out and compiled from the requested `runtime_version`.
+
+
+            Has no effect when `runtime_version` is not set or the platform does
+            not have
+
+            the unstable feature `runtime_version` enabled.
+          default: false
     ProgramDiff:
       type: object
       description: Summary of changes in the program between checkpointed and new versions.
