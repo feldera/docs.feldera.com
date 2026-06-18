@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.f4dfd376.js" defer="defer"></script>
-<script src="/assets/js/main.1d29112f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.ee2fe20d.js" defer="defer"></script>
+<script src="/assets/js/main.9723bb5a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -45,6 +45,13 @@ panics or invoke undefined behaviors. These can lead to crashes, memory corrupti
 unpredictable behavior within the pipeline.  UDFs should handle all runtime errors gracefully,
 by returning a <code>Result::Err()</code> (<a href="#return-types" class="">see below</a>). This ensures that errors are
 propagated in a controlled manner and can be handled by the calling code.</p>
+</li>
+<li class="">
+<p>The compiler assumes that the semantics of a user-defined function does not change between
+pipeline restarts.  Modifying the definition of a UDF before restarting a pipeline may lead to
+incorrect results.  When the semantics of a UDF changes, we also recommend changing the UDF
+function name; this will enable the compiler to recognize that past results produced using
+the UDF need to be recomputed.</p>
 </li>
 </ul></div></div>
 <p>Feldera supports UDFs implemented in Rust. To define a UDF, users declare the function
@@ -94,7 +101,7 @@ types.  A nullable SQL type is represented by the corresponding rust
 Rust types, but are defined in the
 <a href="https://docs.rs/feldera-sqllib/0.27.0/feldera_sqllib/" target="_blank" rel="noopener noreferrer" class="">feldera-sqllib</a>
 crate, which is part of the Feldera SQL runtime.</p>
-<table><thead><tr><th>SQL</th><th>Rust</th></tr></thead><tbody><tr><td><code>BOOLEAN</code></td><td><code>bool</code></td></tr><tr><td><code>TINYINT</code></td><td><code>i8</code></td></tr><tr><td><code>SMALLINT</code></td><td><code>i16</code></td></tr><tr><td><code>INT</code></td><td><code>i32</code></td></tr><tr><td><code>BIGINT</code></td><td><code>i64</code></td></tr><tr><td><code>TINYINT UNSIGNED</code></td><td><code>u8</code></td></tr><tr><td><code>SMALLINT UNSIGNED</code></td><td><code>u16</code></td></tr><tr><td><code>INT UNSIGNED</code></td><td><code>u32</code></td></tr><tr><td><code>BIGINT UNSIGNED</code></td><td><code>u64</code></td></tr><tr><td><code>DECIMAL(p, s)</code></td><td><code>feldera_sqllib::SqlDecimal&lt;P, S&gt;</code></td></tr><tr><td><code>REAL</code></td><td><code>feldera_sqllib::F32</code></td></tr><tr><td><code>DOUBLE</code></td><td><code>feldera_sqllib::F64</code></td></tr><tr><td><code>CHAR</code>, <code>CHAR(n)</code></td><td><code>feldera_sqllib::SqlString</code></td></tr><tr><td><code>VARCHAR</code>, <code>VARCHAR(n)</code></td><td><code>feldera_sqllib::SqlString</code></td></tr><tr><td><code>BINARY</code>, <code>BINARY(n)</code>, <code>VARBINARY</code>, <code>VARBINARY(n)</code></td><td><code>feldera_sqllib::ByteArray</code></td></tr><tr><td><code>NULL</code></td><td><code>()</code></td></tr><tr><td><code>INTERVAL</code></td><td><code>feldera_sqllib::ShortInterval</code>, <code>feldera_sqllib::LongInterval</code></td></tr><tr><td><code>TIME</code></td><td><code>feldera_sqllib::Time</code></td></tr><tr><td><code>TIMESTAMP</code></td><td><code>feldera_sqllib::Timestamp</code></td></tr><tr><td><code>DATE</code></td><td><code>feldera_sqllib::Date</code></td></tr><tr><td><code>T ARRAY</code></td><td><code>feldera_sqllib::Array&lt;T&gt;</code></td></tr><tr><td><code>MAP&lt;K, V&gt;</code></td><td><code>feldera_sqllib::Map&lt;K, V&gt;</code></td></tr><tr><td><code>UUID</code></td><td><code>feldera_sqllib::Uuid</code></td></tr><tr><td><code>VARIANT</code></td><td><code>feldera_sqllib::Variant</code></td></tr><tr><td><code>ROW</code></td><td><code>Tup</code>N</td></tr><tr><td>User-defined struct type</td><td><code>Tup</code>N</td></tr></tbody></table>
+<table><thead><tr><th>SQL</th><th>Rust</th></tr></thead><tbody><tr><td><code>BOOLEAN</code></td><td><code>bool</code></td></tr><tr><td><code>TINYINT</code></td><td><code>i8</code></td></tr><tr><td><code>SMALLINT</code></td><td><code>i16</code></td></tr><tr><td><code>INT</code></td><td><code>i32</code></td></tr><tr><td><code>BIGINT</code></td><td><code>i64</code></td></tr><tr><td><code>TINYINT UNSIGNED</code></td><td><code>u8</code></td></tr><tr><td><code>SMALLINT UNSIGNED</code></td><td><code>u16</code></td></tr><tr><td><code>INT UNSIGNED</code></td><td><code>u32</code></td></tr><tr><td><code>BIGINT UNSIGNED</code></td><td><code>u64</code></td></tr><tr><td><code>DECIMAL(p, s)</code></td><td><code>feldera_sqllib::SqlDecimal&lt;P, S&gt;</code></td></tr><tr><td><code>REAL</code></td><td><code>feldera_sqllib::F32</code></td></tr><tr><td><code>DOUBLE</code></td><td><code>feldera_sqllib::F64</code></td></tr><tr><td><code>CHAR</code>, <code>CHAR(n)</code></td><td><code>feldera_sqllib::SqlString</code></td></tr><tr><td><code>VARCHAR</code>, <code>VARCHAR(n)</code></td><td><code>feldera_sqllib::SqlString</code></td></tr><tr><td><code>BINARY</code>, <code>BINARY(n)</code>, <code>VARBINARY</code>, <code>VARBINARY(n)</code></td><td><code>feldera_sqllib::ByteArray</code></td></tr><tr><td><code>NULL</code></td><td><code>()</code></td></tr><tr><td><code>INTERVAL</code></td><td><code>feldera_sqllib::ShortInterval</code>, <code>feldera_sqllib::LongInterval</code></td></tr><tr><td><code>TIME</code></td><td><code>feldera_sqllib::Time</code></td></tr><tr><td><code>TIMESTAMP</code></td><td><code>feldera_sqllib::Timestamp</code></td></tr><tr><td><code>TIMESTAMP WITH TIME ZONE</code></td><td><code>feldera_sqllib::TimestampTz</code></td></tr><tr><td><code>DATE</code></td><td><code>feldera_sqllib::Date</code></td></tr><tr><td><code>T ARRAY</code></td><td><code>feldera_sqllib::Array&lt;T&gt;</code></td></tr><tr><td><code>MAP&lt;K, V&gt;</code></td><td><code>feldera_sqllib::Map&lt;K, V&gt;</code></td></tr><tr><td><code>UUID</code></td><td><code>feldera_sqllib::Uuid</code></td></tr><tr><td><code>VARIANT</code></td><td><code>feldera_sqllib::Variant</code></td></tr><tr><td><code>ROW</code></td><td><code>Tup</code>N</td></tr><tr><td>User-defined struct type</td><td><code>Tup</code>N</td></tr></tbody></table>
 <p>Multiple SQL types may be represented by the same Rust type.  For
 example, <code>CHAR</code>, <code>CHAR(n)</code>, <code>VARCHAR(n)</code>, and <code>VARCHAR</code> are all
 represented by the <code>SqlString</code> type.</p>
@@ -154,7 +161,10 @@ function using an explicit cast: <code>CONTAINS_NUMBER(CAST(&#x27;2010-10-20&#x2
 </li>
 <li class="">
 <p>User-defined functions cannot have names identical to standard SQL
-library function names.</p>
+library function names.  Future additions to the SQL library may
+introduce functions that clash with user-defined function names.  We
+recommend users to use function names that are unlikely to
+match future additions, e.g., by using an unusual custom prefix.</p>
 </li>
 <li class="">
 <p>Polymorphic functions are not supported.  For example, in SQL the
@@ -166,6 +176,27 @@ cannot be implemented as a single user-defined function.</p>
 <div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>Experimental feature</div><div class="admonitionContent_BuS1"><p>Rust UDA support is currently experimental and may undergo significant
 changes, including non-backward-compatible modifications, in future
 releases of Feldera.</p></div></div>
+<div class="theme-admonition theme-admonition-danger admonition_xJq3 alert alert--danger"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 12 16"><path fill-rule="evenodd" d="M5.05.31c.81 2.17.41 3.38-.52 4.31C3.55 5.67 1.98 6.45.9 7.98c-1.45 2.05-1.7 6.53 3.53 7.7-2.2-1.16-2.67-4.52-.3-6.61-.61 2.03.53 3.33 1.94 2.86 1.39-.47 2.3.53 2.27 1.67-.02.78-.31 1.44-1.13 1.81 3.42-.59 4.78-3.42 4.78-5.56 0-2.84-2.53-3.22-1.25-5.61-1.52.13-2.03 1.13-1.89 2.75.09 1.08-1.02 1.8-1.86 1.33-.67-.41-.66-1.19-.06-1.78C8.18 5.31 8.68 2.45 5.05.32L5.03.3l.02.01z"></path></svg></span>danger</div><div class="admonitionContent_BuS1"><ul>
+<li class="">
+<p>Feldera&#x27;s incremental query engine assumes that all computations are deterministic. Using
+a non-deterministic UDA is likely to result in incorrect outputs. The SQL compiler cannot verify
+that Rust functions meet this requirement. Therefore, it is the responsibility of the UDF
+developer to ensure that their UDAs are deterministic, i.e., the function&#x27;s return value
+must depend solely on its arguments and not on clocks, random number generators, external
+data sources, or other sources of non-determinism.</p>
+</li>
+<li class="">
+<p>UDAs are compiled into native binary code and executed directly within the address space of
+the pipeline. Therefore, only trusted code should be included in UDAs.</p>
+</li>
+<li class="">
+<p>The compiler assumes that the semantics of a user-defined aggregate does not change between
+pipeline restarts.  Modifying the definition of a UDA before restarting a pipeline may lead to
+incorrect results.  When the semantics of a UDA changes, we also recommend changing the UDA
+function name; this will enable the compiler to recognize that past results produced using
+the UDA need to be recomputed.</p>
+</li>
+</ul></div></div>
 <p>The SQL statement <code>CREATE AGGREGATE</code> can be used to extend the set of
 aggregate functions supported by Feldera SQL with user-defined
 aggregation functions.  Such functions need to be implemented in Rust.
