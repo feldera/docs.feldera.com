@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline_builder &mdash; Feldera Python SDK 0.312.0 documentation</title>
+  <title>feldera.pipeline_builder &mdash; Feldera Python SDK 0.313.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=18c7c500"></script>
+        <script src="../../_static/documentation_options.js?v=69128f59"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -78,7 +78,7 @@
              
   <h1>Source code for feldera.pipeline_builder</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompilationProfile</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
@@ -97,6 +97,7 @@
 <span class="sd">    :param client: The :class:`.FelderaClient` instance</span>
 <span class="sd">    :param name: The name of the pipeline</span>
 <span class="sd">    :param description: The description of the pipeline</span>
+<span class="sd">    :param tags: Free-form labels used to organize, group, and filter pipelines</span>
 <span class="sd">    :param sql: The SQL code of the pipeline</span>
 <span class="sd">    :param udf_rust: Rust code for UDFs</span>
 <span class="sd">    :param udf_toml: Rust dependencies required by UDFs (in the TOML format)</span>
@@ -116,6 +117,7 @@
         <span class="n">udf_rust</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">udf_toml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">compilation_profile</span><span class="p">:</span> <span class="n">CompilationProfile</span> <span class="o">=</span> <span class="n">CompilationProfile</span><span class="o">.</span><span class="n">OPTIMIZED</span><span class="p">,</span>
         <span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="o">.</span><span class="n">default</span><span class="p">(),</span>
         <span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -123,6 +125,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span> <span class="n">FelderaClient</span> <span class="o">=</span> <span class="n">client</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">tags</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">sql</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">udf_rust</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">udf_rust</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">udf_toml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">udf_toml</span>
@@ -130,6 +133,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">:</span> <span class="n">RuntimeConfig</span> <span class="o">=</span> <span class="n">runtime_config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s2">&quot;FELDERA_RUNTIME_VERSION&quot;</span><span class="p">,</span> <span class="n">runtime_version</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_platform_compiler</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FELDERA_USE_PLATFORM_COMPILER&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -159,12 +165,14 @@
         <span class="n">inner</span> <span class="o">=</span> <span class="n">InnerPipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
             <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="p">,</span>
             <span class="n">udf_rust</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">udf_rust</span><span class="p">,</span>
             <span class="n">udf_toml</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">udf_toml</span><span class="p">,</span>
             <span class="n">program_config</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">compilation_profile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="s2">&quot;runtime_version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">,</span>
+                <span class="s2">&quot;use_platform_compiler&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_platform_compiler</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="n">runtime_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
         <span class="p">)</span>
@@ -205,12 +213,14 @@
         <span class="n">inner</span> <span class="o">=</span> <span class="n">InnerPipeline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
             <span class="n">sql</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sql</span><span class="p">,</span>
             <span class="n">udf_rust</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">udf_rust</span><span class="p">,</span>
             <span class="n">udf_toml</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">udf_toml</span><span class="p">,</span>
             <span class="n">program_config</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;profile&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">compilation_profile</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                 <span class="s2">&quot;runtime_version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime_version</span><span class="p">,</span>
+                <span class="s2">&quot;use_platform_compiler&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_platform_compiler</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="n">runtime_config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
         <span class="p">)</span>

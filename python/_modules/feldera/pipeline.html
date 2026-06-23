@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.312.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.313.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=18c7c500"></script>
+        <script src="../../_static/documentation_options.js?v=69128f59"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -1134,6 +1134,21 @@
         <span class="k">return</span> <span class="n">uuid</span></div>
 
 
+<div class="viewcode-block" id="Pipeline.remote_checkpoints">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.remote_checkpoints">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remote_checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lists checkpoints available in the configured remote object storage.</span>
+
+<span class="sd">        :return: A list of remote checkpoint descriptors, each containing at</span>
+<span class="sd">            minimum a ``uuid`` field.</span>
+
+<span class="sd">        :raises FelderaAPIError: If sync storage is not configured or</span>
+<span class="sd">            enterprise features are not enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_remote_checkpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Pipeline.sync_checkpoint_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointStatus</span><span class="p">:</span>
@@ -1431,18 +1446,22 @@
         <span class="n">program_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">runtime_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tags</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Modify the pipeline.</span>
 
 <span class="sd">        Modify the values of pipeline attributes: SQL code, UDF Rust code,</span>
-<span class="sd">        UDF Rust dependencies (TOML), program config, runtime config, and</span>
-<span class="sd">        description. Only the provided attributes will be modified. Other</span>
-<span class="sd">        attributes will remain unchanged.</span>
+<span class="sd">        UDF Rust dependencies (TOML), program config, runtime config,</span>
+<span class="sd">        description, and tags. Only the provided attributes will be modified.</span>
+<span class="sd">        Other attributes will remain unchanged.</span>
 
-<span class="sd">        The pipeline must be in the STOPPED state to be modified.</span>
+<span class="sd">        Most attributes require the pipeline to be in the STOPPED state to be</span>
+<span class="sd">        modified. The ``description`` and ``tags`` are an exception: they can be</span>
+<span class="sd">        modified at any time, as they have no effect on the deployed pipeline.</span>
 
-<span class="sd">        :raises FelderaAPIError: If the pipeline is not in a STOPPED state.</span>
+<span class="sd">        :raises FelderaAPIError: If a non-metadata attribute is modified while</span>
+<span class="sd">            the pipeline is not in a STOPPED state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">patch_pipeline</span><span class="p">(</span>
@@ -1453,6 +1472,7 @@
             <span class="n">program_config</span><span class="o">=</span><span class="n">program_config</span><span class="p">,</span>
             <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1646,6 +1666,17 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="o">.</span><span class="n">description</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.tags">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.tags">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the tags of the pipeline.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner</span><span class="p">,</span> <span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">[])</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.tables">
