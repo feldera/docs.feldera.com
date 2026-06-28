@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.b3ba7e83.css">
-<script src="/assets/js/runtime~main.e64ddeb5.js" defer="defer"></script>
-<script src="/assets/js/main.89070034.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1f170b3e.js" defer="defer"></script>
+<script src="/assets/js/main.25e3a527.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -61,7 +61,7 @@ subqueries. In these cases, we recommend users refactor the query.</p>
 <p>See <a href="https://github.com/feldera/feldera/issues/2555" target="_blank" rel="noopener noreferrer" class="">#2555</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="map-functions">Map functions<a href="#map-functions" class="hash-link" aria-label="Direct link to Map functions" title="Direct link to Map functions" translate="no">​</a></h2>
 <p>Several <code>MAP</code> functions are not yet implemented:</p>
-<table><thead><tr><th>Function</th><th>Status</th></tr></thead><tbody><tr><td><code>MAP_CONCAT</code></td><td>Not supported</td></tr><tr><td><code>MAP_ENTRIES</code></td><td>Not supported</td></tr><tr><td><code>MAP_FROM_ARRAYS</code></td><td>Not supported</td></tr><tr><td><code>MAP_FROM_ENTRIES</code></td><td>Not supported</td></tr><tr><td><code>STR_TO_MAP</code></td><td>Not supported</td></tr><tr><td>Building a <code>MAP</code> from a subquery returning a pair of columns</td><td>Not supported</td></tr></tbody></table>
+<table><thead><tr><th>Function</th><th>Status</th></tr></thead><tbody><tr><td><code>MAP_ENTRIES</code></td><td>Not supported</td></tr><tr><td><code>MAP_FROM_ARRAYS</code></td><td>Not supported</td></tr><tr><td><code>MAP_FROM_ENTRIES</code></td><td>Not supported</td></tr><tr><td><code>STR_TO_MAP</code></td><td>Not supported</td></tr></tbody></table>
 <p>A list of supported MAP operations is available <a class="" href="/sql/map">here</a>.
 See <a href="https://github.com/feldera/feldera/issues/1907" target="_blank" rel="noopener noreferrer" class="">#1907</a>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="match_recognize"><code>MATCH_RECOGNIZE</code><a href="#match_recognize" class="hash-link" aria-label="Direct link to match_recognize" title="Direct link to match_recognize" translate="no">​</a></h2>
