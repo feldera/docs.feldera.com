@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.315.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.316.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=969c34ce"></script>
+        <script src="../../_static/documentation_options.js?v=04e3ea25"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -620,6 +620,53 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wait_for_adhoc_write</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Block until every record currently in the circuit has been processed</span>
+<span class="sd">        to completion.</span>
+
+<span class="sd">        This backs the ``wait`` option of :meth:`.query` and :meth:`.execute`.</span>
+<span class="sd">        An ad-hoc ``INSERT`` returns once its records have been</span>
+<span class="sd">        pushed to the circuit, but not necessarily once the circuit has</span>
+<span class="sd">        processed them, so a subsequent ad-hoc ``SELECT`` is not guaranteed to</span>
+<span class="sd">        observe the write. To close that gap, this method snapshots the number</span>
+<span class="sd">        of records that have entered the circuit</span>
+<span class="sd">        (``total_input_records - buffered_input_records``) and polls until the</span>
+<span class="sd">        pipeline reports at least that many records completed. The write&#39;s</span>
+<span class="sd">        records are part of that count, because the ``/query`` endpoint pushes</span>
+<span class="sd">        them to the circuit before returning.</span>
+
+<span class="sd">        The metric polled is ``total_completed_records``, so &quot;completed&quot; means</span>
+<span class="sd">        more than just visible to ad-hoc queries: a record is counted only once</span>
+<span class="sd">        the DBSP engine has processed it *and* every output connector has</span>
+<span class="sd">        processed the outputs derived from it. Therefore, when this method</span>
+<span class="sd">        returns, both of the following hold for the write:</span>
+
+<span class="sd">        - ad-hoc queries reflect the updates, and</span>
+<span class="sd">        - all output connectors have processed (sent out) the outputs the</span>
+<span class="sd">          updates produced.</span>
+
+<span class="sd">        :param poll_interval_s: Interval between ``/stats`` polls.</span>
+<span class="sd">        :param timeout_s: Maximum time to wait, or ``None`` to wait</span>
+<span class="sd">            indefinitely.</span>
+<span class="sd">        :raises TimeoutError: If ``timeout_s`` elapses before the records are</span>
+<span class="sd">            processed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_input_records</span> <span class="o">-</span> <span class="n">metrics</span><span class="o">.</span><span class="n">buffered_input_records</span>
+
+        <span class="n">start_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">total_completed_records</span> <span class="o">&lt;</span> <span class="n">target</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_s</span> <span class="o">&gt;=</span> <span class="n">timeout_s</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for an ad-hoc&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; write on pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to be processed&quot;</span>
+                <span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Pipeline.activate">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.activate">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">activate</span><span class="p">(</span>
@@ -1210,11 +1257,13 @@
 
 <div class="viewcode-block" id="Pipeline.query">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.query">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes an ad-hoc SQL query on this pipeline and returns a generator</span>
 <span class="sd">        that yields the rows of the result as Python dictionaries. For</span>
-<span class="sd">        ``INSERT`` and ``DELETE`` queries, consider using :meth:`.execute`</span>
+<span class="sd">        ``INSERT`` queries, consider using :meth:`.execute`</span>
 <span class="sd">        instead. All floating-point numbers are deserialized as ``Decimal``</span>
 <span class="sd">        to avoid precision loss.</span>
 
@@ -1227,10 +1276,19 @@
 <span class="sd">            You can only ``SELECT`` from materialized tables and views.</span>
 
 <span class="sd">        Important:</span>
-<span class="sd">            This method is lazy. It returns a generator and is not evaluated</span>
-<span class="sd">            until you consume the result.</span>
+<span class="sd">            With the default ``wait=False`` this method is lazy: it returns a</span>
+<span class="sd">            generator and is not evaluated until you consume the result.</span>
 
 <span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :param wait: When ``True``, block until the query&#39;s writes have been</span>
+<span class="sd">            fully processed by the pipeline. Once the call returns, a</span>
+<span class="sd">            subsequent ad-hoc query observes the writes (read-your-writes)</span>
+<span class="sd">            *and* every output connector has processed the outputs the writes</span>
+<span class="sd">            produced. This is useful for ``INSERT`` queries; it</span>
+<span class="sd">            has no effect on a pure ``SELECT`` other than waiting for</span>
+<span class="sd">            already-in-flight records to be processed. Setting ``wait=True``</span>
+<span class="sd">            consumes the result eagerly. ``False`` by default for backward</span>
+<span class="sd">            compatibility.</span>
 <span class="sd">        :return: A generator that yields the rows of the result as Python</span>
 <span class="sd">            dictionaries.</span>
 
@@ -1242,7 +1300,15 @@
 
         <span class="c1"># Delegate to the non-deprecated internal helper so calls through</span>
         <span class="c1"># `query()` don&#39;t surface a DeprecationWarning to user code.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">_query_json_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span></div>
+        <span class="n">gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">_query_json_stream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gen</span>
+
+        <span class="c1"># Eagerly consume the result so the query&#39;s writes reach the circuit,</span>
+        <span class="c1"># block until they are processed, then replay the collected rows.</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gen</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_adhoc_write</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.query_parquet">
@@ -1366,15 +1432,15 @@
 
 <div class="viewcode-block" id="Pipeline.execute">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.execute">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Executes an ad-hoc SQL query on the current pipeline, discarding its</span>
 <span class="sd">        result. Unlike the :meth:`.query` method which returns a generator for</span>
 <span class="sd">        retrieving query results lazily, this method processes the query</span>
 <span class="sd">        eagerly and fully before returning.</span>
 
-<span class="sd">        This method is suitable for SQL operations like ``INSERT`` and</span>
-<span class="sd">        ``DELETE``, where the user needs confirmation of successful query</span>
+<span class="sd">        This method is suitable for SQL operations like ``INSERT``</span>
+<span class="sd">        where the user needs confirmation of successful query</span>
 <span class="sd">        execution, but does not require the query result. If the query fails,</span>
 <span class="sd">        an exception will be raised.</span>
 
@@ -1383,13 +1449,20 @@
 <span class="sd">            pipeline is paused, it will block until the pipeline is resumed.</span>
 
 <span class="sd">        :param query: The SQL query to be executed.</span>
+<span class="sd">        :param wait: When ``True``, block until the query&#39;s writes have been</span>
+<span class="sd">            fully processed by the pipeline. Once the call returns, a</span>
+<span class="sd">            subsequent ad-hoc query observes the writes (read-your-writes)</span>
+<span class="sd">            *and* every output connector has processed the outputs the writes</span>
+<span class="sd">            produced. ``False`` by default for backward compatibility.</span>
 
 <span class="sd">        :raises FelderaAPIError: If the pipeline is not in a RUNNING state.</span>
 <span class="sd">        :raises FelderaAPIError: If the query is invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">gen</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_tabular</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-        <span class="n">deque</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        <span class="n">deque</span><span class="p">(</span><span class="n">gen</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_for_adhoc_write</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.clear_storage">

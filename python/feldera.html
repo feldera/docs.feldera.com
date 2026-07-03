@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.315.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.316.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=969c34ce"></script>
+        <script src="_static/documentation_options.js?v=04e3ea25"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -531,13 +531,13 @@ was set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.execute">
-<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.execute" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.execute" title="Link to this definition"></a></dt>
 <dd><p>Executes an ad-hoc SQL query on the current pipeline, discarding its
 result. Unlike the <a class="reference internal" href="#feldera.pipeline.Pipeline.query" title="feldera.pipeline.Pipeline.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query()</span></code></a> method which returns a generator for
 retrieving query results lazily, this method processes the query
 eagerly and fully before returning.</p>
-<p>This method is suitable for SQL operations like <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and
-<code class="docutils literal notranslate"><span class="pre">DELETE</span></code>, where the user needs confirmation of successful query
+<p>This method is suitable for SQL operations like <code class="docutils literal notranslate"><span class="pre">INSERT</span></code>
+where the user needs confirmation of successful query
 execution, but does not require the query result. If the query fails,
 an exception will be raised.</p>
 <dl class="simple">
@@ -547,7 +547,14 @@ pipeline is paused, it will block until the pipeline is resumed.</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> – The SQL query to be executed.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – The SQL query to be executed.</p></li>
+<li><p><strong>wait</strong> – When <code class="docutils literal notranslate"><span class="pre">True</span></code>, block until the query’s writes have been
+fully processed by the pipeline. Once the call returns, a
+subsequent ad-hoc query observes the writes (read-your-writes)
+<em>and</em> every output connector has processed the outputs the writes
+produced. <code class="docutils literal notranslate"><span class="pre">False</span></code> by default for backward compatibility.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -875,10 +882,10 @@ Rust code to a binary.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.query">
-<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.query" title="Link to this definition"></a></dt>
 <dd><p>Executes an ad-hoc SQL query on this pipeline and returns a generator
 that yields the rows of the result as Python dictionaries. For
-<code class="docutils literal notranslate"><span class="pre">INSERT</span></code> and <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> queries, consider using <a class="reference internal" href="#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a>
+<code class="docutils literal notranslate"><span class="pre">INSERT</span></code> queries, consider using <a class="reference internal" href="#feldera.pipeline.Pipeline.execute" title="feldera.pipeline.Pipeline.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">execute()</span></code></a>
 instead. All floating-point numbers are deserialized as <code class="docutils literal notranslate"><span class="pre">Decimal</span></code>
 to avoid precision loss.</p>
 <p>For new code, prefer <a class="reference internal" href="#feldera.pipeline.Pipeline.query_arrow" title="feldera.pipeline.Pipeline.query_arrow"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query_arrow()</span></code></a>: Arrow IPC keeps full
@@ -888,13 +895,24 @@ returns every column even when two share a name. See
 <dl class="simple">
 <dt>Note:</dt><dd><p>You can only <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> from materialized tables and views.</p>
 </dd>
-<dt>Important:</dt><dd><p>This method is lazy. It returns a generator and is not evaluated
-until you consume the result.</p>
+<dt>Important:</dt><dd><p>With the default <code class="docutils literal notranslate"><span class="pre">wait=False</span></code> this method is lazy: it returns a
+generator and is not evaluated until you consume the result.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>query</strong> – The SQL query to be executed.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – The SQL query to be executed.</p></li>
+<li><p><strong>wait</strong> – When <code class="docutils literal notranslate"><span class="pre">True</span></code>, block until the query’s writes have been
+fully processed by the pipeline. Once the call returns, a
+subsequent ad-hoc query observes the writes (read-your-writes)
+<em>and</em> every output connector has processed the outputs the writes
+produced. This is useful for <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> queries; it
+has no effect on a pure <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> other than waiting for
+already-in-flight records to be processed. Setting <code class="docutils literal notranslate"><span class="pre">wait=True</span></code>
+consumes the result eagerly. <code class="docutils literal notranslate"><span class="pre">False</span></code> by default for backward
+compatibility.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A generator that yields the rows of the result as Python
