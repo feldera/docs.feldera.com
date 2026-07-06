@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.316.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.317.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=04e3ea25"></script>
+        <script src="../../../_static/documentation_options.js?v=7536a07c"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -97,6 +97,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_tags</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.retry</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryConfig</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -430,7 +431,7 @@
             <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">program_config</span><span class="p">,</span>
             <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">,</span>
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
+            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">_normalize_tags</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">tags</span><span class="p">),</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
@@ -466,7 +467,7 @@
             <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">program_config</span><span class="p">,</span>
             <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">,</span>
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">tags</span><span class="p">,</span>
+            <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">_normalize_tags</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">tags</span><span class="p">),</span>
         <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
@@ -502,6 +503,10 @@
 <span class="sd">        stored one, and a field left as ``None`` is omitted from the request and</span>
 <span class="sd">        leaves the stored value untouched. To clear the description or tags, pass</span>
 <span class="sd">        an empty string or empty list, respectively.</span>
+
+<span class="sd">        Tags, when provided, are normalized before being sent: color variants of</span>
+<span class="sd">        the same display name are collapsed and the result is stored in API server database</span>
+<span class="sd">        in lexicographic order (see :mod:`feldera.tags`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
@@ -513,7 +518,7 @@
                 <span class="s2">&quot;program_config&quot;</span><span class="p">:</span> <span class="n">program_config</span><span class="p">,</span>
                 <span class="s2">&quot;runtime_config&quot;</span><span class="p">:</span> <span class="n">runtime_config</span><span class="p">,</span>
                 <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
-                <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">tags</span><span class="p">,</span>
+                <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="n">_normalize_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="k">if</span> <span class="n">tags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span></div>
 

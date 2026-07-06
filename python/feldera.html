@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.316.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.317.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=04e3ea25"></script>
+        <script src="_static/documentation_options.js?v=7536a07c"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -1411,6 +1411,9 @@ checked.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.tags">
 <span class="sig-name descname"><span class="pre">tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.tags" title="Link to this definition"></a></dt>
 <dd><p>Return the tags of the pipeline.</p>
+<p>Tags are returned verbatim, including the <code class="docutils literal notranslate"><span class="pre">|rrggbb</span></code> color suffix the web
+console uses to encode a tag’s color. Use <code class="xref py py-func docutils literal notranslate"><span class="pre">feldera.tags.tag_display_name()</span></code>
+to obtain the tag’s text label.</p>
 </dd></dl>
 
 <dl class="py method">
