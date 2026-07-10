@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.318.0
+  version: 0.319.0
 paths:
   /config/authentication:
     get:
@@ -10444,6 +10444,122 @@ components:
 
             Example: `"s3://my-data-warehouse/tables/"`
           nullable: true
+    HeaderFilter:
+      oneOf:
+        - type: object
+          required:
+            - header
+          properties:
+            header:
+              $ref: '#/components/schemas/HeaderMatch'
+        - type: object
+          required:
+            - and
+          properties:
+            and:
+              type: array
+              items:
+                $ref: '#/components/schemas/HeaderFilter'
+              description: >-
+                Conjunction: matches when every nested filter matches.  Must
+                have at
+
+                least one operand.
+        - type: object
+          required:
+            - or
+          properties:
+            or:
+              type: array
+              items:
+                $ref: '#/components/schemas/HeaderFilter'
+              description: >-
+                Disjunction: matches when at least one nested filter matches. 
+                Must have
+
+                at least one operand.
+        - type: object
+          required:
+            - not
+          properties:
+            not:
+              $ref: '#/components/schemas/HeaderFilter'
+      description: >-
+        A boolean filter over the headers of a Kafka message.
+
+
+        The Kafka input connector uses this to drop messages whose headers do
+        not
+
+        satisfy a predicate.  It is a tree of boolean operators (`and`, `or`,
+        `not`)
+
+        whose leaves are regular expression tests on individual header values. 
+        It
+
+        serializes as an externally tagged JSON object, for example:
+
+
+        ```json
+
+        {
+
+        "and": [
+
+        { "header": { "name": "event-type", "pattern": "created|updated" } },
+
+        { "not": { "header": { "name": "source", "pattern": "test-.*" } } }
+
+        ]
+
+        }
+
+        ```
+
+
+        This admits a message only if it has an `event-type` header valued
+        exactly
+
+        `created` or `updated` and does not have a `source` header whose value
+
+        starts with `test-`.
+    HeaderMatch:
+      type: object
+      description: >-
+        A leaf of a [`HeaderFilter`]: a regular expression tested against the
+        value
+
+        of a named Kafka header.
+      required:
+        - name
+        - pattern
+      properties:
+        name:
+          type: string
+          description: Name of the header to test, matched exactly against the header key.
+        pattern:
+          type: string
+          description: >-
+            Regular expression ([Rust `regex` crate
+
+            syntax](https://docs.rs/regex/latest/regex/#syntax)) tested against
+            the
+
+            header value.
+
+
+            The value is matched as raw bytes, so non-UTF-8 values and byte
+            patterns
+
+            work.  The pattern must match the *entire* value: it is anchored
+
+            automatically, so `^`/`$` are unnecessary (though harmless).  A
+            header
+
+            present with a null value is matched as an empty byte sequence; a
+            header
+
+            that appears more than once matches if any of its values match.
     HealthStatus:
       type: object
       required:
@@ -10511,6 +10627,7 @@ components:
       enum:
         - rest
         - glue
+        - s3tables
     IcebergIngestMode:
       type: string
       description: >-
@@ -10541,6 +10658,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/GlueCatalogConfig'
         - $ref: '#/components/schemas/RestCatalogConfig'
+        - $ref: '#/components/schemas/S3TablesCatalogConfig'
         - type: object
           required:
             - mode
@@ -11022,6 +11140,10 @@ components:
 
             consumer group during initialization.
           minimum: 0
+        header_filter:
+          allOf:
+            - $ref: '#/components/schemas/HeaderFilter'
+          nullable: true
         include_headers:
           type: boolean
           description: >-
@@ -15067,6 +15189,52 @@ components:
         region:
           type: string
           description: AWS region.
+    S3TablesCatalogConfig:
+      type: object
+      description: Amazon S3 Tables catalog config.
+      properties:
+        s3tables.access-key-id:
+          type: string
+          description: Access key id used to access the S3 Tables catalog.
+          nullable: true
+        s3tables.endpoint:
+          type: string
+          description: >-
+            Custom endpoint URL for the S3 Tables service.
+
+
+            Primarily used to target a local or mock S3 Tables implementation
+            for testing.
+
+            When omitted, the default regional endpoint is used.
+          nullable: true
+        s3tables.profile-name:
+          type: string
+          description: Profile used to access the S3 Tables catalog.
+          nullable: true
+        s3tables.region:
+          type: string
+          description: Region of the S3 Tables catalog.
+          nullable: true
+        s3tables.secret-access-key:
+          type: string
+          description: Secret access key used to access the S3 Tables catalog.
+          nullable: true
+        s3tables.session-token:
+          type: string
+          description: Static session token used to access the S3 Tables catalog.
+          nullable: true
+        s3tables.table-bucket-arn:
+          type: string
+          description: >-
+            ARN of the S3 table bucket that contains the table.
+
+
+            Note that this is the ARN of the table *bucket*, not of an
+            individual table,
+
+            e.g., `"arn:aws:s3tables:us-east-2:123456789012:bucket/my-bucket"`.
+          nullable: true
     SampleStatistics:
       type: object
       description: One sample of time-series data.
