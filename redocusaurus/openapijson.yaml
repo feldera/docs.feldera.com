@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.320.0
+  version: 0.321.0
 paths:
   /config/authentication:
     get:
@@ -6174,54 +6174,6 @@ paths:
                         reasons (e.g., deadlock): the pipeline logs might
                         contain additional information (original send request
                         error: Timeout while waiting for response)
-      security:
-        - JSON web token (JWT) or API key: []
-  /v0/pipelines/{pipeline_name}/testing:
-    post:
-      tags:
-        - Metrics & Debugging
-      summary: Test Endpoint
-      description: >-
-        This endpoint is used as part of the test harness. Only available if the
-        `testing`
-
-        unstable feature is enabled. Do not use in production.
-      operationId: post_pipeline_testing
-      parameters:
-        - name: pipeline_name
-          in: path
-          description: Unique pipeline name
-          required: true
-          schema:
-            type: string
-        - name: set_platform_version
-          in: query
-          required: false
-          schema:
-            type: string
-            nullable: true
-      responses:
-        '200':
-          description: Request successfully processed
-        '404':
-          description: Pipeline with that name does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                message: Unknown pipeline name 'non-existent-pipeline'
-                error_code: UnknownPipelineName
-                details:
-                  pipeline_name: non-existent-pipeline
-        '405':
-          description: >-
-            Endpoint is disabled. Set FELDERA_UNSTABLE_FEATURES="testing" to
-            enable.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/time_series:
