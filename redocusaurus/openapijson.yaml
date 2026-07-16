@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.321.0
+  version: 0.322.0
 paths:
   /config/authentication:
     get:
@@ -8067,14 +8067,7 @@ components:
         - Unhealthy
     ConnectorStats:
       type: object
-      description: >-
-        Aggregated connector error statistics.
-
-
-        This structure contains the sum of all error counts across all input and
-        output connectors
-
-        for a pipeline.
+      description: Statistics across all connectors.
       required:
         - num_errors
       properties:
@@ -8084,7 +8077,6 @@ components:
           description: |-
             Total number of errors across all connectors.
 
-            This is the sum of:
             - `num_transport_errors` from all input connectors
             - `num_parse_errors` from all input connectors
             - `num_encode_errors` from all output connectors
@@ -12950,6 +12942,8 @@ components:
                 - $ref: '#/components/schemas/RuntimeStatus'
               nullable: true
             deployment_runtime_status_details:
+              allOf:
+                - $ref: '#/components/schemas/RuntimeStatusDetails'
               nullable: true
             deployment_runtime_status_since:
               type: string
@@ -12990,6 +12984,8 @@ components:
             storage_status:
               $ref: '#/components/schemas/StorageStatus'
             storage_status_details:
+              allOf:
+                - $ref: '#/components/schemas/StorageStatusDetails'
               nullable: true
             udf_rust:
               type: string
@@ -13132,6 +13128,8 @@ components:
                 - $ref: '#/components/schemas/RuntimeStatus'
               nullable: true
             deployment_runtime_status_details:
+              allOf:
+                - $ref: '#/components/schemas/RuntimeStatusDetails'
               nullable: true
             deployment_runtime_status_since:
               type: string
@@ -13179,6 +13177,8 @@ components:
             storage_status:
               $ref: '#/components/schemas/StorageStatus'
             storage_status_details:
+              allOf:
+                - $ref: '#/components/schemas/StorageStatusDetails'
               nullable: true
             udf_rust:
               type: string
@@ -15048,6 +15048,34 @@ components:
         - Paused
         - Running
         - Suspended
+    RuntimeStatusDetails:
+      type: object
+      description: >-
+        Details about the current runtime status. The fields in this struct
+        should all be **optional**
+
+        and set only by a runtime status when they are known. Otherwise, they
+        can just be set `None`.
+      properties:
+        approval_diff:
+          description: |-
+            The diff which is awaiting approval.
+
+            Specifically useful for: `AwaitingApproval`.
+          nullable: true
+        connector_stats:
+          allOf:
+            - $ref: '#/components/schemas/ConnectorStats'
+          nullable: true
+        reason:
+          type: string
+          description: >-
+            Free form text giving an explanation why it is currently in this
+            runtime status.
+
+
+            Specifically useful for: `Unavailable`, `Initializing`.
+          nullable: true
     RustCompilationInfo:
       type: object
       description: Rust compilation information.
@@ -15622,6 +15650,21 @@ components:
         - Cleared
         - InUse
         - Clearing
+    StorageStatusDetails:
+      type: object
+      description: >-
+        Details about pipeline storage, which are returned as part of the
+        regular runtime status polling
+
+        by the runner.
+      required:
+        - checkpoints
+      properties:
+        checkpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckpointMetadata'
+          description: Present checkpoints.
     SuspendError:
       oneOf:
         - type: object
