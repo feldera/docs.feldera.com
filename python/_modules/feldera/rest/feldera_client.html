@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.323.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.324.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=5e58cb77"></script>
+        <script src="../../../_static/documentation_options.js?v=d0033ab9"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -624,6 +624,7 @@
         <span class="n">initial</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -654,6 +655,9 @@
         <span class="k">if</span> <span class="n">silent_bootstrap</span><span class="p">:</span>
             <span class="n">start_params</span><span class="p">[</span><span class="s2">&quot;silent_bootstrap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
 
+        <span class="k">if</span> <span class="n">concurrent_bootstrap</span><span class="p">:</span>
+            <span class="n">start_params</span><span class="p">[</span><span class="s2">&quot;concurrent_bootstrap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
             <span class="n">params</span><span class="o">=</span><span class="n">start_params</span><span class="p">,</span>
@@ -675,6 +679,7 @@
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -695,6 +700,7 @@
             <span class="s2">&quot;running&quot;</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="p">,</span>
             <span class="n">silent_bootstrap</span><span class="p">,</span>
+            <span class="n">concurrent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
@@ -708,6 +714,7 @@
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -727,6 +734,7 @@
             <span class="s2">&quot;paused&quot;</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="p">,</span>
             <span class="n">silent_bootstrap</span><span class="p">,</span>
+            <span class="n">concurrent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
@@ -740,6 +748,7 @@
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">bootstrap_policy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BootstrapPolicy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -759,6 +768,7 @@
             <span class="s2">&quot;standby&quot;</span><span class="p">,</span>
             <span class="n">bootstrap_policy</span><span class="p">,</span>
             <span class="n">silent_bootstrap</span><span class="p">,</span>
+            <span class="n">concurrent_bootstrap</span><span class="p">,</span>
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
@@ -827,6 +837,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">silent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Approve a pipeline awaiting approval to proceed with bootstrapping.</span>
@@ -835,9 +846,17 @@
 <span class="sd">        :param silent_bootstrap: Set True to bootstrap with output connectors</span>
 <span class="sd">            disabled, so no records are emitted during the bootstrap phase.</span>
 <span class="sd">            False by default.</span>
+<span class="sd">        :param concurrent_bootstrap: Set True to bootstrap new and modified views</span>
+<span class="sd">            concurrently, keeping the pre-existing views live while the new ones</span>
+<span class="sd">            backfill in the background. Mutually exclusive with</span>
+<span class="sd">            `silent_bootstrap`. False by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;silent_bootstrap&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">}</span> <span class="k">if</span> <span class="n">silent_bootstrap</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">silent_bootstrap</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;silent_bootstrap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
+        <span class="k">if</span> <span class="n">concurrent_bootstrap</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;concurrent_bootstrap&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/approve&quot;</span><span class="p">,</span>
@@ -1014,6 +1033,98 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/clock/advance&quot;</span><span class="p">,</span>
             <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;delta_ms&quot;</span><span class="p">:</span> <span class="n">delta_ms</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.pipeline_diff">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pipeline_diff">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pipeline_diff</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">program_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the diff between the pipeline&#39;s current program and a proposed</span>
+<span class="sd">        new version, without modifying or restarting the pipeline.</span>
+
+<span class="sd">        The diff lists the tables, views, and connectors that would be added,</span>
+<span class="sd">        removed, or modified. It is the same diff shown when approving changes</span>
+<span class="sd">        during bootstrapping, so it lets you preview the effect of a change</span>
+<span class="sd">        before applying it.</span>
+
+<span class="sd">        The baseline is the pipeline&#39;s currently configured program compiled</span>
+<span class="sd">        with its runtime, not necessarily the program in the latest checkpoint</span>
+<span class="sd">        (which may have been produced by a different program or runtime).</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline.</span>
+
+<span class="sd">        :param program_code: New SQL program code to compare against. If</span>
+<span class="sd">            ``None`` (the default), the pipeline&#39;s current program code is used.</span>
+
+<span class="sd">        :param runtime_version: Runtime version to compile the new program with:</span>
+<span class="sd">            a version tag (``vX.Y.Z``) or a 40-character git SHA. If ``None``</span>
+<span class="sd">            (the default), the platform&#39;s default runtime is used.</span>
+
+<span class="sd">        :return: The pipeline diff as a dict (see the ``PipelineDiff`` schema).</span>
+
+<span class="sd">        :raises FelderaAPIError: If the current program is not compiled, the new</span>
+<span class="sd">            program fails to compile, the change cannot be bootstrapped, or the</span>
+<span class="sd">            compiler service is unavailable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">body</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">program_code</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;program_code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">program_code</span>
+        <span class="k">if</span> <span class="n">runtime_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;runtime_version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">runtime_version</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/diff&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.validate_program">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.validate_program">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_program</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">program_code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">runtime_version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ir</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate a SQL program by compiling it, without creating a pipeline or</span>
+<span class="sd">        building the pipeline binary.</span>
+
+<span class="sd">        Reports SQL errors and warnings and the derived schema and connectors.</span>
+<span class="sd">        Set ``ir`` to also return the program IR (dataflow).</span>
+
+<span class="sd">        A SQL compilation error is reported in the returned result (as</span>
+<span class="sd">        ``SqlError``), not raised. ``FelderaAPIError`` is raised only for a</span>
+<span class="sd">        system-level failure, such as an invalid runtime version or the</span>
+<span class="sd">        compiler service being unavailable.</span>
+
+<span class="sd">        :param program_code: The SQL program to validate.</span>
+
+<span class="sd">        :param runtime_version: Runtime version to compile the program with: a</span>
+<span class="sd">            version tag (``vX.Y.Z``) or a 40-character git SHA. If ``None`` (the</span>
+<span class="sd">            default), the platform&#39;s default runtime is used.</span>
+
+<span class="sd">        :param ir: Also return the program IR (dataflow) in the result.</span>
+
+<span class="sd">        :return: The validation result as a dict (see the</span>
+<span class="sd">            ``ValidateProgramResponse`` schema): one of ``{&quot;Success&quot;: {...}}``,</span>
+<span class="sd">            ``{&quot;SqlError&quot;: {...}}``, or ``{&quot;SystemError&quot;: {...}}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">body</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;program_code&quot;</span><span class="p">:</span> <span class="n">program_code</span><span class="p">,</span> <span class="s2">&quot;ir&quot;</span><span class="p">:</span> <span class="n">ir</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">runtime_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;runtime_version&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">runtime_version</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/validate_program&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 

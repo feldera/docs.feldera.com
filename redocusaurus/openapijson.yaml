@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.323.0
+  version: 0.324.0
 paths:
   /config/authentication:
     get:
@@ -1877,6 +1877,18 @@ paths:
           required: false
           schema:
             type: boolean
+        - name: concurrent_bootstrap
+          in: query
+          description: >-
+            Bootstrap new and modified views concurrently, keeping the
+            pre-existing
+
+            views live while the new ones backfill. Mutually exclusive with
+
+            `silent_bootstrap`.
+          required: false
+          schema:
+            type: boolean
       responses:
         '200':
           description: Bootstrap approved
@@ -1884,6 +1896,12 @@ paths:
             application/json:
               schema:
                 type: string
+        '400':
+          description: Bootstrap options are mutually inconsistent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -3367,6 +3385,90 @@ paths:
                   pipeline_name: non-existent-pipeline
         '500':
           description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/pipelines/{pipeline_name}/diff:
+    post:
+      tags:
+        - Pipeline Lifecycle
+      summary: Compute Program Diff
+      description: >-
+        Compute the diff between the pipeline's current program and a proposed
+        new
+
+        version, without modifying or restarting the pipeline.
+
+
+        The diff lists the tables, views, and connectors that would be added,
+
+        removed, or modified. It is the same diff shown when approving changes
+        during
+
+        bootstrapping, letting you preview the effect of a change before
+        applying it.
+
+
+        The baseline is the pipeline's currently configured program compiled
+        with its
+
+        runtime, not necessarily the program in the latest checkpoint (which may
+        have
+
+        been produced by a different program or runtime version).
+      operationId: post_pipeline_diff
+      parameters:
+        - name: pipeline_name
+          in: path
+          description: Unique pipeline name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The proposed new SQL program and/or runtime version (both optional)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineDiffRequest'
+        required: true
+      responses:
+        '200':
+          description: Diff successfully computed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineDiff'
+        '400':
+          description: >-
+            The new program failed to compile or the change cannot be
+            bootstrapped
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Pipeline does not exist or its current program has not been compiled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The compiler service is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: The compiler did not respond within the configured timeout
           content:
             application/json:
               schema:
@@ -4961,6 +5063,16 @@ paths:
         - name: silent_bootstrap
           in: query
           description: Bootstrap the pipeline with output connectors disabled.
+          required: false
+          schema:
+            type: boolean
+        - name: concurrent_bootstrap
+          in: query
+          description: >-
+            Bootstrap new and modified views concurrently, keeping the
+            pre-existing
+
+            views live while the new ones backfill in the background.
           required: false
           schema:
             type: boolean
@@ -6750,6 +6862,73 @@ paths:
                         error: Timeout while waiting for response)
       security:
         - JSON web token (JWT) or API key: []
+  /v0/validate_program:
+    post:
+      tags:
+        - Pipeline Lifecycle
+      summary: Validate Program
+      description: >-
+        Validate a SQL program by compiling it, without creating a pipeline or
+
+        building the pipeline binary. Reports SQL errors and warnings and the
+        derived
+
+        schema and connectors. Set `ir` to also return the program IR
+        (dataflow).
+
+
+        Note that this endpoint returns HTTP 200, regardless of whether
+        validation
+
+        succeeds or fails. The validation result, including any compiler
+        warnings and errors,
+
+        is encoded in the `ValidateProgramResponse` response body.
+      operationId: post_validate_program
+      requestBody:
+        description: >-
+          The SQL program to validate, an optional runtime version, and whether
+          to return the IR
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateProgramRequest'
+        required: true
+      responses:
+        '200':
+          description: >-
+            Validation completed; the body reports success, SQL errors, or a
+            system error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidateProgramResponse'
+        '400':
+          description: The requested runtime version is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: The compiler service is unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '504':
+          description: The compiler did not respond within the configured timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
 components:
   schemas:
     AdHocInputConfig:
@@ -7487,6 +7666,8 @@ components:
         - AwaitingApproval
         - Initializing
         - Bootstrapping
+        - ConcurrentBootstrapping
+        - Synchronizing
         - Replaying
         - Paused
         - Running
@@ -7644,6 +7825,16 @@ components:
 
             inputs associated with the token have been fully processed by the
             pipeline.
+    ConcurrentBootstrapPhase:
+      type: string
+      description: |-
+        Phase of a concurrent bootstrap.
+
+        `#[repr(u8)]` + `NoUninit` so it can be stored in a lock-free `Atomic`.
+      enum:
+        - Inactive
+        - ConcurrentBootstrapping
+        - Synchronizing
     Condition:
       type: object
       properties:
@@ -9483,6 +9674,11 @@ components:
             value; the new offset value is ignored |
           default: null
           nullable: true
+        optimize_input_during_commit:
+          type: boolean
+          description: Optimize input operators during transaction commit.
+          default: null
+          nullable: true
         splitter_chunk_size_records:
           type: integer
           format: int64
@@ -9526,10 +9722,7 @@ components:
           minimum: 0
         streaming_exchange:
           type: boolean
-          description: |-
-            Enable streaming exchange.
-
-            `false`
+          description: Enable streaming exchange.
           default: null
           nullable: true
       additionalProperties:
@@ -9628,6 +9821,27 @@ components:
             the selected `write_mode`.
           nullable: true
           minimum: 0
+        delete_condition_expression:
+          type: string
+          description: >-
+            [Condition expression] evaluated before each delete.
+
+
+            When the condition is false, the delete is skipped without failing
+            the
+
+            connector. This option requires `transactional` [`write_mode`]. The
+
+            expression cannot use `ExpressionAttributeNames` or
+
+            `ExpressionAttributeValues` placeholders.
+
+
+            [Condition expression]:
+            https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html
+
+            [`write_mode`]: Self::write_mode
+          nullable: true
         endpoint_url:
           type: string
           description: |-
@@ -9700,6 +9914,44 @@ components:
           default: 10
           nullable: true
           minimum: 0
+        put_condition_expression:
+          type: string
+          description: >-
+            [Condition expression] evaluated before each put (insert or upsert).
+
+
+            When the condition is false, the record is skipped without failing
+            the
+
+            connector. This option requires `transactional` [`write_mode`].
+
+
+            The condition gates every value write, and the connector cannot tell
+            a
+
+            replayed insert from a legitimate update: both arrive as puts. A
+            guard
+
+            such as `attribute_not_exists(id)` therefore also suppresses updates
+            to
+
+            existing keys, not just replayed duplicates. Choose the expression
+
+            accordingly.
+
+
+            The connector does not currently support `ExpressionAttributeNames`
+            or
+
+            `ExpressionAttributeValues`, so the expression cannot use
+            placeholders.
+
+
+            [Condition expression]:
+            https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.ConditionExpressions.html
+
+            [`write_mode`]: Self::write_mode
+          nullable: true
         region:
           type: string
           description: AWS region.
@@ -10088,6 +10340,7 @@ components:
         - transaction_status
         - transaction_id
         - transaction_initiators
+        - concurrent_bootstrap_phase
         - rss_bytes
         - memory_pressure
         - memory_pressure_epoch
@@ -10127,6 +10380,12 @@ components:
           description: Total number of records currently buffered by all endpoints.
           minimum: 0
         commit_progress:
+          allOf:
+            - $ref: '#/components/schemas/CommitProgressSummary'
+          nullable: true
+        concurrent_bootstrap_phase:
+          $ref: '#/components/schemas/ConcurrentBootstrapPhase'
+        concurrent_bootstrap_progress:
           allOf:
             - $ref: '#/components/schemas/CommitProgressSummary'
           nullable: true
@@ -12857,6 +13116,26 @@ components:
           type: array
           items:
             type: string
+    PipelineDiffRequest:
+      type: object
+      description: Request body for the pipeline diff endpoint.
+      properties:
+        program_code:
+          type: string
+          description: |-
+            New SQL program code to compare against. If omitted, the pipeline's
+            current program code is used.
+          nullable: true
+        runtime_version:
+          type: string
+          description: >-
+            Runtime version to compile the new program with: a version tag
+
+            (`vX.Y.Z`) or a 40-character git SHA. If omitted, the platform's
+            default
+
+            runtime is used.
+          nullable: true
     PipelineFieldSelector:
       type: string
       enum:
@@ -15048,6 +15327,8 @@ components:
         - Paused
         - Running
         - Suspended
+        - ConcurrentBootstrapping
+        - Synchronizing
     RuntimeStatusDetails:
       type: object
       description: >-
@@ -16355,6 +16636,77 @@ components:
           type: string
         user:
           type: string
+    ValidateProgramRequest:
+      type: object
+      description: Request body for the program validation endpoint.
+      required:
+        - program_code
+      properties:
+        ir:
+          type: boolean
+          description: >-
+            Return the program IR (dataflow) in the response. `false` by
+            default;
+
+            most callers only need to know whether the program is valid.
+        program_code:
+          type: string
+          description: SQL program code to validate.
+        runtime_version:
+          type: string
+          description: >-
+            Runtime version to compile with: a version tag (`vX.Y.Z`) or a
+
+            40-character git SHA. If omitted, the platform's default runtime is
+            used.
+          nullable: true
+    ValidateProgramResponse:
+      oneOf:
+        - type: object
+          required:
+            - Success
+          properties:
+            Success:
+              type: object
+              description: >-
+                Validation succeeded; `program_info` is the serialized
+                `ProgramInfo` with
+
+                the Rust artifacts omitted (and the dataflow omitted unless `ir`
+                was set).
+              required:
+                - program_info
+              properties:
+                program_info: {}
+        - type: object
+          required:
+            - SqlError
+          properties:
+            SqlError:
+              type: object
+              description: The SQL program failed to compile.
+              required:
+                - info
+              properties:
+                info:
+                  $ref: '#/components/schemas/SqlCompilationInfo'
+        - type: object
+          required:
+            - SystemError
+          properties:
+            SystemError:
+              type: object
+              description: >-
+                A system error prevented validation (e.g., the runtime-specific
+                SQL
+
+                compiler could not be downloaded).
+              required:
+                - error
+              properties:
+                error:
+                  type: string
+      description: Outcome of validating a SQL program.
     Version:
       type: integer
       format: int64

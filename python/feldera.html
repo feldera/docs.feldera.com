@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.323.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.324.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=5e58cb77"></script>
+        <script src="_static/documentation_options.js?v=d0033ab9"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -279,7 +279,7 @@ the body is malformed, or the pipeline is not running.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.approve">
-<span class="sig-name descname"><span class="pre">approve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.approve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.approve" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">approve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.approve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.approve" title="Link to this definition"></a></dt>
 <dd><p>Approves the pipeline to proceed with bootstrapping.</p>
 <p>This method is used when a pipeline has been started with
 <cite>bootstrap_policy=BootstrapPolicy.AWAIT_APPROVAL</cite> and is currently in the
@@ -287,9 +287,15 @@ AWAITINGAPPROVAL state. The pipeline will wait for explicit user approval
 before proceeding with the bootstrapping process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>silent_bootstrap</strong> – Set True to bootstrap with output connectors
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>silent_bootstrap</strong> – Set True to bootstrap with output connectors
 disabled, so no records are emitted during the bootstrap phase.
-False by default.</p>
+False by default.</p></li>
+<li><p><strong>concurrent_bootstrap</strong> – Set True to bootstrap new and modified views
+concurrently, keeping the pre-existing views live while the new ones
+backfill in the background. Mutually exclusive with
+<cite>silent_bootstrap</cite>. False by default.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -484,6 +490,39 @@ was set.</p>
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.description">
 <span class="sig-name descname"><span class="pre">description</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.description" title="Link to this definition"></a></dt>
 <dd><p>Return the description of the pipeline.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.diff">
+<span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">program_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runtime_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.diff" title="Link to this definition"></a></dt>
+<dd><p>Compute the diff between this pipeline’s current program and a proposed
+new version, without modifying or restarting the pipeline.</p>
+<p>The diff lists the tables, views, and connectors that would be added,
+removed, or modified. It is the same diff shown when approving changes
+during bootstrapping, so it lets you preview the effect of a change
+before applying it.</p>
+<p>The baseline is this pipeline’s currently configured program compiled
+with its runtime, not necessarily the program in the latest checkpoint
+(which may have been produced by a different program or runtime).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>program_code</strong> – New SQL program code to compare against. If
+<code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), the pipeline’s current program code is used.</p></li>
+<li><p><strong>runtime_version</strong> – Runtime version to compile the new program with:
+a version tag (<code class="docutils literal notranslate"><span class="pre">vX.Y.Z</span></code>) or a 40-character git SHA. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(the default), the platform’s default runtime is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The pipeline diff as a dict (see the <code class="docutils literal notranslate"><span class="pre">PipelineDiff</span></code> schema).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the current program is not compiled, the new
+program fails to compile, the change cannot be bootstrapped, or the
+compiler service is unavailable.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1110,7 +1149,7 @@ enterprise features are not enabled.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.restart">
-<span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.restart" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.restart" title="Link to this definition"></a></dt>
 <dd><p>Restarts the pipeline.</p>
 <p>This method forcibly <strong>STOPS</strong> the pipeline regardless of its current
 state and then starts it again. No checkpoints are made when stopping
@@ -1119,6 +1158,11 @@ the pipeline.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
+<li><p><strong>silent_bootstrap</strong> – Set True to bootstrap the pipeline with output connectors disabled. False by default.</p></li>
+<li><p><strong>concurrent_bootstrap</strong> – Set True to bootstrap new and modified views
+concurrently, keeping the pre-existing views live while the new ones
+backfill in the background. Mutually exclusive with
+<cite>silent_bootstrap</cite>. False by default.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 pipeline to restart.</p></li>
 <li><p><strong>dismiss_error</strong> – Set True to dismiss any deployment error before starting;
@@ -1190,7 +1234,7 @@ as the number of workers, requires storage to be cleared.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start" title="Link to this definition"></a></dt>
 <dd><p id="start">Starts this pipeline.</p>
 <ul class="simple">
 <li><p>The pipeline must be in STOPPED state to start.</p></li>
@@ -1202,6 +1246,10 @@ as the number of workers, requires storage to be cleared.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
 <li><p><strong>silent_bootstrap</strong> – Set True to bootstrap the pipeline with output connectors disabled. False by default.</p></li>
+<li><p><strong>concurrent_bootstrap</strong> – Set True to bootstrap new and modified views
+concurrently, keeping the pre-existing views live while the new ones
+backfill in the background. Mutually exclusive with
+<cite>silent_bootstrap</cite>. False by default.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 pipeline to start.</p></li>
 <li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default</p></li>
@@ -1223,12 +1271,17 @@ set False to make it fail in that case. True by default.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_paused">
-<span class="sig-name descname"><span class="pre">start_paused</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_paused"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_paused" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">start_paused</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_paused"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_paused" title="Link to this definition"></a></dt>
 <dd><p>Starts the pipeline in the paused state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
+<li><p><strong>silent_bootstrap</strong> – Set True to bootstrap the pipeline with output connectors disabled. False by default.</p></li>
+<li><p><strong>concurrent_bootstrap</strong> – Set True to bootstrap new and modified views
+concurrently, keeping the pre-existing views live while the new ones
+backfill in the background. Mutually exclusive with
+<cite>silent_bootstrap</cite>. False by default.</p></li>
 <li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 pipeline to start (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
@@ -1255,12 +1308,17 @@ set False to make it fail in that case. True by default.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_standby">
-<span class="sig-name descname"><span class="pre">start_standby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_standby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_standby" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">start_standby</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bootstrap_policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#feldera.enums.BootstrapPolicy" title="feldera.enums.BootstrapPolicy"><span class="pre">BootstrapPolicy</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concurrent_bootstrap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dismiss_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_standby"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_standby" title="Link to this definition"></a></dt>
 <dd><p>Starts the pipeline in the standby state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bootstrap_policy</strong> – The bootstrap policy to use.</p></li>
+<li><p><strong>silent_bootstrap</strong> – Set True to bootstrap the pipeline with output connectors disabled. False by default.</p></li>
+<li><p><strong>concurrent_bootstrap</strong> – Set True to bootstrap new and modified views
+concurrently, keeping the pre-existing views live while the new ones
+backfill in the background. Mutually exclusive with
+<cite>silent_bootstrap</cite>. False by default.</p></li>
 <li><p><strong>wait</strong> – Set True to wait for the pipeline to start. True by default.</p></li>
 <li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
 pipeline to start (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
@@ -1872,6 +1930,11 @@ reached.</p></li>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.CONCURRENTBOOTSTRAPPING">
+<span class="sig-name descname"><span class="pre">CONCURRENTBOOTSTRAPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.CONCURRENTBOOTSTRAPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.INITIALIZING">
 <span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.INITIALIZING" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -1899,6 +1962,11 @@ reached.</p></li>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.SUSPENDED">
 <span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.DeploymentRuntimeStatus.SYNCHRONIZING">
+<span class="sig-name descname"><span class="pre">SYNCHRONIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#feldera.enums.DeploymentRuntimeStatus.SYNCHRONIZING" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1973,6 +2041,11 @@ input or output.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.CONCURRENTBOOTSTRAPPING">
+<span class="sig-name descname"><span class="pre">CONCURRENTBOOTSTRAPPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">13</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.CONCURRENTBOOTSTRAPPING" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.INITIALIZING">
 <span class="sig-name descname"><span class="pre">INITIALIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.INITIALIZING" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -2020,6 +2093,11 @@ input or output.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SUSPENDED">
 <span class="sig-name descname"><span class="pre">SUSPENDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SUSPENDED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.enums.PipelineStatus.SYNCHRONIZING">
+<span class="sig-name descname"><span class="pre">SYNCHRONIZING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">14</span></em><a class="headerlink" href="#feldera.enums.PipelineStatus.SYNCHRONIZING" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -2589,6 +2667,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.patch_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.patch_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pause_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.pause_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pause_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.pause_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pipeline_diff"><code class="docutils literal notranslate"><span class="pre">FelderaClient.pipeline_diff()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.pipelines"><code class="docutils literal notranslate"><span class="pre">FelderaClient.pipelines()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.push_to_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.push_to_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_arrow"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_arrow()</span></code></a></li>
@@ -2610,6 +2689,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.testing_force_update_platform_version"><code class="docutils literal notranslate"><span class="pre">FelderaClient.testing_force_update_platform_version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.update_pipeline_runtime"><code class="docutils literal notranslate"><span class="pre">FelderaClient.update_pipeline_runtime()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.validate_program"><code class="docutils literal notranslate"><span class="pre">FelderaClient.validate_program()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.wait_for_token"><code class="docutils literal notranslate"><span class="pre">FelderaClient.wait_for_token()</span></code></a></li>
 </ul>
 </li>
