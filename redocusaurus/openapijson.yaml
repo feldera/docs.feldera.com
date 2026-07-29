@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.324.0
+  version: 0.325.0
 paths:
   /config/authentication:
     get:
@@ -7853,7 +7853,9 @@ components:
     Configuration:
       type: object
       required:
-        - telemetry
+        - posthog
+        - conceptualhq
+        - product_fruits
         - edition
         - version
         - revision
@@ -7872,6 +7874,9 @@ components:
         changelog_url:
           type: string
           description: URL that navigates to the changelog of the current version
+        conceptualhq:
+          type: string
+          description: ConceptualHQ analytics key. Empty when disabled.
         edition:
           type: string
           description: 'Feldera edition: "Open source" or "Enterprise"'
@@ -7879,6 +7884,14 @@ components:
           allOf:
             - $ref: '#/components/schemas/LicenseValidity'
           nullable: true
+        posthog:
+          type: string
+          description: PostHog telemetry key. Empty when disabled.
+        product_fruits:
+          type: string
+          description: >-
+            Product Fruits workspace code for in-app onboarding. Empty when
+            disabled.
         revision:
           type: string
           description: >-
@@ -7889,9 +7902,6 @@ components:
           description: >-
             Specific revision corresponding to the default runtime version of
             the platform (e.g., git commit hash).
-        telemetry:
-          type: string
-          description: Telemetry key.
         unstable_features:
           type: string
           description: List of unstable features that are enabled.
@@ -10902,6 +10912,27 @@ components:
 
                 is used.
               nullable: true
+            max_retries:
+              type: integer
+              format: int32
+              description: >-
+                Maximum number of retries for reading the table snapshot.
+
+
+                When reading the snapshot fails partway through, for example
+                because an
+
+                object-store read times out or is throttled, the connector
+                retries the
+
+                entire read with exponential backoff. This is in addition to the
+
+                lower-level retries performed by the object-store client.
+
+
+                Defaults to unlimited retries. Set to 0 to disable retries.
+              nullable: true
+              minimum: 0
             metadata_location:
               type: string
               description: >-
@@ -10915,6 +10946,18 @@ components:
               nullable: true
             mode:
               $ref: '#/components/schemas/IcebergIngestMode'
+            num_parsers:
+              type: integer
+              format: int32
+              description: >-
+                The number of parallel parsing tasks the connector uses to
+                process data read from the
+
+                table. Increasing this value can enhance performance by allowing
+                more concurrent processing.
+
+                Recommended range: 1-10. The default is 4.
+              minimum: 1
             snapshot_filter:
               type: string
               description: >-
@@ -11036,6 +11079,8 @@ components:
 
                 queries using partitioning, Z-ordering, or liquid clustering.
               nullable: true
+            transaction_mode:
+              $ref: '#/components/schemas/IcebergTransactionMode'
           additionalProperties:
             type: string
             description: >-
@@ -11045,6 +11090,42 @@ components:
               See the [list of available options in PyIceberg
               documentation](https://py.iceberg.apache.org/configuration/#fileio).
       description: Iceberg input connector configuration.
+    IcebergTransactionMode:
+      type: string
+      description: >-
+        Iceberg table transaction mode.
+
+
+        Determines how the connector breaks up its input into Feldera
+        transactions.
+
+
+        * `none` - the connector does not break up its input into transactions.
+
+        * `snapshot` - ingest the initial snapshot of the table in one or
+        several transactions.
+
+
+        # How the table snapshot is ingested using transactions
+
+
+        When `transaction_mode` is set to `snapshot`, the connector ingests the
+        snapshot in one
+
+        or several transactions, depending on `timestamp_column`. If
+        `timestamp_column` is not set,
+
+        the whole snapshot is ingested in a single Feldera transaction. If
+        `timestamp_column` is set,
+
+        the connector ingests the snapshot in a series of timestamp ranges of
+        width equal to the
+
+        `LATENESS` attribute of the column, each range in a separate
+        transaction.
+      enum:
+        - none
+        - snapshot
     InputEndpointConfig:
       allOf:
         - $ref: '#/components/schemas/ConnectorConfig'
@@ -12425,6 +12506,21 @@ components:
             of this endpoint is equal to the output of the circuit after
 
             processing `total_processed_input_records` records.
+
+
+            The counter never runs ahead of the endpoint's output. It advances
+            to a
+
+            value `N` only once the endpoint has processed every batch derived
+            from
+
+            the first `N` records received by the pipeline, which means
+            transmitting
+
+            the batch, or discarding it while silent bootstrapping suppresses
+            the
+
+            endpoint's output.
 
 
             In a multihost pipeline, this count reflects only the input records
