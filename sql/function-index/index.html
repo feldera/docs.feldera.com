@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.bbbcb1d2.css">
-<script src="/assets/js/runtime~main.69258aa1.js" defer="defer"></script>
-<script src="/assets/js/main.02763275.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.244e5638.js" defer="defer"></script>
+<script src="/assets/js/main.a7eed510.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,14 +21,14 @@
 <ul>
 <li class=""><code>%</code>: <a class="" href="/sql/operators/#muldiv">operators</a></li>
 <li class=""><code>*</code>: <a class="" href="/sql/operators/#muldiv">operators</a></li>
-<li class=""><code>+</code>: <a class="" href="/sql/operators/#plusminus">operators</a></li>
-<li class=""><code>-</code>: <a class="" href="/sql/operators/#plusminus">operators</a></li>
+<li class=""><code>+</code>: <a class="" href="/sql/operators/#plusminus">operators</a>, <a class="" href="/sql/datetime/#other-datetimetimestamptime-interval-operations">datetime</a></li>
+<li class=""><code>-</code>: <a class="" href="/sql/operators/#plusminus">operators</a>, <a class="" href="/sql/datetime/#date-operations">datetime</a></li>
 <li class=""><code>.</code>: <a class="" href="/sql/grammar/#as">grammar</a></li>
 <li class=""><code>/</code>: <a class="" href="/sql/operators/#muldiv">operators</a></li>
 <li class=""><code>::</code>: <a class="" href="/sql/casts/#coloncolon">casts</a></li>
 <li class=""><code>&lt;</code>: <a class="" href="/sql/comparisons/#lt">comparisons</a></li>
 <li class=""><code>&lt;=</code>: <a class="" href="/sql/comparisons/#lte">comparisons</a></li>
-<li class=""><code>&lt;=&gt;</code>: <a class="" href="/sql/operators/#comparisons">operators</a></li>
+<li class=""><code>&lt;=&gt;</code>: <a class="" href="/sql/operators/#comparisons">operators</a>, <a class="" href="/sql/comparisons/#nne">comparisons</a></li>
 <li class=""><code>&lt;&gt;</code>: <a class="" href="/sql/comparisons/#ne">comparisons</a></li>
 <li class=""><code>=</code>: <a class="" href="/sql/comparisons/#eq">comparisons</a></li>
 <li class=""><code>&gt;</code>: <a class="" href="/sql/comparisons/#gt">comparisons</a></li>
@@ -80,7 +80,7 @@
 <li class=""><code>BIT_XOR</code> (aggregate): <a class="" href="/sql/aggregates/#bit_xor">aggregates</a></li>
 <li class=""><code>BOOL_AND</code> (aggregate): <a class="" href="/sql/aggregates/#logical_and">aggregates</a></li>
 <li class=""><code>BOOL_OR</code> (aggregate): <a class="" href="/sql/aggregates/#logical_or">aggregates</a></li>
-<li class=""><code>BROUND</code>: <a class="" href="/sql/decimal/#round">decimal</a></li>
+<li class=""><code>BROUND</code>: <a class="" href="/sql/decimal/#bround">decimal</a></li>
 <li class=""><code>CARDINALITY</code>: <a class="" href="/sql/array/#cardinality">array</a>, <a class="" href="/sql/map/#cardinality">map</a></li>
 <li class=""><code>CASE</code>: <a class="" href="/sql/comparisons/#case">comparisons</a></li>
 <li class=""><code>CAST</code>: <a class="" href="/sql/casts/#casts-and-data-type-conversions">casts</a></li>
@@ -128,14 +128,16 @@
 <li class=""><code>EXTRACT</code>: <a class="" href="/sql/datetime/#time_extract">datetime</a>, <a class="" href="/sql/datetime/#date_extract">datetime</a>, <a class="" href="/sql/datetime/#timestamp_extract">datetime</a></li>
 <li class=""><code>FILTER</code>: <a class="" href="/sql/aggregates/#filter">aggregates</a></li>
 <li class=""><code>FINITE_OR_NULL</code>: <a class="" href="/sql/float/#finite_or_null">float</a></li>
+<li class=""><code>FIRST_VALUE</code> (aggregate): <a class="" href="/sql/aggregates/#first_value">aggregates</a></li>
 <li class=""><code>FLOOR</code>: <a class="" href="/sql/decimal/#floor">decimal</a>, <a class="" href="/sql/float/#floor">float</a>, <a class="" href="/sql/datetime/#date_floor">datetime</a>, <a class="" href="/sql/datetime/#timestamp_floor">datetime</a>, <a class="" href="/sql/datetime/#time_floor">datetime</a></li>
 <li class=""><code>FORMAT_DATE</code>: <a class="" href="/sql/datetime/#format_date">datetime</a></li>
 <li class=""><code>FORMAT_TIME</code>: <a class="" href="/sql/datetime/#format_time">datetime</a></li>
 <li class=""><code>FORMAT_TIMESTAMP</code>: <a class="" href="/sql/datetime/#format_timestamp">datetime</a></li>
 <li class=""><code>GREATEST</code>: <a class="" href="/sql/comparisons/#greatest">comparisons</a></li>
 <li class=""><code>GREATEST_IGNORE_NULLS</code>: <a class="" href="/sql/comparisons/#greatest_ignore_nulls">comparisons</a></li>
-<li class=""><code>GROUPING</code>: <a class="" href="/sql/grammar/#grouping">grammar</a></li>
+<li class=""><code>GROUPING</code>: <a class="" href="/sql/grammar/#grouping-functions">grammar</a></li>
 <li class=""><code>GROUPING SETS</code>: <a class="" href="/sql/grammar/#grouping-functions">grammar</a></li>
+<li class=""><code>GROUPING_ID</code>: <a class="" href="/sql/grammar/#grouping-functions">grammar</a></li>
 <li class=""><code>GUNZIP</code>: <a class="" href="/sql/binary/#gunzip">binary</a></li>
 <li class=""><code>HOP</code>: <a class="" href="/sql/table/#hop">table</a></li>
 <li class=""><code>HOUR</code>: <a class="" href="/sql/datetime/#date_hour">datetime</a>, <a class="" href="/sql/datetime/#time_hour">datetime</a>, <a class="" href="/sql/datetime/#timestamp_hour">datetime</a></li>
@@ -162,7 +164,16 @@
 <li class=""><code>IS UNKNOWN</code>: <a class="" href="/sql/operators/#isnull">operators</a></li>
 <li class=""><code>IS_INF</code>: <a class="" href="/sql/float/#is_inf">float</a></li>
 <li class=""><code>IS_NAN</code>: <a class="" href="/sql/float/#is_nan">float</a></li>
+<li class=""><code>JSON_EACH_BIGINT</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_EACH_BOOLEAN</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_EACH_DATE</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_EACH_STRING</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_EACH_TIME</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_EACH_TIMESTAMP</code>: <a class="" href="/sql/json/#json_each">json</a></li>
+<li class=""><code>JSON_KEYS</code>: <a class="" href="/sql/json/#json_keys">json</a></li>
+<li class=""><code>JSON_OBJECT_KEYS</code>: <a class="" href="/sql/json/#json_object_keys">json</a></li>
 <li class=""><code>LAG</code> (aggregate): <a class="" href="/sql/aggregates/#lag">aggregates</a></li>
+<li class=""><code>LAST_VALUE</code> (aggregate): <a class="" href="/sql/aggregates/#last_value">aggregates</a></li>
 <li class=""><code>LATERAL</code>: <a class="" href="/sql/grammar/#lateral">grammar</a></li>
 <li class=""><code>LEAD</code> (aggregate): <a class="" href="/sql/aggregates/#lead">aggregates</a></li>
 <li class=""><code>LEAST</code>: <a class="" href="/sql/comparisons/#least">comparisons</a></li>
@@ -213,7 +224,8 @@
 <li class=""><code>PARSE_TIME</code>: <a class="" href="/sql/datetime/#date-parsing-and-formatting">datetime</a></li>
 <li class=""><code>PARSE_TIMESTAMP</code>: <a class="" href="/sql/datetime/#date-parsing-and-formatting">datetime</a></li>
 <li class=""><code>PI</code>: <a class="" href="/sql/float/#pi">float</a></li>
-<li class=""><code>POSITION</code>: <a class="" href="/sql/string/#position">string</a></li>
+<li class=""><code>PIVOT</code>: <a class="" href="/sql/aggregates/#pivots">aggregates</a></li>
+<li class=""><code>POSITION</code>: <a class="" href="/sql/string/#position">string</a>, <a class="" href="/sql/binary/#position">binary</a></li>
 <li class=""><code>POWER</code>: <a class="" href="/sql/float/#power">float</a></li>
 <li class=""><code>PRECEDES</code>: <a class="" href="/sql/datetime/#precedes">datetime</a></li>
 <li class=""><code>QUARTER</code>: <a class="" href="/sql/datetime/#quarter">datetime</a></li>
@@ -225,8 +237,7 @@
 <li class=""><code>RESPECT NULLS</code>: <a class="" href="/sql/grammar/#window-aggregates">grammar</a></li>
 <li class=""><code>REVERSE</code>: <a class="" href="/sql/string/#reverse">string</a></li>
 <li class=""><code>RIGHT</code>: <a class="" href="/sql/string/#right">string</a>, <a class="" href="/sql/binary/#right">binary</a></li>
-<li class=""><code>RLIKE</code>: <a class="" href="/sql/string/#rlike">string</a></li>
-<li class=""><code>RLIKE</code>: <a class="" href="/sql/string/#rlike-function">string</a></li>
+<li class=""><code>RLIKE</code>: <a class="" href="/sql/string/#rlike">string</a>, <a class="" href="/sql/string/#rlike-function">string</a></li>
 <li class=""><code>ROLLUP</code>: <a class="" href="/sql/grammar/#cube">grammar</a></li>
 <li class=""><code>ROUND</code>: <a class="" href="/sql/float/#round">float</a>, <a class="" href="/sql/float/#round2">float</a>, <a class="" href="/sql/decimal/#round">decimal</a>, <a class="" href="/sql/decimal/#round2">decimal</a></li>
 <li class=""><code>ROW</code>: <a class="" href="/sql/types/#row_constructor">types</a></li>
@@ -249,10 +260,10 @@
 <li class=""><code>STDDEV_POP</code> (aggregate): <a class="" href="/sql/aggregates/#stddev_pop">aggregates</a></li>
 <li class=""><code>STDDEV_SAMP</code> (aggregate): <a class="" href="/sql/aggregates/#stddev_samp">aggregates</a></li>
 <li class=""><code>SUBSTR</code>: <a class="" href="/sql/string/#substr">string</a></li>
-<li class=""><code>SUBSTRING</code>: <a class="" href="/sql/string/#substring">string</a></li>
+<li class=""><code>SUBSTRING</code>: <a class="" href="/sql/string/#substring">string</a>, <a class="" href="/sql/binary/#substring">binary</a></li>
 <li class=""><code>SUCCEEDS</code>: <a class="" href="/sql/datetime/#succeeds">datetime</a></li>
 <li class=""><code>SUM</code> (aggregate): <a class="" href="/sql/aggregates/#sum">aggregates</a>, <a class="" href="/sql/aggregates/#window-sum">aggregates</a></li>
-<li class=""><code>TABLE</code>: <a class="" href="/sql/table/#syntax">table</a></li>
+<li class=""><code>TABLE</code>: <a class="" href="/sql/table/#syntax">table</a>, <a class="" href="/sql/grammar/#table-functions">grammar</a></li>
 <li class=""><code>TAN</code>: <a class="" href="/sql/float/#tan">float</a></li>
 <li class=""><code>TANH</code>: <a class="" href="/sql/float/#tanh">float</a></li>
 <li class=""><code>TIME</code>: <a class="" href="/sql/datetime/#time-literals">datetime</a></li>
@@ -269,6 +280,7 @@
 <li class=""><code>TRUNC</code>: <a class="" href="/sql/decimal/#trunc">decimal</a>, <a class="" href="/sql/float/#trunc">float</a></li>
 <li class=""><code>TRUNCATE</code>: <a class="" href="/sql/decimal/#truncate">decimal</a>, <a class="" href="/sql/decimal/#truncate2">decimal</a>, <a class="" href="/sql/float/#truncate">float</a>, <a class="" href="/sql/float/#truncate2">float</a></li>
 <li class=""><code>TUMBLE</code>: <a class="" href="/sql/table/#tumble">table</a></li>
+<li class=""><code>TYPEOF</code>: <a class="" href="/sql/json/#functions-that-operate-on-variant-values">json</a></li>
 <li class=""><code>UNION</code>: <a class="" href="/sql/grammar/#setop">grammar</a></li>
 <li class=""><code>UNION ALL</code>: <a class="" href="/sql/grammar/#setop">grammar</a></li>
 <li class=""><code>UNNEST</code>: <a class="" href="/sql/array/#the-unnest-sql-operator">array</a>, <a class="" href="/sql/map/#the-unnest-operator">map</a></li>
@@ -277,10 +289,16 @@
 <li class=""><code>VAR_POP</code> (aggregate): <a class="" href="/sql/aggregates/#var_pop">aggregates</a></li>
 <li class=""><code>VAR_SAMP</code> (aggregate): <a class="" href="/sql/aggregates/#var_samp">aggregates</a></li>
 <li class=""><code>VARIANCE</code> (aggregate): <a class="" href="/sql/aggregates/#variance">aggregates</a></li>
+<li class=""><code>VARIANT_DEEP_FILTER</code>: <a class="" href="/sql/json/#variant_deep_filter">json</a></li>
+<li class=""><code>VARIANT_DEEP_MAP</code>: <a class="" href="/sql/json/#variant_deep_map">json</a></li>
+<li class=""><code>VARIANT_FILTER</code>: <a class="" href="/sql/json/#variant_filter">json</a></li>
+<li class=""><code>VARIANT_MAP</code>: <a class="" href="/sql/json/#variant_map">json</a></li>
+<li class=""><code>VARIANT_MERGE</code>: <a class="" href="/sql/json/#variant_merge">json</a></li>
+<li class=""><code>VARIANTNULL</code>: <a class="" href="/sql/json/#functions-that-operate-on-variant-values">json</a></li>
 <li class=""><code>WEEK</code>: <a class="" href="/sql/datetime/#week">datetime</a></li>
 <li class=""><code>XXHASH</code>: <a class="" href="/sql/string/#xxhash">string</a>, <a class="" href="/sql/binary/#xxhash">binary</a></li>
 <li class=""><code>YEAR</code>: <a class="" href="/sql/datetime/#year">datetime</a></li>
-<li class=""><code>||</code>: <a class="" href="/sql/string/#concat">string</a>, <a class="" href="/sql/binary/#concat">binary</a></li>
+<li class=""><code>||</code>: <a class="" href="/sql/string/#concat-operator">string</a>, <a class="" href="/sql/binary/#concat">binary</a></li>
 </ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/sql/float/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Floating Point Operations</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/sql/integer/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Integer Operations</div></a></nav></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
 </body>
 </html>

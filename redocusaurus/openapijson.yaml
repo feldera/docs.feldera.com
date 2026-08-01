@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.325.0
+  version: 0.326.0
 paths:
   /config/authentication:
     get:
@@ -694,6 +694,7 @@ paths:
                       service_account_name: null
                       namespace: null
                     clock_resolution_usecs: 1000000
+                    clock_timezone_offset: null
                     pin_cpus: []
                     provisioning_timeout_secs: null
                     max_parallel_connector_init: null
@@ -778,6 +779,7 @@ paths:
                       service_account_name: null
                       namespace: null
                     clock_resolution_usecs: 100000
+                    clock_timezone_offset: null
                     pin_cpus: []
                     provisioning_timeout_secs: 1200
                     max_parallel_connector_init: 10
@@ -878,6 +880,7 @@ paths:
                   service_account_name: null
                   namespace: null
                 clock_resolution_usecs: 1000000
+                clock_timezone_offset: null
                 pin_cpus: []
                 provisioning_timeout_secs: null
                 max_parallel_connector_init: null
@@ -943,6 +946,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -1111,6 +1115,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -1231,6 +1236,7 @@ paths:
                   service_account_name: null
                   namespace: null
                 clock_resolution_usecs: 1000000
+                clock_timezone_offset: null
                 pin_cpus: []
                 provisioning_timeout_secs: null
                 max_parallel_connector_init: null
@@ -1296,6 +1302,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -1387,6 +1394,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -1602,6 +1610,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -6635,6 +6644,7 @@ paths:
                     service_account_name: null
                     namespace: null
                   clock_resolution_usecs: 1000000
+                  clock_timezone_offset: null
                   pin_cpus: []
                   provisioning_timeout_secs: null
                   max_parallel_connector_init: null
@@ -7463,6 +7473,16 @@ components:
             reading, so there is no drift between config construction and
             the first emitted tick.  `None` means no shift is applied.
           nullable: true
+        timezone_offset_ms:
+          type: integer
+          format: int64
+          description: >-
+            Constant offset added to every emitted `NOW()` value, in
+            milliseconds
+
+            east of UTC.  Populated from the `clock_timezone_offset` pipeline
+
+            property; 0 means UTC.
     ClusterMonitorEvent:
       type: object
       description: >-
@@ -12741,6 +12761,33 @@ components:
               default: 1000000
               nullable: true
               minimum: 0
+            clock_timezone_offset:
+              type: string
+              description: >-
+                Fixed timezone offset for the SQL `NOW()` clock.
+
+
+                An ISO-8601 UTC offset, for example `"+05:30"` or `"-08:00"`,
+                that the
+
+                clock connector adds to every `NOW()` value it emits, so `NOW()`
+
+                returns local time in that fixed timezone instead of UTC.
+
+
+                The offset is baked into the pipeline's checkpointed state and
+                cannot
+
+                be changed when the pipeline resumes from a checkpoint: the
+                value from
+
+                the checkpoint stays in effect, and a differing new value is
+                ignored
+
+                with a warning in the pipeline log.
+              default: null
+              example: '+05:30'
+              nullable: true
             cpu_profiler:
               type: boolean
               description: |-
@@ -15053,6 +15100,32 @@ components:
           default: 1000000
           nullable: true
           minimum: 0
+        clock_timezone_offset:
+          type: string
+          description: >-
+            Fixed timezone offset for the SQL `NOW()` clock.
+
+
+            An ISO-8601 UTC offset, for example `"+05:30"` or `"-08:00"`, that
+            the
+
+            clock connector adds to every `NOW()` value it emits, so `NOW()`
+
+            returns local time in that fixed timezone instead of UTC.
+
+
+            The offset is baked into the pipeline's checkpointed state and
+            cannot
+
+            be changed when the pipeline resumes from a checkpoint: the value
+            from
+
+            the checkpoint stays in effect, and a differing new value is ignored
+
+            with a warning in the pipeline log.
+          default: null
+          example: '+05:30'
+          nullable: true
         cpu_profiler:
           type: boolean
           description: |-

@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.bbbcb1d2.css">
-<script src="/assets/js/runtime~main.69258aa1.js" defer="defer"></script>
-<script src="/assets/js/main.02763275.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.244e5638.js" defer="defer"></script>
+<script src="/assets/js/main.a7eed510.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -28,6 +28,12 @@ in-memory state to disk more aggressively as memory usage approaches the limit.<
 <p>If <code>max_rss_mb</code> is not set but <code>memory_mb_max</code> is configured in the <code>resources</code> section of
 <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>, the latter is used as the effective memory cap. We <strong>strongly recommend</strong>
 setting at least one of these parameters to prevent out-of-memory failures.</p>
+<p>On single-host deployments (for example, in Docker), if neither
+parameter is set, <code>resources.memory_mb_max</code> is set to the smaller
+value of host memory size, and container memory limit.  In a
+multi-host deployment each pipeline process that finds neither
+parameter set derives <code>max_rss_mb</code> from its own host&#x27;s available
+memory at startup.</p>
 <p>When either <code>max_rss_mb</code> or <code>resources.memory_mb_max</code> is configured, the pipeline reports its current
 memory pressure level (<code>low</code>, <code>moderate</code>, <code>high</code>, or <code>critical</code>) via the
 <a class="" href="/operations/metrics/"><code>memory_pressure</code> metric</a>. High or critical pressure indicates that memory usage

@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.bbbcb1d2.css">
-<script src="/assets/js/runtime~main.69258aa1.js" defer="defer"></script>
-<script src="/assets/js/main.02763275.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.244e5638.js" defer="defer"></script>
+<script src="/assets/js/main.a7eed510.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -41,6 +41,22 @@ inputs.  If the query uses <code>NOW()</code>, the pipeline will update the cloc
 recomputation at most each <code>clock_resolution_usecs</code> microseconds.  If the query does not use
 <code>NOW()</code>, then clock value updates are suppressed and the pipeline ignores this setting.</p>
 <p>It is set to 1 second (1,000,000 microseconds) by default.</p>
+</div></div></div></td></tr><tr class=""><td kind="field" title="clock_timezone_offset" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">clock_timezone_offset</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">string or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;Fixed timezone offset for the SQL &lt;code&gt;NOW()&lt;/code&gt; clock.&lt;/p&gt;
+&lt;p&gt;An ISO-8601 UTC offset, for example &lt;code&gt;&amp;quot;+05:30&amp;quot;&lt;/code&gt; or &lt;code&gt;&amp;quot;-08:00&amp;quot;&lt;/code&gt;, that the
+clock connector adds to every &lt;code&gt;NOW()&lt;/code&gt; value it emits, so &lt;code&gt;NOW()&lt;/code&gt;
+returns local time in that fixed timezone instead of UTC.&lt;/p&gt;
+&lt;p&gt;The offset is baked into the pipeline&amp;#39;s checkpointed state and cannot
+be changed when the pipeline resumes from a checkpoint: the value from
+the checkpoint stays in effect, and a differing new value is ignored
+with a warning in the pipeline log.&lt;/p&gt;
+" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Fixed timezone offset for the SQL <code>NOW()</code> clock.</p>
+<p>An ISO-8601 UTC offset, for example <code>&quot;+05:30&quot;</code> or <code>&quot;-08:00&quot;</code>, that the
+clock connector adds to every <code>NOW()</code> value it emits, so <code>NOW()</code>
+returns local time in that fixed timezone instead of UTC.</p>
+<p>The offset is baked into the pipeline&#39;s checkpointed state and cannot
+be changed when the pipeline resumes from a checkpoint: the value from
+the checkpoint stays in effect, and a differing new value is ignored
+with a warning in the pipeline log.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="cpu_profiler" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">cpu_profiler</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">boolean</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">true</span></div> <div><div html="&lt;p&gt;Enable CPU profiler.&lt;/p&gt;
 &lt;p&gt;The default value is &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Enable CPU profiler.</p>
@@ -315,6 +331,7 @@ edited:</p>
 <li class=""><code>resources.storage_mb_max</code></li>
 <li class=""><code>resources.namespace</code></li>
 <li class=""><code>resources.storage_class</code></li>
+<li class=""><code>clock_timezone_offset</code></li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="program-configuration">Program configuration<a href="#program-configuration" class="hash-link" aria-label="Direct link to Program configuration" title="Direct link to Program configuration" translate="no">​</a></h3>
 <p>The &quot;optimized&quot; compilation profile (default) should be used when running production pipelines where performance is important.</p>

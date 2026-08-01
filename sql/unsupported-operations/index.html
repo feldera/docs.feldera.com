@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.bbbcb1d2.css">
-<script src="/assets/js/runtime~main.69258aa1.js" defer="defer"></script>
-<script src="/assets/js/main.02763275.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.244e5638.js" defer="defer"></script>
+<script src="/assets/js/main.a7eed510.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -27,11 +27,11 @@ resolved in future releases.</p>
 <p>The following aggregate functions are not supported:
 <code>PERCENTILE_DISC</code>, <code>PERCENTILE_CONT</code>, <code>MODE</code>, <code>CORR</code>, <code>COVAR_POP</code>,
 <code>COVAR_SAMP</code>, <code>REGR_SLOPE</code>, <code>REGR_INTERCEPT</code>, <code>REGR_R2</code>, <code>JSON_AGG</code>,
-<code>JSON_OBJECT_AGG</code>, <code>VAR_POP</code>, <code>VAR_SAMP</code>, <code>LISTAGG</code>.</p>
+<code>JSON_OBJECT_AGG</code>, <code>LISTAGG</code>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="window-functions-over-clause">Window functions (<code>OVER</code> clause)<a href="#window-functions-over-clause" class="hash-link" aria-label="Direct link to window-functions-over-clause" title="Direct link to window-functions-over-clause" translate="no">​</a></h2>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="statistics-window-functions">Statistics window functions<a href="#statistics-window-functions" class="hash-link" aria-label="Direct link to Statistics window functions" title="Direct link to Statistics window functions" translate="no">​</a></h3>
-<p><code>NTILE</code>, <code>NTH_VALUE</code>, <code>PERCENT_RANK</code>, <code>CUME_DIST</code>, <code>VAR_POP</code>,
-<code>VAR_SAMP</code> window functions are not yet implemented.</p>
+<p><code>NTILE</code>, <code>NTH_VALUE</code>, <code>PERCENT_RANK</code>, and <code>CUME_DIST</code> window
+functions are not yet implemented.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="first_value-and-last_value-limited-to-unbounded-range"><code>FIRST_VALUE</code> and <code>LAST_VALUE</code> limited to unbounded range<a href="#first_value-and-last_value-limited-to-unbounded-range" class="hash-link" aria-label="Direct link to first_value-and-last_value-limited-to-unbounded-range" title="Direct link to first_value-and-last_value-limited-to-unbounded-range" translate="no">​</a></h3>
 <p><code>FIRST_VALUE()</code> and <code>LAST_VALUE()</code> are only supported for frames whose
 bounds are <code>UNBOUNDED PRECEDING</code>, <code>CURRENT ROW</code>, or <code>UNBOUNDED FOLLOWING</code> (with <code>RANGE</code> or <code>ROWS</code>): <code>FIRST_VALUE</code> requires the frame
@@ -40,19 +40,22 @@ to end at <code>UNBOUNDED FOLLOWING</code>.  Numeric bounds are not yet
 supported.
 See <a href="https://github.com/feldera/feldera/issues/3918" target="_blank" rel="noopener noreferrer" class="">#3918</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="no-string-or-double-types-in-over-ordering">No <code>STRING</code> or <code>DOUBLE</code> types in <code>OVER</code> ordering<a href="#no-string-or-double-types-in-over-ordering" class="hash-link" aria-label="Direct link to no-string-or-double-types-in-over-ordering" title="Direct link to no-string-or-double-types-in-over-ordering" translate="no">​</a></h3>
-<p>Window functions using <code>ORDER BY</code> on <code>VARCHAR</code>/<code>STRING</code>,
-<code>DOUBLE</code>/<code>FLOAT</code> or <code>VARBINARY</code> columns are not yet supported.
+<p>Windowed aggregate functions with frames (e.g., <code>SUM(x) OVER (... RANGE BETWEEN ...)</code>) do not yet support <code>ORDER BY</code> on
+<code>VARCHAR</code>/<code>STRING</code>, <code>DOUBLE</code>/<code>FLOAT</code>, or <code>VARBINARY</code> columns.  Plain
+window functions such as <code>ROW_NUMBER</code>, <code>RANK</code>, and <code>DENSE_RANK</code>
+support these types.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="exclude-clause-not-supported"><code>EXCLUDE</code> clause not supported<a href="#exclude-clause-not-supported" class="hash-link" aria-label="Direct link to exclude-clause-not-supported" title="Direct link to exclude-clause-not-supported" translate="no">​</a></h3>
 <p>The <code>EXCLUDE</code> clause in window frame specifications is not supported.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="multi-column-order-by-in-windows-not-supported">Multi-column <code>ORDER BY</code> in windows not supported<a href="#multi-column-order-by-in-windows-not-supported" class="hash-link" aria-label="Direct link to multi-column-order-by-in-windows-not-supported" title="Direct link to multi-column-order-by-in-windows-not-supported" translate="no">​</a></h3>
-<p>Window functions with <code>ORDER BY</code> on multiple columns are not yet
-supported.
+<p>Windowed aggregate functions with frames require <code>ORDER BY</code> on
+exactly one column.  Plain window functions such as <code>RANK</code> and
+<code>DENSE_RANK</code> support <code>ORDER BY</code> on multiple columns.
 See <a href="https://github.com/feldera/feldera/issues/457" target="_blank" rel="noopener noreferrer" class="">#457</a>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="constant-window-boundaries">Constant Window Boundaries<a href="#constant-window-boundaries" class="hash-link" aria-label="Direct link to Constant Window Boundaries" title="Direct link to Constant Window Boundaries" translate="no">​</a></h3>
 <p>Window boundaries must be constant expressions. For example, <code>RANGE BETWEEN INTERVAL 1 DAY PRECEDING AND CURRENT ROW</code> is valid. But <code>RANGE BETWEEN INTERVAL 1 MONTH PRECEDING AND CURRENT ROW</code> is not, because a
-month is a not a constant time interval.</p>
+month is not a constant time interval.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="correlated-subqueries">Correlated subqueries<a href="#correlated-subqueries" class="hash-link" aria-label="Direct link to Correlated subqueries" title="Direct link to Correlated subqueries" translate="no">​</a></h2>
 <p>Some forms of correlated subqueries are not yet implemented and will
 fail with a &quot;Not yet implemented&quot; error.  For example, using <code>UNNEST</code>
@@ -94,7 +97,8 @@ documentation</a> for
 details.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="use-now-with-caution">Use <code>NOW()</code> with caution<a href="#use-now-with-caution" class="hash-link" aria-label="Direct link to use-now-with-caution" title="Direct link to use-now-with-caution" translate="no">​</a></h3>
 <p>The <code>NOW()</code> function returns the current timestamp and is updated at
-every processing step (every 100ms by default).</p>
+every processing step (every 1 second by default, configurable via
+<code>clock_resolution_usecs</code>).</p>
 <ul>
 <li class=""><strong>In filters</strong>: <code>NOW()</code> in <code>WHERE</code> clauses for temporal filtering
 (e.g., <code>WHERE ts &gt;= NOW() - INTERVAL 1 DAY</code>) is efficient and
