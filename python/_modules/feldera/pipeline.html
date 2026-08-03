@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.326.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.327.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=33a9ae0b"></script>
+        <script src="../../_static/documentation_options.js?v=427ce452"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -99,6 +99,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._callback_runner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallbackRunner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">chunk_dataframe</span><span class="p">,</span> <span class="n">ensure_dataframe_has_columns</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._long_operation_warning</span><span class="w"> </span><span class="kn">import</span> <span class="n">LongOperationWarning</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">BootstrapPolicy</span><span class="p">,</span>
     <span class="n">CheckpointStatus</span><span class="p">,</span>
@@ -123,6 +124,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.runtime_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">RuntimeConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputEndpointStatus</span><span class="p">,</span> <span class="n">OutputEndpointStatus</span><span class="p">,</span> <span class="n">PipelineStatistics</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">CheckpointMetadata</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Pipeline">
@@ -509,6 +512,20 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running to wait for completion&quot;</span><span class="p">)</span>
 
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="c1"># Reused by the warning message below; is_complete() would fetch and</span>
+        <span class="c1"># discard the same stats, hiding whether the wait is stalled or just</span>
+        <span class="c1"># slow (e.g. mid-transaction-commit).</span>
+        <span class="n">latest_stats</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatistics</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">wait_for_completion</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;still waiting for pipeline </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to complete, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds (</span><span class="si">{</span><span class="n">latest_stats</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">progress_summary</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">),</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;pipeline </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> completed after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -518,19 +535,20 @@
                         <span class="sa">f</span><span class="s2">&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for&quot;</span>
                         <span class="sa">f</span><span class="s2">&quot; pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to complete&quot;</span>
                     <span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;waiting for pipeline </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to complete: elapsed&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; time </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s, timeout: </span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s&quot;</span>
-                <span class="p">)</span>
 
-            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span><span class="p">()</span>
+            <span class="n">latest_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+            <span class="n">pipeline_complete</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">latest_stats</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">pipeline_complete</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;received unknown metrics from the pipeline, pipeline_complete is None&quot;</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">pipeline_complete</span><span class="p">:</span>
+                <span class="n">wait_for_completion</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">break</span>
 
+            <span class="n">wait_for_completion</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">force_stop</span><span class="p">:</span>

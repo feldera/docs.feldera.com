@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.326.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.327.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=33a9ae0b"></script>
+        <script src="_static/documentation_options.js?v=427ce452"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -2485,6 +2485,14 @@ To create runtime config from a dictionary, use
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/stats.html#GlobalPipelineMetrics.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.GlobalPipelineMetrics.from_dict" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.stats.GlobalPipelineMetrics.progress_summary">
+<span class="sig-name descname"><span class="pre">progress_summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/stats.html#GlobalPipelineMetrics.progress_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.GlobalPipelineMetrics.progress_summary" title="Link to this definition"></a></dt>
+<dd><p>Human-readable progress indicator for long-running wait loops:
+commit progress while a transaction is committing, otherwise the
+overall record count processed so far.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -2616,6 +2624,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError.__init__"><code class="docutils literal notranslate"><span class="pre">FelderaAPIError.__init__()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaApiError"><code class="docutils literal notranslate"><span class="pre">FelderaApiError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaCommunicationError"><code class="docutils literal notranslate"><span class="pre">FelderaCommunicationError</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaCommunicationError.__init__"><code class="docutils literal notranslate"><span class="pre">FelderaCommunicationError.__init__()</span></code></a></li>
 </ul>
@@ -2642,15 +2651,19 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.commit_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed"><code class="docutils literal notranslate"><span class="pre">FelderaClient.completion_token_processed()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_api_key"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_api_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_oidc_trust"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_oidc_trust()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_or_update_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_or_update_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.create_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_oidc_trust"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_oidc_trust()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_tenant"><code class="docutils literal notranslate"><span class="pre">FelderaClient.delete_tenant()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.dismiss_error_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.dismiss_error_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.generate_completion_token"><code class="docutils literal notranslate"><span class="pre">FelderaClient.generate_completion_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_checkpoints"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_checkpoints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_event"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_cluster_event()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_cluster_events"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_cluster_events()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_oidc_trust"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_oidc_trust()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_event"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline_event()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_events"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_pipeline_events()</span></code></a></li>
@@ -2661,6 +2674,8 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_runtime_config"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_runtime_config()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_samply_profile"><code class="docutils literal notranslate"><span class="pre">FelderaClient.get_samply_profile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.input_connector_stats"><code class="docutils literal notranslate"><span class="pre">FelderaClient.input_connector_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_oidc_trust"><code class="docutils literal notranslate"><span class="pre">FelderaClient.list_oidc_trust()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_tenants"><code class="docutils literal notranslate"><span class="pre">FelderaClient.list_tenants()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.listen_to_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.listen_to_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.localhost"><code class="docutils literal notranslate"><span class="pre">FelderaClient.localhost()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.output_connector_stats"><code class="docutils literal notranslate"><span class="pre">FelderaClient.output_connector_stats()</span></code></a></li>
@@ -2676,6 +2691,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_parquet"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_parquet()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.query_as_text"><code class="docutils literal notranslate"><span class="pre">FelderaClient.query_as_text()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rebalance_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.rebalance_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rename_tenant"><code class="docutils literal notranslate"><span class="pre">FelderaClient.rename_tenant()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_compaction_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_compaction_pipeline()</span></code></a></li>

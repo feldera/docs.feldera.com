@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.326.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.327.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=33a9ae0b"></script>
+        <script src="../../../_static/documentation_options.js?v=427ce452"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -90,10 +90,11 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow.ipc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera._long_operation_warning</span><span class="w"> </span><span class="kn">import</span> <span class="n">LongOperationWarning</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="p">,</span> <span class="n">PipelineStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">determine_client_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiKey</span><span class="p">,</span> <span class="n">Config</span>  <span class="c1"># noqa: F401 — re-exported</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
@@ -140,11 +141,12 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ApiKey</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">connection_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">requests_verify</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">retry_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RetryConfig</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tenant</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructs a Feldera client.</span>
@@ -152,7 +154,15 @@
 <span class="sd">        :param url: (Optional) URL to the Feldera API.</span>
 <span class="sd">            The default is read from the `FELDERA_HOST` environment variable;</span>
 <span class="sd">            if the variable is not set, the default is `&quot;http://localhost:8080&quot;`.</span>
-<span class="sd">        :param api_key: (Optional) API key to access Feldera (format: `&quot;apikey:...&quot;`).</span>
+<span class="sd">        :param api_key: (Optional) Bearer credential. Either:</span>
+<span class="sd">            - a string — a Feldera API key (`&quot;apikey:...&quot;`) or a long-lived JWT;</span>
+<span class="sd">            - a zero-arg callable returning a string — resolved before every</span>
+<span class="sd">              request, suitable for short-lived OIDC tokens (Kubernetes</span>
+<span class="sd">              projected SA token, GitHub Actions OIDC, Tailscale tsidp, ...).</span>
+<span class="sd">              On HTTP 401 the callable is re-invoked once and the request</span>
+<span class="sd">              retried, so a token expiring mid-flight in a long-running</span>
+<span class="sd">              script self-heals.</span>
+
 <span class="sd">            The default is read from the `FELDERA_API_KEY` environment variable;</span>
 <span class="sd">            if the variable is not set, the default is `None` (no API key is provided).</span>
 <span class="sd">        :param timeout: (Optional) Duration in seconds that the client will wait to receive</span>
@@ -172,6 +182,11 @@
 <span class="sd">        :param retry_config: (Optional) Retry behavior for transient HTTP failures</span>
 <span class="sd">            (408, 502, 503, 504, timeouts). The default is `RetryConfig()` — 3 retries</span>
 <span class="sd">            with exponential backoff starting at 2 seconds.</span>
+<span class="sd">        :param tenant: (Optional) Tenant to act in, sent as the `Feldera-Tenant`</span>
+<span class="sd">            header. A platform owner uses this to select any tenant (by name or</span>
+<span class="sd">            UUID); a regular user, to disambiguate among the tenants their token</span>
+<span class="sd">            authorizes. The default is read from `FELDERA_TENANT`; if unset, the</span>
+<span class="sd">            server uses the token&#39;s own tenant.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span>
@@ -181,6 +196,7 @@
             <span class="n">connection_timeout</span><span class="o">=</span><span class="n">connection_timeout</span><span class="p">,</span>
             <span class="n">requests_verify</span><span class="o">=</span><span class="n">requests_verify</span><span class="p">,</span>
             <span class="n">retry_config</span><span class="o">=</span><span class="n">retry_config</span><span class="p">,</span>
+            <span class="n">tenant</span><span class="o">=</span><span class="n">tenant</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span> <span class="o">=</span> <span class="n">HttpRequests</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">)</span>
 
@@ -271,6 +287,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wait for pipeline compilation -- internal use only.&quot;&quot;&quot;</span>
         <span class="n">wait</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pending&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingSql&quot;</span><span class="p">,</span> <span class="s2">&quot;SqlCompiled&quot;</span><span class="p">,</span> <span class="s2">&quot;CompilingRust&quot;</span><span class="p">]</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">wait_for_compilation</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still compiling </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> finished compiling after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">elapsed</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
@@ -283,6 +304,7 @@
             <span class="n">status</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Success&quot;</span><span class="p">:</span>
+                <span class="n">wait_for_compilation</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">expected_program_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
 
@@ -320,11 +342,7 @@
 
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_message</span><span class="p">)</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still compiling </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
-                <span class="n">name</span><span class="p">,</span>
-                <span class="n">poll_interval_s</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_compilation</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_pipeline_state</span><span class="p">(</span>
@@ -336,6 +354,13 @@
         <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">wait_for_state</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still waiting for </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> to transition to &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&#39;, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> transitioned to &#39;</span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&#39; after &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -350,6 +375,7 @@
             <span class="n">status</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_status</span>
 
             <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">wait_for_state</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">break</span>
             <span class="k">elif</span> <span class="p">(</span>
                 <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
@@ -363,11 +389,7 @@
 <span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
                 <span class="p">)</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
-                <span class="n">pipeline_name</span><span class="p">,</span>
-                <span class="n">poll_interval_s</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_state</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
@@ -380,6 +402,12 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipelineStatus</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+        <span class="n">wait_for_states</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still waiting for </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> to transition to &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;one of </span><span class="si">{</span><span class="n">states</span><span class="si">}</span><span class="s2">, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> transitioned after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -394,6 +422,7 @@
             <span class="n">status</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">deployment_status</span>
 
             <span class="k">if</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+                <span class="n">wait_for_states</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">from_str</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
             <span class="k">elif</span> <span class="p">(</span>
                 <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span>
@@ -406,11 +435,7 @@
 <span class="s2">Reason: The pipeline is in a STOPPED state due to the following error:</span>
 <span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">deployment_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
                 <span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still starting </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
-                <span class="n">pipeline_name</span><span class="p">,</span>
-                <span class="n">poll_interval_s</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_states</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FelderaClient.create_pipeline">
@@ -895,6 +920,11 @@
             <span class="k">return</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">wait_for_stop</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still stopping </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> stopped after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
@@ -907,12 +937,10 @@
             <span class="p">)</span><span class="o">.</span><span class="n">deployment_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Stopped&quot;</span><span class="p">:</span>
+                <span class="n">wait_for_stop</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">return</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still stopping </span><span class="si">%s</span><span class="s2">, waiting for 100 more milliseconds&quot;</span><span class="p">,</span>
-                <span class="n">pipeline_name</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_stop</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span></div>
 
 
@@ -959,6 +987,11 @@
             <span class="k">return</span>
 
         <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">wait_for_clear</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still clearing </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> storage cleared after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">timeout_s</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">FelderaTimeoutError</span><span class="p">(</span>
@@ -969,13 +1002,10 @@
             <span class="p">)</span><span class="o">.</span><span class="n">storage_status</span>
 
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;Cleared&quot;</span><span class="p">:</span>
+                <span class="n">wait_for_clear</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">return</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;still clearing </span><span class="si">%s</span><span class="s2">, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
-                <span class="n">pipeline_name</span><span class="p">,</span>
-                <span class="n">poll_interval_s</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_clear</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span></div>
 
 
@@ -1186,6 +1216,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="n">wait_for_commit</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;transaction </span><span class="si">{</span><span class="n">transaction_id</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;hasn&#39;t committed, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;transaction </span><span class="si">{</span><span class="n">transaction_id</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;committed after </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
@@ -1194,12 +1231,10 @@
 
             <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">][</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">transaction_id</span><span class="p">:</span>
+                <span class="n">wait_for_commit</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">return</span>
 
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="s2">&quot;commit hasn&#39;t completed, waiting for </span><span class="si">%.1f</span><span class="s2"> more seconds&quot;</span><span class="p">,</span>
-                <span class="n">poll_interval_s</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_commit</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">poll_interval_s</span><span class="p">)</span></div>
 
 
@@ -1433,6 +1468,13 @@
         <span class="n">max_backoff</span> <span class="o">=</span> <span class="mi">5</span>
         <span class="n">exponent</span> <span class="o">=</span> <span class="mf">1.2</span>
         <span class="n">retries</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">wait_for_token_processed</span> <span class="o">=</span> <span class="n">LongOperationWarning</span><span class="p">(</span>
+            <span class="n">logger</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;still waiting for inputs represented by </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;to be processed, waited </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+            <span class="k">lambda</span> <span class="n">elapsed</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;inputs represented by </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> processed after &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">end</span><span class="p">:</span>
@@ -1444,12 +1486,10 @@
                     <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completion_token_processed</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+                <span class="n">wait_for_token_processed</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">break</span>
 
-            <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;still waiting for inputs represented by </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2"> to be processed; elapsed: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s2">s&quot;</span>
-            <span class="p">)</span>
+            <span class="n">wait_for_token_processed</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
 
             <span class="n">retries</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">backoff</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_backoff</span><span class="p">,</span> <span class="n">initial_backoff</span> <span class="o">*</span> <span class="p">(</span><span class="n">exponent</span><span class="o">**</span><span class="n">retries</span><span class="p">))</span>
@@ -1804,25 +1844,177 @@
 
 <div class="viewcode-block" id="FelderaClient.create_api_key">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_api_key">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">create_api_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_api_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;write&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new API key with the specified name.</span>
+<span class="sd">        Create a new API key with the specified name and role.</span>
 
 <span class="sd">        The generated API key is returned in the response and cannot be retrieved</span>
 <span class="sd">        again later, so store it securely.</span>
 
 <span class="sd">        :param name: The API key name to create.</span>
+<span class="sd">        :param role: The role the key carries, ``&quot;read&quot;`` or ``&quot;write&quot;``. The</span>
+<span class="sd">            role may not exceed the caller&#39;s own role, and ``admin``/``owner``</span>
+<span class="sd">            are never issuable as API keys. Defaults to ``&quot;write&quot;`` to preserve</span>
+<span class="sd">            the read+write access earlier SDK versions granted implicitly.</span>
 <span class="sd">        :returns: A dict with keys: `id` (UUID string), `name`, and `api_key`.</span>
-<span class="sd">        :raises FelderaAPIError: If a key with the same name already exists.</span>
+<span class="sd">        :raises FelderaAPIError: If a key with the same name already exists, or</span>
+<span class="sd">            the requested role exceeds the caller&#39;s role.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;API key name must be a non-empty string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">,</span> <span class="s2">&quot;write&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;API key role must be &#39;read&#39; or &#39;write&#39;&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/api_keys&quot;</span><span class="p">,</span>
-            <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span>
+            <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">role</span><span class="p">},</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.list_tenants">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_tenants">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_tenants</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List every tenant in the installation. Platform owners only.</span>
+
+<span class="sd">        :returns: A list of dicts each describing a tenant (`id`, `name`,</span>
+<span class="sd">                  `initial_provider`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/tenants&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.rename_tenant">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rename_tenant">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rename_tenant</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">tenant_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">displace_existing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rename a tenant. Platform owners only.</span>
+
+<span class="sd">        A login resolves its tenant by name, so the new name decides which users</span>
+<span class="sd">        arrive in this tenant. Renaming a tenant to a name its provider no longer</span>
+<span class="sd">        asserts sends those users to a new, empty tenant on their next request.</span>
+
+<span class="sd">        :param tenant_id: Identifier of the tenant to rename.</span>
+<span class="sd">        :param name: The new name.</span>
+<span class="sd">        :param displace_existing: Take the name from the tenant that currently</span>
+<span class="sd">                                  holds it, which is renamed to `&lt;name&gt; (&lt;id&gt;)`</span>
+<span class="sd">                                  and keeps everything it had. Needed to recover</span>
+<span class="sd">                                  a tenant no login reaches, because every</span>
+<span class="sd">                                  request re-creates the name its token</span>
+<span class="sd">                                  resolves.</span>
+<span class="sd">        :returns: A dict whose `displaced` key describes the tenant that gave up</span>
+<span class="sd">                  the name, or is `None` when the name was free.</span>
+<span class="sd">        :raises FelderaAPIError: If the name is taken and `displace_existing` is</span>
+<span class="sd">                                 not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Tenant name must be a non-empty string&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/tenants/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">tenant_id</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;displace_existing&quot;</span><span class="p">:</span> <span class="n">displace_existing</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.delete_tenant">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_tenant">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_tenant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tenant_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a tenant. Platform owners only.</span>
+
+<span class="sd">        The tenant must hold no pipelines, API keys or OIDC trust</span>
+<span class="sd">        relationships; delete those first.</span>
+
+<span class="sd">        :param tenant_id: Identifier of the tenant to delete.</span>
+<span class="sd">        :raises FelderaAPIError: If the tenant still holds any of the above.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/tenants/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">tenant_id</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.list_oidc_trust">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_oidc_trust">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_oidc_trust</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List the OIDC trust relationships configured for the current tenant.</span>
+
+<span class="sd">        :returns: A list of dicts each describing a trust relationship</span>
+<span class="sd">                  (`id`, `name`, `description`, `issuer`, `subject`,</span>
+<span class="sd">                  `audience`, `role`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/oidc_trust&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.get_oidc_trust">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_oidc_trust">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_oidc_trust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve a single OIDC trust relationship by name.</span>
+
+<span class="sd">        :param name: Trust relationship name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/oidc_trust/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.create_oidc_trust">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.create_oidc_trust">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_oidc_trust</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">issuer</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">subject</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">audience</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">role</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a new OIDC trust relationship.</span>
+
+<span class="sd">        Any JWT signed by `issuer` whose `sub` claim matches `subject`</span>
+<span class="sd">        (and, if specified, `aud` claim matches `audience`) is authorized</span>
+<span class="sd">        to act in the current tenant with the granted `role`. `*` is a</span>
+<span class="sd">        wildcard in `subject` and `audience`.</span>
+
+<span class="sd">        :param name: Unique name within the tenant.</span>
+<span class="sd">        :param issuer: Issuer URL exactly as it appears in the `iss` claim.</span>
+<span class="sd">        :param subject: Pattern matched against the JWT `sub` claim.</span>
+<span class="sd">        :param audience: Pattern matched against the JWT `aud` claim. Omit</span>
+<span class="sd">                         to skip audience matching.</span>
+<span class="sd">        :param description: Free-text description.</span>
+<span class="sd">        :param role: Role granted to a matching token: `read`, `write` or</span>
+<span class="sd">                     `admin`, capped at the caller&#39;s role. Defaults to `read`</span>
+<span class="sd">                     server-side when omitted.</span>
+<span class="sd">        :returns: A dict with keys `id` and `name`.</span>
+<span class="sd">        :raises FelderaAPIError: If `name` is already in use or fields are</span>
+<span class="sd">                                 invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trust relationship name must be a non-empty string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">issuer</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`issuer` must be a non-empty string&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">subject</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`subject` must be a non-empty string&quot;</span><span class="p">)</span>
+        <span class="n">body</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;issuer&quot;</span><span class="p">:</span> <span class="n">issuer</span><span class="p">,</span>
+            <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">audience</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;audience&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">audience</span>
+        <span class="k">if</span> <span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">body</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">role</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;/oidc_trust&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.delete_oidc_trust">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.delete_oidc_trust">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_oidc_trust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete an OIDC trust relationship by name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/oidc_trust/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.get_pipeline_support_bundle">

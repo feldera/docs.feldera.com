@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.errors &mdash; Feldera Python SDK 0.326.0 documentation</title>
+  <title>feldera.rest.errors &mdash; Feldera Python SDK 0.327.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=33a9ae0b"></script>
+        <script src="../../../_static/documentation_options.js?v=427ce452"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -168,18 +168,26 @@
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
             <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
 
-            <span class="n">auth_err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Authorization error: Failed to connect to &#39;</span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+            <span class="n">auth_err</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Authorization error at &#39;</span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="n">parsed</span><span class="o">.</span><span class="n">hostname</span><span class="si">}</span><span class="s2">&#39;: &quot;</span>
+            <span class="p">)</span>
             <span class="n">auth</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Authorization&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">auth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auth_err</span><span class="si">}</span><span class="s2"> API key not set&quot;</span>
+                <span class="n">err_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auth_err</span><span class="si">}</span><span class="s2">no credential provided&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">err_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auth_err</span><span class="si">}</span><span class="s2"> invalid API key&quot;</span>
+                <span class="c1"># The credential may be an API key or a JWT/bearer token; do not</span>
+                <span class="c1"># assume which. The server `message` above carries the specifics.</span>
+                <span class="n">err_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">auth_err</span><span class="si">}</span><span class="s2">credential rejected (invalid or expired token / API key)&quot;</span>
 
         <span class="n">err_msg</span> <span class="o">=</span> <span class="n">err_msg</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span></div>
 </div>
 
+
+
+<span class="c1"># Compatibility alias: the RFC and some docs refer to this as `FelderaApiError`.</span>
+<span class="n">FelderaApiError</span> <span class="o">=</span> <span class="n">FelderaAPIError</span>
 
 
 <div class="viewcode-block" id="FelderaTimeoutError">

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.326.0
+  version: 0.327.0
 paths:
   /config/authentication:
     get:
@@ -254,7 +254,10 @@ paths:
       tags:
         - Platform
       summary: List API Keys
-      description: Retrieve a list of your API keys.
+      description: |-
+        Required role: `write` or higher.
+
+        Retrieve a list of your API keys.
       operationId: list_api_keys
       responses:
         '200':
@@ -278,6 +281,8 @@ paths:
         - Platform
       summary: Create API Key
       description: |-
+        Required role: `write` or higher.
+
         Create a new API key with the specified name. The generated API key
         will be returned in the response and cannot be retrieved again later.
       operationId: post_api_key
@@ -312,7 +317,10 @@ paths:
       tags:
         - Platform
       summary: Get API Key
-      description: Retrieve the metadata of a specific API key by its name.
+      description: |-
+        Required role: `write` or higher.
+
+        Retrieve the metadata of a specific API key by its name.
       operationId: get_api_key
       parameters:
         - name: api_key_name
@@ -347,7 +355,10 @@ paths:
       tags:
         - Platform
       summary: Delete API Key
-      description: Remove an API key by its name.
+      description: |-
+        Required role: `write` or higher.
+
+        Remove an API key by its name.
       operationId: delete_api_key
       parameters:
         - name: api_key_name
@@ -378,6 +389,9 @@ paths:
         - Platform
       summary: List Cluster Events
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve a list of retained cluster monitor events ordered from most
         recent to least recent.
 
@@ -431,6 +445,9 @@ paths:
         - Platform
       summary: Get Cluster Event
       description: >-
+        Required role: `read` or higher.
+
+
         Get specific cluster monitor event.
 
 
@@ -500,6 +517,9 @@ paths:
         - Platform
       summary: Check Cluster Health
       description: >-
+        Required role: `read` or higher.
+
+
         Determine the latest cluster health via the latest cluster monitor
         event.
       operationId: get_cluster_health
@@ -523,7 +543,10 @@ paths:
       tags:
         - Platform
       summary: Get Platform Config
-      description: Retrieve configuration of the Feldera Platform.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve configuration of the Feldera Platform.
       operationId: get_config
       responses:
         '200':
@@ -547,7 +570,10 @@ paths:
       tags:
         - Platform
       summary: List Demos
-      description: Retrieve the list of demos available in the WebConsole.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve the list of demos available in the WebConsole.
       operationId: get_config_demos
       responses:
         '200':
@@ -566,12 +592,54 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JSON web token (JWT) or API key: []
+  /v0/config/owners:
+    get:
+      tags:
+        - Platform
+      summary: Get Configured Owners
+      description: >-
+        Required role: `owner`.
+
+
+        List the identities that hold the platform-wide `owner` role.
+
+
+        Owner comes from deploy-time configuration and cannot be granted through
+        the
+
+        API, so this list is read-only: changing it means changing the
+        deployment.
+      operationId: get_config_owners
+      responses:
+        '200':
+          description: Configured owners retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfiguredOwners'
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/config/session:
     get:
       tags:
         - Platform
       summary: Get Session
-      description: Retrieve login session information for your current user session.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve login session information for your current user session.
       operationId: get_config_session
       responses:
         '200':
@@ -596,6 +664,9 @@ paths:
         - Metrics & Debugging
       summary: List All Metrics
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the metrics of all running pipelines belonging to this tenant.
 
 
@@ -619,12 +690,178 @@ paths:
                 format: binary
       security:
         - JSON web token (JWT) or API key: []
+  /v0/oidc_trust:
+    get:
+      tags:
+        - Platform
+      summary: List OIDC Trust
+      description: 'Required role: `admin` or higher.'
+      operationId: list_oidc_trust
+      responses:
+        '200':
+          description: Trust relationships retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OidcTrustDescr'
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    post:
+      tags:
+        - Platform
+      summary: Create OIDC Trust
+      description: 'Required role: `admin` or higher.'
+      operationId: post_oidc_trust
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewOidcTrustRequest'
+        required: true
+      responses:
+        '201':
+          description: Trust relationship created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewOidcTrustResponse'
+        '400':
+          description: A required field is empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: >-
+            Caller's role is below the required role, or the requested role
+            exceeds the caller's own
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Name already in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/oidc_trust/{name}:
+    get:
+      tags:
+        - Platform
+      summary: Get OIDC Trust
+      description: >-
+        Required role: `admin` or higher.
+
+
+        Retrieve one trust relationship by `name`, the name it was created
+        under,
+
+        which is unique within the tenant (or, with `platform`, across the
+
+        platform-wide owner trusts).
+      operationId: get_oidc_trust
+      parameters:
+        - name: name
+          in: path
+          description: Trust relationship name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trust relationship retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OidcTrustDescr'
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No relationship with that name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    delete:
+      tags:
+        - Platform
+      summary: Delete OIDC Trust
+      description: 'Required role: `admin` or higher.'
+      operationId: delete_oidc_trust
+      parameters:
+        - name: name
+          in: path
+          description: Trust relationship name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trust relationship deleted
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No relationship with that name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/pipelines:
     get:
       tags:
         - Pipeline CRUD
       summary: List Pipelines
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the list of pipelines.
 
         Configure which fields are included using the `selector` query
@@ -839,7 +1076,10 @@ paths:
       tags:
         - Pipeline CRUD
       summary: Create Pipeline
-      description: Create a new pipeline with the provided configuration.
+      description: |-
+        Required role: `write` or higher.
+
+        Create a new pipeline with the provided configuration.
       operationId: post_pipeline
       requestBody:
         content:
@@ -1042,6 +1282,9 @@ paths:
         - Pipeline CRUD
       summary: Get Pipeline
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve a pipeline.
 
         Configure which fields are included using the `selector` query
@@ -1187,6 +1430,9 @@ paths:
         - Pipeline CRUD
       summary: Upsert Pipeline
       description: >-
+        Required role: `write` or higher.
+
+
         Fully update a pipeline if it already exists, otherwise create a new
         pipeline.
       operationId: put_pipeline
@@ -1495,7 +1741,10 @@ paths:
       tags:
         - Pipeline CRUD
       summary: Delete Pipeline
-      description: Delete an existing pipeline by name.
+      description: |-
+        Required role: `write` or higher.
+
+        Delete an existing pipeline by name.
       operationId: delete_pipeline
       parameters:
         - name: pipeline_name
@@ -1542,7 +1791,10 @@ paths:
       tags:
         - Pipeline CRUD
       summary: Patch Pipeline
-      description: Partially update a pipeline.
+      description: |-
+        Required role: `write` or higher.
+
+        Partially update a pipeline.
       operationId: patch_pipeline
       parameters:
         - name: pipeline_name
@@ -1724,6 +1976,9 @@ paths:
         - Pipeline Lifecycle
       summary: Activate Standby Pipeline
       description: >-
+        Required role: `write` or higher.
+
+
         Requests the pipeline to activate if it is currently in standby mode,
         which it will do
 
@@ -1858,6 +2113,9 @@ paths:
         - Pipeline Lifecycle
       summary: Approve Bootstrap
       description: >-
+        Required role: `write` or higher.
+
+
         Approves the pipeline to proceed with bootstrapping.
 
 
@@ -2012,6 +2270,9 @@ paths:
         - Pipeline Lifecycle
       summary: Checkpoint Now
       description: >-
+        Required role: `write` or higher.
+
+
         Initiates checkpoint for a running or paused pipeline.
 
 
@@ -2135,6 +2396,9 @@ paths:
         - Pipeline Lifecycle
       summary: Sync Checkpoints To S3
       description: >-
+        Required role: `write` or higher.
+
+
         Syncs latest checkpoints to the object store configured in pipeline
         config.
       operationId: sync_checkpoint
@@ -2252,7 +2516,10 @@ paths:
       tags:
         - Pipeline Lifecycle
       summary: Get Checkpoint Sync Status
-      description: Retrieve status of checkpoint sync activity in a pipeline.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve status of checkpoint sync activity in a pipeline.
       operationId: get_checkpoint_sync_status
       parameters:
         - name: pipeline_name
@@ -2368,7 +2635,10 @@ paths:
       tags:
         - Pipeline Lifecycle
       summary: Get Checkpoint Status
-      description: Retrieve status of checkpoint activity in a pipeline.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve status of checkpoint activity in a pipeline.
       operationId: get_checkpoint_status
       parameters:
         - name: pipeline_name
@@ -2485,6 +2755,8 @@ paths:
         - Pipeline Lifecycle
       summary: Get the checkpoints for a pipeline
       description: |-
+        Required role: `read` or higher.
+
         Retrieve the current checkpoints made by a pipeline.
 
         **Stability note**: for multihost pipelines, this endpoint returns the
@@ -2611,6 +2883,9 @@ paths:
         - Pipeline Lifecycle
       summary: List checkpoints in remote object storage
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the list of checkpoints available in the configured remote
         object
 
@@ -2735,6 +3010,9 @@ paths:
         - Metrics & Debugging
       summary: Performance Profile JSON
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the circuit performance profile in JSON format of a running or
         paused pipeline.
       operationId: get_pipeline_circuit_json_profile
@@ -2853,6 +3131,9 @@ paths:
         - Metrics & Debugging
       summary: Get Performance Profile
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the circuit performance profile of a running or paused
         pipeline.
       operationId: get_pipeline_circuit_profile
@@ -2971,6 +3252,9 @@ paths:
         - Pipeline Lifecycle
       summary: Clear Storage
       description: >-
+        Required role: `write` or higher.
+
+
         Clears the pipeline storage asynchronously.
 
 
@@ -3038,6 +3322,8 @@ paths:
         - Metrics & Debugging
       summary: Advance Clock
       description: |-
+        Required role: `write` or higher.
+
         Moves `NOW()` forward by a specified amount. Returns the
         current clock time of the circuit.
 
@@ -3096,7 +3382,10 @@ paths:
       tags:
         - Pipeline Lifecycle
       summary: Commit Transaction
-      description: Commit the current transaction.
+      description: |-
+        Required role: `write` or higher.
+
+        Commit the current transaction.
       operationId: commit_transaction
       parameters:
         - name: pipeline_name
@@ -3204,6 +3493,9 @@ paths:
         - Input Connectors
       summary: Check Completion Status
       description: >-
+        Required role: `read` or higher.
+
+
         Check the status of a completion token returned by the `/ingress` or
         `/completion_token`
 
@@ -3358,6 +3650,9 @@ paths:
         - Metrics & Debugging
       summary: Get Dataflow Graph
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the dataflow graph of a pipeline.
 
         The dataflow graph is generated during SQL compilation and shows the
@@ -3406,6 +3701,9 @@ paths:
         - Pipeline Lifecycle
       summary: Compute Program Diff
       description: >-
+        Required role: `write` or higher.
+
+
         Compute the diff between the pipeline's current program and a proposed
         new
 
@@ -3490,6 +3788,9 @@ paths:
         - Pipeline Lifecycle
       summary: Dismiss Pipeline Deployment Error
       description: >-
+        Required role: `write` or higher.
+
+
         Clears the `deployment_error` field of the pipeline, such that a
         subsequent call to
 
@@ -3542,6 +3843,9 @@ paths:
         - Output Connectors
       summary: Subscribe to View
       description: >-
+        Required role: `write` or higher.
+
+
         Subscribe to a stream of updates from a SQL view or table.
 
 
@@ -3748,6 +4052,9 @@ paths:
         - Metrics & Debugging
       summary: List Pipeline Events
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve monitoring events in reverse chronological order.
 
 
@@ -3819,6 +4126,9 @@ paths:
         - Metrics & Debugging
       summary: Get Pipeline Event
       description: >-
+        Required role: `read` or higher.
+
+
         Get a specific pipeline monitor event.
 
 
@@ -3890,7 +4200,10 @@ paths:
       tags:
         - Metrics & Debugging
       summary: Get Heap Profile
-      description: Retrieve the heap profile of a running or paused pipeline.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve the heap profile of a running or paused pipeline.
       operationId: get_pipeline_heap_profile
       parameters:
         - name: pipeline_name
@@ -4016,6 +4329,9 @@ paths:
         - Input Connectors
       summary: Insert Data
       description: >-
+        Required role: `write` or higher.
+
+
         Push data to a SQL table.
 
 
@@ -4216,6 +4532,9 @@ paths:
         - Metrics & Debugging
       summary: Stream Pipeline Logs
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve logs of a pipeline as a stream.
 
 
@@ -4310,7 +4629,10 @@ paths:
       tags:
         - Metrics & Debugging
       summary: Get Pipeline Metrics
-      description: Retrieve the metrics of a running or paused pipeline.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve the metrics of a running or paused pipeline.
       operationId: get_pipeline_metrics
       parameters:
         - name: pipeline_name
@@ -4433,6 +4755,8 @@ paths:
         - Pipeline Lifecycle
       summary: Pause Pipeline
       description: |-
+        Required role: `write` or higher.
+
         Requests the pipeline to pause, which it will do asynchronously.
 
         Progress should be monitored by polling the pipeline `GET` endpoints.
@@ -4492,6 +4816,8 @@ paths:
         - Pipeline Lifecycle
       summary: Execute Ad-hoc SQL
       description: |-
+        Required role: `write` or higher.
+
         Execute ad-hoc SQL in a running or paused pipeline.
 
         The evaluation is not incremental.
@@ -4630,6 +4956,9 @@ paths:
         - Pipeline Lifecycle
       summary: Initiate rebalancing.
       description: >-
+        Required role: `write` or higher.
+
+
         Initiate immediate rebalancing of the pipeline. Normally rebalancing is
         initiated automatically
 
@@ -4678,6 +5007,8 @@ paths:
         - Pipeline Lifecycle
       summary: Resume Pipeline
       description: |-
+        Required role: `write` or higher.
+
         Requests the pipeline to resume, which it will do asynchronously.
 
         Progress should be monitored by polling the pipeline `GET` endpoints.
@@ -4737,6 +5068,9 @@ paths:
         - Metrics & Debugging
       summary: Get Samply Profile
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve the last samply profile of a pipeline, regardless of whether
         profiling is currently in progress.
 
@@ -4886,6 +5220,9 @@ paths:
         - Metrics & Debugging
       summary: Start a Samply profile
       description: >-
+        Required role: `read` or higher.
+
+
         Profile the pipeline using the Samply profiler for the next
         `duration_secs` seconds.
       operationId: start_samply_profile
@@ -5021,6 +5358,9 @@ paths:
         - Pipeline Lifecycle
       summary: Start Pipeline
       description: >-
+        Required role: `write` or higher.
+
+
         Start the pipeline asynchronously by updating the desired status.
 
 
@@ -5137,7 +5477,10 @@ paths:
       tags:
         - Pipeline Lifecycle
       summary: Initiate compaction.
-      description: Initiate immediate compaction of the pipeline's state.
+      description: |-
+        Required role: `write` or higher.
+
+        Initiate immediate compaction of the pipeline's state.
       operationId: post_pipeline_start_compaction
       parameters:
         - name: pipeline_name
@@ -5249,7 +5592,10 @@ paths:
       tags:
         - Pipeline Lifecycle
       summary: Begin Transaction
-      description: Start a new transaction.
+      description: |-
+        Required role: `write` or higher.
+
+        Start a new transaction.
       operationId: start_transaction
       parameters:
         - name: pipeline_name
@@ -5361,6 +5707,9 @@ paths:
         - Metrics & Debugging
       summary: Get Pipeline Stats
       description: >-
+        Required role: `read` or higher.
+
+
         Retrieve statistics (e.g., performance counters) of a running or paused
         pipeline.
       operationId: get_pipeline_stats
@@ -5479,6 +5828,9 @@ paths:
         - Pipeline Lifecycle
       summary: Stop Pipeline
       description: >-
+        Required role: `write` or higher.
+
+
         Stop the pipeline asynchronously by updating the desired state.
 
 
@@ -5642,6 +5994,9 @@ paths:
         - Metrics & Debugging
       summary: Download Support Bundle
       description: >-
+        Required role: `read` or higher.
+
+
         Generate a support bundle for a pipeline.
 
 
@@ -5843,6 +6198,9 @@ paths:
         - Input Connectors
       summary: Get Completion Token
       description: >-
+        Required role: `write` or higher.
+
+
         Generate a completion token for an input connector.
 
 
@@ -5983,7 +6341,10 @@ paths:
       tags:
         - Input Connectors
       summary: Get Input Status
-      description: Retrieve the status of an input connector.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve the status of an input connector.
       operationId: get_pipeline_input_connector_status
       parameters:
         - name: pipeline_name
@@ -6114,6 +6475,9 @@ paths:
         - Input Connectors
       summary: Control Input Connector
       description: >-
+        Required role: `write` or higher.
+
+
         Start (resume) or pause the input connector.
 
 
@@ -6302,7 +6666,10 @@ paths:
       tags:
         - Metrics & Debugging
       summary: Get Time Series Stats
-      description: Retrieve time series for statistics of a running or paused pipeline.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve time series for statistics of a running or paused pipeline.
       operationId: get_pipeline_time_series
       parameters:
         - name: pipeline_name
@@ -6419,6 +6786,9 @@ paths:
         - Metrics & Debugging
       summary: Stream Time Series
       description: >-
+        Required role: `read` or higher.
+
+
         Stream time series for statistics of a running or paused pipeline.
 
 
@@ -6548,6 +6918,9 @@ paths:
         - Pipeline Lifecycle
       summary: Recompile Pipeline
       description: >-
+        Required role: `write` or higher.
+
+
         Recompile a pipeline with the Feldera runtime version included in the
 
         currently installed Feldera platform.
@@ -6747,7 +7120,10 @@ paths:
       tags:
         - Output Connectors
       summary: Get Output Status
-      description: Retrieve the status of an output connector.
+      description: |-
+        Required role: `read` or higher.
+
+        Retrieve the status of an output connector.
       operationId: get_pipeline_output_connector_status
       parameters:
         - name: pipeline_name
@@ -6872,12 +7248,421 @@ paths:
                         error: Timeout while waiting for response)
       security:
         - JSON web token (JWT) or API key: []
+  /v0/tenant/users:
+    get:
+      tags:
+        - Platform
+      summary: List Tenant Members
+      description: |-
+        Required role: `admin` or higher.
+
+        List the users that are members of the acting tenant and their roles.
+      operationId: list_tenant_users
+      responses:
+        '200':
+          description: Members retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantMember'
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    post:
+      tags:
+        - Platform
+      summary: Provision Tenant Member
+      description: >-
+        Required role: `admin` or higher.
+
+
+        Add a member to the acting tenant by identity, before the user's first
+
+        login. The grant is dormant until that identity authenticates into the
+
+        tenant through the IdP. The role is capped at the caller's own role and
+        may
+
+        not be `owner`.
+      operationId: add_tenant_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddMemberRequest'
+        required: true
+      responses:
+        '200':
+          description: Member added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddMemberResponse'
+        '403':
+          description: >-
+            Caller's role is below the required role, or the requested role is
+            `owner`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/tenant/users/{user_id}:
+    put:
+      tags:
+        - Platform
+      summary: Assign Member Role
+      description: >-
+        Required role: `admin` or higher.
+
+
+        Assign or change a user's role in the acting tenant. The role is capped
+        at
+
+        the caller's own role and may not be `owner`.
+      operationId: put_tenant_user
+      parameters:
+        - name: user_id
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetMemberRoleRequest'
+        required: true
+      responses:
+        '200':
+          description: Role assigned
+        '403':
+          description: >-
+            Caller's role is below the required role, or the requested role is
+            `owner`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No user with that identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    delete:
+      tags:
+        - Platform
+      summary: Remove Tenant Member
+      description: >-
+        Required role: `admin` or higher.
+
+
+        Remove a user from the acting tenant. This drops their role now, but if
+        the
+
+        identity provider still grants them access they are re-added at the
+        default
+
+        role on their next login. Revoke access at the provider to disable
+        access
+
+        completely.
+      operationId: delete_tenant_user
+      parameters:
+        - name: user_id
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Member removed
+        '403':
+          description: Caller's role is below the required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: User is not a member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/tenants:
+    get:
+      tags:
+        - Platform
+      summary: List Tenants
+      description: |-
+        Required role: `owner`.
+
+        List all tenants in the installation.
+      operationId: list_tenants
+      responses:
+        '200':
+          description: Tenants retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TenantInfo'
+        '403':
+          description: Caller is not a platform owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    post:
+      tags:
+        - Platform
+      summary: Create Tenant
+      description: >-
+        Required role: `owner`.
+
+
+        Explicitly create a tenant, rather than relying on first login.
+
+        A login resolves its tenant by name, so a user whose identity provider
+
+        asserts this name lands in the tenant created here. Fails with a
+        conflict if
+
+        the name is already taken.
+      operationId: create_tenant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTenantRequest'
+        required: true
+      responses:
+        '201':
+          description: Tenant created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewTenantResponse'
+        '403':
+          description: Caller is not a platform owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: A tenant with that name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+  /v0/tenants/{tenant_id}:
+    delete:
+      tags:
+        - Platform
+      summary: Delete Tenant
+      description: >-
+        Required role: `owner`.
+
+
+        Delete a tenant that holds nothing. Its members lose the membership, and
+        a
+
+        login that still resolves this tenant's name simply re-creates it,
+        empty.
+
+
+        The tenant must hold no pipelines, API keys or OIDC trust relationships;
+
+        otherwise the request fails with a conflict. Everything tenant-scoped
+
+        cascades on this delete, so the emptiness rule is what keeps a mistyped
+
+        identifier from taking a live tenant's pipelines with it. Delete those
+
+        resources first if you mean to.
+      operationId: delete_tenant
+      parameters:
+        - name: tenant_id
+          in: path
+          description: Tenant identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Tenant deleted
+        '403':
+          description: Caller is not a platform owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No tenant with that identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: >-
+            The tenant still holds pipelines, API keys or OIDC trust
+            relationships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
+    patch:
+      tags:
+        - Platform
+      summary: Rename Tenant
+      description: >-
+        Required role: `owner`.
+
+
+        Change a tenant's name. Only the name changes: pipelines, API keys,
+        members
+
+        and OIDC trust relationships all reference the tenant by its identifier
+        and
+
+        are unaffected.
+
+
+        Set `displace_existing` to replace a tenant atomically with one that's
+
+        currently in use. This renames the conflicting tenant to `<name> (<id>)`
+        in
+
+        the same transaction, with everything it had. Two calls potentially lose
+        to
+
+        another user request, which could re-create the name in between.
+      operationId: patch_tenant
+      parameters:
+        - name: tenant_id
+          in: path
+          description: Tenant identifier
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenameTenantRequest'
+        required: true
+      responses:
+        '200':
+          description: Tenant renamed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RenameTenantResponse'
+        '403':
+          description: Caller is not a platform owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No tenant with that identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: >-
+            A tenant with that name already exists, and `displace_existing` was
+            not set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
   /v0/validate_program:
     post:
       tags:
         - Pipeline Lifecycle
       summary: Validate Program
       description: >-
+        Required role: `write` or higher.
+
+
         Validate a SQL program by compiling it, without creating a pipeline or
 
         building the pipeline binary. Reports SQL errors and warnings and the
@@ -6969,6 +7754,40 @@ components:
         - parquet
         - arrow_ipc
         - hash
+    AddMemberRequest:
+      type: object
+      description: |-
+        Request to pre-provision a tenant member by identity, before the user's
+        first login.
+      required:
+        - subject
+        - role
+      properties:
+        email:
+          type: string
+          description: Optional email for display in the member list.
+          nullable: true
+        role:
+          $ref: '#/components/schemas/MemberRole'
+        subject:
+          type: string
+          description: >-
+            OIDC subject (matches the JWT `sub` claim). The issuer is not
+            settable:
+
+            members authenticate through the platform's single configured
+            issuer, so
+
+            the grant is keyed to that issuer automatically.
+          example: user@acme.com
+    AddMemberResponse:
+      type: object
+      description: Response to a successful member pre-provisioning.
+      required:
+        - user_id
+      properties:
+        user_id:
+          $ref: '#/components/schemas/UserId'
     AdhocQueryArgs:
       type: object
       description: >-
@@ -6997,30 +7816,26 @@ components:
           description: The SQL query to run.
     ApiKeyDescr:
       type: object
-      description: API key descriptor.
+      description: |-
+        API key descriptor.
+
+        A key carries a single role, `read` or `write`. `admin` and `owner` are
+        never issuable as API keys.
       required:
         - id
         - name
-        - scopes
+        - role
       properties:
         id:
           $ref: '#/components/schemas/ApiKeyId'
         name:
           type: string
-        scopes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ApiPermission'
+        role:
+          $ref: '#/components/schemas/MintableKeyRole'
     ApiKeyId:
       type: string
       format: uuid
       description: API key identifier.
-    ApiPermission:
-      type: string
-      description: Permission types for invoking API endpoints.
-      enum:
-        - Read
-        - Write
     Auth:
       type: object
       properties:
@@ -7935,6 +8750,47 @@ components:
           description: |-
             The version corresponding to the type of `edition`.
             Format is `x.y.z`.
+    ConfiguredOwnerTrust:
+      type: object
+      description: A workload identity granted `owner` by configuration.
+      required:
+        - issuer
+        - subject
+      properties:
+        audience:
+          type: string
+          nullable: true
+        issuer:
+          type: string
+        subject:
+          type: string
+    ConfiguredOwners:
+      type: object
+      description: The platform owners configured at deploy time.
+      required:
+        - owners
+        - owner_trusts
+      properties:
+        owner_trusts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfiguredOwnerTrust'
+          description: |-
+            Workload identities granted `owner`, as configured through
+            `authorization.ownerTrusts` / `FELDERA_OWNER_TRUSTS`.
+        owners:
+          type: array
+          items:
+            type: string
+          description: >-
+            Identities granted `owner`, as configured through
+
+            `authorization.owners` / `FELDERA_OWNERS`. Each entry is a
+
+            provider-verified email, a bare OIDC subject, or an issuer and
+            subject
+
+            separated by a space.
     ConnectOptions:
       type: object
       description: Options for connecting to a NATS server.
@@ -10932,6 +11788,32 @@ components:
 
                 is used.
               nullable: true
+            end_snapshot_id:
+              type: integer
+              format: int64
+              description: >-
+                Optional final snapshot id.
+
+
+                Valid only in `follow` and `snapshot_and_follow` modes.
+
+
+                When set, the connector stops after fully ingesting the snapshot
+                with
+
+                this id, signaling end-of-input. Iceberg snapshot ids are not
+                ordered, so
+
+                the bound is an exact match: the id must name a snapshot
+                committed after
+
+                the starting snapshot and already present in the table's current
+                history.
+
+                The connector rejects any other value at startup, including a
+
+                not-yet-committed id, rather than follow forever.
+              nullable: true
             max_retries:
               type: integer
               format: int32
@@ -11120,32 +12002,56 @@ components:
         transactions.
 
 
-        * `none` - the connector does not break up its input into transactions.
+        * `none` - the connector does not group its input into transactions.
 
-        * `snapshot` - ingest the initial snapshot of the table in one or
-        several transactions.
+        * `snapshot` - ingest the initial snapshot in one or more transactions
+        (see below). Changes
+
+        ingested afterward, in the follow phase, are not grouped into
+        transactions.
+
+        * `catchup` - ingest the initial snapshot like `snapshot`. In the follow
+        phase, the connector
+
+        batches all currently available table commits into a single transaction.
+        Once that transaction
+
+        completes, it checks for commits added since the transaction began,
+        ingests them in the next
+
+        transaction, and repeats continuously. Most efficient for backfill and
+        steady-state following.
+
+        * `always` - ingest the initial snapshot like `snapshot`. In the follow
+        phase, each table commit
+
+        is ingested in its own transaction.
 
 
         # How the table snapshot is ingested using transactions
 
 
-        When `transaction_mode` is set to `snapshot`, the connector ingests the
-        snapshot in one
+        For the initial snapshot (`snapshot`, `catchup`, and `always` all behave
+        the same), the
 
-        or several transactions, depending on `timestamp_column`. If
-        `timestamp_column` is not set,
+        connector ingests the snapshot in one or several transactions, depending
+        on `timestamp_column`.
 
-        the whole snapshot is ingested in a single Feldera transaction. If
-        `timestamp_column` is set,
+        If `timestamp_column` is not set, the whole snapshot is ingested in a
+        single Feldera
 
-        the connector ingests the snapshot in a series of timestamp ranges of
-        width equal to the
+        transaction. If `timestamp_column` is set, the connector ingests the
+        snapshot in a series of
 
-        `LATENESS` attribute of the column, each range in a separate
-        transaction.
+        timestamp ranges of width equal to the `LATENESS` attribute of the
+        column, each range in a
+
+        separate transaction.
       enum:
         - none
         - snapshot
+        - catchup
+        - always
     InputEndpointConfig:
       allOf:
         - $ref: '#/components/schemas/ConnectorConfig'
@@ -11904,6 +12810,20 @@ components:
                 the request that checks with
 
                 the server failed (e.g., if it could not reach the server).
+    MemberRole:
+      type: string
+      description: >-
+        A role assignable to a tenant member: `read`, `write`, or `admin`.
+        `owner`
+
+        is a platform-wide role, not a tenant membership, so it is not a valid
+        value
+
+        here.
+      enum:
+        - read
+        - write
+        - admin
     MemoryPressure:
       type: string
       description: >-
@@ -11964,6 +12884,19 @@ components:
       properties:
         format:
           $ref: '#/components/schemas/MetricsFormat'
+    MintableKeyRole:
+      type: string
+      description: >-
+        The role an API key carries: `read` or `write`. API keys cannot be
+        granted
+
+        `admin` or `owner`; those roles are held only by interactive logins and
+        OIDC
+
+        trust relationships.
+      enum:
+        - read
+        - write
     MirInput:
       type: object
       required:
@@ -12077,6 +13010,10 @@ components:
           type: string
           description: Key name.
           example: my-api-key
+        role:
+          allOf:
+            - $ref: '#/components/schemas/MintableKeyRole'
+          nullable: true
     NewApiKeyResponse:
       type: object
       description: Response to a successful API key creation.
@@ -12098,6 +13035,77 @@ components:
           type: string
           description: API key name provided by the user.
           example: my-api-key
+    NewOidcTrustRequest:
+      type: object
+      description: Request to create a new OIDC trust relationship.
+      required:
+        - name
+        - issuer
+        - subject
+      properties:
+        audience:
+          type: string
+          description: >-
+            Optional audience claim pattern. `*` matches any sequence of
+            characters.
+
+            If omitted, the audience claim is not checked.
+          example: https://github.com/my-org
+          nullable: true
+        description:
+          type: string
+          description: Optional human-readable description.
+          example: GitHub Actions deploys from main branch
+          nullable: true
+        issuer:
+          type: string
+          description: |-
+            Issuer URL exactly as it appears in the `iss` claim.
+            JWKS are discovered at `<issuer>/.well-known/openid-configuration`.
+          example: https://token.actions.githubusercontent.com
+        name:
+          type: string
+          description: Trust relationship name. Unique within the tenant.
+          example: github-actions-prod
+        role:
+          allOf:
+            - $ref: '#/components/schemas/MemberRole'
+          nullable: true
+        subject:
+          type: string
+          description: Subject claim pattern. `*` matches any sequence of characters.
+          example: repo:my-org/my-repo:ref:refs/heads/main
+    NewOidcTrustResponse:
+      type: object
+      description: Response to a successful create.
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/OidcTrustId'
+        name:
+          type: string
+    NewTenantRequest:
+      type: object
+      description: Request to create a tenant (owner-only).
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: acme
+    NewTenantResponse:
+      type: object
+      description: Response to a successful tenant creation.
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          type: string
     NexmarkInputConfig:
       type: object
       description: >-
@@ -12315,6 +13323,40 @@ components:
           Options set through the URL take precedence over those set with these
 
           options.
+    OidcTrustDescr:
+      type: object
+      description: |-
+        Trust relationship descriptor returned to clients.
+
+        Wildcards: a `*` in `subject` or `audience` matches any sequence of
+        characters; all other characters must match exactly.
+      required:
+        - id
+        - name
+        - issuer
+        - subject
+        - role
+      properties:
+        audience:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        id:
+          $ref: '#/components/schemas/OidcTrustId'
+        issuer:
+          type: string
+        name:
+          type: string
+        role:
+          $ref: '#/components/schemas/Role'
+        subject:
+          type: string
+    OidcTrustId:
+      type: string
+      format: uuid
+      description: Trust relationship identifier.
     Op:
       type: object
       required:
@@ -14665,6 +15707,33 @@ components:
           type: string
           format: uuid
           description: UUID of the checkpoint.
+    RenameTenantRequest:
+      type: object
+      description: Request to rename a tenant.
+      required:
+        - name
+      properties:
+        displace_existing:
+          type: boolean
+          description: >-
+            Take the name from the tenant that currently holds it, instead of
+
+            failing with a conflict. That tenant is renamed to `<name> (<id>)`
+            and
+
+            keeps everything it had; nothing is merged or deleted.
+        name:
+          type: string
+          description: The tenant's new name.
+          example: acme
+    RenameTenantResponse:
+      type: object
+      description: Response to a successful tenant rename.
+      properties:
+        displaced:
+          allOf:
+            - $ref: '#/components/schemas/TenantInfo'
+          nullable: true
     ReplayPolicy:
       type: string
       enum:
@@ -15061,6 +16130,14 @@ components:
           default: null
           nullable: true
       additionalProperties: false
+    Role:
+      type: string
+      description: A role in the RBAC model. Declaration order defines the privilege order.
+      enum:
+        - read
+        - write
+        - admin
+        - owner
     RuntimeConfig:
       type: object
       description: |-
@@ -15716,12 +16793,23 @@ components:
       required:
         - tenant_id
         - tenant_name
+        - role
       properties:
+        role:
+          $ref: '#/components/schemas/Role'
         tenant_id:
           $ref: '#/components/schemas/TenantId'
         tenant_name:
           type: string
           description: Current user's tenant name
+    SetMemberRoleRequest:
+      type: object
+      description: Request to assign a role to a user within a tenant.
+      required:
+        - role
+      properties:
+        role:
+          $ref: '#/components/schemas/MemberRole'
     ShortEndpointConfig:
       type: object
       description: >-
@@ -16429,6 +17517,50 @@ components:
     TenantId:
       type: string
       format: uuid
+    TenantInfo:
+      type: object
+      description: A tenant, as returned by the platform (owner-only) tenant list.
+      required:
+        - id
+        - name
+        - initial_provider
+      properties:
+        id:
+          $ref: '#/components/schemas/TenantId'
+        initial_provider:
+          type: string
+          description: >-
+            The OIDC issuer this tenant was first provisioned under. Provenance
+
+            only: a tenant is resolved by name, so this does not affect which
+            tenant
+
+            a login reaches.
+        name:
+          type: string
+    TenantMember:
+      type: object
+      description: A member of a tenant, as returned by the user-management API.
+      required:
+        - user_id
+        - provider
+        - subject
+        - role
+      properties:
+        email:
+          type: string
+          description: Email, if the identity provider supplied one.
+          nullable: true
+        provider:
+          type: string
+          description: OIDC issuer the user authenticates through.
+        role:
+          $ref: '#/components/schemas/Role'
+        subject:
+          type: string
+          description: OIDC subject.
+        user_id:
+          $ref: '#/components/schemas/UserId'
     TimeSeries:
       type: object
       description: Time series to make graphs in the web console easier.
@@ -16805,6 +17937,10 @@ components:
           type: string
         user:
           type: string
+    UserId:
+      type: string
+      format: uuid
+      description: Identifier of a persisted user (the principal behind an OIDC `sub`).
     ValidateProgramRequest:
       type: object
       description: Request body for the program validation endpoint.
