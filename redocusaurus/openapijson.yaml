@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.327.0
+  version: 0.328.0
 paths:
   /config/authentication:
     get:
@@ -9071,6 +9071,44 @@ components:
                 snapshot when the connector supports reset (e.g., Delta Lake in
 
                 `truncate` mode and Postgres).
+            soft_delete:
+              type: boolean
+              description: >-
+                Ingest deletions as insertions, recording the original polarity
+                in the
+
+                `is_delete` metadata attribute. Valid for input connectors only.
+
+
+                When `true`, a delete received by the connector is pushed to the
+                table
+
+                as an insertion of the same record, and the connector attaches
+                the
+
+                `is_delete` metadata attribute set to `true` to it. Insertions
+                carry no
+
+                `is_delete` attribute, so a column declared as
+
+                `DEFAULT CAST(CONNECTOR_METADATA()['is_delete'] AS BOOLEAN)` is
+                `NULL`
+
+                for them. The table then contains the entire history of the
+                input
+
+                stream instead of tracking its current contents.
+
+
+                Only tables without a primary key support this mode, since
+                deletions in
+
+                a table with a primary key delete a key rather than a record.
+
+
+                Versions of Feldera that predate this option ignore it and apply
+
+                deletions as regular deletions.
             start_after:
               type: array
               items:
