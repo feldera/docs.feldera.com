@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest package &mdash; Feldera Python SDK 0.329.0 documentation</title>
+  <title>feldera.rest package &mdash; Feldera Python SDK 0.330.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=85ba018f"></script>
+        <script src="_static/documentation_options.js?v=dee12986"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -500,6 +500,24 @@ it to compile</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.create_tenant">
+<span class="sig-name descname"><span class="pre">create_tenant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.create_tenant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.create_tenant" title="Link to this definition"></a></dt>
+<dd><p>Create a tenant, or return it if one with this name already exists.
+Platform owners only.</p>
+<p>A login resolves its tenant by name, so a user whose identity provider
+asserts this name lands in the tenant created here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The name of the tenant.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict describing the tenant (<cite>id</cite>, <cite>name</cite>,
+<cite>initial_provider</cite>).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.delete_oidc_trust">
 <span class="sig-name descname"><span class="pre">delete_oidc_trust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.delete_oidc_trust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.delete_oidc_trust" title="Link to this definition"></a></dt>
 <dd><p>Delete an OIDC trust relationship by name.</p>
@@ -740,6 +758,26 @@ and packages them into a single ZIP file for support purposes.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline does not exist or if there’s an error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_tenant">
+<span class="sig-name descname"><span class="pre">get_tenant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tenant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_tenant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_tenant" title="Link to this definition"></a></dt>
+<dd><p>Retrieve a single tenant by name or identifier. Platform owners only.</p>
+<p>A selector that parses as a UUID is looked up by tenant identifier,
+otherwise by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tenant</strong> – The tenant’s name or identifier (UUID).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict describing the tenant (<cite>id</cite>, <cite>name</cite>,
+<cite>initial_provider</cite>).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If no tenant matches the selector.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1400,7 +1438,7 @@ filter pipelines (e.g. “team:ml”, “env:prod”)</p></li>
 <span id="feldera-rest-retry-module"></span><h2>feldera.rest.retry module<a class="headerlink" href="#module-feldera.rest.retry" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="feldera.rest.retry.RetryConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.rest.retry.</span></span><span class="sig-name descname"><span class="pre">RetryConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retries:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">64.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unhealthy_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">90.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryable_status_codes:</span> <span class="pre">~typing.FrozenSet[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/retry.html#RetryConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.retry.RetryConfig" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.rest.retry.</span></span><span class="sig-name descname"><span class="pre">RetryConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retries:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline_seconds:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">64.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unhealthy_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">90.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryable_status_codes:</span> <span class="pre">~typing.FrozenSet[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/rest/retry.html#RetryConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.retry.RetryConfig" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Configures retry behavior for the Feldera HTTP client.</p>
 <p>Retries are attempted on transient failures: connection/read timeouts and
@@ -1427,7 +1465,13 @@ wait (capped at <cite>max_backoff</cite>).</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_retries</strong> – Number of retries to attempt after the initial request.
 A value of <cite>3</cite> means up to <cite>4</cite> total attempts. Must be <cite>&gt;= 0</cite>.
-Default: <cite>3</cite>.</p></li>
+Ignored when <cite>deadline_seconds</cite> is set. Default: <cite>3</cite>.</p></li>
+<li><p><strong>deadline_seconds</strong> – Wall-clock retry budget in seconds, measured from
+the first attempt. When set, <cite>max_retries</cite> no longer applies: retries
+continue (with the usual waits) until the budget is exhausted.
+Transient outages such as a node replacement last for a duration, not
+a number of requests, so a duration budget survives them where an
+attempt cap gives up early. Default: <cite>None</cite> (attempt-based stopping).</p></li>
 <li><p><strong>initial_backoff</strong> – Base wait in seconds before the first retry.
 Default: <cite>2.0</cite>.</p></li>
 <li><p><strong>max_backoff</strong> – Maximum wait in seconds between retries. The computed
@@ -1449,7 +1493,12 @@ retry. Default: <cite>{408, 429, 502, 503, 504}</cite>.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.retry.RetryConfig.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retries:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">64.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unhealthy_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">90.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryable_status_codes:</span> <span class="pre">~typing.FrozenSet[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#feldera.rest.retry.RetryConfig.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_retries:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline_seconds:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">64.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiplier:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jitter:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unhealthy_backoff:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">90.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retryable_status_codes:</span> <span class="pre">~typing.FrozenSet[int]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#feldera.rest.retry.RetryConfig.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="feldera.rest.retry.RetryConfig.deadline_seconds">
+<span class="sig-name descname"><span class="pre">deadline_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#feldera.rest.retry.RetryConfig.deadline_seconds" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

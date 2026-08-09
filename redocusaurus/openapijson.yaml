@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.329.0
+  version: 0.330.0
 paths:
   /config/authentication:
     get:
@@ -640,6 +640,11 @@ paths:
         Required role: `read` or higher.
 
         Retrieve login session information for your current user session.
+
+        This is the one route that answers a login without a resolved acting
+        tenant: when the user belongs to several tenants (or none) and no
+        `Feldera-Tenant` header selects one, the acting-tenant fields are `null`
+        and `memberships` lists the tenants to pick from.
       operationId: get_config_session
       responses:
         '200':
@@ -7285,18 +7290,15 @@ paths:
       tags:
         - Platform
       summary: Provision Tenant Member
-      description: >-
+      description: |-
         Required role: `admin` or higher.
 
-
         Add a member to the acting tenant by identity, before the user's first
-
-        login. The grant is dormant until that identity authenticates into the
-
-        tenant through the IdP. The role is capped at the caller's own role and
-        may
-
-        not be `owner`.
+        login. The membership authorizes on its own: as soon as that identity
+        authenticates through the platform's identity provider, the user may act
+        in this tenant, and a headerless login with exactly this one membership
+        lands in it. The role is capped at the caller's own role and may not be
+        `owner`.
       operationId: add_tenant_user
       requestBody:
         content:
@@ -7467,18 +7469,12 @@ paths:
       tags:
         - Platform
       summary: Create Tenant
-      description: >-
+      description: |-
         Required role: `owner`.
 
-
         Explicitly create a tenant, rather than relying on first login.
-
         A login resolves its tenant by name, so a user whose identity provider
-
-        asserts this name lands in the tenant created here. Fails with a
-        conflict if
-
-        the name is already taken.
+        asserts this name lands in the tenant created here.
       operationId: create_tenant
       requestBody:
         content:
@@ -7487,20 +7483,20 @@ paths:
               $ref: '#/components/schemas/NewTenantRequest'
         required: true
       responses:
+        '200':
+          description: Tenant with that name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantInfo'
         '201':
           description: Tenant created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NewTenantResponse'
+                $ref: '#/components/schemas/TenantInfo'
         '403':
           description: Caller is not a platform owner
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
-          description: A tenant with that name already exists
           content:
             application/json:
               schema:
@@ -7514,6 +7510,53 @@ paths:
       security:
         - JSON web token (JWT) or API key: []
   /v0/tenants/{tenant_id}:
+    get:
+      tags:
+        - Platform
+      summary: Get Tenant
+      description: >-
+        Required role: `owner`.
+
+
+        Retrieve a single tenant by name or identifier. A selector that parses
+        as a
+
+        UUID is looked up by tenant identifier, otherwise by name.
+      operationId: get_tenant
+      parameters:
+        - name: tenant_id
+          in: path
+          description: Tenant name or identifier (UUID)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tenant retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantInfo'
+        '403':
+          description: Caller is not a platform owner
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No tenant with that name or identifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JSON web token (JWT) or API key: []
     delete:
       tags:
         - Platform
@@ -12862,6 +12905,13 @@ components:
         - read
         - write
         - admin
+    MembershipOrigin:
+      type: string
+      description: How a membership row came into existence, kept for audit.
+      enum:
+        - claim
+        - derived
+        - api
     MemoryPressure:
       type: string
       description: >-
@@ -13133,17 +13183,6 @@ components:
         name:
           type: string
           example: acme
-    NewTenantResponse:
-      type: object
-      description: Response to a successful tenant creation.
-      required:
-        - id
-        - name
-      properties:
-        id:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          type: string
     NexmarkInputConfig:
       type: object
       description: >-
@@ -16829,17 +16868,33 @@ components:
     SessionInfo:
       type: object
       required:
-        - tenant_id
-        - tenant_name
-        - role
+        - memberships
       properties:
+        memberships:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserMembership'
+          description: >-
+            The tenants this user may act in, from the membership table. Empty
+            for
+
+            principals that are not human logins (API keys, federated workloads,
+
+            no-auth mode) and for platform owners without explicit memberships,
+
+            who act in any tenant regardless.
         role:
-          $ref: '#/components/schemas/Role'
+          allOf:
+            - $ref: '#/components/schemas/Role'
+          nullable: true
         tenant_id:
-          $ref: '#/components/schemas/TenantId'
+          allOf:
+            - $ref: '#/components/schemas/TenantId'
+          nullable: true
         tenant_name:
           type: string
-          description: Current user's tenant name
+          description: Acting tenant name; `null` exactly when `tenant_id` is.
+          nullable: true
     SetMemberRoleRequest:
       type: object
       description: Request to assign a role to a user within a tenant.
@@ -17557,7 +17612,7 @@ components:
       format: uuid
     TenantInfo:
       type: object
-      description: A tenant, as returned by the platform (owner-only) tenant list.
+      description: A tenant, as returned by the owner-only tenant endpoints.
       required:
         - id
         - name
@@ -17585,9 +17640,35 @@ components:
         - subject
         - role
       properties:
+        display_name:
+          type: string
+          description: >-
+            The member's name, as the identity provider spells it; `null` until
+            the
+
+            provider has been asked.
+          nullable: true
         email:
           type: string
-          description: Email, if the identity provider supplied one.
+          description: |-
+            Email, if the identity provider supplied one or an administrator
+            recorded one when pre-provisioning the membership.
+          nullable: true
+        email_verified:
+          type: boolean
+          description: >-
+            Whether the identity provider vouches for `email`. False until the
+
+            provider has been asked, and for providers that say nothing either
+            way.
+
+            An email an administrator typed is never verified, so this is what
+
+            separates an address the provider stands behind from a claim about
+            one.
+        origin:
+          allOf:
+            - $ref: '#/components/schemas/MembershipOrigin'
           nullable: true
         provider:
           type: string
@@ -17979,6 +18060,23 @@ components:
       type: string
       format: uuid
       description: Identifier of a persisted user (the principal behind an OIDC `sub`).
+    UserMembership:
+      type: object
+      description: |-
+        One tenant a user may act in, as surfaced to that user (e.g. in the
+        session payload that drives the web console's tenant switcher).
+      required:
+        - tenant_id
+        - name
+        - role
+      properties:
+        name:
+          type: string
+          description: The tenant's name.
+        role:
+          $ref: '#/components/schemas/Role'
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
     ValidateProgramRequest:
       type: object
       description: Request body for the program validation endpoint.
