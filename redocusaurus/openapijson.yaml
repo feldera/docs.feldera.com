@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.331.0
+  version: 0.332.0
 paths:
   /config/authentication:
     get:
@@ -8101,7 +8101,7 @@ components:
       properties:
         fingerprint:
           type: integer
-          format: int64
+          format: uint64
           description: Fingerprint of the circuit at the time of the checkpoint.
           minimum: 0
         identifier:
