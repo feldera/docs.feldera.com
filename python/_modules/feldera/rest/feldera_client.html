@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.334.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.335.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=c2c506a3"></script>
+        <script src="../../../_static/documentation_options.js?v=b3104cfa"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -605,6 +605,23 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">resp</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.get_pipeline_metrics">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.get_pipeline_metrics">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_pipeline_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;prometheus&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pipeline circuit metrics</span>
+
+<span class="sd">        :param name: The name of the pipeline</span>
+<span class="sd">        :param format: The metrics format, &quot;prometheus&quot; (default) or &quot;json&quot;.</span>
+<span class="sd">        :return: Prometheus exposition text as `str`, or a `dict` for &quot;json&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">/metrics&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="nb">format</span><span class="p">},</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.get_pipeline_logs">

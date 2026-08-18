@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.334.0
+  version: 0.335.0
 paths:
   /config/authentication:
     get:
@@ -14953,6 +14953,14 @@ components:
               description: >-
                 True to enable hostname verification when using TLS. True by
                 default.
+
+
+                When false, the certificate chain is still verified against the
+
+                trusted CA; only the requirement that the server name appears in
+                the
+
+                certificate is lifted.
               nullable: true
         - type: object
           required:
@@ -15037,6 +15045,14 @@ components:
               description: >-
                 True to enable hostname verification when using TLS. True by
                 default.
+
+
+                When false, the certificate chain is still verified against the
+
+                trusted CA; only the requirement that the server name appears in
+                the
+
+                certificate is lifted.
               nullable: true
         - type: object
           required:
@@ -15101,6 +15117,13 @@ components:
           description: >-
             True to enable hostname verification when using TLS. True by
             default.
+
+
+            When false, the certificate chain is still verified against the
+
+            trusted CA; only the requirement that the server name appears in the
+
+            certificate is lifted.
           nullable: true
     PostgresWriteMode:
       type: string
@@ -15161,6 +15184,14 @@ components:
               description: >-
                 True to enable hostname verification when using TLS. True by
                 default.
+
+
+                When false, the certificate chain is still verified against the
+
+                trusted CA; only the requirement that the server name appears in
+                the
+
+                certificate is lifted.
               nullable: true
         - type: object
           required:
