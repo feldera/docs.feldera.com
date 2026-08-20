@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.335.0
+  version: 0.336.0
 paths:
   /config/authentication:
     get:
@@ -522,6 +522,11 @@ paths:
 
         Determine the latest cluster health via the latest cluster monitor
         event.
+
+        Each service's `unchanged_since` reports the approximate time it last
+        transitioned
+
+        between healthy and unhealthy, bounded by event retention.
       operationId: get_cluster_health
       responses:
         '200':
@@ -11732,6 +11737,7 @@ components:
             that appears more than once matches if any of its values match.
     HealthStatus:
       type: object
+      description: Health of the cluster as a whole and of each of its services.
       required:
         - all_healthy
         - api
@@ -11740,6 +11746,7 @@ components:
       properties:
         all_healthy:
           type: boolean
+          description: Whether every service is healthy.
         api:
           $ref: '#/components/schemas/ServiceStatus'
         compiler:
@@ -16916,6 +16923,9 @@ components:
           description: Sample time.
     ServiceStatus:
       type: object
+      description: >-
+        Health of a single service derived from the retained cluster monitor
+        events.
       required:
         - healthy
         - message
@@ -16925,13 +16935,24 @@ components:
         checked_at:
           type: string
           format: date-time
+          description: Timestamp of the most recent cluster monitor event.
         healthy:
           type: boolean
+          description: Whether the service passed its most recent health check.
         message:
           type: string
+          description: Human-readable report from the most recent health check.
         unchanged_since:
           type: string
           format: date-time
+          description: >-
+            Approximate time the service last transitioned between healthy and
+            unhealthy:
+
+            the timestamp of the oldest retained consecutive cluster monitor
+            event with the
+
+            same `healthy` conclusion. Bounded by event retention.
     SessionInfo:
       type: object
       required:
