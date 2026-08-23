@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.336.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.337.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=216f9211"></script>
+        <script src="_static/documentation_options.js?v=50bad848"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -309,7 +309,13 @@ backfill in the background. Mutually exclusive with
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.checkpoint">
 <span class="sig-name descname"><span class="pre">checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoint" title="Link to this definition"></a></dt>
-<dd><p>Checkpoints this pipeline.</p>
+<dd><p>Checkpoints this pipeline, returning just the checkpoint sequence
+number.</p>
+<p>This is for backward compatibility: <cite>checkpoint_response</cite> is a
+better choice for a caller that plans to check the checkpoint’s
+status itself later (e.g. after this call returns with
+<cite>wait=False</cite>), since it also returns the <cite>incarnation_uuid</cite> needed
+for that later check to detect a pipeline restart in between.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -328,12 +334,41 @@ checkpoint to complete (defaults to <cite>None</cite> = no timeout is enforced).
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.checkpoint_response">
+<span class="sig-name descname"><span class="pre">checkpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoint_response" title="Link to this definition"></a></dt>
+<dd><p>Checkpoints this pipeline, returning the full response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wait</strong> – If true, will block until the checkpoint completes.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+checkpoint to complete (defaults to <cite>None</cite> = no timeout is enforced).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict with <cite>checkpoint_sequence_number</cite> and
+<cite>incarnation_uuid</cite>; pass the latter to <cite>checkpoint_status</cite> to
+detect a pipeline restart between this call and a later status
+check.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If enterprise features are not enabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.checkpoint_status">
-<span class="sig-name descname"><span class="pre">checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoint_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incarnation_uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.checkpoint_status" title="Link to this definition"></a></dt>
 <dd><p>Checks the status of the given checkpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>seq</strong> – The checkpoint sequence number.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seq</strong> – The checkpoint sequence number.</p></li>
+<li><p><strong>incarnation_uuid</strong> – The <cite>incarnation_uuid</cite> returned alongside
+<cite>seq</cite> by <cite>checkpoint</cite>, if known, to allow pipeline restarts
+to be clearly reported as <cite>IncarnationUuidMismatch</cite>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1439,7 +1474,13 @@ Set to False to download only previously stored collections.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.sync_checkpoint">
 <span class="sig-name descname"><span class="pre">sync_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint" title="Link to this definition"></a></dt>
-<dd><p>Syncs this checkpoint to object store.</p>
+<dd><p>Syncs this checkpoint to object store, returning just the
+checkpoint uuid.</p>
+<p>This is for backward compatibility: <cite>sync_checkpoint_response</cite> is
+a better choice for a caller that plans to check the sync’s status
+itself later (e.g. after this call returns with <cite>wait=False</cite>),
+since it also returns the <cite>incarnation_uuid</cite> needed for that later
+check to detect a pipeline restart in between.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1459,8 +1500,35 @@ checkpoint to complete syncing.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.sync_checkpoint_response">
+<span class="sig-name descname"><span class="pre">sync_checkpoint_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint_response" title="Link to this definition"></a></dt>
+<dd><p>Syncs this checkpoint to object store, returning the full response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wait</strong> – If true, will block until the checkpoint sync operation
+completes.</p></li>
+<li><p><strong>timeout_s</strong> – The maximum time (in seconds) to wait for the
+checkpoint to complete syncing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict with <cite>checkpoint_uuid</cite> and <cite>incarnation_uuid</cite>; pass
+the latter to <cite>sync_checkpoint_status</cite> to detect a pipeline
+restart between this call and a later status check.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If no checkpoints have been made.</p></li>
+<li><p><strong>RuntimeError</strong> – If syncing the checkpoint fails.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.sync_checkpoint_status">
-<span class="sig-name descname"><span class="pre">sync_checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sync_checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incarnation_uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint_status" title="Link to this definition"></a></dt>
 <dd><p>Checks the status of the given checkpoint sync operation.
 If the checkpoint is currently being synchronized, returns
 <cite>CheckpointStatus.Unknown</cite>.</p>
@@ -1468,7 +1536,12 @@ If the checkpoint is currently being synchronized, returns
 checked.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>uuid</strong> – The checkpoint uuid.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uuid</strong> – The checkpoint uuid.</p></li>
+<li><p><strong>incarnation_uuid</strong> – The <cite>incarnation_uuid</cite> returned alongside
+<cite>uuid</cite> by <cite>sync_checkpoint</cite>, if known, to allow pipeline restarts
+to be clearly reported as <cite>IncarnationUuidMismatch</cite>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2660,6 +2733,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.advance_clock"><code class="docutils literal notranslate"><span class="pre">FelderaClient.advance_clock()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.approve_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.approve_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_response"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline_response()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.checkpoint_pipeline_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.clear_storage"><code class="docutils literal notranslate"><span class="pre">FelderaClient.clear_storage()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.commit_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.commit_transaction()</span></code></a></li>
@@ -2719,6 +2793,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_transaction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.stop_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_response"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_response()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.testing_force_update_platform_version"><code class="docutils literal notranslate"><span class="pre">FelderaClient.testing_force_update_platform_version()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.update_pipeline_runtime"><code class="docutils literal notranslate"><span class="pre">FelderaClient.update_pipeline_runtime()</span></code></a></li>

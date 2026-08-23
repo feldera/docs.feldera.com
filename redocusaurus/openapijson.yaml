@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.336.0
+  version: 0.337.0
 paths:
   /config/authentication:
     get:
@@ -2538,6 +2538,19 @@ paths:
           required: true
           schema:
             type: string
+        - name: incarnation_uuid
+          in: query
+          description: >-
+            Incarnation UUID returned by the `POST checkpoint/sync` request this
+            status check is for. If given and it does not match the pipeline's
+            current incarnation, the pipeline process has restarted since the
+            sync was requested and the response is a 400 error rather than a
+            status.
+          required: false
+          schema:
+            type: string
+            format: uuid
+            nullable: true
       responses:
         '200':
           description: Checkpoint sync status retrieved successfully
@@ -2545,6 +2558,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CheckpointSyncStatus'
+        '400':
+          description: >-
+            The given `incarnation_uuid` does not match the pipeline's current
+            incarnation (error code `IncarnationUuidMismatch`): the pipeline
+            process has restarted since the sync was requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -2657,6 +2679,19 @@ paths:
           required: true
           schema:
             type: string
+        - name: incarnation_uuid
+          in: query
+          description: >-
+            Incarnation UUID returned by the `POST checkpoint` request this
+            status check is for. If given and it does not match the pipeline's
+            current incarnation, the pipeline process has restarted since the
+            checkpoint was requested and the response is a 400 error rather than
+            a status.
+          required: false
+          schema:
+            type: string
+            format: uuid
+            nullable: true
       responses:
         '200':
           description: Checkpoint status retrieved successfully
@@ -2664,6 +2699,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CheckpointStatus'
+        '400':
+          description: >-
+            The given `incarnation_uuid` does not match the pipeline's current
+            incarnation (error code `IncarnationUuidMismatch`): the pipeline
+            process has restarted since the checkpoint was requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -8150,6 +8194,14 @@ components:
           type: integer
           format: int64
           minimum: 0
+        incarnation_uuid:
+          type: string
+          format: uuid
+          description: |-
+            Pass back to `/checkpoint_status` to detect pipeline restarts.
+
+            Only `None` if sent by an older pipeline.
+          nullable: true
     CheckpointStatus:
       type: object
       description: Checkpoint status returned by the `/checkpoint_status` endpoint.
@@ -8187,6 +8239,14 @@ components:
         checkpoint_uuid:
           type: string
           format: uuid
+        incarnation_uuid:
+          type: string
+          format: uuid
+          description: |-
+            Pass back to `/checkpoint/sync_status` to detect pipeline restarts.
+
+            Only `None` if sent by an older pipeline.
+          nullable: true
     CheckpointSyncStatus:
       type: object
       description: Checkpoint status returned by the `/checkpoint/sync_status` endpoint.

@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.5ab6a7cd.css">
-<script src="/assets/js/runtime~main.e8d7179a.js" defer="defer"></script>
-<script src="/assets/js/main.51b9e7e7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.5d87a02e.js" defer="defer"></script>
+<script src="/assets/js/main.8f3e01ac.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -39,6 +39,34 @@ for the accepted rewrite of each form.</p>
 <li class="">
 <p>Joining on <code>ROW</code> values is now supported, using
 <code>ON left.r IS NOT DISTINCT FROM right.r</code> (#3398).</p>
+</li>
+<li class="">
+<p>Breaking change (SQL): comparing a <code>UUID</code> with a character or binary value
+now converts that value to a <code>UUID</code>, the same direction as comparing a
+string with a number.  Previously the <code>UUID</code> was converted to the other
+operand&#x27;s type, so <code>u &lt;&gt; &#x27;&#x27;</code> was always <code>FALSE</code>.  A value that does not
+denote a <code>UUID</code> is now a runtime error rather than a comparison that
+silently fails (#6883).</p>
+</li>
+<li class="">
+<p>Breaking change (SQL): converting a string to a <code>UUID</code> now follows
+PostgreSQL: 32 hexadecimal digits of either case, optionally enclosed in
+braces, optionally separated by a hyphen after any complete group of four
+digits.  Forms such as <code>123e4567e89b12d3a456426655440000</code> and
+<code>{123e4567-e89b-12d3-a456-426655440000}</code> are now accepted, while the URN
+form <code>urn:uuid:123e4567-e89b-12d3-a456-426655440000</code> is rejected, as are
+strings with leading or trailing blanks.  Malformed strings are rejected
+instead of denoting a different <code>UUID</code>: the literal <code>UUID &#x27;1-2-3-4-5&#x27;</code>
+used to mean <code>00000001-0002-0003-0004-000000000005</code>.  <code>UUID</code> literals
+follow the same rules as the cast.  Converting a binary value to a <code>UUID</code>
+now requires exactly 16 bytes; a longer value used to be truncated.  See
+<a href="https://docs.feldera.com/sql/uuid" target="_blank" rel="noopener noreferrer" class="">UUID operations</a>.</p>
+</li>
+<li class="">
+<p><code>/checkpoint</code> and <code>/checkpoint/sync</code> now return an <code>incarnation_uuid</code>
+that can be used with their corresponding status calls to detect if
+the pipeline restarts.  If it does, the operation itself must be restarted
+(the most common use of the Python API does this automatically).</p>
 </li>
 </ul><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03300">v0.330.0<a href="#v03300" class="hash-link" aria-label="Direct link to v0.330.0" title="Direct link to v0.330.0" translate="no">​</a></h2><ul>
 <li class="">

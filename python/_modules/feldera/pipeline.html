@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.336.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.337.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=216f9211"></script>
+        <script src="../../_static/documentation_options.js?v=50bad848"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -1199,7 +1199,14 @@
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checkpoints this pipeline.</span>
+<span class="sd">        Checkpoints this pipeline, returning just the checkpoint sequence</span>
+<span class="sd">        number.</span>
+
+<span class="sd">        This is for backward compatibility: `checkpoint_response` is a</span>
+<span class="sd">        better choice for a caller that plans to check the checkpoint&#39;s</span>
+<span class="sd">        status itself later (e.g. after this call returns with</span>
+<span class="sd">        `wait=False`), since it also returns the `incarnation_uuid` needed</span>
+<span class="sd">        for that later check to detect a pipeline restart in between.</span>
 
 <span class="sd">        :param wait: If true, will block until the checkpoint completes.</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
@@ -1210,12 +1217,41 @@
 <span class="sd">        :raises FelderaAPIError: If enterprise features are not enabled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_response</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)[</span>
+                <span class="s2">&quot;checkpoint_sequence_number&quot;</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.checkpoint_response">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoint_response">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checkpoints this pipeline, returning the full response.</span>
+
+<span class="sd">        :param wait: If true, will block until the checkpoint completes.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            checkpoint to complete (defaults to `None` = no timeout is enforced).</span>
+
+<span class="sd">        :return: dict with `checkpoint_sequence_number` and</span>
+<span class="sd">            `incarnation_uuid`; pass the latter to `checkpoint_status` to</span>
+<span class="sd">            detect a pipeline restart between this call and a later status</span>
+<span class="sd">            check.</span>
+
+<span class="sd">        :raises FelderaAPIError: If enterprise features are not enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s2">&quot;checkpoint_sequence_number&quot;</span><span class="p">])</span>
+        <span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">seq</span>
+            <span class="k">return</span> <span class="n">resp</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
@@ -1224,24 +1260,42 @@
                     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for </span><span class="se">\</span>
 <span class="s2">pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to make checkpoint &#39;</span><span class="si">{</span><span class="n">seq</span><span class="si">}</span><span class="s2">&#39;&quot;&quot;&quot;</span>
                 <span class="p">)</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_status</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_status</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FelderaAPIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">error_code</span> <span class="o">==</span> <span class="s2">&quot;IncarnationUuidMismatch&quot;</span><span class="p">:</span>
+                    <span class="c1"># The pipeline restarted since the checkpoint was</span>
+                    <span class="c1"># requested; that request is gone, so start over. Sleep</span>
+                    <span class="c1"># first so a crash-looping pipeline doesn&#39;t turn this</span>
+                    <span class="c1"># into a tight retry loop.</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">seq</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="p">[</span><span class="s2">&quot;checkpoint_sequence_number&quot;</span><span class="p">])</span>
+                    <span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">raise</span>
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">InProgress</span><span class="p">:</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
                 <span class="k">continue</span>
 
-            <span class="k">return</span> <span class="n">seq</span></div>
+            <span class="k">return</span> <span class="n">resp</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.checkpoint_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.checkpoint_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointStatus</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">seq</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointStatus</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks the status of the given checkpoint.</span>
 
 <span class="sd">        :param seq: The checkpoint sequence number.</span>
+<span class="sd">        :param incarnation_uuid: The `incarnation_uuid` returned alongside</span>
+<span class="sd">            `seq` by `checkpoint`, if known, to allow pipeline restarts</span>
+<span class="sd">            to be clearly reported as `IncarnationUuidMismatch`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">checkpoint_pipeline_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">)</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">seq</span> <span class="o">==</span> <span class="n">success</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Success</span>
@@ -1265,7 +1319,14 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Syncs this checkpoint to object store.</span>
+<span class="sd">        Syncs this checkpoint to object store, returning just the</span>
+<span class="sd">        checkpoint uuid.</span>
+
+<span class="sd">        This is for backward compatibility: `sync_checkpoint_response` is</span>
+<span class="sd">        a better choice for a caller that plans to check the sync&#39;s status</span>
+<span class="sd">        itself later (e.g. after this call returns with `wait=False`),</span>
+<span class="sd">        since it also returns the `incarnation_uuid` needed for that later</span>
+<span class="sd">        check to detect a pipeline restart in between.</span>
 
 <span class="sd">        :param wait: If true, will block until the checkpoint sync operation</span>
 <span class="sd">            completes.</span>
@@ -1276,12 +1337,40 @@
 <span class="sd">        :raises RuntimeError: If syncing the checkpoint fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">uuid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_response</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)[</span>
+            <span class="s2">&quot;checkpoint_uuid&quot;</span>
+        <span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.sync_checkpoint_response">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_response">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_response</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Syncs this checkpoint to object store, returning the full response.</span>
+
+<span class="sd">        :param wait: If true, will block until the checkpoint sync operation</span>
+<span class="sd">            completes.</span>
+<span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
+<span class="sd">            checkpoint to complete syncing.</span>
+
+<span class="sd">        :return: dict with `checkpoint_uuid` and `incarnation_uuid`; pass</span>
+<span class="sd">            the latter to `sync_checkpoint_status` to detect a pipeline</span>
+<span class="sd">            restart between this call and a later status check.</span>
+
+<span class="sd">        :raises FelderaAPIError: If no checkpoints have been made.</span>
+<span class="sd">        :raises RuntimeError: If syncing the checkpoint fails.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;checkpoint_uuid&quot;</span><span class="p">]</span>
+        <span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">uuid</span>
+            <span class="k">return</span> <span class="n">resp</span>
 
-        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
@@ -1290,7 +1379,20 @@
                     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;timeout (</span><span class="si">{</span><span class="n">timeout_s</span><span class="si">}</span><span class="s2">s) reached while waiting for </span><span class="se">\</span>
 <span class="s2">pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;&quot;&quot;&quot;</span>
                 <span class="p">)</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FelderaAPIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">error_code</span> <span class="o">==</span> <span class="s2">&quot;IncarnationUuidMismatch&quot;</span><span class="p">:</span>
+                    <span class="c1"># The pipeline restarted since the sync was requested;</span>
+                    <span class="c1"># that request is gone, so start over. Sleep first so a</span>
+                    <span class="c1"># crash-looping pipeline doesn&#39;t turn this into a tight</span>
+                    <span class="c1"># retry loop.</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                    <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="s2">&quot;checkpoint_uuid&quot;</span><span class="p">]</span>
+                    <span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">raise</span>
             <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">CheckpointStatus</span><span class="o">.</span><span class="n">Failure</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;failed to sync checkpoint &#39;</span><span class="si">{</span><span class="n">uuid</span><span class="si">}</span><span class="s2">&#39;: &quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">get_error</span><span class="p">()</span>
@@ -1302,7 +1404,7 @@
 
             <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">uuid</span></div>
+        <span class="k">return</span> <span class="n">resp</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.remote_checkpoints">
@@ -1322,7 +1424,9 @@
 
 <div class="viewcode-block" id="Pipeline.sync_checkpoint_status">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.sync_checkpoint_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointStatus</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">uuid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CheckpointStatus</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks the status of the given checkpoint sync operation.</span>
 <span class="sd">        If the checkpoint is currently being synchronized, returns</span>
@@ -1332,9 +1436,12 @@
 <span class="sd">        checked.</span>
 
 <span class="sd">        :param uuid: The checkpoint uuid.</span>
+<span class="sd">        :param incarnation_uuid: The `incarnation_uuid` returned alongside</span>
+<span class="sd">            `uuid` by `sync_checkpoint`, if known, to allow pipeline restarts</span>
+<span class="sd">            to be clearly reported as `IncarnationUuidMismatch`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">)</span>
         <span class="n">success</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">)</span>
         <span class="n">periodic</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;periodic&quot;</span><span class="p">)</span>
 

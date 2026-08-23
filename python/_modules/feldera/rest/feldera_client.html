@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.336.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.337.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=216f9211"></script>
+        <script src="../../../_static/documentation_options.js?v=50bad848"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1289,58 +1289,114 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_pipeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checkpoint a pipeline.</span>
+<span class="sd">        Triggers checkpointing a pipeline and returns just the</span>
+<span class="sd">        checkpoint sequence number.</span>
 
-<span class="sd">        :param pipeline_name: The name of the pipeline to checkpoint</span>
+<span class="sd">        This is for backward compatibility:</span>
+<span class="sd">        `checkpoint_pipeline_response` is a better choice because it</span>
+<span class="sd">        allows the caller to detect that the pipeline has restarted</span>
+<span class="sd">        (and that therefore the checkpoint needs to be triggered</span>
+<span class="sd">        again).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">checkpoint_pipeline_response</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)[</span>
+                <span class="s2">&quot;checkpoint_sequence_number&quot;</span>
+            <span class="p">]</span>
+        <span class="p">)</span></div>
 
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_sequence_number&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FelderaClient.checkpoint_pipeline_response">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_response">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_pipeline_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Triggers checkpointing a pipeline, returning the full response.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline to checkpoint</span>
+<span class="sd">        :return: dict with `checkpoint_sequence_number` and `incarnation_uuid`,</span>
+<span class="sd">            the latter identifying the pipeline process instance that</span>
+<span class="sd">            accepted the request; pass it to `checkpoint_pipeline_status` to</span>
+<span class="sd">            detect a pipeline restart between the request and the status</span>
+<span class="sd">            check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.checkpoint_pipeline_status">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.checkpoint_pipeline_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_pipeline_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkpoint_pipeline_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the checkpoint status</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to check the checkpoint status of.</span>
+<span class="sd">        :param incarnation_uuid: The `incarnation_uuid` returned by the</span>
+<span class="sd">            `checkpoint_pipeline_response` call, to allow pipeline restarts</span>
+<span class="sd">            to be clearly reported as `IncarnationUuidMismatch`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint_status&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint_status&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">:</span> <span class="n">incarnation_uuid</span><span class="p">},</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.sync_checkpoint">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Triggers a checkpoint synchronization for the specified pipeline.</span>
-<span class="sd">        Check the status by calling `pipeline_sync_checkpoint_status`.</span>
+<span class="sd">        Triggers a checkpoint synchronization and returns just the</span>
+<span class="sd">        checkpoint UUID.</span>
 
-<span class="sd">        :param pipeline_name: Name of the pipeline whose checkpoint should be synchronized.</span>
+<span class="sd">        This is for backward compatibility: `sync_checkpoint_response`</span>
+<span class="sd">        is a better choice because it allows the caller to detect that</span>
+<span class="sd">        the pipeline has restarted (and that therefore the checkpoint</span>
+<span class="sd">        synchronization needs to be triggered again).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint/sync&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sync_checkpoint_response</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)[</span><span class="s2">&quot;checkpoint_uuid&quot;</span><span class="p">]</span></div>
 
-        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_uuid&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FelderaClient.sync_checkpoint_response">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_response">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Triggers a checkpoint synchronization, returning the full response.</span>
+
+<span class="sd">        :param pipeline_name: Name of the pipeline whose checkpoint should be synchronized.</span>
+<span class="sd">        :return: dict with `checkpoint_uuid` and `incarnation_uuid`, the</span>
+<span class="sd">            latter identifying the pipeline process instance that accepted</span>
+<span class="sd">            the request; pass it to `sync_checkpoint_status` to detect a</span>
+<span class="sd">            pipeline restart between the request and the status check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint/sync&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.sync_checkpoint_status">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_status">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_checkpoint_status</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the checkpoint sync status of the pipeline</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline to check the checkpoint synchronization status of.</span>
+<span class="sd">        :param incarnation_uuid: The `incarnation_uuid` returned by the</span>
+<span class="sd">            `sync_checkpoint_response` call this status check is for, to</span>
+<span class="sd">            allow pipeline restarts to be clearly reported as</span>
+<span class="sd">            `IncarnationUuidMismatch`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/checkpoint/sync_status&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">:</span> <span class="n">incarnation_uuid</span><span class="p">},</span>
         <span class="p">)</span></div>
 
 
