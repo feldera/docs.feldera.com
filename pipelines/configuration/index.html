@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.5ab6a7cd.css">
-<script src="/assets/js/runtime~main.5d87a02e.js" defer="defer"></script>
-<script src="/assets/js/main.8f3e01ac.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.d25a3616.js" defer="defer"></script>
+<script src="/assets/js/main.e45a31ad.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -69,10 +69,10 @@ so the two do not double-book RAM.&lt;/p&gt;
 &lt;p&gt;Unset: defaults to 5% of the effective budget, capped at 2 GB.
 Pipelines that don&amp;#39;t run heavy ad-hoc / Delta / Iceberg workloads
 can leave this unset.&lt;/p&gt;
-&lt;p&gt;Sort/aggregate-heavy ad-hoc queries (especially at high &lt;code&gt;workers&lt;/code&gt;
-counts) should set this explicitly. An under-sized pool surfaces as
-&lt;code&gt;ResourcesExhausted&lt;/code&gt; on the failing query — the pipeline keeps
-running and only that query fails.&lt;/p&gt;
+&lt;p&gt;Set this explicitly for ad-hoc queries, or Delta / Iceberg scans,
+over data too large for the default share. A pool that cannot hold
+the query surfaces as &lt;code&gt;ResourcesExhausted&lt;/code&gt; on that query alone; the
+pipeline keeps running.&lt;/p&gt;
 &lt;p&gt;No pool limit applied if no overall budget is configured.&lt;/p&gt;
 &lt;p&gt;See &lt;a href=&quot;https://docs.feldera.com/operations/memory&quot;&gt;documentation on the pipeline&amp;#39;s memory usage&lt;/a&gt;
 for more details.&lt;/p&gt;
@@ -84,10 +84,10 @@ so the two do not double-book RAM.</p>
 <p>Unset: defaults to 5% of the effective budget, capped at 2 GB.
 Pipelines that don&#39;t run heavy ad-hoc / Delta / Iceberg workloads
 can leave this unset.</p>
-<p>Sort/aggregate-heavy ad-hoc queries (especially at high <code>workers</code>
-counts) should set this explicitly. An under-sized pool surfaces as
-<code>ResourcesExhausted</code> on the failing query — the pipeline keeps
-running and only that query fails.</p>
+<p>Set this explicitly for ad-hoc queries, or Delta / Iceberg scans,
+over data too large for the default share. A pool that cannot hold
+the query surfaces as <code>ResourcesExhausted</code> on that query alone; the
+pipeline keeps running.</p>
 <p>No pool limit applied if no overall budget is configured.</p>
 <p>See <a href="https://docs.feldera.com/operations/memory">documentation on the pipeline&#39;s memory usage</a>
 for more details.</p>

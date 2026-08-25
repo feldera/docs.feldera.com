@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.5ab6a7cd.css">
-<script src="/assets/js/runtime~main.5d87a02e.js" defer="defer"></script>
-<script src="/assets/js/main.8f3e01ac.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.d25a3616.js" defer="defer"></script>
+<script src="/assets/js/main.e45a31ad.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -91,10 +91,10 @@ engine and the Delta Lake / Iceberg connectors.</p><p>Carved out of <code>max_rs
 <code>resources.memory_mb_max</code>); the remainder goes to the DBSP circuit,
 so the two do not double-book RAM.</p><p>Unset: defaults to 5% of the effective budget, capped at 2 GB.
 Pipelines that don&#x27;t run heavy ad-hoc / Delta / Iceberg workloads
-can leave this unset.</p><p>Sort/aggregate-heavy ad-hoc queries (especially at high <code>workers</code>
-counts) should set this explicitly. An under-sized pool surfaces as
-<code>ResourcesExhausted</code> on the failing query — the pipeline keeps
-running and only that query fails.</p><p>No pool limit applied if no overall budget is configured.</p><p>See <a href="https://docs.feldera.com/operations/memory" target="_blank" rel="noopener noreferrer" class="">documentation on the pipeline&#x27;s memory usage</a>
+can leave this unset.</p><p>Set this explicitly for ad-hoc queries, or Delta / Iceberg scans,
+over data too large for the default share. A pool that cannot hold
+the query surfaces as <code>ResourcesExhausted</code> on that query alone; the
+pipeline keeps running.</p><p>No pool limit applied if no overall budget is configured.</p><p>See <a href="https://docs.feldera.com/operations/memory" target="_blank" rel="noopener noreferrer" class="">documentation on the pipeline&#x27;s memory usage</a>
 for more details.</p></div></td></tr><tr><td><code>dev_tweaks</code><span style="opacity:0.6"> object</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Optional settings for tweaking Feldera internals.</p><p>These settings reflect experiments that may come and go and change from
 version to version.  Users should not consider them to be stable.</p></div><table style="display:table;width:100%;margin-top:var(--ifm-table-cell-padding);margin-bottom:0px"><tbody><tr><td><code>adaptive_joins</code><span style="opacity:0.6"> boolean</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Enable adaptive joins.</p><p>Adaptive joins dynamically change their partitioning policy to avoid skew.</p><p>Adaptive joins are disabled by default.</p></div></td></tr><tr><td><code>balancer_balance_tax</code><span style="opacity:0.6"> double</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Factor that discourages the use of the Balance policy in a perfectly balanced collection.</p><p>Assuming a perfectly balanced key distribution, the Balance policy is slightly less efficient than Shard,
 since it requires computing the hash of the entire key/value pair. This factor discourages the use of this policy

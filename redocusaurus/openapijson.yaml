@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.337.0
+  version: 0.338.0
 paths:
   /config/authentication:
     get:
@@ -14042,15 +14042,16 @@ components:
                 can leave this unset.
 
 
-                Sort/aggregate-heavy ad-hoc queries (especially at high
-                `workers`
+                Set this explicitly for ad-hoc queries, or Delta / Iceberg
+                scans,
 
-                counts) should set this explicitly. An under-sized pool surfaces
-                as
+                over data too large for the default share. A pool that cannot
+                hold
 
-                `ResourcesExhausted` on the failing query — the pipeline keeps
+                the query surfaces as `ResourcesExhausted` on that query alone;
+                the
 
-                running and only that query fails.
+                pipeline keeps running.
 
 
                 No pool limit applied if no overall budget is configured.
@@ -16444,13 +16445,13 @@ components:
             can leave this unset.
 
 
-            Sort/aggregate-heavy ad-hoc queries (especially at high `workers`
+            Set this explicitly for ad-hoc queries, or Delta / Iceberg scans,
 
-            counts) should set this explicitly. An under-sized pool surfaces as
+            over data too large for the default share. A pool that cannot hold
 
-            `ResourcesExhausted` on the failing query — the pipeline keeps
+            the query surfaces as `ResourcesExhausted` on that query alone; the
 
-            running and only that query fails.
+            pipeline keeps running.
 
 
             No pool limit applied if no overall budget is configured.
