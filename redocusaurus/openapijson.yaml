@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.338.0
+  version: 0.339.0
 paths:
   /config/authentication:
     get:
@@ -8254,16 +8254,44 @@ components:
         failure:
           allOf:
             - $ref: '#/components/schemas/CheckpointSyncFailure'
+          default: null
           nullable: true
         periodic:
           type: string
           format: uuid
           description: Most recently successful automated periodic checkpoint sync.
+          default: null
           nullable: true
+        running:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: >-
+            Checkpoint syncs running right now.
+
+
+            A UUID leaves `running` and lands in `success` or `failure` at the
+            same
+
+            moment.
+
+
+            Periodic syncs do not appear here.
+          default: []
+          uniqueItems: true
         success:
           type: string
           format: uuid
-          description: Most recently successful checkpoint sync.
+          description: >-
+            Most recently successful checkpoint sync.
+
+
+            If `success` and `failure` would otherwise name the same UUID, then
+            the
+
+            most recent result is set and the other is cleared.
+          default: null
           nullable: true
     Chunk:
       type: object

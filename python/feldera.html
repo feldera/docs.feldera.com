@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.338.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.339.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=e6a977cc"></script>
+        <script src="_static/documentation_options.js?v=977c3d95"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -1528,10 +1528,15 @@ restart between this call and a later status check.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.sync_checkpoint_status">
-<span class="sig-name descname"><span class="pre">sync_checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incarnation_uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sync_checkpoint_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UUID</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incarnation_uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.enums.CheckpointStatus" title="feldera.enums.CheckpointStatus"><span class="pre">CheckpointStatus</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.sync_checkpoint_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.sync_checkpoint_status" title="Link to this definition"></a></dt>
 <dd><p>Checks the status of the given checkpoint sync operation.
 If the checkpoint is currently being synchronized, returns
-<cite>CheckpointStatus.Unknown</cite>.</p>
+<cite>CheckpointStatus.InProgress</cite>.</p>
+<p><cite>CheckpointStatus.Unknown</cite> means either that the pipeline is
+too old to report whether checkpoint sync is in progress, or
+such a sync never started, or its success or failure
+indication was displaced by the sync of a different
+checkpoint.</p>
 <p>Failures are not raised as runtime errors and must be explicitly
 checked.</p>
 <dl class="field-list simple">
