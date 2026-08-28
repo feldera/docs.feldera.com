@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.339.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.340.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=977c3d95"></script>
+        <script src="../../_static/documentation_options.js?v=a2b39dc0"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -80,6 +80,7 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
@@ -342,18 +343,17 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Pipeline.pause_connector">
-<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause_connector">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">pause_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="Pipeline.pause_input_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause_input_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause_input_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Pause the specified input connector.</span>
 
-<span class="sd">        Connectors allow feldera to fetch data from a source or write data to a sink.</span>
-<span class="sd">        This method allows users to **PAUSE** a specific **INPUT** connector.</span>
-<span class="sd">        All connectors are RUNNING by default.</span>
+<span class="sd">        A paused input connector stops fetching data from its source. All</span>
+<span class="sd">        connectors are RUNNING by default.</span>
 
 <span class="sd">        Refer to the connector documentation for more information:</span>
-<span class="sd">            https://docs.feldera.com/connectors/#input-connector-orchestration</span>
+<span class="sd">            https://docs.feldera.com/connectors/orchestration#input-connectors</span>
 
 <span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
 <span class="sd">        :param connector_name: The name of the connector to pause.</span>
@@ -361,29 +361,104 @@
 <span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_input_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.start_input_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_input_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_input_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start (resume) the specified input connector.</span>
+
+<span class="sd">        Refer to the connector documentation for more information:</span>
+<span class="sd">            https://docs.feldera.com/connectors/orchestration#input-connectors</span>
+
+<span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
+<span class="sd">        :param connector_name: The name of the connector to start.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_input_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.pause_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the specified input connector.</span>
+
+<span class="sd">        .. deprecated::</span>
+<span class="sd">            Use :meth:`.pause_input_connector`, which names the kind of</span>
+<span class="sd">            connector it acts on, like :meth:`.pause_output_connector`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;pause_connector is deprecated; use pause_input_connector.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pause_input_connector</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.resume_connector">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.resume_connector">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">resume_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Resume the specified connector.</span>
+<span class="sd">        Start (resume) the specified input connector.</span>
 
-<span class="sd">        Connectors allow feldera to fetch data from a source or write data to a sink.</span>
-<span class="sd">        This method allows users to **RESUME / START** a specific **INPUT** connector.</span>
-<span class="sd">        All connectors are RUNNING by default.</span>
+<span class="sd">        .. deprecated::</span>
+<span class="sd">            Use :meth:`.start_input_connector`, which names the kind of</span>
+<span class="sd">            connector it acts on, like :meth:`.start_output_connector`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;resume_connector is deprecated; use start_input_connector.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_input_connector</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.pause_output_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.pause_output_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause_output_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pause the specified output connector.</span>
+
+<span class="sd">        A paused output connector discards the output it receives instead of</span>
+<span class="sd">        writing it to its sink. Output produced while the connector is paused is</span>
+<span class="sd">        gone for good. All connectors are RUNNING by default.</span>
 
 <span class="sd">        Refer to the connector documentation for more information:</span>
-<span class="sd">            https://docs.feldera.com/connectors/#input-connector-orchestration</span>
+<span class="sd">            https://docs.feldera.com/connectors/orchestration#output-connectors</span>
 
-<span class="sd">        :param table_name: The name of the table that the connector is attached to.</span>
-<span class="sd">        :param connector_name: The name of the connector to resume.</span>
+<span class="sd">        :param view_name: The name of the view that the connector is attached to.</span>
+<span class="sd">        :param connector_name: The name of the connector to pause.</span>
 
 <span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">resume_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">pause_output_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.start_output_connector">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.start_output_connector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_output_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start (resume) the specified output connector.</span>
+
+<span class="sd">        The connector resumes with the output the pipeline produces from this</span>
+<span class="sd">        point on; output produced while it was paused is not replayed.</span>
+
+<span class="sd">        Refer to the connector documentation for more information:</span>
+<span class="sd">            https://docs.feldera.com/connectors/orchestration#output-connectors</span>
+
+<span class="sd">        :param view_name: The name of the view that the connector is attached to.</span>
+<span class="sd">        :param connector_name: The name of the connector to start.</span>
+
+<span class="sd">        :raises FelderaAPIError: If the connector is not found, or if the pipeline is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_output_connector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">view_name</span><span class="p">,</span> <span class="n">connector_name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.input_connector_stats">
