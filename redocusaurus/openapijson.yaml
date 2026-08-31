@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.340.0
+  version: 0.341.0
 paths:
   /config/authentication:
     get:
@@ -10690,34 +10690,10 @@ components:
         bloom_false_positive_rate:
           type: number
           format: double
-          description: >-
-            False-positive rate for Bloom filters on batches on storage, as a
+          description: |-
+            False-positive rate for Bloom filters on batches on storage.
 
-            fraction f, where 0 < f < 1.
-
-
-            The false-positive rate trades off between the amount of memory used
-            by
-
-            Bloom filters and how frequently storage needs to be searched for
-            keys
-
-            that are not actually present.  Typical false-positive rates and
-            their
-
-            corresponding memory costs are:
-
-
-            - 0.1: 4.8 bits per key
-
-            - 0.01: 9.6 bits per key
-
-            - 0.001: 14.4 bits per key
-
-            - 0.0001: 19.2 bits per key (default)
-
-
-            Values outside the valid range, such as 0.0, disable Bloom filters.
+            Deprecated: use `storage.bloom_false_positive_rate` instead.
           default: null
           nullable: true
         buffer_cache_allocation_strategy:
@@ -15687,6 +15663,14 @@ components:
             Examples: `v0.96.0` or `f4dcac0989ca0fda7d2eb93602a49d007cb3b0ae`
 
 
+            The value `gen2` names an engine rather than a runtime commit: the
+            SQL
+
+            compiler captures the circuit IR and the runner launches the Gen-2
+
+            engine, so no pipeline binary is compiled.
+
+
             A platform of version `0.x.y` may be capable of running future and
             past
 
@@ -15818,6 +15802,20 @@ components:
         - input_connectors
         - output_connectors
       properties:
+        circuit_ir:
+          description: >-
+            JIT circuit IR (`allOperators`) captured by the SQL compiler for
+            Gen-2
+
+            programs; the Gen-2 engine reads it to build the circuit.
+
+
+            Not returned by the API. It runs to several MiB and reaches the
+            pipeline
+
+            through the program info artifact, so a pipeline read never carries
+            it.
+          nullable: true
         dataflow:
           allOf:
             - $ref: '#/components/schemas/Dataflow'
@@ -15847,6 +15845,16 @@ components:
         - mir
         - program_schema
       properties:
+        circuit_ir:
+          description: >-
+            The circuit IR (the compiler's JIT `allOperators` form) that the
+            Gen-2
+
+            engine lowers onto the runtime to build the circuit. `None` for
+
+            Rust-compiled pipelines, whose circuit is statically linked into the
+            binary.
+          nullable: true
         mir:
           type: object
           description: The MIR of the program.
@@ -17552,6 +17560,39 @@ components:
             - $ref: '#/components/schemas/StorageBackendConfig'
           default:
             name: default
+        bloom_false_positive_rate:
+          type: number
+          format: double
+          description: >-
+            False-positive rate for Bloom filters on batches on storage, as a
+
+            fraction f, where 0 < f < 1.
+
+
+            The false-positive rate trades off between the amount of memory used
+            by
+
+            Bloom filters and how frequently storage needs to be searched for
+            keys
+
+            that are not actually present.  Typical false-positive rates and
+            their
+
+            corresponding memory costs are:
+
+
+            - 0.1: 4.8 bits per key
+
+            - 0.01: 9.6 bits per key
+
+            - 0.001: 14.4 bits per key
+
+            - 0.0001: 19.2 bits per key (default)
+
+
+            Values outside the valid range, such as 0.0, disable Bloom filters.
+          default: null
+          nullable: true
         cache_mib:
           type: integer
           description: >-
