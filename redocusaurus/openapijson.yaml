@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.341.0
+  version: 0.342.0
 paths:
   /config/authentication:
     get:
@@ -10479,11 +10479,28 @@ components:
           $ref: '#/components/schemas/DeltaTableWriteMode'
         threads:
           type: integer
-          description: |-
+          description: >-
             Number of parallel threads used by the connector.
 
+
             Increasing this value can improve Delta Lake write throughput
-            by enabling concurrent writes.
+
+            by enabling concurrent writes. Increasing this value can improve
+            Delta Lake write throughput by enabling concurrent writes.
+
+            Values above 1 require the view to have a unique key, so that the
+            connector can order inserts and deletes correctly.
+
+            Define the key with `CREATE INDEX` and set the connector's `index`
+            property to that index;
+
+            see [views with unique
+            keys](https://docs.feldera.com/connectors/sinks/delta/#views-with-unique-keys)
+            and
+
+            [writing in
+            parallel](https://docs.feldera.com/connectors/sinks/delta/#writing-in-parallel).
+
 
             Default: 1.
           nullable: true
@@ -12797,6 +12814,10 @@ components:
           allOf:
             - $ref: '#/components/schemas/KafkaLogLevel'
           nullable: true
+        oauth_provider:
+          allOf:
+            - $ref: '#/components/schemas/KafkaOauthProvider'
+          nullable: true
         partitions:
           type: array
           items:
@@ -13002,6 +13023,14 @@ components:
         - notice
         - info
         - debug
+    KafkaOauthProvider:
+      type: string
+      description: |-
+        Identity provider used to mint SASL/OAUTHBEARER tokens for the Kafka
+        broker.
+      enum:
+        - aws
+        - gcp
     KafkaOutputConfig:
       type: object
       description: Configuration for writing data to a Kafka topic with `OutputTransport`.
@@ -13037,6 +13066,10 @@ components:
         log_level:
           allOf:
             - $ref: '#/components/schemas/KafkaLogLevel'
+          nullable: true
+        oauth_provider:
+          allOf:
+            - $ref: '#/components/schemas/KafkaOauthProvider'
           nullable: true
         region:
           type: string
