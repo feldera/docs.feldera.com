@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.343.0
+  version: 0.344.0
 paths:
   /config/authentication:
     get:
@@ -10508,6 +10508,8 @@ components:
         uri:
           type: string
           description: Table URI.
+        variant_encoding:
+          $ref: '#/components/schemas/DeltaVariantEncoding'
       additionalProperties:
         type: string
         description: >-
@@ -10524,6 +10526,12 @@ components:
 
           * [Google Cloud Storage
           options](https://docs.rs/object_store/latest/object_store/gcp/enum.GoogleConfigKey.html)
+    DeltaVariantEncoding:
+      type: string
+      description: Encoding of `VARIANT` columns written to a Delta table.
+      enum:
+        - variant
+        - json_string
     Demo:
       type: object
       required:

@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.5ab6a7cd.css">
-<script src="/assets/js/runtime~main.f0c0309d.js" defer="defer"></script>
-<script src="/assets/js/main.2fc78d81.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.171bbb25.js" defer="defer"></script>
+<script src="/assets/js/main.16a21f71.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -57,6 +57,23 @@ deprecated and now raise a <code>DeprecationWarning</code>.</p>
 token, which <code>fda</code> reads once per invocation; <code>feldera/oidc-auth-action</code>
 v3.0.1 and later export that variable. For a command that prints a
 token, pass its output as <code>--auth &quot;$(...)&quot;</code>.</p>
+</li>
+<li class="">
+<p>The Delta Lake and Iceberg input connectors read a <code>VARIANT</code> column
+stored in the Parquet variant binary encoding, which is how Delta
+Lake&#x27;s <code>variant</code> type stores one. Values keep the types the writer
+encoded, so a date inside a <code>VARIANT</code> arrives as a date rather than
+as a string. A <code>VARIANT</code> column stored as JSON text still reads as
+before, and the two can sit side by side in one table.</p>
+</li>
+<li class="">
+<p>Breaking change (Delta Lake output connector): a <code>VARIANT</code> column is
+now written as the Delta <code>variant</code> type rather than as JSON text in a
+<code>string</code> column, so values keep the types they have in Feldera. Set
+<code>variant_encoding</code> to <code>json_string</code> for the previous encoding, which
+is also what appending to a table whose <code>VARIANT</code> column is already a
+<code>string</code> requires. See
+<a class="" href="/connectors/sinks/delta/#variant">VARIANT</a>.</p>
 </li>
 </ul><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03370">v0.337.0<a href="#v03370" class="hash-link" aria-label="Direct link to v0.337.0" title="Direct link to v0.337.0" translate="no">​</a></h2><ul>
 <li class="">
