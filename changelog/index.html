@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.12ca26aa.css">
-<script src="/assets/js/runtime~main.bec260c2.js" defer="defer"></script>
-<script src="/assets/js/main.e0ac4fc1.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.62ef8b9b.js" defer="defer"></script>
+<script src="/assets/js/main.bb64c678.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -74,6 +74,27 @@ now written as the Delta <code>variant</code> type rather than as JSON text in a
 is also what appending to a table whose <code>VARIANT</code> column is already a
 <code>string</code> requires. See
 <a class="" href="/connectors/sinks/delta/#variant">VARIANT</a>.</p>
+</li>
+<li class="">
+<p>The Kafka connector&#x27;s <code>sasl.mechanism = OAUTHBEARER</code> authentication can now
+target GCP Managed Service for Apache Kafka, in addition to AWS MSK. Set the
+new <code>oauth_provider</code> field to <code>gcp</code> to mint tokens from Google Application
+Default Credentials, including the GKE metadata server under Workload
+Identity. See
+<a class="" href="/connectors/sources/kafka/#how-to-write-connector-config">Kafka input connector</a> (#6886).</p>
+</li>
+<li class="">
+<p>The NATS input connector implements the authentication methods its
+schema already declared: a bare <code>nkey</code> seed (Ed25519
+challenge-response), <code>jwt</code> with the seed that signs the connection
+nonce (decentralized/operator-mode auth with the JWT and seed as two
+secrets rather than one <code>.creds</code> file), <code>token</code>, and
+<code>user_and_password</code>. Previously only <code>credentials</code> took effect and
+the rest were silently ignored; configuring more than one method is
+now rejected. A new <code>tls</code> section in <code>connection_config</code> sets
+<code>require_tls</code> and <code>root_certificates_file</code> for servers whose
+certificates a private CA signs. See
+<a class="" href="/connectors/sources/nats/">NATS input connector</a>.</p>
 </li>
 </ul><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03370">v0.337.0<a href="#v03370" class="hash-link" aria-label="Direct link to v0.337.0" title="Direct link to v0.337.0" translate="no">​</a></h2><ul>
 <li class="">

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.345.0
+  version: 0.346.0
 paths:
   /config/authentication:
     get:
@@ -8109,12 +8109,26 @@ components:
           nullable: true
         jwt:
           type: string
+          description: |-
+            User JWT for decentralized (operator-mode) authentication.
+
+            Requires `nkey` to be set as well: the connection nonce is signed
+            with the NKey seed. Equivalent to `credentials`, for deployments
+            that store the JWT and seed separately (e.g. as two secrets)
+            rather than as one `.creds` file.
           nullable: true
         nkey:
           type: string
+          description: |-
+            NKey seed (`SU...`) for NKey challenge-response authentication.
+
+            On its own, authenticates as a bare NKey user (a `nkey:` user in
+            the server configuration). Combined with `jwt`, signs the
+            connection nonce for decentralized authentication.
           nullable: true
         token:
           type: string
+          description: Token for token-based authentication.
           nullable: true
         user_and_password:
           allOf:
@@ -9127,6 +9141,8 @@ components:
         server_url:
           type: string
           description: NATS server URL (e.g., "nats://localhost:4222").
+        tls:
+          $ref: '#/components/schemas/Tls'
     ConnectorConfig:
       allOf:
         - $ref: '#/components/schemas/OutputBufferConfig'
@@ -17815,6 +17831,18 @@ components:
 
             This may include a path to a folder inside the bucket (e.g.,
             `my-bucket/data`).
+
+
+            Prefix it with `gs://` to sync to Google Cloud Storage through its
+            native
+
+            API instead of S3. `provider`, `access_key`, and `secret_key` are
+            then
+
+            ignored; rclone authenticates with Application Default Credentials,
+            for
+
+            example a GKE Workload Identity.
         checkers:
           type: integer
           format: int32
@@ -17833,6 +17861,13 @@ components:
             providers like MinIO.
 
             Example: `http://localhost:9000`
+
+
+            For a `gs://` bucket this is the Google Cloud Storage JSON API base
+            URL;
+
+            a bare host gets `/storage/v1/` appended. Leave empty for the public
+            service.
 
 
             Relevant rclone config key:
@@ -17957,15 +17992,26 @@ components:
           minimum: 0
         read_bucket:
           type: string
-          description: |-
+          description: >-
             A read-only bucket used as a fallback checkpoint source.
 
+
             When the pipeline has no local checkpoint and `bucket` contains no
+
             checkpoint either, it will attempt to fetch the checkpoint from this
+
             location instead.  All connection settings (`endpoint`, `region`,
+
             `provider`, `access_key`, `secret_key`) are shared with `bucket`.
+            The
+
+            scheme is not: a `gs://` `bucket` needs a `gs://` `read_bucket` too,
+
+            because the prefix alone selects the object store.
+
 
             The pipeline **never writes** to `read_bucket`.
+
 
             Must point to a different location than `bucket`.
           nullable: true
@@ -18156,6 +18202,22 @@ components:
             Time series.
 
             These report 60 seconds of samples, one per second.
+    Tls:
+      type: object
+      description: TLS options for connecting to a NATS server.
+      properties:
+        require_tls:
+          type: boolean
+          description: |-
+            Require an encrypted connection; refuse to connect to servers that
+            do not offer TLS.
+        root_certificates_file:
+          type: string
+          description: |-
+            Path to a PEM file with additional root certificates to trust when
+            verifying the server certificate, for servers whose certificates
+            are not signed by a public CA.
+          example: /path/to/ca.crt
     TransactionInitiators:
       type: object
       description: Information about entities that initiated the current transaction.
