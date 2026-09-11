@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.12ca26aa.css">
-<script src="/assets/js/runtime~main.03277165.js" defer="defer"></script>
-<script src="/assets/js/main.67dc50ad.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e2dbe423.js" defer="defer"></script>
+<script src="/assets/js/main.773053d4.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -50,6 +50,23 @@ program that sets <code>FELDERA_WARNINGS_ARE_ERRORS = ON</code> fails to compile
 until the state is bounded or the warning is silenced with
 <code>SET FELDERA_IGNORE_WARNING_UNBOUNDED_STATE = ON</code>. See
 <a class="" href="/sql/streaming/#unbounded-state-warnings">Unbounded state warnings</a>.</p>
+</li>
+<li class="">
+<p>The SQL compiler emits the warning <code>Floating point equality</code> for
+constructs that compare <code>REAL</code> or <code>DOUBLE</code> values for equality:
+comparison operators, <code>IN</code>, <code>GROUP BY</code>, <code>DISTINCT</code>, <code>UNION</code>,
+<code>INTERSECT</code>, <code>EXCEPT</code>, <code>PARTITION BY</code>, <code>NATURAL JOIN</code>, <code>USING</code>, and
+the ties of <code>RANK</code>, <code>PIVOT</code>, and the array and map functions that
+compare elements or keys.  Each warning points at the clause that
+compares.  <code>SET FELDERA_IGNORE_WARNING_FLOATING_POINT_EQUALITY = ON</code>
+silences it; a program that sets <code>FELDERA_WARNINGS_ARE_ERRORS</code> and
+compares floating point values no longer compiles until it does.
+See <a class="" href="/sql/comparisons/#comparing-floating-point-values">comparing floating point values</a>.</p>
+</li>
+<li class="">
+<p>The SQL compiler reports an error inside a multi-line <code>CREATE FUNCTION</code>
+body at its line; an error past the first line of the body used to be
+reported above the statement.</p>
 </li>
 </ul><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03440">v0.344.0<a href="#v03440" class="hash-link" aria-label="Direct link to v0.344.0" title="Direct link to v0.344.0" translate="no">​</a></h2><ul>
 <li class="">

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.347.0
+  version: 0.348.0
 paths:
   /config/authentication:
     get:
@@ -9863,13 +9863,41 @@ components:
         - type: string
           enum:
             - LastPerSubject
-    DeltaTableIngestMode:
+    DeltaTableChangeFeed:
       type: string
       description: >-
+        Whether the connector reads a Delta table's
+
+        [Change Data
+        Feed](https://docs.delta.io/latest/delta-change-data-feed.html).
+
+
+        A table with the `delta.enableChangeDataFeed` property records the rows
+        an
+
+        `UPDATE`, `DELETE`, or `MERGE` changed, in a `_change_data` directory.
+        The connector
+
+        can read this data in the `follow` and `snapshot_and_follow` mode, which
+        allows
+
+        it to ingest the changes to the table more efficiently than by
+        reconstructing
+
+        them the data files a commit added and removed. For a
+
+        commit that rewrites whole files, the difference is between reading the
+        changed
+
+        rows and reading every file those rows lived in.
+      enum:
+        - auto
+        - require
+        - 'off'
+    DeltaTableIngestMode:
+      type: string
+      description: >
         Delta table read mode.
-
-
-        Three options are available:
 
 
         * `snapshot` - read a snapshot of the table and stop.
@@ -9933,6 +9961,10 @@ components:
 
             form `SELECT * from <table> ORDER BY <cdc_order_by>`.
           nullable: true
+        change_feed:
+          allOf:
+            - $ref: '#/components/schemas/DeltaTableChangeFeed'
+          nullable: true
         datetime:
           type: string
           description: >-
@@ -9948,14 +9980,13 @@ components:
             specified point in time (based on the server time recorded in the
             transaction log, not the
 
-            event time encoded in the data).  In `snapshot` and
-            `snapshot_and_follow` modes, it
+            event time encoded in the data).  In the snapshot-taking modes it
+            retrieves the snapshot
 
-            retrieves the snapshot of this version of the table.  In `follow`,
-            `snapshot_and_follow`, and
+            of this version of the table.  In the log-following modes (`follow`,
 
-            `cdc` modes, it follows transaction log records **after** this
-            version.
+            `snapshot_and_follow`, `cdc`) it follows transaction log records
+            **after** this version.
 
 
             Note: at most one of `version` and `datetime` options can be
@@ -9973,7 +10004,8 @@ components:
             Optional final table version.
 
 
-            Valid only when the connector is configured in `follow`,
+            Valid only when the connector follows the transaction log: `follow`,
+
             `snapshot_and_follow`, or `cdc` mode.
 
 
@@ -10105,8 +10137,10 @@ components:
             Optional snapshot filter.
 
 
-            This option is only valid when `mode` is set to `snapshot` or
-            `snapshot_and_follow`.
+            This option is only valid in a mode that takes an initial snapshot:
+            `snapshot`
+
+            or `snapshot_and_follow`.
 
 
             When specified, only rows that satisfy the filter condition are
@@ -10148,8 +10182,10 @@ components:
             Table column that serves as an event timestamp.
 
 
-            When this option is specified, and `mode` is one of `snapshot` or
-            `snapshot_and_follow`,
+            When this option is specified, and `mode` takes an initial snapshot
+            (`snapshot`
+
+            or `snapshot_and_follow`),
 
             table rows are ingested in the timestamp order, respecting the
 
@@ -10221,7 +10257,7 @@ components:
 
             * 0 - no verbose logging
 
-            * 1 - log all Delta log entries in follow and cdc modes.
+            * 1 - log all Delta log entries in the log-following modes.
 
             * >1 - reserved for future use
           minimum: 0
@@ -10235,13 +10271,13 @@ components:
             When this option is set, the connector finds and opens the specified
             version of the table.
 
-            In `snapshot` and `snapshot_and_follow` modes, it retrieves the
-            snapshot of this version of
+            In the snapshot-taking modes it retrieves the snapshot of this
+            version of the table.
 
-            the table.  In `follow`, `snapshot_and_follow`, and `cdc` modes, it
-            follows transaction log records
+            In the log-following modes (`follow`, `snapshot_and_follow`, `cdc`)
+            it follows
 
-            **after** this version.
+            transaction log records **after** this version.
 
 
             Note: at most one of `version` and `datetime` options can be
@@ -10328,11 +10364,12 @@ components:
         # How transaction log is ingested using transactions
 
 
-        If the connector is configured in the `follow`, `snapshot_and_follow`,
-        or `cdc` mode, and its
+        If the connector follows the transaction log (`follow`,
+        `snapshot_and_follow`, or `cdc`
 
-        `transaction_mode` is set to `catchup`, it ingests the transaction log
-        in batches. When it starts a
+        mode), and its `transaction_mode` is set to `catchup`, it ingests the
+
+        transaction log in batches. When it starts a
 
         Feldera transaction, it reads the latest available version of the Delta
         table (capped by `end_version` if set) and

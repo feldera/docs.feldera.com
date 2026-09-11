@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.12ca26aa.css">
-<script src="/assets/js/runtime~main.03277165.js" defer="defer"></script>
-<script src="/assets/js/main.67dc50ad.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e2dbe423.js" defer="defer"></script>
+<script src="/assets/js/main.773053d4.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -40,6 +40,11 @@ on one of its primary key columns—in that case, you must specify the <code>mat
 <p>To declare a materialized view, use the <code>CREATE MATERIALIZED VIEW</code> syntax:</p>
 <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token keyword" style="color:#FCAF4F">CREATE</span><span class="token plain"> MATERIALIZED </span><span class="token keyword" style="color:#FCAF4F">VIEW</span><span class="token plain"> my_view </span><span class="token keyword" style="color:#FCAF4F">AS</span><span class="token plain"> </span><span class="token keyword" style="color:#FCAF4F">SELECT</span><span class="token plain"> </span><span class="token operator" style="color:#ada7bc">*</span><span class="token plain"> </span><span class="token keyword" style="color:#FCAF4F">FROM</span><span class="token plain"> my_table</span><span class="token punctuation" style="color:#ada7bc">;</span><br></span></code></pre></div></div>
 <p>These declarations instruct Feldera to maintain a complete snapshot of the table or view.</p>
+<p>An <a class="" href="/sql/grammar/#creating-indexes">index</a> of a view that is not materialized stores no data.
+The first index of a materialized view shares the stored contents of the view; each additional
+index stores its own copy of the contents, ordered by the index columns.  An output connector
+attached to any index of a materialized view can send a snapshot of the view when the connector
+starts (<code>send_snapshot</code>).</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="inspecting-materialized-tables-and-views">Inspecting materialized tables and views<a href="#inspecting-materialized-tables-and-views" class="hash-link" aria-label="Direct link to Inspecting materialized tables and views" title="Direct link to Inspecting materialized tables and views" translate="no">​</a></h2>
 <p>You can explore the contents of materialized tables and views by issuing <code>SELECT ...</code> <a class="" href="/sql/ad-hoc/">ad-hoc SQL queries</a>.
 Ad-hoc queries are evaluated non-incrementally against the current snapshot of the pipeline&#x27;s tables and views.</p>
