@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.349.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.350.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=eb2e89d3"></script>
+        <script src="_static/documentation_options.js?v=b075a1da"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -1278,6 +1278,37 @@ pipeline to resume.</p></li>
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span><a class="reference internal" href="#feldera.pipeline.Pipeline.start_input_connector" title="feldera.pipeline.Pipeline.start_input_connector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start_input_connector()</span></code></a>, which names the kind of
 connector it acts on, like <a class="reference internal" href="#feldera.pipeline.Pipeline.start_output_connector" title="feldera.pipeline.Pipeline.start_output_connector"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start_output_connector()</span></code></a>.</p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.resume_logs">
+<span class="sig-name descname"><span class="pre">resume_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cursor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream" title="feldera.rest.logs.LogStream"><span class="pre">LogStream</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.resume_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.resume_logs" title="Link to this definition"></a></dt>
+<dd><p>Open the pipeline logs stream, starting from the last read line (cursor).</p>
+<p>Where <a class="reference internal" href="#feldera.pipeline.Pipeline.logs" title="feldera.pipeline.Pipeline.logs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">logs()</span></code></a> replays the whole retained buffer on every connection, this
+delivers only the lines following <cite>cursor</cite>.</p>
+<p>The logs buffer is discarded when the runner restarts or the pipeline is deleted,
+and survives a pipeline being stopped and started. A cursor issued during an
+earlier lifetime of the buffer is not an error: the stream starts at the beginning
+of the retained buffer, and <cite>LogPosition.gap</cite> names the lines that were lost.</p>
+<p>For example, to keep reading the logs across dropped connections:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cursor</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">resume_logs</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cursor</strong> – The position to resume after, as returned by
+<a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream.cursor" title="feldera.rest.logs.LogStream.cursor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">feldera.rest.logs.LogStream.cursor()</span></code></a>. <cite>None</cite> starts at the beginning of
+the retained buffer.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The open stream. Close it when done reading.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -2855,6 +2886,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.rename_tenant"><code class="docutils literal notranslate"><span class="pre">FelderaClient.rename_tenant()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_pipeline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline_logs"><code class="docutils literal notranslate"><span class="pre">FelderaClient.resume_pipeline_logs()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_compaction_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_compaction_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_input_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_input_connector()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_output_connector"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_output_connector()</span></code></a></li>
@@ -2889,6 +2921,25 @@ pipeline’s “/stats” endpoint reply.</p>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.logs">feldera.rest.logs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition"><code class="docutils literal notranslate"><span class="pre">LogPosition</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.__init__"><code class="docutils literal notranslate"><span class="pre">LogPosition.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.cursor"><code class="docutils literal notranslate"><span class="pre">LogPosition.cursor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.epoch"><code class="docutils literal notranslate"><span class="pre">LogPosition.epoch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.from_headers"><code class="docutils literal notranslate"><span class="pre">LogPosition.from_headers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.gap"><code class="docutils literal notranslate"><span class="pre">LogPosition.gap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogPosition.seq"><code class="docutils literal notranslate"><span class="pre">LogPosition.seq</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream"><code class="docutils literal notranslate"><span class="pre">LogStream</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream.__init__"><code class="docutils literal notranslate"><span class="pre">LogStream.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream.close"><code class="docutils literal notranslate"><span class="pre">LogStream.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream.cursor"><code class="docutils literal notranslate"><span class="pre">LogStream.cursor()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.logs.LogStream.lines_read"><code class="docutils literal notranslate"><span class="pre">LogStream.lines_read</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="feldera.rest.html#module-feldera.rest.pipeline">feldera.rest.pipeline module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.pipeline.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.pipeline.Pipeline.__init__"><code class="docutils literal notranslate"><span class="pre">Pipeline.__init__()</span></code></a></li>
@@ -2901,6 +2952,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l3"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig"><code class="docutils literal notranslate"><span class="pre">RetryConfig</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.__init__"><code class="docutils literal notranslate"><span class="pre">RetryConfig.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.deadline_seconds"><code class="docutils literal notranslate"><span class="pre">RetryConfig.deadline_seconds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.expired_token_wait_seconds"><code class="docutils literal notranslate"><span class="pre">RetryConfig.expired_token_wait_seconds</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.initial_backoff"><code class="docutils literal notranslate"><span class="pre">RetryConfig.initial_backoff</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.jitter"><code class="docutils literal notranslate"><span class="pre">RetryConfig.jitter</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.retry.RetryConfig.max_backoff"><code class="docutils literal notranslate"><span class="pre">RetryConfig.max_backoff</span></code></a></li>

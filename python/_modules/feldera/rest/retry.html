@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.retry &mdash; Feldera Python SDK 0.349.0 documentation</title>
+  <title>feldera.rest.retry &mdash; Feldera Python SDK 0.350.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=eb2e89d3"></script>
+        <script src="../../../_static/documentation_options.js?v=b075a1da"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -93,7 +93,8 @@
 
 <span class="sd">    Retries are attempted on transient failures: connection/read timeouts and</span>
 <span class="sd">    the HTTP statuses listed in `retryable_status_codes` (408, 429, 502, 503,</span>
-<span class="sd">    504 by default).</span>
+<span class="sd">    504 by default). 401 is not among them; it is handled separately, and only</span>
+<span class="sd">    for a callable credential, by `expired_token_wait_seconds`.</span>
 
 <span class="sd">    Wait strategies:</span>
 <span class="sd">      - 408, 429, 503, 504 and connection/read timeouts use exponential</span>
@@ -133,6 +134,16 @@
 <span class="sd">        exponential ramp. Default: `90.0`.</span>
 <span class="sd">    :param retryable_status_codes: HTTP status codes that should trigger a</span>
 <span class="sd">        retry. Default: `{408, 429, 502, 503, 504}`.</span>
+<span class="sd">    :param expired_token_wait_seconds: How long to wait for a background</span>
+<span class="sd">        refresher to replace a bearer token that has provably expired, when</span>
+<span class="sd">        the credential is a callable and the instance answered 401. Only a</span>
+<span class="sd">        token whose own `exp` claim has passed waits: a credential the</span>
+<span class="sd">        instance refuses for any other reason still fails at once, so a wrong</span>
+<span class="sd">        API key does not hang. The wait ends on the first token that is not</span>
+<span class="sd">        itself expired, so a refresher minting from a skewed clock cannot end</span>
+<span class="sd">        it early. This budget is separate from `deadline_seconds`: a request</span>
+<span class="sd">        that exhausts both takes the sum of the two. Default: `0.0` (do not</span>
+<span class="sd">        wait).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">max_retries</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>
@@ -142,6 +153,7 @@
     <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
     <span class="n">jitter</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">unhealthy_backoff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">expired_token_wait_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="n">retryable_status_codes</span><span class="p">:</span> <span class="n">FrozenSet</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="n">_DEFAULT_RETRYABLE_STATUS_CODES</span>
     <span class="p">)</span>
@@ -161,6 +173,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;jitter must be &gt;= 0&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unhealthy_backoff</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unhealthy_backoff must be &gt;= 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expired_token_wait_seconds</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expired_token_wait_seconds must be &gt;= 0&quot;</span><span class="p">)</span>
         <span class="c1"># Coerce to frozenset so callers can pass a set/list without surprises,</span>
         <span class="c1"># and so equality comparisons against the default behave intuitively.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">retryable_status_codes</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">):</span>

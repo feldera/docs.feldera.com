@@ -36,6 +36,14 @@ feldera.rest.feldera\_config module
    :undoc-members:
    :show-inheritance:
 
+feldera.rest.logs module
+------------------------
+
+.. automodule:: feldera.rest.logs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 feldera.rest.pipeline module
 ----------------------------
 

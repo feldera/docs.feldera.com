@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Feldera Python SDK 0.349.0 documentation</title>
+  <title>Index &mdash; Feldera Python SDK 0.350.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=eb2e89d3"></script>
+        <script src="_static/documentation_options.js?v=b075a1da"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -131,6 +131,10 @@
         <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.__init__">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
         <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaConfig.__init__">(feldera.rest.feldera_config.FelderaConfig method)</a>
+</li>
+        <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.__init__">(feldera.rest.logs.LogPosition method)</a>
+</li>
+        <li><a href="feldera.rest.html#feldera.rest.logs.LogStream.__init__">(feldera.rest.logs.LogStream method)</a>
 </li>
         <li><a href="feldera.rest.html#feldera.rest.pipeline.Pipeline.__init__">(feldera.rest.pipeline.Pipeline method)</a>
 </li>
@@ -261,6 +265,8 @@
 </li>
       <li><a href="feldera.html#feldera.enums.StorageStatus.CLEARING">CLEARING (feldera.enums.StorageStatus attribute)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogStream.close">close() (feldera.rest.logs.LogStream method)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.commit_transaction">commit_transaction() (feldera.pipeline.Pipeline method)</a>
 
       <ul>
@@ -277,10 +283,10 @@
 </li>
       <li><a href="feldera.html#feldera.enums.ProgramStatus.CompilingSql">CompilingSql (feldera.enums.ProgramStatus attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.CompletionTokenStatus.COMPLETE">COMPLETE (feldera.enums.CompletionTokenStatus attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.stats.CompletedWatermark">CompletedWatermark (class in feldera.stats)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed">completion_token_processed() (feldera.rest.feldera_client.FelderaClient method)</a>
@@ -321,6 +327,12 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.created_at">created_at() (feldera.pipeline.Pipeline method)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.cursor">cursor() (feldera.rest.logs.LogPosition method)</a>
+
+      <ul>
+        <li><a href="feldera.rest.html#feldera.rest.logs.LogStream.cursor">(feldera.rest.logs.LogStream method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -389,6 +401,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.rest.html#feldera.rest.feldera_config.FelderaEdition.ENTERPRISE">ENTERPRISE (feldera.rest.feldera_config.FelderaEdition attribute)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.epoch">epoch (feldera.rest.logs.LogPosition attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.errors">errors() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.event">event() (feldera.pipeline.Pipeline method)</a>
@@ -400,6 +414,8 @@
       <li><a href="feldera.html#feldera.enums.FaultToleranceModel.ExactlyOnce">ExactlyOnce (feldera.enums.FaultToleranceModel attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.execute">execute() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.retry.RetryConfig.expired_token_wait_seconds">expired_token_wait_seconds (feldera.rest.retry.RetryConfig attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -472,6 +488,13 @@
 
       <ul>
         <li><a href="feldera.rest.html#module-feldera.rest.feldera_config">module</a>
+</li>
+      </ul></li>
+      <li>
+    feldera.rest.logs
+
+      <ul>
+        <li><a href="feldera.rest.html#module-feldera.rest.logs">module</a>
 </li>
       </ul></li>
       <li>
@@ -570,6 +593,8 @@
         <li><a href="feldera.html#feldera.stats.TransactionInitiators.from_dict">(feldera.stats.TransactionInitiators class method)</a>
 </li>
       </ul></li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.from_headers">from_headers() (feldera.rest.logs.LogPosition static method)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.BootstrapPolicy.from_str">from_str() (feldera.enums.BootstrapPolicy static method)</a>
 
       <ul>
@@ -604,6 +629,8 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.gap">gap (feldera.rest.logs.LogPosition attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.generate_completion_token">generate_completion_token() (feldera.pipeline.Pipeline method)</a>
 
       <ul>
@@ -728,19 +755,25 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.last_successful_checkpoint_sync">last_successful_checkpoint_sync() (feldera.pipeline.Pipeline method)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogStream.lines_read">lines_read (feldera.rest.logs.LogStream property)</a>
+</li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_oidc_trust">list_oidc_trust() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.list_tenants">list_tenants() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.listen">listen() (feldera.pipeline.Pipeline method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.listen_to_pipeline">listen_to_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.localhost">localhost() (feldera.rest.feldera_client.FelderaClient static method)</a>
 </li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition">LogPosition (class in feldera.rest.logs)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.logs">logs() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogStream">LogStream (class in feldera.rest.logs)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -777,6 +810,8 @@
         <li><a href="feldera.rest.html#module-feldera.rest.feldera_client">feldera.rest.feldera_client</a>
 </li>
         <li><a href="feldera.rest.html#module-feldera.rest.feldera_config">feldera.rest.feldera_config</a>
+</li>
+        <li><a href="feldera.rest.html#module-feldera.rest.logs">feldera.rest.logs</a>
 </li>
         <li><a href="feldera.rest.html#module-feldera.rest.pipeline">feldera.rest.pipeline</a>
 </li>
@@ -991,15 +1026,19 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.resume">resume() (feldera.pipeline.Pipeline method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.resume_connector">resume_connector() (feldera.pipeline.Pipeline method)</a>
 
       <ul>
         <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_connector">(feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.resume_logs">resume_logs() (feldera.pipeline.Pipeline method)</a>
+</li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline">resume_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
+</li>
+      <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline_logs">resume_pipeline_logs() (feldera.rest.feldera_client.FelderaClient method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.retry.RetryConfig.retryable_status_codes">retryable_status_codes (feldera.rest.retry.RetryConfig attribute)</a>
 </li>
@@ -1027,6 +1066,8 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.rest.html#feldera.rest.logs.LogPosition.seq">seq (feldera.rest.logs.LogPosition attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.enums.CompilationProfile.SERVER_DEFAULT">SERVER_DEFAULT (feldera.enums.CompilationProfile attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.set_runtime_config">set_runtime_config() (feldera.pipeline.Pipeline method)</a>
@@ -1095,10 +1136,10 @@
       </ul></li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.stats">stats() (feldera.pipeline.Pipeline method)</a>
 </li>
-      <li><a href="feldera.html#feldera.enums.PipelineFieldSelector.STATUS">STATUS (feldera.enums.PipelineFieldSelector attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.enums.PipelineFieldSelector.STATUS">STATUS (feldera.enums.PipelineFieldSelector attribute)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.status">status() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.stop">stop() (feldera.pipeline.Pipeline method)</a>

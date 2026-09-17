@@ -9,9 +9,9 @@
 
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
-<script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.12ca26aa.css">
-<script src="/assets/js/runtime~main.73634948.js" defer="defer"></script>
-<script src="/assets/js/main.f79eb166.js" defer="defer"></script>
+<script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
+<script src="/assets/js/runtime~main.1264ad0c.js" defer="defer"></script>
+<script src="/assets/js/main.c73a7268.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -103,7 +103,9 @@ contracted, as described below.</p>
 <p>Some nodes in a dataflow graph are in turn composed of other nodes and
 edges.  Such nodes are shown with rounded corners.  Double-clicking on
 such a node will expand it into the component nodes.  Double-clicking
-on an expanded node will contract it.</p>
+on an expanded node will contract it.  Clicking on an expanded node,
+away from the nodes inside it, displays the measurements of the
+composite node itself.</p>
 <p><img decoding="async" loading="lazy" alt="expanding composite nodes" src="/assets/images/expanding-74e5e7b6e4aa54471978f6cde60ae724.png" width="1270" height="655" class="img_ev3q"></p>
 <p>Unfortunately, expanding a node that has many components may change
 the layout of the overall layout of the graph on the screen
@@ -118,7 +120,10 @@ metrics are the <em>maximum</em> value across all components (e.g.,
 collected for the node.  The measurements are displayed in a table.</p>
 <p>Clicking on a node will make the table of measurements &quot;sticky&quot;: the
 table will remain visible until either the user presses the ESCAPE
-key, or the user clicks on another node.</p>
+key, or the user clicks on another node.  Clicking also selects the SQL
+the node was compiled from in the program shown beside the graph, and
+scrolls it into view.  A node that groups other nodes stands for all the
+SQL inside it, so clicking one selects every statement it covers.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="understanding-graph-reachability">Understanding graph reachability<a href="#understanding-graph-reachability" class="hash-link" aria-label="Direct link to Understanding graph reachability" title="Direct link to Understanding graph reachability" translate="no">​</a></h3>
 <p>Mousing over a node, or clicking on a node will also compute all nodes
 upstream and downstream of the selected node.  The downstream edges
@@ -243,9 +248,51 @@ If the value is higher than 1, you can temporarily allow profiling with:</p>
 </li>
 </ol>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="enterprise-environments">Enterprise environments<a href="#enterprise-environments" class="hash-link" aria-label="Direct link to Enterprise environments" title="Direct link to Enterprise environments" translate="no">​</a></h3>
-<p>For pipelines running in enterprise Kubernetes environments, profiling must be explicitly enabled during installation.</p>
-<p>To enable profiling, install Feldera with the Helm flag <code>pipeline.allowProfiling</code> set to <code>true</code>.</p>
-<p>This flag adds the <code>PERFMON</code> capability to the pipeline pod to enable profiling.</p>
+<p>Profiling a pipeline in Kubernetes needs two capabilities on the
+pipeline container:</p>
+<div class="table-scroll-container"><table><thead><tr><th>Capability</th><th>What samply needs it for</th></tr></thead><tbody><tr><td><code>PERFMON</code></td><td>Opening perf events under the node&#x27;s <code>kernel.perf_event_paranoid</code> setting.</td></tr><tr><td><code>IPC_LOCK</code></td><td>Mapping the perf ring buffer beyond the container&#x27;s <code>RLIMIT_MEMLOCK</code>.</td></tr></tbody></table></div>
+<p>Install or upgrade Feldera with the Helm value <code>pipeline.allowProfiling</code>
+set to <code>true</code>, and the chart grants both.  On a cluster that accepts
+them, nothing else is needed.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="when-profiling-still-fails">When profiling still fails<a href="#when-profiling-still-fails" class="hash-link" aria-label="Direct link to When profiling still fails" title="Direct link to When profiling still fails" translate="no">​</a></h4>
+<p>The pipeline log carries the same <code>perf_event_paranoid</code> advice for
+either failure.  The first line tells them apart:</p>
+<div class="table-scroll-container"><table><thead><tr><th>samply error</th><th>Cause</th></tr></thead><tbody><tr><td><code>Failed to start profiling: Operation not permitted</code></td><td>The container lacks <code>PERFMON</code>.</td></tr><tr><td><code>Failed to start profiling: mmap failed: Operation not permitted</code></td><td>The container lacks <code>IPC_LOCK</code>.</td></tr></tbody></table></div>
+<p>In both cases, check what the pod actually got.  Capabilities appear on
+the pod, not on the pipeline&#x27;s service:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">kubectl get pod -n &lt;pipeline-namespace&gt; &lt;pipeline-pod&gt; \</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  -o jsonpath=&#x27;{.spec.containers[0].securityContext.capabilities.add}&#x27;</span><br></span></code></pre></div></div>
+<p>The command prints <code>[&quot;PERFMON&quot;,&quot;IPC_LOCK&quot;]</code> when both are in place.</p>
+<p>If a capability is missing, <code>pipeline.allowProfiling</code> is not reaching
+this pipeline.  Check that the value is set, and stop and start the
+pipeline so that it picks up the change.  A pipeline that uses a custom
+template through <code>pipeline_template_configmap</code> needs both capabilities
+added to that template by hand.</p>
+<p>The chart started granting <code>IPC_LOCK</code> in Feldera <code>0.328.0</code>.  Earlier
+versions grant <code>PERFMON</code> alone, and no Helm value adds <code>IPC_LOCK</code> to
+them.  A pipeline running there needs either an upgrade of the Feldera
+release to <code>0.328.0</code> or later, or the node kernel setting below.</p>
+<p>If a capability is still missing after all of that, cluster policy is
+removing it.  If both are listed and profiling still fails, the node or
+the platform underneath it denies the operation.  Either way, relax the
+node kernel setting, and contact Feldera support if that does not help.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="relaxing-the-node-kernel-setting">Relaxing the node kernel setting<a href="#relaxing-the-node-kernel-setting" class="hash-link" aria-label="Direct link to Relaxing the node kernel setting" title="Direct link to Relaxing the node kernel setting" translate="no">​</a></h4>
+<p><code>kernel.perf_event_paranoid</code> defaults to <code>2</code>.  Setting it to <code>-1</code>
+replaces both capabilities: it permits all perf events and skips the
+memlock check.  The value <code>1</code> that the log suggests replaces <code>PERFMON</code>
+alone, and the ring buffer mmap still fails.</p>
+<p>The setting is not namespaced, so no pod can set it for itself.  It has
+to be applied to the node.</p>
+<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>warning</div><div class="admonitionContent_BuS1"><p>The setting applies to the whole node, so it relaxes the restriction for
+every pod scheduled there.  Confine it to a node pool dedicated to
+pipelines.</p></div></div>
+<p>How to apply it depends on the node operating system.  On EKS,
+<a href="https://karpenter.sh" target="_blank" rel="noopener noreferrer" class="">Karpenter</a> often provisions Bottlerocket nodes,
+which have no shell and accept configuration only as TOML in <code>userData</code>:</p>
+<div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token key atrule" style="color:#FCAF4F">apiVersion</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"> karpenter.k8s.aws/v1</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain"></span><span class="token key atrule" style="color:#FCAF4F">kind</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"> EC2NodeClass</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain"></span><span class="token key atrule" style="color:#FCAF4F">metadata</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  </span><span class="token key atrule" style="color:#FCAF4F">name</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"> feldera</span><span class="token punctuation" style="color:#ada7bc">-</span><span class="token plain">pipelines</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain"></span><span class="token key atrule" style="color:#FCAF4F">spec</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  </span><span class="token key atrule" style="color:#FCAF4F">amiSelectorTerms</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">    </span><span class="token punctuation" style="color:#ada7bc">-</span><span class="token plain"> </span><span class="token key atrule" style="color:#FCAF4F">alias</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"> bottlerocket@latest</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  </span><span class="token comment" style="color:#a19bae;font-style:italic"># role, subnetSelectorTerms and securityGroupSelectorTerms unchanged</span><span class="token plain"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  </span><span class="token key atrule" style="color:#FCAF4F">userData</span><span class="token punctuation" style="color:#ada7bc">:</span><span class="token plain"> </span><span class="token punctuation" style="color:#ada7bc">|</span><span class="token scalar string" style="color:#94C445"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token scalar string" style="color:#94C445">    [settings.kernel.sysctl]</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token scalar string" style="color:#94C445">    &quot;kernel.perf_event_paranoid&quot; = &quot;-1&quot;</span><br></span></code></pre></div></div>
+<p>Quote both the key and the value.  Karpenter merges the block with the
+settings it generates itself.  Existing nodes keep their old value, so
+replace them before profiling.  On other node operating systems, apply
+the same sysctl through cloud-init user data or a node bootstrap script.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="example-usage">Example usage<a href="#example-usage" class="hash-link" aria-label="Direct link to Example usage" title="Direct link to Example usage" translate="no">​</a></h3>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="trigger-profiling">Trigger profiling<a href="#trigger-profiling" class="hash-link" aria-label="Direct link to Trigger profiling" title="Direct link to Trigger profiling" translate="no">​</a></h4>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain"># Start a 60 second profiling session</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">curl -X POST &#x27;http://localhost:8080/v0/pipelines/my-pipeline/samply_profile?duration_secs=60&#x27;</span><br></span></code></pre></div></div>

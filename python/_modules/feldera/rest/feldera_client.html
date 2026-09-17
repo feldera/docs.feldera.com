@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.349.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.350.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=eb2e89d3"></script>
+        <script src="../../../_static/documentation_options.js?v=b075a1da"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -97,6 +97,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiKey</span><span class="p">,</span> <span class="n">Config</span>  <span class="c1"># noqa: F401 — re-exported</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogPosition</span><span class="p">,</span> <span class="n">LogStream</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.tags</span><span class="w"> </span><span class="kn">import</span> <span class="n">_normalize_tags</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.retry</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryConfig</span>
@@ -641,6 +642,37 @@
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">50000000</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">chunk</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FelderaClient.resume_pipeline_logs">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.resume_pipeline_logs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume_pipeline_logs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cursor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogStream</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open the pipeline logs stream, starting from the last read line (cursor).</span>
+
+<span class="sd">        Where :meth:`get_pipeline_logs` replays the whole retained buffer on every</span>
+<span class="sd">        connection, this delivers only the lines following `cursor`.</span>
+
+<span class="sd">        The logs buffer is discarded when the runner restarts or the pipeline is deleted,</span>
+<span class="sd">        and survives a pipeline being stopped and started. A cursor issued during an</span>
+<span class="sd">        earlier lifetime of the buffer is not an error: the stream starts at the beginning</span>
+<span class="sd">        of the retained buffer, and `LogPosition.gap` names the lines that were lost. A</span>
+<span class="sd">        reader is therefore never locked out of its logs by a stale cursor.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline.</span>
+<span class="sd">        :param cursor: The position to resume after, as returned by</span>
+<span class="sd">            :meth:`feldera.rest.logs.LogStream.cursor`. `None` starts at the beginning of</span>
+<span class="sd">            the retained buffer.</span>
+<span class="sd">        :return: The open stream. Close it when done reading.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/logs&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="n">cursor</span> <span class="k">if</span> <span class="n">cursor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+            <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">LogStream</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">LogPosition</span><span class="o">.</span><span class="n">from_headers</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.activate_pipeline">

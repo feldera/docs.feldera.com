@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.349.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.350.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=eb2e89d3"></script>
+        <script src="../../_static/documentation_options.js?v=b075a1da"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -119,6 +119,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.output_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputHandler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogStream</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_table</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.sql_view</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLView</span>
@@ -229,6 +230,38 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the pipeline logs.&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_logs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Pipeline.resume_logs">
+<a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.resume_logs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cursor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogStream</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open the pipeline logs stream, starting from the last read line (cursor).</span>
+
+<span class="sd">        Where :meth:`logs` replays the whole retained buffer on every connection, this</span>
+<span class="sd">        delivers only the lines following `cursor`.</span>
+
+<span class="sd">        The logs buffer is discarded when the runner restarts or the pipeline is deleted,</span>
+<span class="sd">        and survives a pipeline being stopped and started. A cursor issued during an</span>
+<span class="sd">        earlier lifetime of the buffer is not an error: the stream starts at the beginning</span>
+<span class="sd">        of the retained buffer, and `LogPosition.gap` names the lines that were lost.</span>
+
+<span class="sd">        For example, to keep reading the logs across dropped connections::</span>
+
+<span class="sd">            cursor = None</span>
+<span class="sd">            while True:</span>
+<span class="sd">                with pipeline.resume_logs(cursor) as stream:</span>
+<span class="sd">                    for line in stream:</span>
+<span class="sd">                        print(line)</span>
+<span class="sd">                    cursor = stream.cursor()</span>
+
+<span class="sd">        :param cursor: The position to resume after, as returned by</span>
+<span class="sd">            :meth:`feldera.rest.logs.LogStream.cursor`. `None` starts at the beginning of</span>
+<span class="sd">            the retained buffer.</span>
+<span class="sd">        :return: The open stream. Close it when done reading.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">resume_pipeline_logs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cursor</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Pipeline.input_pandas">
