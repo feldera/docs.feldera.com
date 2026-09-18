@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.350.0
+  version: 0.351.0
 paths:
   /config/authentication:
     get:
@@ -15544,8 +15544,12 @@ components:
               description: Name of the pre-created Postgres publication to replicate from.
             source_table:
               type: string
-              description: |-
-                Postgres table to replicate (e.g. "public.orders").
+              description: >-
+                Postgres table to replicate, schema-qualified (e.g.
+                "public.orders").
+
+                A name given without a schema refers to a table in "public".
+
                 Must be included in the publication.
             uri:
               type: string
@@ -17967,17 +17971,18 @@ components:
             This is provided for debugging and fine-tuning and should ordinarily
             be
 
-            left unset.  A value of 0 will write even empty batches to storage,
-            and
+            left unset.  A value of 0 writes every batch that holds anything to
 
-            nonzero values provide a threshold.  `usize::MAX`, the default,
+            storage; an empty batch stays in memory, since it has nothing to
+            spill
 
-            effectively disables storage for such batches.  If it is set to
-            another
+            and a layer file is not free.  Nonzero values provide a threshold.
 
-            value, it should ordinarily be greater than or equal to
+            `usize::MAX`, the default, effectively disables storage for such
 
-            `min_storage_bytes`.
+            batches.  If it is set to another value, it should ordinarily be
+
+            greater than or equal to `min_storage_bytes`.
           default: null
           nullable: true
           minimum: 0
