@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.147cb34c.js" defer="defer"></script>
-<script src="/assets/js/main.6e7f229b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8f441c11.js" defer="defer"></script>
+<script src="/assets/js/main.bc040431.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -107,7 +107,11 @@ The statement specifies a view, a column of the view, and an expression for the
 lateness value.  The statement may appear before or after the view declaration:</p>
 <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token keyword" style="color:#FCAF4F">CREATE</span><span class="token plain"> </span><span class="token keyword" style="color:#FCAF4F">VIEW</span><span class="token plain"> v </span><span class="token keyword" style="color:#FCAF4F">AS</span><span class="token plain"> </span><span class="token keyword" style="color:#FCAF4F">SELECT</span><span class="token plain"> t</span><span class="token punctuation" style="color:#ada7bc">.</span><span class="token plain">col1</span><span class="token punctuation" style="color:#ada7bc">,</span><span class="token plain"> t</span><span class="token punctuation" style="color:#ada7bc">.</span><span class="token plain">col2 </span><span class="token keyword" style="color:#FCAF4F">FROM</span><span class="token plain"> t</span><span class="token punctuation" style="color:#ada7bc">;</span><span class="token plain"></span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">LATENESS v</span><span class="token punctuation" style="color:#ada7bc">.</span><span class="token plain">col1 </span><span class="token keyword" style="color:#FCAF4F">INTERVAL</span><span class="token plain"> </span><span class="token number" style="color:#e794e0">1</span><span class="token plain"> </span><span class="token keyword" style="color:#FCAF4F">HOUR</span><span class="token punctuation" style="color:#ada7bc">;</span><br></span></code></pre></div></div>
 <p><code>LATENESS</code> can only be specified for toplevel view columns; i.e., the following
-is illegal: <code>LATENESS v.str.col INTERVAL 1 HOUR</code>.</p>
+is illegal: <code>LATENESS v.str.col INTERVAL 1 HOUR</code>.  <code>LATENESS</code> cannot be specified
+for a <a class="" href="/sql/recursion/">recursive view</a>.</p>
+<p>When the compiler infers <a href="#the-data-retention-algorithm" class="">waterlines</a>
+for the input collection that feeds a VIEW, it combines them with the
+specified <code>LATENESS</code>, taking the larger waterline for each column.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="guidelines-for-writing-lateness-annotations">Guidelines for writing lateness annotations<a href="#guidelines-for-writing-lateness-annotations" class="hash-link" aria-label="Direct link to Guidelines for writing lateness annotations" title="Direct link to Guidelines for writing lateness annotations" translate="no">​</a></h3>
 <p>Keep in mind the following guidelines when choosing lateness annotations for
 tables and views:</p>
@@ -361,6 +365,12 @@ engine can establish a waterline.  For instance, in the <code>daily_max</code> v
 has a waterline.  In the <code>daily_max</code> view, the <code>TIMESTAMP_TRUNC(ts, DAY) as d</code>
 column has a waterline.</p>
 </li>
+<li class="">
+<p>The <code>MIN</code> of a column with a waterline has the same waterline.  This holds
+only when every aggregate in the same <code>GROUP BY</code> is a <code>MIN</code> over that same
+column; adding a <code>MAX</code>, a <code>MIN</code> over a different column, or a <code>FILTER</code>
+clause loses the waterline.</p>
+</li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="tumbling-and-hopping-windows">Tumbling and hopping windows<a href="#tumbling-and-hopping-windows" class="hash-link" aria-label="Direct link to Tumbling and hopping windows" title="Direct link to Tumbling and hopping windows" translate="no">​</a></h3>
 <p><a class="" href="/sql/table/#tumble">Tumbling</a> and <a class="" href="/sql/table/#tumble">hopping</a> window operators
@@ -452,7 +462,7 @@ outputs without receiving any new input.  In the above example, the pipeline wil
 output deletions for records that fall outside the 7-day window as the physical
 clock ticks forward.</p>
 <p>See <a class="" href="/sql/datetime/#now"><code>NOW()</code></a> documentation for more details.</p>
-<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="garbage-collection-5">Garbage collection<a href="#garbage-collection-5" class="hash-link" aria-label="Direct link to Garbage collection" title="Direct link to Garbage collection" translate="no"> ​</a></h4>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="garbage-collection-5">Garbage collection<a href="#garbage-collection-5" class="hash-link" aria-label="Direct link to Garbage collection" title="Direct link to Garbage collection" translate="no">​</a></h4>
 <p>Feldera implements garbage collection for temporal filters by discarding records older
 than the left window bound (e.g., records more than 7 days old in the above example).
 This optimization is sound because <code>NOW()</code> grows monotonically, and does <em>not</em> require

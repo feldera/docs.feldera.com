@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.351.0
+  version: 0.352.0
 paths:
   /config/authentication:
     get:
@@ -527,6 +527,27 @@ paths:
         transitioned
 
         between healthy and unhealthy, bounded by event retention.
+
+
+        The cluster monitor is the only writer of these events. In the
+        enterprise edition it
+
+        runs within the runner process, so when the runner dies the newest event
+        keeps
+
+        describing a cluster that no longer exists; elsewhere the monitor is a
+        task in the
+
+        process that answers this request. Either way a service cannot report
+        its own death, so
+
+        this endpoint additionally checks how old that event is. A `stale`
+        response repeats the
+
+        last recorded statuses instead of describing the cluster now, and counts
+        as unhealthy:
+
+        monitoring that has died cannot vouch for anything.
       operationId: get_cluster_health
       responses:
         '200':
@@ -922,6 +943,7 @@ paths:
                       min_storage_bytes: null
                       min_step_storage_bytes: null
                       compression: default
+                      compression_level: null
                       cache_mib: null
                     fault_tolerance:
                       model: none
@@ -1007,6 +1029,7 @@ paths:
                       min_storage_bytes: null
                       min_step_storage_bytes: null
                       compression: default
+                      compression_level: null
                       cache_mib: null
                     fault_tolerance:
                       model: none
@@ -1111,6 +1134,7 @@ paths:
                   min_storage_bytes: null
                   min_step_storage_bytes: null
                   compression: default
+                  compression_level: null
                   cache_mib: null
                 fault_tolerance:
                   model: none
@@ -1177,6 +1201,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -1349,6 +1374,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -1473,6 +1499,7 @@ paths:
                   min_storage_bytes: null
                   min_step_storage_bytes: null
                   compression: default
+                  compression_level: null
                   cache_mib: null
                 fault_tolerance:
                   model: none
@@ -1539,6 +1566,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -1631,6 +1659,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -1853,6 +1882,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -7159,6 +7189,7 @@ paths:
                     min_storage_bytes: null
                     min_step_storage_bytes: null
                     compression: default
+                    compression_level: null
                     cache_mib: null
                   fault_tolerance:
                     model: none
@@ -8791,6 +8822,12 @@ components:
       properties:
         all_healthy:
           type: boolean
+          description: >-
+            Whether every service was healthy when this event was recorded. Says
+            nothing about
+
+            the cluster now: for that, read `stale` alongside it or call `GET
+            /v0/cluster_healthz`.
         api_resources_info:
           type: string
           nullable: true
@@ -8820,6 +8857,15 @@ components:
           nullable: true
         runner_status:
           $ref: '#/components/schemas/MonitorStatus'
+        stale:
+          type: boolean
+          description: >-
+            Whether the monitor stopped writing, making the statuses below the
+            last recorded
+
+            ones. Reported for the latest event only: older events are old by
+            design.
+          nullable: true
     ColumnType:
       type: object
       description: |-
@@ -11011,6 +11057,31 @@ components:
             key type supports them.
           default: null
           nullable: true
+        exchange_channel_capacity_bytes:
+          type: integer
+          description: >-
+            Maximum number of bytes of queued but unacknowledged exchange
+            messages
+
+            per pair of remote host and message type.
+
+
+            A sender that pushes past this budget waits for the receiver to
+
+            acknowledge earlier messages before it queues more.  There are three
+
+            message types, so a host buffers up to three times this many bytes
+            for
+
+            each of the other hosts, plus any single message that exceeds the
+
+            budget on its own.
+
+
+            The default is 10,000,000 bytes.
+          default: null
+          nullable: true
+          minimum: 0
         fbuf_slab_bytes_per_class:
           type: integer
           description: >-
@@ -11578,6 +11649,11 @@ components:
         sync:
           allOf:
             - $ref: '#/components/schemas/SyncConfig'
+          default: null
+          nullable: true
+        sync_mode:
+          allOf:
+            - $ref: '#/components/schemas/StorageSyncMode'
           default: null
           nullable: true
     FileInputConfig:
@@ -12280,19 +12356,35 @@ components:
       description: Health of the cluster as a whole and of each of its services.
       required:
         - all_healthy
+        - stale
+        - stale_after_seconds
         - api
         - compiler
         - runner
       properties:
         all_healthy:
           type: boolean
-          description: Whether every service is healthy.
+          description: >-
+            Whether every service is healthy and the monitoring data behind this
+            report is fresh.
         api:
           $ref: '#/components/schemas/ServiceStatus'
         compiler:
           $ref: '#/components/schemas/ServiceStatus'
         runner:
           $ref: '#/components/schemas/ServiceStatus'
+        stale:
+          type: boolean
+          description: >-
+            Whether the cluster monitor stopped writing events, which makes the
+            statuses below
+
+            the last recorded ones rather than current ones.
+        stale_after_seconds:
+          type: integer
+          format: int64
+          description: Age at which monitoring data counts as stale.
+          minimum: 0
     HttpInputConfig:
       type: object
       description: |-
@@ -14842,6 +14934,7 @@ components:
                 min_storage_bytes: null
                 min_step_storage_bytes: null
                 compression: default
+                compression_level: null
                 cache_mib: null
               nullable: true
             tracing:
@@ -17285,6 +17378,7 @@ components:
             min_storage_bytes: null
             min_step_storage_bytes: null
             compression: default
+            compression_level: null
             cache_mib: null
           nullable: true
         tracing:
@@ -17871,6 +17965,8 @@ components:
         - default
         - none
         - snappy
+        - lz4
+        - zstd
     StorageConfig:
       type: object
       description: Configuration for persistent storage in a [`PipelineConfig`].
@@ -17959,6 +18055,31 @@ components:
           allOf:
             - $ref: '#/components/schemas/StorageCompression'
           default: default
+        compression_level:
+          type: integer
+          format: int32
+          description: >-
+            Compression level, for compression algorithms that have one.
+
+
+            Only `StorageCompression::Zstd` uses this. Higher levels compress
+
+            harder and more slowly; decompression speed is largely unaffected,
+            so
+
+            the tradeoff is write throughput against stored size. Zstd accepts
+
+            roughly 1 to 22, and a value outside the range its build supports is
+
+            clamped into it.
+
+
+            This is provided for fine-tuning and should ordinarily be left
+            unset,
+
+            which selects the algorithm's own default.
+          default: null
+          nullable: true
         min_step_storage_bytes:
           type: integer
           description: >-
@@ -18059,6 +18180,23 @@ components:
           items:
             $ref: '#/components/schemas/CheckpointMetadata'
           description: Present checkpoints.
+    StorageSyncMode:
+      type: string
+      description: >-
+        How a pipeline makes its files durable when it commits a checkpoint.
+
+
+        A checkpoint can hold tens of thousands of files, so committing them one
+        at
+
+        a time is the dominant cost of making one. Both alternatives below fix
+        that,
+
+        but they suit different deployments.
+      enum:
+        - auto
+        - syncfs
+        - per_file
     SuspendError:
       oneOf:
         - type: object
