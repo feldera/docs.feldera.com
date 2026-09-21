@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.8f441c11.js" defer="defer"></script>
-<script src="/assets/js/main.bc040431.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8bc705f5.js" defer="defer"></script>
+<script src="/assets/js/main.3b09dacf.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -36,7 +36,11 @@ pipeline starts. The connecting PostgreSQL user must be a superuser (see
 <p>[*]: Required fields</p>
 <p>The CDC connector does not support client-certificate TLS options
 (<code>ssl_client_pem</code>, <code>ssl_client_location</code>, <code>ssl_client_key</code>,
-<code>ssl_client_key_location</code>, or <code>ssl_certificate_chain_location</code>).</p>
+<code>ssl_client_key_location</code>, or <code>ssl_certificate_chain_location</code>). It also
+rejects <code>verify_hostname: false</code>: hostname verification is always on, unlike
+the <a class="" href="/connectors/sources/postgresql/">PostgreSQL source</a> and
+<a class="" href="/connectors/sinks/postgresql/">sink</a>, where it can be disabled. A pipeline that
+sets any of these fails to start.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="postgresql-setup">PostgreSQL setup<a href="#postgresql-setup" class="hash-link" aria-label="Direct link to PostgreSQL setup" title="Direct link to PostgreSQL setup" translate="no">​</a></h2>
 <p>The PostgreSQL server must have logical replication enabled:</p>
 <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token keyword" style="color:#FCAF4F">SHOW</span><span class="token plain"> wal_level</span><span class="token punctuation" style="color:#ada7bc">;</span><br></span></code></pre></div></div>
