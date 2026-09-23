@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.354.0
+  version: 0.355.0
 paths:
   /config/authentication:
     get:
@@ -11288,6 +11288,28 @@ components:
             The number of merger threads.
 
             The default value is equal to the number of worker threads.
+          default: null
+          nullable: true
+          minimum: 0
+        min_accumulator_merge_batches:
+          type: integer
+          format: int32
+          description: |-
+            Minimum number of batches an accumulator's spine merges at once,
+            at every level above level 1.
+
+            Zero restores the built-in minimum.
+          default: null
+          nullable: true
+          minimum: 0
+        min_integral_merge_batches:
+          type: integer
+          format: int32
+          description: |-
+            Minimum number of batches an integral's spine merges at once, at
+            every level above level 1.
+
+            Unset or zero keeps the built-in minimum.
           default: null
           nullable: true
           minimum: 0
