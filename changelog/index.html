@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.baf91282.js" defer="defer"></script>
-<script src="/assets/js/main.6604c4b2.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.ab96717a.js" defer="defer"></script>
+<script src="/assets/js/main.48075e9d.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,6 +21,35 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">
+<p>Bug fix (SQL): <code>DATEDIFF(QUARTER, left, right)</code> mixed whole years with
+calendar quarters and often returned wrong values; for example,
+<code>DATEDIFF(QUARTER, DATE &#x27;2020-06-15&#x27;, DATE &#x27;2021-01-01&#x27;)</code> returned -1
+instead of 2. It now divides the elapsed months by 3, as
+<code>TIMESTAMPDIFF(QUARTER, left, right)</code> does, so views using it may produce
+different results after they are recompiled.</p>
+</li>
+<li class="">
+<p>Incompatible change (user-defined aggregates): the accumulator type of a
+user-defined aggregate written in Rust must now implement
+<code>dbsp::dynamic::OrdRepr</code> for its rkyv archived form, so that an archived
+value can be ordered against an unarchived one without deserializing it.
+Storage searches file-backed data by comparing archived keys, and every
+type that can be a key or a value of a Feldera collection needs the
+comparison; the same therefore holds for any type used as a key or a
+value with the <code>dbsp</code> crate&#x27;s Rust API. A type whose <code>Archive</code> and <code>Ord</code>
+are both derived can add <code>#[derive(feldera_macros::OrdRepr)]</code>, which
+compares the fields in the order <code>#[derive(Ord)]</code> does. A type with a
+hand-written <code>Archive</code> implementation, such as the <code>I256Wrapper</code>
+accumulator in the documentation, needs a hand-written
+<code>impl OrdRepr&lt;T&gt; for ArchivedT</code> whose <code>ord_cmp</code> agrees with the type&#x27;s
+<code>Ord</code> on every pair of values; a disagreement makes lookups return wrong
+rows. Without the implementation the pipeline fails to compile with
+<code>the trait bound ... OrdRepr&lt;...&gt; is not satisfied</code>. See
+<a class="" href="/sql/udf/#user-defined-aggregates">User-defined aggregates</a>.</p>
+</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03520">v0.352.0<a href="#v03520" class="hash-link" aria-label="Direct link to v0.352.0" title="Direct link to v0.352.0" translate="no">​</a></h2>
 <ul>
 <li class="">Cluster monitoring data that has gone stale is now reported as such
