@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.41aebae9.js" defer="defer"></script>
-<script src="/assets/js/main.158c1bb4.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.5c206c73.js" defer="defer"></script>
+<script src="/assets/js/main.8df8de0e.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,6 +21,25 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">
+<p>Incompatible change (SQL): a <code>RANGE</code> window frame with a bound of the
+form <code>n PRECEDING</code> or <code>n FOLLOWING</code> now requires an <code>ORDER BY</code> column
+that cannot be <code>NULL</code>.  A program using e.g.,
+<code>RANGE BETWEEN INTERVAL 1 DAY PRECEDING AND CURRENT ROW</code>
+over a nullable timestamp, now fails to compile.  This can be worked around
+by declaring the column <code>NOT NULL</code>, or by filtering out the <code>NULL</code> values first,
+for example with <code>WHERE ts IS NOT NULL</code>.  See <a class="" href="/sql/unsupported-operations/#range-frames-with-offsets-over-nullable-columns">Unsupported
+operations</a>.</p>
+</li>
+<li class="">
+<p>Bug fix (Python SDK): <code>Pipeline.listen()</code> and <code>Pipeline.foreach_chunk()</code>
+returned a <code>NULL</code> value of a <code>CHAR</code> or <code>VARCHAR</code> column as the string
+<code>&#x27;None&#x27;</code>.  These columns now have the pandas type <code>string</code>, so a <code>NULL</code>
+value is a missing value (<code>None</code> in <code>to_dict()</code>), and <code>pandas.isna()</code>
+finds it.</p>
+</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03560">v0.356.0<a href="#v03560" class="hash-link" aria-label="Direct link to v0.356.0" title="Direct link to v0.356.0" translate="no">​</a></h2>
 <ul>
 <li class="">
@@ -141,6 +160,35 @@ the read. This also fixes a transaction such as <code>UPDATE</code> or <code>MER
 that rewrote a file while changing only such a column: its <code>add</code> and
 <code>remove</code> actions did not cancel, and the connector re-emitted the
 rewritten rows as inserts (#7116).</p>
+</li>
+<li class="">
+<p>Bug fix (Delta Lake input connector): a Unity Catalog Uniform table read
+every column as NULL in <code>follow</code> and <code>cdc</code> mode and in the follow half of
+<code>snapshot_and_follow</code>.  Its columns are now matched by field id.</p>
+</li>
+<li class="">
+<p>Bug fix (Delta Lake input connector, <code>cdc</code> mode): a <code>uc://</code> table read no
+rows from a commit&#x27;s files unless they carried a deletion vector.  Such a
+table&#x27;s location is path-less, so the listing the read planned resolved to
+nothing (#7112).</p>
+</li>
+<li class="">
+<p>Bug fix (Delta Lake input connector): a struct nested in an array or a map
+of a column-mapped table read its neighbor&#x27;s values in <code>follow</code> and <code>cdc</code>
+mode, because its fields were paired by name and such a file shares no field
+name with the table&#x27;s schema.</p>
+</li>
+<li class="">
+<p>Bug fix (Delta Lake input connector, <code>snapshot</code> mode): a struct nested in an
+array or a map of an id-mapped table read its fields exchanged when the log
+listed them in a different order than the data file.  A container&#x27;s children
+are now relabeled by field id before the struct cast pairs them (#7279).</p>
+</li>
+<li class="">
+<p>Incompatible change (Delta Lake input connector): in <code>follow</code> and <code>cdc</code> mode
+a data file holding a null element of an array or a map the Delta table
+declares <code>NOT NULL</code> is now rejected.  Such a file used to read through, so a
+pipeline ingesting one now fails where it did not before.</p>
 </li>
 <li class="">
 <p>Incompatible change (SQL compiler): the <code>WATERMARK</code> column annotation is
@@ -758,7 +806,7 @@ outputs produced by the pipeline are captured by the listener. With the new API,
 same by starting the pipeline in a paused state using <code>Pipeline.start_paused</code> and calling <code>Pipeline.listen</code>
 before unpausing the pipeline using <code>Pipeline.resume</code>.</li>
 </ul>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="01480">0.148.0<a href="#01480" class="hash-link" aria-label="Direct link to 0.148.0" title="Direct link to 0.148.0" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="01480">0.148.0<a href="#01480" class="hash-link" aria-label="Direct link to 0.148.0" title="Direct link to 0.148.0" translate="no">  ​</a></h2>
 <p>API CHANGES: BACKWARD INCOMPATIBLE</p>
 <p><strong>API pipeline endpoints</strong></p>
 <ul>
