@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.5c206c73.js" defer="defer"></script>
-<script src="/assets/js/main.8df8de0e.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8f0ce279.js" defer="defer"></script>
+<script src="/assets/js/main.da5d1fd8.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -101,7 +101,7 @@ field can be deserialized into either nullable or non-nullable column).</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="debezium-logical-types">Debezium logical types<a href="#debezium-logical-types" class="hash-link" aria-label="Direct link to Debezium logical types" title="Direct link to Debezium logical types" translate="no">​</a></h3>
 <p>When <code>update_format</code> is set to <code>debezium</code>, the connector additionally recognizes
 Debezium&#x27;s temporal and decimal
-<a href="https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-data-types" target="_blank" rel="noopener noreferrer" class="">semantic types</a>.
+<a href="https://debezium.io/documentation/reference/connectors/postgresql.html#postgresql-data-types" target="_blank" rel="noopener noreferrer" class="">semantic types</a>.
 Debezium encodes these as plain Avro types annotated with a <code>connect.name</code>
 attribute rather than as native Avro logical types. The connector converts each
 value into the matching SQL column type:</p>
