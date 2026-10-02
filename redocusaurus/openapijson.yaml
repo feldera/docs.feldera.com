@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.359.0
+  version: 0.360.0
 paths:
   /config/authentication:
     get:
@@ -9835,6 +9835,11 @@ components:
           nullable: true
         global_metrics:
           $ref: '#/components/schemas/GlobalControllerMetrics'
+        host_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostMetrics'
+          description: Resource usage of each host in a multihost pipeline, by ordinal.
         inputs:
           type: array
           items:
@@ -12463,6 +12468,24 @@ components:
           type: integer
           format: int64
           description: Age at which monitoring data counts as stale.
+          minimum: 0
+    HostMetrics:
+      type: object
+      description: Resource usage of one host in a multihost pipeline.
+      properties:
+        disk_available_bytes:
+          type: integer
+          format: int64
+          description: >-
+            Bytes the host can still write to its storage disk; absent when
+            unknown.
+          nullable: true
+          minimum: 0
+        disk_total_bytes:
+          type: integer
+          format: int64
+          description: Capacity of the host's storage disk, in bytes; absent when unknown.
+          nullable: true
           minimum: 0
     HttpInputConfig:
       type: object
@@ -15717,6 +15740,32 @@ components:
             publication:
               type: string
               description: Name of the pre-created Postgres publication to replicate from.
+            run_source_migrations:
+              type: boolean
+              description: >-
+                Whether the connector runs etl's source migrations on startup.
+
+
+                The source migrations install the schema helper functions and
+                the
+
+                `ddl_command_end` event trigger. Creating the event trigger
+                requires a
+
+                superuser, so a de-elevated role can set this to `false` and
+                have an
+
+                administrator install the source objects out-of-band. Disabling
+                this
+
+                does not skip the state-store migrations, which run on every
+                start
+
+                regardless.
+
+
+                Default: `true`.
+              default: true
             source_table:
               type: string
               description: >-
@@ -15729,8 +15778,14 @@ components:
             uri:
               type: string
               description: >-
-                Postgres connection URI. The user must have REPLICATION
-                privilege.
+                Postgres connection URI. Automatic source migrations require a
+                superuser.
+
+                With `run_source_migrations = false`, the user needs REPLICATION
+                and the
+
+                grants described in [Running as a
+                non-superuser](https://docs.feldera.com/connectors/sources/postgresql-cdc#running-as-a-non-superuser).
 
                 See:
                 <https://docs.rs/tokio-postgres/0.7.12/tokio_postgres/config/struct.Config.html>
@@ -15741,8 +15796,14 @@ components:
         Uses logical replication to capture ongoing changes from a Postgres
         database.
 
-        Requires a pre-created publication and a user with REPLICATION
-        privilege.
+        Requires a pre-created publication. Automatic source migrations require
+        a
+
+        superuser; with administrator-installed source objects and
+
+        `run_source_migrations = false`, a replication role with the documented
+
+        source-table and etl state-store privileges can be used instead.
 
         Tables must have primary keys and `REPLICA IDENTITY FULL` is recommended
 
