@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.361.0
+  version: 0.362.0
 paths:
   /config/authentication:
     get:
@@ -10901,6 +10901,22 @@ components:
         These settings reflect experiments that may come and go and change from
         version to version.  Users should not consider them to be stable.
       properties:
+        accumulator_merge_threshold_batches:
+          type: integer
+          format: int32
+          description: >-
+            Merge threshold of an accumulator's spine: how many batches each
+
+            level above level 1 waits for before it merges them.
+
+
+            Zero restores the built-in minimum.  A spine that garbage-collects
+            old
+
+            records always uses the built-in minimum.
+          default: null
+          nullable: true
+          minimum: 0
         adaptive_joins:
           type: boolean
           description: >-
@@ -11184,6 +11200,18 @@ components:
             memory if the number of keys fetched is very large.
           default: null
           nullable: true
+        integral_merge_threshold_batches:
+          type: integer
+          format: int32
+          description: |-
+            Merge threshold of an integral's spine: how many batches each level
+            above level 1 waits for before it merges them.
+
+            The default is ten.  Zero restores the built-in minimum.  A spine
+            that garbage-collects old records always uses the built-in minimum.
+          default: null
+          nullable: true
+          minimum: 0
         max_level0_batch_size_records:
           type: integer
           format: int32
@@ -11203,28 +11231,6 @@ components:
             The number of merger threads.
 
             The default value is equal to the number of worker threads.
-          default: null
-          nullable: true
-          minimum: 0
-        min_accumulator_merge_batches:
-          type: integer
-          format: int32
-          description: |-
-            Minimum number of batches an accumulator's spine merges at once,
-            at every level above level 1.
-
-            Zero restores the built-in minimum.
-          default: null
-          nullable: true
-          minimum: 0
-        min_integral_merge_batches:
-          type: integer
-          format: int32
-          description: |-
-            Minimum number of batches an integral's spine merges at once, at
-            every level above level 1.
-
-            Unset or zero keeps the built-in minimum.
           default: null
           nullable: true
           minimum: 0
@@ -11355,6 +11361,30 @@ components:
         streaming_exchange:
           type: boolean
           description: Enable streaming exchange.
+          default: null
+          nullable: true
+        top_level_negative_weight_fraction:
+          type: number
+          format: double
+          description: >-
+            The share of the records at a spine's highest level with negative
+
+            weights above which the level merges its batches.
+
+
+            A spine keeps most of its records at its highest level.  When many
+            of
+
+            them are retractions, merging the level's batches cancels them
+            against
+
+            the records they retract, which shrinks the spine's storage.
+
+
+            A fraction from 0 through 1; the default is 0.2.  At 1 the level
+            never
+
+            merges for this reason.
           default: null
           nullable: true
       additionalProperties:

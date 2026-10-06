@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.8ee559f3.css">
-<script src="/assets/js/runtime~main.e5b2080b.js" defer="defer"></script>
-<script src="/assets/js/main.a7b153ff.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.3c207016.js" defer="defer"></script>
+<script src="/assets/js/main.f3e731c6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -297,9 +297,8 @@ the previous date can be received after this.  The waterline
 moves forward by one day and the final value for <code>2020-01-01</code> is output.</p>
 </li>
 </ul>
-<p>The <code>emit_final</code> property must specify either a column name that
-exists in the view, or a column number, where 0 is the leftmost view
-column.</p>
+<p>The <code>emit_final</code> property must specify the name of a column of the
+view.</p>
 <p>Note that using <code>emit_final</code> can significantly delay the output of a view.
 In the example above, the aggregation is performed over a 1-day window,
 resulting in a 1-day delay before the output is produced. If the aggregation
@@ -313,9 +312,16 @@ column of the view, it will emit an error at compilation time.</p>
 </li>
 <li class="">
 <p>Currently this annotation is only allowed on views that are not
-<a class="" href="/sql/grammar/#creating-views"><code>LOCAL</code></a>.  It takes effect only
-for the view used as output.  If the view is used in defining
-other views, these derived views will receive the non-delayed data.</p>
+<a class="" href="/sql/grammar/#creating-views"><code>LOCAL</code></a>.</p>
+</li>
+<li class="">
+<p>A view with an <code>emit_final</code> annotation cannot be used in the
+definition of another view.  To use the same rows in another view,
+define a separate view without <code>emit_final</code> and use that view.</p>
+</li>
+<li class="">
+<p>A view with an <code>emit_final</code> annotation cannot be the subject of a
+<a class="" href="/sql/grammar/#creating-indexes">CREATE INDEX</a> statement.</p>
 </li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="append-only-tables">Append-only tables<a href="#append-only-tables" class="hash-link" aria-label="Direct link to Append-only tables" title="Direct link to Append-only tables" translate="no">​</a></h2>
@@ -341,7 +347,7 @@ non-time-series data, they are particularly beneficial when working with time se
 <p>Feldera offers efficient incremental implementations of these constructs and
 supports garbage collection for most of them, meaning that they can be evaluated
 efficiently in both time and space.</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="aggregating-time-series-data-over-fixed-size-time-intervals">Aggregating Time Series Data Over Fixed-Size Time Intervals<a href="#aggregating-time-series-data-over-fixed-size-time-intervals" class="hash-link" aria-label="Direct link to Aggregating Time Series Data Over Fixed-Size Time Intervals" title="Direct link to Aggregating Time Series Data Over Fixed-Size Time Intervals" translate="no"> ​</a></h3>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="aggregating-time-series-data-over-fixed-size-time-intervals">Aggregating Time Series Data Over Fixed-Size Time Intervals<a href="#aggregating-time-series-data-over-fixed-size-time-intervals" class="hash-link" aria-label="Direct link to Aggregating Time Series Data Over Fixed-Size Time Intervals" title="Direct link to Aggregating Time Series Data Over Fixed-Size Time Intervals" translate="no">​</a></h3>
 <p>A common practice in time series analysis is to segment the timeline into fixed-size
 intervals—such as minutes, hours, days, or years—and aggregate the data within each
 segment. Earlier, we encountered two examples of such queries: <code>daily_max</code> and
