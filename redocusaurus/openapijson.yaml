@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.363.0
+  version: 0.364.0
 paths:
   /config/authentication:
     get:
@@ -4455,7 +4455,9 @@ paths:
             type: boolean
         - name: format
           in: query
-          description: Input data format, either `csv' or 'json'.
+          description: >-
+            Input data format: `csv`, `json`, `parquet`, `avro`, or `raw`. The
+            default is `csv`.
           required: true
           schema:
             type: string
@@ -4478,6 +4480,18 @@ paths:
           schema:
             allOf:
               - $ref: '#/components/schemas/JsonUpdateFormat'
+            nullable: true
+        - name: connector_metadata
+          in: query
+          description: >-
+            Connector metadata for every record of this request, as a JSON
+            object.  `CONNECTOR_METADATA()` returns the object for the records,
+            so a column declared with `DEFAULT CAST(CONNECTOR_METADATA()['name']
+            AS type)` takes its value from the object's `name` attribute.  Works
+            with every input format.
+          required: false
+          schema:
+            type: string
             nullable: true
       requestBody:
         description: Input data in the specified format
@@ -15704,6 +15718,83 @@ components:
             before doing so
 
             (`force=false`, which is the default).
+    PostgresCdcBatchConfig:
+      type: object
+      description: |-
+        Batch processing configuration for the Postgres CDC connector.
+
+        Controls how replication events are buffered into a batch before being
+        flushed to Feldera. Mirrors the batch configuration of the underlying
+        `etl` replication library; fields omitted from the configuration fall
+        back to `etl`'s own defaults.
+      properties:
+        max_bytes:
+          type: integer
+          description: |-
+            Maximum preferred byte size for one batch per active stream. This is
+            a ceiling, not a target: the runtime still chooses the smaller value
+            between this limit and the memory-ratio budget computed from
+            `memory_budget_ratio`.
+
+            Default: 33554432 (32 MiB), the same as etl.
+          default: 33554432
+          minimum: 0
+        max_fill_ms:
+          type: integer
+          format: int64
+          description: |-
+            Maximum time, in milliseconds, to wait before flushing a partially
+            filled batch. This is the latency bound for batching: once the first
+            event enters a batch, the batch is flushed when this timer elapses,
+            even if `max_bytes` was not reached.
+
+            Default: 10000 (10 seconds).
+          default: 10000
+          minimum: 0
+        memory_budget_ratio:
+          type: number
+          format: float
+          description: >-
+            Ratio of process memory reserved for incoming replication batch
+
+            bytes, in the `(0.0, 1.0]` interval. The configured memory is
+            divided
+
+            by the number of active streams at runtime, so each stream gets only
+
+            a per-stream share of the global memory budget.
+
+
+            Default: 0.2.
+          default: 0.2
+    PostgresCdcMemoryBackpressureConfig:
+      type: object
+      description: |-
+        Memory-based backpressure configuration for the Postgres CDC connector.
+
+        When the connector's memory usage rises above `activate_threshold`, it
+        pauses reading further replication events until usage drops back below
+        `resume_threshold`. Mirrors the memory backpressure configuration of the
+        underlying `etl` replication library.
+      properties:
+        activate_threshold:
+          type: number
+          format: float
+          description: |-
+            Memory usage ratio above which backpressure is activated, in the
+            `(0.0, 1.0]` interval.
+
+            Default: 0.85.
+          default: 0.85
+        resume_threshold:
+          type: number
+          format: float
+          description: |-
+            Memory usage ratio below which backpressure is released, in the
+            `[0.0, 1.0)` interval. Must be lower than `activate_threshold`.
+
+            Default: 0.75.
+          default: 0.75
     PostgresCdcReaderConfig:
       allOf:
         - type: object
@@ -15767,6 +15858,10 @@ components:
             - publication
             - source_table
           properties:
+            batch:
+              $ref: '#/components/schemas/PostgresCdcBatchConfig'
+            memory_backpressure:
+              $ref: '#/components/schemas/PostgresCdcMemoryBackpressureConfig'
             publication:
               type: string
               description: Name of the pre-created Postgres publication to replicate from.
