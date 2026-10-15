@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examples &mdash; Feldera Python SDK 0.365.0 documentation</title>
+  <title>Examples &mdash; Feldera Python SDK 0.366.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=eace8088"></script>
+        <script src="_static/documentation_options.js?v=78b15e63"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -188,7 +188,7 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
 <span class="n">client</span> <span class="o">=</span> <span class="n">FelderaClient</span><span class="o">.</span><span class="n">localhost</span><span class="p">()</span>
 <span class="n">runtime_config</span> <span class="o">=</span> <span class="n">RuntimeConfig</span><span class="p">(</span>
     <span class="n">fault_tolerance_model</span><span class="o">=</span><span class="n">FaultToleranceModel</span><span class="o">.</span><span class="n">AtLeastOnce</span><span class="p">,</span>
-    <span class="n">checkpoint_interval_secs</span><span class="o">=</span><span class="mi">60</span>
+    <span class="n">checkpoint_interval</span><span class="o">=</span><span class="s2">&quot;60s&quot;</span>
 <span class="p">)</span>
 
 <span class="n">pipeline</span> <span class="o">=</span> <span class="n">PipelineBuilder</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">runtime_config</span><span class="o">=</span><span class="n">runtime_config</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
@@ -213,13 +213,13 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
     <span class="p">},</span>
     <span class="s2">&quot;fault_tolerance&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;at_least_once&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">:</span> <span class="mi">60</span>
+        <span class="s2">&quot;checkpoint_interval&quot;</span><span class="p">:</span> <span class="s2">&quot;60s&quot;</span>
     <span class="p">},</span>
     <span class="s2">&quot;cpu_profiler&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="s2">&quot;tracing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="s2">&quot;tracing_endpoint_jaeger&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="s2">&quot;min_batch_size_records&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;max_buffering_delay&quot;</span><span class="p">:</span> <span class="s2">&quot;0us&quot;</span><span class="p">,</span>
     <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;cpu_cores_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
@@ -228,9 +228,9 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
         <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;storage_class&quot;</span><span class="p">:</span> <span class="kc">None</span>
     <span class="p">},</span>
-    <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;clock_resolution&quot;</span><span class="p">:</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span>
     <span class="s2">&quot;pin_cpus&quot;</span><span class="p">:</span> <span class="p">[],</span>
-    <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="s2">&quot;max_parallel_connector_init&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="s2">&quot;init_containers&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="s2">&quot;checkpoint_during_suspend&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>

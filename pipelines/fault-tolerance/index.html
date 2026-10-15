@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.fc1efa25.js" defer="defer"></script>
-<script src="/assets/js/main.545d5d55.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
+<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -115,8 +115,8 @@ inside <code>fault_tolerance</code>:</p>
 <p>Change <code>model</code> to <code>&quot;at_least_once&quot;</code> or <code>&quot;exactly_once&quot;</code>.</p>
 </li>
 <li class="">
-<p>Optionally, change <code>&quot;checkpoint_interval_secs&quot;</code> to an automatic
-checkpoint interval of your choice, in seconds. The default is 60 seconds. <code>null</code> will
+<p>Optionally, change <code>&quot;checkpoint_interval&quot;</code> to an automatic
+checkpoint interval of your choice, such as <code>&quot;5m&quot;</code>. The default is 60 seconds. <code>null</code> will
 disable automatic checkpoints.</p>
 </li>
 </ul>
@@ -129,9 +129,9 @@ or the running version of Feldera is not the enterprise edition.</p>
 enable fault tolerance:</p>
 <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">fda set-config &lt;pipeline&gt; fault_tolerance at_least_once</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">fda set-config &lt;pipeline&gt; fault_tolerance exactly_once</span><br></span></code></pre></div></div>
 <p>Optionally, use the following command to change the automatic
-checkpointing interval to <code>&lt;seconds&gt;</code> (use <code>0</code> for <code>&lt;seconds&gt;</code> to
-disable automatic checkpoints):</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">fda set-config &lt;pipeline&gt; checkpoint_interval &lt;seconds&gt;</span><br></span></code></pre></div></div>
+checkpointing interval to <code>&lt;duration&gt;</code>, such as <code>5m</code> (use <code>null</code>
+for <code>&lt;duration&gt;</code> to disable automatic checkpoints):</p>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">fda set-config &lt;pipeline&gt; checkpoint_interval &lt;duration&gt;</span><br></span></code></pre></div></div>
 </li>
 </ul>
 </li>
@@ -145,6 +145,13 @@ or disabled as described
 request writing a checkpoint immediately.  If automatic checkpoints
 are disabled, then the user should occasionally invoke this API to
 ensure that the checkpoint feature is useful.</p>
+<p>On <code>SIGTERM</code>, for example when Kubernetes evicts its pod, a pipeline
+writes a checkpoint and then exits.  Kubernetes kills the pipeline
+<code>pipeline.terminationGracePeriodSeconds</code> (a Helm value, default 60)
+after the <code>SIGTERM</code>, so set it longer than a checkpoint takes.
+Multihost pipelines exit without a checkpoint.  On Kubernetes, Force
+Stop also sends <code>SIGTERM</code>.  If the checkpoint finishes within 2
+seconds, the pipeline keeps it.</p>
 <blockquote>
 <p>Writing a checkpoint is ordinarily a fast operation that takes
 several seconds.  However, the <a class="" href="/connectors/sources/delta/">Delta Lake</a>

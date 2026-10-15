@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.runtime_config &mdash; Feldera Python SDK 0.365.0 documentation</title>
+  <title>feldera.runtime_config &mdash; Feldera Python SDK 0.366.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=eace8088"></script>
+        <script src="../../_static/documentation_options.js?v=78b15e63"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -77,7 +77,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for feldera.runtime_config</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
 
@@ -152,6 +154,131 @@
 
 
 
+<span class="n">_NANOS_PER_UNIT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="mi">1_000</span><span class="p">,</span>
+    <span class="s2">&quot;</span><span class="se">\u00b5</span><span class="s2">s&quot;</span><span class="p">:</span> <span class="mi">1_000</span><span class="p">,</span>  <span class="c1"># micro sign</span>
+    <span class="s2">&quot;</span><span class="se">\u03bc</span><span class="s2">s&quot;</span><span class="p">:</span> <span class="mi">1_000</span><span class="p">,</span>  <span class="c1"># Greek small letter mu</span>
+    <span class="s2">&quot;ms&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">1_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">3_600</span> <span class="o">*</span> <span class="mi">1_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;d&quot;</span><span class="p">:</span> <span class="mi">86_400</span> <span class="o">*</span> <span class="mi">1_000_000_000</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># ASCII digits only, as in the runtime&#39;s scanner: `\d` alone would also take</span>
+<span class="c1"># digits from other scripts.</span>
+<span class="n">_DURATION_TERM</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d*)(?:\.(\d*))?([^\d.]+)&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">ASCII</span><span class="p">)</span>
+
+<span class="c1"># The runtime reads at most this many digits after the point.</span>
+<span class="n">_MAX_FRACTION_DIGITS</span> <span class="o">=</span> <span class="mi">18</span>
+
+<span class="c1"># The longest duration the runtime holds: `u64::MAX` seconds, plus a second.</span>
+<span class="n">_MAX_DURATION_NANOS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">64</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1_000_000_000</span> <span class="o">+</span> <span class="mi">999_999_999</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_duration_nanos</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a duration string such as ``&quot;1h30m&quot;`` into nanoseconds.</span>
+
+<span class="sd">    Implements the grammar the pipeline accepts: a run of terms, each a number</span>
+<span class="sd">    and a unit, summed; a bare ``&quot;0&quot;``; one optional leading ``+``. A fraction</span>
+<span class="sd">    scales exactly and rounds to the nearest nanosecond, as the pipeline does.</span>
+
+<span class="sd">    :raises ValueError: if ``text`` is not a duration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;duration &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; cannot be negative&quot;</span><span class="p">)</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
+    <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;duration is empty&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">position</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">rest</span><span class="p">):</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">_DURATION_TERM</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rest</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">rest</span><span class="p">[</span><span class="n">position</span><span class="p">:]</span><span class="si">}</span><span class="s2">&#39; in duration &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; has no unit&quot;</span><span class="p">)</span>
+        <span class="n">whole</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+        <span class="n">unit_nanos</span> <span class="o">=</span> <span class="n">_NANOS_PER_UNIT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+        <span class="c1"># Nothing numeric here: a known unit wants a number in front of it,</span>
+        <span class="c1"># anything else is not a unit at all, as the runtime reports it.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">whole</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fraction</span> <span class="ow">and</span> <span class="n">unit_nanos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39; in duration &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; has no number in front of it&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit_nanos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;unknown unit &#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39; in duration &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;; expected one of &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ns&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">whole</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_nanos</span>
+        <span class="k">if</span> <span class="n">fraction</span><span class="p">:</span>
+            <span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">[:</span><span class="n">_MAX_FRACTION_DIGITS</span><span class="p">]</span>
+            <span class="n">denominator</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">fraction</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">unit_nanos</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">fraction</span><span class="p">)</span> <span class="o">+</span> <span class="n">denominator</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="n">denominator</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="n">_MAX_DURATION_NANOS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;duration &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; is too large&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_duration_setting</span><span class="p">(</span>
+    <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">new_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">old_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolves a duration setting given through either its current name or the</span>
+<span class="sd">    deprecated integer argument, as the key to send and its value.</span>
+
+<span class="sd">    The setting is sent under the spelling the caller used. A server from</span>
+<span class="sd">    before the current names accepts only the deprecated key, and one from</span>
+<span class="sd">    after accepts both, so code written against the older argument keeps</span>
+<span class="sd">    working against either. The current name wins when both are given. Either</span>
+<span class="sd">    use of the deprecated argument warns, so that a caller who passes both</span>
+<span class="sd">    learns that only one of the two took effect.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">old_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span>
+    <span class="n">equivalent</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_value</span><span class="si">}{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">new_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; use </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">=&#39;</span><span class="si">{</span><span class="n">equivalent</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated and was ignored because &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">=&#39;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}</span><span class="s2">&#39; is also set; drop &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">old_value</span><span class="si">}</span><span class="s2"> (it would mean &#39;</span><span class="si">{</span><span class="n">equivalent</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_duration_attribute</span><span class="p">(</span><span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">property</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A duration attribute that reads whichever spelling the configuration</span>
+<span class="sd">    holds and, when assigned, replaces both.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">legacy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">legacy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">legacy</span><span class="si">}{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">get</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;``</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s1">``, a duration such as ``&quot;30s&quot;``.&#39;</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="RuntimeConfig">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RuntimeConfig</span><span class="p">:</span>
@@ -159,6 +286,10 @@
 <span class="sd">    Runtime configuration class to define the configuration for a pipeline.</span>
 <span class="sd">    To create runtime config from a dictionary, use</span>
 <span class="sd">    :meth:`.RuntimeConfig.from_dict`.</span>
+
+<span class="sd">    Duration settings take a string made of a number and a unit, such as</span>
+<span class="sd">    ``&quot;500ms&quot;``, ``&quot;30s&quot;``, ``&quot;1h30m&quot;`` or ``&quot;30d&quot;``. The deprecated integer</span>
+<span class="sd">    arguments and attributes still work but emit a :class:`DeprecationWarning`.</span>
 
 <span class="sd">    Documentation:</span>
 <span class="sd">        https://docs.feldera.com/pipelines/configuration/#runtime-configuration</span>
@@ -174,7 +305,7 @@
         <span class="n">tracing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">tracing_endpoint_jaeger</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">cpu_profiler</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">max_buffering_delay_usecs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">max_buffering_delay_usecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">min_batch_size_records</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">clock_resolution_usecs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">clock_timezone_offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -187,6 +318,10 @@
         <span class="n">logging</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">datafusion_memory_mb</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_rss_mb</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_buffering_delay</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">clock_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">provisioning_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">checkpoint_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="n">hosts</span>
@@ -195,16 +330,40 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing</span> <span class="o">=</span> <span class="n">tracing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing_endpoint_jaeger</span> <span class="o">=</span> <span class="n">tracing_endpoint_jaeger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpu_profiler</span> <span class="o">=</span> <span class="n">cpu_profiler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_buffering_delay_usecs</span> <span class="o">=</span> <span class="n">max_buffering_delay_usecs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_duration</span><span class="p">(</span>
+            <span class="s2">&quot;max_buffering_delay&quot;</span><span class="p">,</span>
+            <span class="n">max_buffering_delay</span><span class="p">,</span>
+            <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">,</span>
+            <span class="n">max_buffering_delay_usecs</span><span class="p">,</span>
+            <span class="s2">&quot;us&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_batch_size_records</span> <span class="o">=</span> <span class="n">min_batch_size_records</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clock_resolution_usecs</span> <span class="o">=</span> <span class="n">clock_resolution_usecs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_duration</span><span class="p">(</span>
+            <span class="s2">&quot;clock_resolution&quot;</span><span class="p">,</span>
+            <span class="n">clock_resolution</span><span class="p">,</span>
+            <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">,</span>
+            <span class="n">clock_resolution_usecs</span><span class="p">,</span>
+            <span class="s2">&quot;us&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock_timezone_offset</span> <span class="o">=</span> <span class="n">clock_timezone_offset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">provisioning_timeout_secs</span> <span class="o">=</span> <span class="n">provisioning_timeout_secs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_duration</span><span class="p">(</span>
+            <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">,</span>
+            <span class="n">provisioning_timeout</span><span class="p">,</span>
+            <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">,</span>
+            <span class="n">provisioning_timeout_secs</span><span class="p">,</span>
+            <span class="s2">&quot;s&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">fault_tolerance_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fault_tolerance</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fault_tolerance_model</span><span class="p">),</span>
-                <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">:</span> <span class="n">checkpoint_interval_secs</span><span class="p">,</span>
-            <span class="p">}</span>
+            <span class="c1"># An explicit null interval disables periodic checkpoints, so the</span>
+            <span class="c1"># key is always sent when a model is chosen.</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_duration_setting</span><span class="p">(</span>
+                <span class="s2">&quot;checkpoint_interval&quot;</span><span class="p">,</span>
+                <span class="n">checkpoint_interval</span><span class="p">,</span>
+                <span class="s2">&quot;checkpoint_interval_secs&quot;</span><span class="p">,</span>
+                <span class="n">checkpoint_interval_secs</span><span class="p">,</span>
+                <span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fault_tolerance</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">fault_tolerance_model</span><span class="p">),</span> <span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">resources</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">resources</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="vm">__dict__</span>
         <span class="k">if</span> <span class="n">storage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -219,6 +378,100 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logging</span> <span class="o">=</span> <span class="n">logging</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_store_duration</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores a duration setting in this object&#39;s attributes, under</span>
+<span class="sd">        `new_name` or `old_name`, whichever the caller gave a value for.&quot;&quot;&quot;</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_duration_setting</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_legacy_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The value of a deprecated integer attribute, whichever spelling the</span>
+<span class="sd">        configuration holds. A duration stored under the current name converts</span>
+<span class="sd">        to a whole number of the old unit, rounded up as the manager rounds</span>
+<span class="sd">        for an older runtime, so that a short timeout written back under the</span>
+<span class="sd">        old name never becomes a zero one; a number stored under the old name</span>
+<span class="sd">        is already in that unit.&quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; read &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">legacy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">legacy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">legacy</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">duration</span>
+        <span class="n">unit_nanos</span> <span class="o">=</span> <span class="n">_NANOS_PER_UNIT</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">_parse_duration_nanos</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span> <span class="o">//</span> <span class="n">unit_nanos</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_legacy_integer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores a deprecated integer attribute under its own key, which every</span>
+<span class="sd">        server reads, in place of the current one.&quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; set &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="n">max_buffering_delay</span> <span class="o">=</span> <span class="n">_duration_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;max_buffering_delay&quot;</span><span class="p">,</span> <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span>
+    <span class="p">)</span>
+    <span class="n">clock_resolution</span> <span class="o">=</span> <span class="n">_duration_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;clock_resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span>
+    <span class="p">)</span>
+    <span class="n">provisioning_timeout</span> <span class="o">=</span> <span class="n">_duration_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">,</span> <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_buffering_delay_usecs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated: ``max_buffering_delay`` as a whole number of microseconds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_legacy_integer</span><span class="p">(</span>
+            <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;max_buffering_delay&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@max_buffering_delay_usecs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_buffering_delay_usecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_legacy_integer</span><span class="p">(</span>
+            <span class="s2">&quot;max_buffering_delay_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;max_buffering_delay&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span><span class="p">,</span> <span class="n">value</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clock_resolution_usecs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated: ``clock_resolution`` as a whole number of microseconds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_legacy_integer</span><span class="p">(</span><span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;clock_resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span><span class="p">)</span>
+
+    <span class="nd">@clock_resolution_usecs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clock_resolution_usecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_legacy_integer</span><span class="p">(</span>
+            <span class="s2">&quot;clock_resolution_usecs&quot;</span><span class="p">,</span> <span class="s2">&quot;clock_resolution&quot;</span><span class="p">,</span> <span class="s2">&quot;us&quot;</span><span class="p">,</span> <span class="n">value</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">provisioning_timeout_secs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated: ``provisioning_timeout`` as a whole number of seconds.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_legacy_integer</span><span class="p">(</span>
+            <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">,</span> <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@provisioning_timeout_secs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">provisioning_timeout_secs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_legacy_integer</span><span class="p">(</span>
+            <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">,</span> <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">value</span>
+        <span class="p">)</span>
+
 <div class="viewcode-block" id="RuntimeConfig.default">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.RuntimeConfig.default">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -232,10 +485,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a :class:`.RuntimeConfig` object from a dictionary.</span>
+
+<span class="sd">        The dictionary is kept as it is, so writing it back sends each setting</span>
+<span class="sd">        in the spelling it was read in. A duration attribute reads whichever</span>
+<span class="sd">        spelling is present, and assigning one replaces both.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">conf</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">conf</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">conf</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">conf</span></div>
 
 

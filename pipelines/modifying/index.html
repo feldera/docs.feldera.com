@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.fc1efa25.js" defer="defer"></script>
-<script src="/assets/js/main.545d5d55.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
+<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -107,8 +107,9 @@ will be populated with data received from input connectors.</p>
 <ul>
 <li class="">
 <p>A table is considered modified if types, names or the order of its columns have changed in any way,
-its primary key constraint has changed, or its <code>materialized</code> or <code>append_only</code> properties were added
-or removed.</p>
+its primary key constraint has changed, its <code>materialized</code> or <code>append_only</code> properties were added
+or removed, or, for a table with a primary key and no <code>LATENESS</code> column, the program turned
+<code>FELDERA_LAZY_UPSERT</code> on or off.</p>
 </li>
 <li class="">
 <p>A table is NOT considered modified if only its connector definitions have changed.</p>
@@ -184,11 +185,11 @@ runtime status.</p>
 <li class="">
 <p><strong>Synchronization</strong>. The pipeline pauses input ingestion just long enough to bring
 the new views up to date with the most recent changes, switches them in, emits the
-full contents of new and modified views to input connectors, and returns to the
+full contents of new and modified views to output connectors, and returns to the
 <code>Running</code> state. During this phase the pipeline reports <code>Synchronizing</code> runtime status.</p>
 </li>
 </ul>
-<p>Concurrent bootstrapping is *mutually exclusive with <code>silent_bootstrap</code>**. Starting a
+<p>Concurrent bootstrapping is mutually exclusive with <code>silent_bootstrap</code>. Starting a
 pipeline with both <code>concurrent_bootstrap=true</code> and <code>silent_bootstrap=true</code> is rejected.</p>
 <p>Both phases report progress: the <code>concurrent_bootstrap_phase</code> and
 <code>concurrent_bootstrap_progress</code> fields returned by the

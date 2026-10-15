@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.365.0
+  version: 0.366.0
 paths:
   /config/authentication:
     get:
@@ -937,12 +937,10 @@ paths:
                       cache_mib: null
                     fault_tolerance:
                       model: none
-                      checkpoint_interval_secs: 60
                     cpu_profiler: true
                     tracing: false
                     tracing_endpoint_jaeger: ''
                     min_batch_size_records: 0
-                    max_buffering_delay_usecs: 0
                     resources:
                       cpu_cores_min: null
                       cpu_cores_max: null
@@ -952,10 +950,8 @@ paths:
                       storage_class: null
                       service_account_name: null
                       namespace: null
-                    clock_resolution_usecs: 1000000
                     clock_timezone_offset: null
                     pin_cpus: []
-                    provisioning_timeout_secs: null
                     max_parallel_connector_init: null
                     init_containers: null
                     checkpoint_during_suspend: true
@@ -1023,12 +1019,10 @@ paths:
                       cache_mib: null
                     fault_tolerance:
                       model: none
-                      checkpoint_interval_secs: 60
                     cpu_profiler: false
                     tracing: false
                     tracing_endpoint_jaeger: ''
                     min_batch_size_records: 100000
-                    max_buffering_delay_usecs: 0
                     resources:
                       cpu_cores_min: null
                       cpu_cores_max: null
@@ -1038,10 +1032,10 @@ paths:
                       storage_class: null
                       service_account_name: null
                       namespace: null
-                    clock_resolution_usecs: 100000
+                    clock_resolution: 100ms
                     clock_timezone_offset: null
                     pin_cpus: []
-                    provisioning_timeout_secs: 1200
+                    provisioning_timeout: 20m
                     max_parallel_connector_init: 10
                     init_containers: null
                     checkpoint_during_suspend: false
@@ -1128,12 +1122,10 @@ paths:
                   cache_mib: null
                 fault_tolerance:
                   model: none
-                  checkpoint_interval_secs: 60
                 cpu_profiler: true
                 tracing: false
                 tracing_endpoint_jaeger: ''
                 min_batch_size_records: 0
-                max_buffering_delay_usecs: 0
                 resources:
                   cpu_cores_min: null
                   cpu_cores_max: null
@@ -1143,10 +1135,8 @@ paths:
                   storage_class: null
                   service_account_name: null
                   namespace: null
-                clock_resolution_usecs: 1000000
                 clock_timezone_offset: null
                 pin_cpus: []
-                provisioning_timeout_secs: null
                 max_parallel_connector_init: null
                 init_containers: null
                 checkpoint_during_suspend: true
@@ -1195,12 +1185,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -1210,10 +1198,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -1368,12 +1354,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -1383,10 +1367,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -1493,12 +1475,10 @@ paths:
                   cache_mib: null
                 fault_tolerance:
                   model: none
-                  checkpoint_interval_secs: 60
                 cpu_profiler: true
                 tracing: false
                 tracing_endpoint_jaeger: ''
                 min_batch_size_records: 0
-                max_buffering_delay_usecs: 0
                 resources:
                   cpu_cores_min: null
                   cpu_cores_max: null
@@ -1508,10 +1488,8 @@ paths:
                   storage_class: null
                   service_account_name: null
                   namespace: null
-                clock_resolution_usecs: 1000000
                 clock_timezone_offset: null
                 pin_cpus: []
-                provisioning_timeout_secs: null
                 max_parallel_connector_init: null
                 init_containers: null
                 checkpoint_during_suspend: true
@@ -1560,12 +1538,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -1575,10 +1551,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -1653,12 +1627,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -1668,10 +1640,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -1876,12 +1846,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -1891,10 +1859,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -7121,12 +7087,10 @@ paths:
                     cache_mib: null
                   fault_tolerance:
                     model: none
-                    checkpoint_interval_secs: 60
                   cpu_profiler: true
                   tracing: false
                   tracing_endpoint_jaeger: ''
                   min_batch_size_records: 0
-                  max_buffering_delay_usecs: 0
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
@@ -7136,10 +7100,8 @@ paths:
                     storage_class: null
                     service_account_name: null
                     namespace: null
-                  clock_resolution_usecs: 1000000
                   clock_timezone_offset: null
                   pin_cpus: []
-                  provisioning_timeout_secs: null
                   max_parallel_connector_init: null
                   init_containers: null
                   checkpoint_during_suspend: true
@@ -8801,13 +8763,14 @@ components:
           format: int64
     ClockConfig:
       type: object
-      required:
-        - clock_resolution_usecs
       properties:
-        clock_resolution_usecs:
-          type: integer
-          format: int64
-          minimum: 0
+        clock_resolution:
+          type: string
+          description: |-
+            How often the clock ticks, for example `1s`. Unset selects the
+            default, `DEFAULT_CLOCK_RESOLUTION`.
+          default: 1s
+          nullable: true
         http_driven:
           type: boolean
           description: |-
@@ -9354,23 +9317,27 @@ components:
       properties:
         auth:
           $ref: '#/components/schemas/Auth'
-        connection_timeout_secs:
-          type: integer
-          format: int64
-          description: |-
-            Connection timeout
+        connection_timeout:
+          type: string
+          description: >-
+            Connection timeout, for example `10s`.
+
 
             How long to wait when establishing the initial connection to the
-            NATS server.
-          minimum: 0
-        request_timeout_secs:
-          type: integer
-          format: int64
-          description: |-
-            Request timeout in seconds.
 
-            How long to wait for responses to requests.
-          minimum: 0
+            NATS server. Unset selects the default,
+            `DEFAULT_CONNECTION_TIMEOUT`.
+          default: 10s
+          nullable: true
+        request_timeout:
+          type: string
+          description: |-
+            Request timeout, for example `10s`.
+
+            How long to wait for responses to requests. Unset selects
+            the default, `DEFAULT_REQUEST_TIMEOUT`.
+          default: 10s
+          nullable: true
         server_url:
           type: string
           description: NATS server URL (e.g., "nats://localhost:4222").
@@ -9803,8 +9770,13 @@ components:
           type: integer
           format: int64
           nullable: true
-        max_expires:
+        max_expiry:
           type: string
+          description: |-
+            How long a pull request may stay parked on the server before it
+            expires, for example `30s`.
+
+            Unset leaves the NATS server's own default in place.
           nullable: true
         max_waiting:
           type: integer
@@ -11226,6 +11198,78 @@ components:
           default: null
           nullable: true
           minimum: 0
+        layer_file_read_ahead_blocks:
+          type: integer
+          format: int64
+          description: >-
+            How many data blocks a layer-file cursor that declared a sequential
+
+            walk reads ahead of its position.
+
+
+            Each block a cursor steps into that the buffer cache does not hold
+            is a
+
+            device round trip the worker waits out, and a key column is a
+            strided
+
+            subset of its file that the kernel's readahead never serves. 
+            Reading
+
+            ahead this many blocks keeps that many round trips in flight.  Zero
+
+            disables it.  The default is 8.
+          default: null
+          nullable: true
+          minimum: 0
+        lazy_input_map_key_block_bytes:
+          type: integer
+          format: int64
+          description: >-
+            Minimum size of the key blocks in the batches a lazy input map's
+
+            accumulator writes for itself, in bytes.  A power of two, at least
+
+            4096.
+
+
+            The map resolves a transaction by walking the accumulated updates in
+
+            key order without reading values, one storage request per key block,
+
+            so larger blocks mean fewer requests.  Only the accumulator's own
+
+            batches (merge outputs and spills) take this size; the batches that
+
+            reach the integral keep it until its merger rewrites them at the
+
+            default size.  The default is 32768; 8192 is the file writer's
+            default.
+          default: null
+          nullable: true
+          minimum: 0
+        lazy_input_map_keys_per_step:
+          type: integer
+          format: int64
+          description: >-
+            How many keys a lazy input map resolves against its integral in one
+            step.
+
+
+            The lazy upsert operator may scan a large number of keys without
+
+            producing any output. Therefore bounding its step by the number of
+
+            outputs is not sufficient. This setting additionally bounds it by
+            its
+
+            input.
+
+
+            The default is 100,000.
+          default: null
+          nullable: true
+          minimum: 0
         max_level0_batch_size_records:
           type: integer
           format: int32
@@ -11763,17 +11807,15 @@ components:
             debugging and fine-tuning and should ordinarily be left unset.
           default: null
           nullable: true
-        ioop_delay:
-          type: integer
-          format: int64
+        ioop_latency:
+          type: string
           description: |-
-            Per-I/O operation sleep duration, in milliseconds.
+            Per-I/O operation sleep duration, for example `5ms`.
 
             This is for simulating slow storage devices.  Do not use this in
             production.
           default: null
           nullable: true
-          minimum: 0
         sync:
           allOf:
             - $ref: '#/components/schemas/SyncConfig'
@@ -11859,19 +11901,17 @@ components:
 
         specify a particular model.
       properties:
-        checkpoint_interval_secs:
-          type: integer
-          format: int64
-          description: >-
-            Interval between automatic checkpoints, in seconds.
+        checkpoint_interval:
+          type: string
+          description: |-
+            Interval between automatic checkpoints, for example `60s`.
 
-
-            The default is 60 seconds.  Values less than 1 or greater than 3600
-            will
-
-            be forced into that range.
+            Unset selects the default, `DEFAULT_CHECKPOINT_INTERVAL`; `null`
+            disables periodic checkpointing.
+            Values less than 1 second or greater than 1 hour will be forced into
+            that range.
+          default: 1m
           nullable: true
-          minimum: 0
         model:
           oneOf:
             - $ref: '#/components/schemas/FtModel'
@@ -13243,15 +13283,17 @@ components:
         - topic
         - resume_earliest_if_data_expires
       properties:
-        group_join_timeout_secs:
-          type: integer
-          format: int32
+        group_join_timeout:
+          type: string
           description: >-
-            Maximum timeout in seconds to wait for the endpoint to join the
-            Kafka
+            Maximum time to wait for the endpoint to join the Kafka consumer
+            group
 
-            consumer group during initialization.
-          minimum: 0
+            during initialization, for example `10s`. Unset selects
+
+            the default, `DEFAULT_GROUP_JOIN_TIMEOUT`.
+          default: 10s
+          nullable: true
         header_filter:
           allOf:
             - $ref: '#/components/schemas/HeaderFilter'
@@ -13554,15 +13596,16 @@ components:
           description: >-
             Kafka headers to be added to each message produced by this
             connector.
-        initialization_timeout_secs:
-          type: integer
-          format: int32
-          description: |-
-            Maximum timeout in seconds to wait for the endpoint to connect to
-            a Kafka broker.
+        initialization_timeout:
+          type: string
+          description: >-
+            Maximum time to wait for the endpoint to connect to a Kafka broker,
+            for
 
-            Defaults to 60.
-          minimum: 0
+            example `60s`. Unset selects the default,
+            `DEFAULT_INITIALIZATION_TIMEOUT`.
+          default: 1m
+          nullable: true
         kafka_service:
           type: string
           description: >-
@@ -13923,20 +13966,22 @@ components:
           $ref: '#/components/schemas/ConnectOptions'
         consumer_config:
           $ref: '#/components/schemas/ConsumerConfig'
-        inactivity_timeout_secs:
-          type: integer
-          format: int64
+        inactivity_timeout:
+          type: string
           description: |-
-            Maximum time in seconds to wait for the next message before running
-            a stream/server health check. Must be at least 1.
-          minimum: 0
-        retry_interval_secs:
-          type: integer
-          format: int64
+            Maximum time to wait for the next message before running a
+            stream/server health check, for example `60s`. Must be at least one
+            second. Unset selects the default, `DEFAULT_INACTIVITY_TIMEOUT`.
+          default: 1m
+          nullable: true
+        retry_interval:
+          type: string
           description: |-
-            Delay between automatic reconnect attempts while in retry mode.
-            Must be at least 1.
-          minimum: 0
+            Delay between automatic reconnect attempts while in retry mode, for
+            example `5s`. Must be at least one second. Unset selects
+            the default, `DEFAULT_RETRY_INTERVAL`.
+          default: 5s
+          nullable: true
         stream_name:
           type: string
     NatsMessageId:
@@ -13993,13 +14038,14 @@ components:
           minimum: 0
         message_id:
           $ref: '#/components/schemas/NatsMessageId'
-        publish_timeout_secs:
-          type: integer
-          format: int64
+        publish_timeout:
+          type: string
           description: |-
             How long to wait for the server's publish acknowledgment before
-            retrying the publish. Must be at least 1.
-          minimum: 0
+            retrying the publish, for example `5s`. Must be at least one second.
+            Unset selects the default, `DEFAULT_PUBLISH_TIMEOUT`.
+          default: 5s
+          nullable: true
         subject:
           type: string
           description: |-
@@ -14418,10 +14464,9 @@ components:
             satisfied:
 
 
-            * data has been accumulated in the buffer for more than
-            `max_output_buffer_time_millis`
+            * data has been accumulated in the buffer for longer than
 
-            milliseconds.
+            `max_output_buffer_time`.
 
             * buffer size exceeds `max_output_buffer_size_records` records.
 
@@ -14452,27 +14497,25 @@ components:
             to be set.
           default: 10000000
           minimum: 0
-        max_output_buffer_time_millis:
-          type: integer
+        max_output_buffer_time:
+          type: string
           description: >-
-            Maximum time in milliseconds data is kept in the output buffer.
+            Maximum time data is kept in the output buffer, for example `500ms`.
 
 
             By default, data is kept in the buffer indefinitely until one of
 
             the other output conditions is satisfied.  When this option is
 
-            set the buffer will be flushed at most every
-
-            `max_output_buffer_time_millis` milliseconds.
+            set the buffer will be flushed at least that often.
 
 
             NOTE: this configuration option requires the `enable_output_buffer`
             flag
 
             to be set.
-          default: 18446744073709552000
-          minimum: 0
+          default: null
+          nullable: true
     OutputEndpointConfig:
       allOf:
         - $ref: '#/components/schemas/ConnectorConfig'
@@ -14777,11 +14820,10 @@ components:
                 Deprecated: setting this true or false does not have an effect
                 anymore.
               default: true
-            clock_resolution_usecs:
-              type: integer
-              format: int64
+            clock_resolution:
+              type: string
               description: >-
-                Real-time clock resolution in microseconds.
+                Real-time clock resolution, for example `1s`.
 
 
                 This parameter controls the execution of queries that use the
@@ -14793,17 +14835,16 @@ components:
                 inputs.  If the query uses `NOW()`, the pipeline will update the
                 clock value and trigger incremental
 
-                recomputation at most each `clock_resolution_usecs`
-                microseconds.  If the query does not use
+                recomputation at most once per `clock_resolution`.  If the query
+                does not use
 
                 `NOW()`, then clock value updates are suppressed and the
                 pipeline ignores this setting.
 
 
-                It is set to 1 second (1,000,000 microseconds) by default.
-              default: 1000000
+                Unset or `null` selects the default, `DEFAULT_CLOCK_RESOLUTION`.
+              default: 1s
               nullable: true
-              minimum: 0
             clock_timezone_offset:
               type: string
               description: >-
@@ -14912,7 +14953,6 @@ components:
                 - $ref: '#/components/schemas/FtConfig'
               default:
                 model: none
-                checkpoint_interval_secs: 60
             hosts:
               type: integer
               description: >-
@@ -14989,16 +15029,15 @@ components:
                 https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html#directives
               default: null
               nullable: true
-            max_buffering_delay_usecs:
-              type: integer
-              format: int64
+            max_buffering_delay:
+              type: string
               description: >-
-                Maximal delay in microseconds to wait for
-                `min_batch_size_records` to
+                Maximal delay to wait for `min_batch_size_records` to get
+                buffered by
 
-                get buffered by the controller, defaults to 0.
-              default: 0
-              minimum: 0
+                the controller, for example `10ms`. Defaults to no delay.
+              default: null
+              nullable: true
             max_parallel_connector_init:
               type: integer
               format: int64
@@ -15091,10 +15130,9 @@ components:
 
                 least `min_batch_size_records` records have been received (total
 
-                across all endpoints) or `max_buffering_delay_usecs`
-                microseconds
+                across all endpoints) or `max_buffering_delay` has passed
 
-                have passed since at least one input records has been buffered.
+                since the first input record was buffered.
 
                 Defaults to 0.
               default: 0
@@ -15130,15 +15168,15 @@ components:
                 - $ref: '#/components/schemas/PipelineTemplateConfig'
               default: null
               nullable: true
-            provisioning_timeout_secs:
-              type: integer
-              format: int64
-              description: |-
-                Timeout in seconds for the `Provisioning` phase of the pipeline.
+            provisioning_timeout:
+              type: string
+              description: >-
+                Timeout for the `Provisioning` phase of the pipeline, for
+                example `5m`.
+
                 Setting this value will override the default of the runner.
               default: null
               nullable: true
-              minimum: 0
             resources:
               allOf:
                 - $ref: '#/components/schemas/ResourceConfig'
@@ -16682,12 +16720,10 @@ components:
       required:
         - subscription
       properties:
-        connect_timeout_seconds:
-          type: integer
-          format: int32
-          description: gRPC connection timeout.
+        connect_timeout:
+          type: string
+          description: gRPC connection timeout, for example `10s`.
           nullable: true
-          minimum: 0
         credentials:
           type: string
           description: >-
@@ -16761,12 +16797,10 @@ components:
         subscription:
           type: string
           description: Subscription name.
-        timeout_seconds:
-          type: integer
-          format: int32
-          description: gRPC request timeout.
+        timeout:
+          type: string
+          description: gRPC request timeout, for example `30s`.
           nullable: true
-          minimum: 0
         timestamp:
           type: string
           description: >-
@@ -17372,11 +17406,10 @@ components:
             Deprecated: setting this true or false does not have an effect
             anymore.
           default: true
-        clock_resolution_usecs:
-          type: integer
-          format: int64
+        clock_resolution:
+          type: string
           description: >-
-            Real-time clock resolution in microseconds.
+            Real-time clock resolution, for example `1s`.
 
 
             This parameter controls the execution of queries that use the
@@ -17388,17 +17421,16 @@ components:
             inputs.  If the query uses `NOW()`, the pipeline will update the
             clock value and trigger incremental
 
-            recomputation at most each `clock_resolution_usecs` microseconds. 
-            If the query does not use
+            recomputation at most once per `clock_resolution`.  If the query
+            does not use
 
             `NOW()`, then clock value updates are suppressed and the pipeline
             ignores this setting.
 
 
-            It is set to 1 second (1,000,000 microseconds) by default.
-          default: 1000000
+            Unset or `null` selects the default, `DEFAULT_CLOCK_RESOLUTION`.
+          default: 1s
           nullable: true
-          minimum: 0
         clock_timezone_offset:
           type: string
           description: >-
@@ -17501,7 +17533,6 @@ components:
             - $ref: '#/components/schemas/FtConfig'
           default:
             model: none
-            checkpoint_interval_secs: 60
         hosts:
           type: integer
           description: >-
@@ -17572,16 +17603,15 @@ components:
             https://docs.rs/tracing-subscriber/latest/tracing_subscriber/filter/struct.EnvFilter.html#directives
           default: null
           nullable: true
-        max_buffering_delay_usecs:
-          type: integer
-          format: int64
+        max_buffering_delay:
+          type: string
           description: >-
-            Maximal delay in microseconds to wait for `min_batch_size_records`
-            to
+            Maximal delay to wait for `min_batch_size_records` to get buffered
+            by
 
-            get buffered by the controller, defaults to 0.
-          default: 0
-          minimum: 0
+            the controller, for example `10ms`. Defaults to no delay.
+          default: null
+          nullable: true
         max_parallel_connector_init:
           type: integer
           format: int64
@@ -17669,8 +17699,8 @@ components:
 
             The controller delays pushing input records to the circuit until at
             least `min_batch_size_records` records have been received (total
-            across all endpoints) or `max_buffering_delay_usecs` microseconds
-            have passed since at least one input records has been buffered.
+            across all endpoints) or `max_buffering_delay` has passed
+            since the first input record was buffered.
             Defaults to 0.
           default: 0
           minimum: 0
@@ -17703,15 +17733,15 @@ components:
             - $ref: '#/components/schemas/PipelineTemplateConfig'
           default: null
           nullable: true
-        provisioning_timeout_secs:
-          type: integer
-          format: int64
-          description: |-
-            Timeout in seconds for the `Provisioning` phase of the pipeline.
+        provisioning_timeout:
+          type: string
+          description: >-
+            Timeout for the `Provisioning` phase of the pipeline, for example
+            `5m`.
+
             Setting this value will override the default of the runner.
           default: null
           nullable: true
-          minimum: 0
         resources:
           allOf:
             - $ref: '#/components/schemas/ResourceConfig'
@@ -18774,6 +18804,15 @@ components:
             Default: 20
           nullable: true
           minimum: 0
+        checkpoint_push_interval:
+          type: string
+          description: |-
+            The interval between each push of checkpoints to object store, for
+            example `1h`.
+
+            The default is no periodic push; `null` disables periodic pushes
+            explicitly.
+          nullable: true
         endpoint:
           type: string
           description: >-
@@ -18835,6 +18874,18 @@ components:
 
             Defualt: false
           nullable: true
+        min_retention:
+          type: string
+          description: >-
+            The minimum age a checkpoint must reach before it becomes eligible
+            for
+
+            deletion, for example `30d`. All younger checkpoints will be
+            preserved.
+
+            Unset selects the default, `DEFAULT_RETENTION_MIN_AGE`.
+          default: 30d
+          nullable: true
         multi_thread_cutoff:
           type: string
           description: |-
@@ -18890,29 +18941,6 @@ components:
             See [rclone S3 provider
             documentation](https://rclone.org/s3/#s3-provider)
           nullable: true
-        pull_interval:
-          type: integer
-          format: int64
-          description: |-
-            The interval (in seconds) between each attempt to fetch the latest
-            checkpoint from object store while in standby mode.
-
-            Applies only when `start_from_checkpoint` is set to `latest`.
-
-            Default: 10 seconds
-          default: 10
-          minimum: 0
-        push_interval:
-          type: integer
-          format: int64
-          description: >-
-            The interval (in seconds) between each push of checkpoints to object
-            store.
-
-
-            Default: disabled (no periodic push).
-          nullable: true
-          minimum: 0
         read_bucket:
           type: string
           description: >-
@@ -18945,16 +18973,6 @@ components:
 
             Leave empty for Minio or the default region (`us-east-1` for AWS).
           nullable: true
-        retention_min_age:
-          type: integer
-          format: int32
-          description: |-
-            The minimum age (in days) a checkpoint must reach before it becomes
-            eligible for deletion. All younger checkpoints will be preserved.
-
-            Default: 30
-          default: 30
-          minimum: 0
         retention_min_count:
           type: integer
           format: int32
@@ -18990,6 +19008,20 @@ components:
             instead.
           default: false
           deprecated: true
+        standby_pull_interval:
+          type: string
+          description: >-
+            The interval between each attempt to fetch the latest checkpoint
+            from
+
+            object store while in standby mode, for example `10s`.
+
+
+            Applies only when `start_from_checkpoint` is set to `latest`. Unset
+
+            selects the default, `DEFAULT_PULL_INTERVAL`.
+          default: 10s
+          nullable: true
         start_from_checkpoint:
           allOf:
             - $ref: '#/components/schemas/StartFromCheckpoint'
@@ -19564,18 +19596,20 @@ components:
         path:
           type: string
           description: URL.
-        pause_timeout:
-          type: integer
-          format: int32
+        pause_linger:
+          type: string
           description: |-
-            Timeout before disconnection when paused, in seconds.
+            Timeout before disconnection when paused, for example `60s`.
 
             If the pipeline is paused, or if the input adapter reads data faster
             than the pipeline can process it, then the controller will pause the
             input adapter. If the input adapter stays paused longer than this
             timeout, it will drop the network connection to the server. It will
             automatically reconnect when the input adapter starts running again.
-          minimum: 0
+
+            Unset selects the default, `DEFAULT_PAUSE_TIMEOUT`.
+          default: 1m
+          nullable: true
     UserAndPassword:
       type: object
       required:
