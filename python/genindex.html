@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; Feldera Python SDK 0.366.0 documentation</title>
+  <title>Index &mdash; Feldera Python SDK 0.367.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78b15e63"></script>
+        <script src="_static/documentation_options.js?v=0964143a"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -343,6 +343,10 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.datafusion_memory">datafusion_memory (feldera.runtime_config.RuntimeConfig property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.datafusion_memory_mb">datafusion_memory_mb (feldera.runtime_config.RuntimeConfig property)</a>
+</li>
       <li><a href="feldera.rest.html#feldera.rest.retry.RetryConfig.deadline_seconds">deadline_seconds (feldera.rest.retry.RetryConfig attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.default">default() (feldera.runtime_config.RuntimeConfig static method)</a>
@@ -367,10 +371,10 @@
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_resources_status">deployment_resources_status() (feldera.pipeline.Pipeline method)</a>
 </li>
-      <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status">deployment_runtime_desired_status() (feldera.pipeline.Pipeline method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_desired_status">deployment_runtime_desired_status() (feldera.pipeline.Pipeline method)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status">deployment_runtime_status() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.deployment_runtime_status_details">deployment_runtime_status_details() (feldera.pipeline.Pipeline method)</a>
@@ -795,7 +799,23 @@
 </li>
       <li><a href="feldera.rest.html#feldera.rest.retry.RetryConfig.max_retries">max_retries (feldera.rest.retry.RetryConfig attribute)</a>
 </li>
+      <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.max_rss">max_rss (feldera.runtime_config.RuntimeConfig property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.RuntimeConfig.max_rss_mb">max_rss_mb (feldera.runtime_config.RuntimeConfig property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.memory_max">memory_max (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.memory_mb_max">memory_mb_max (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.memory_mb_min">memory_mb_min (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.memory_min">memory_min (feldera.runtime_config.Resources property)</a>
+</li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.metrics">metrics() (feldera.pipeline.Pipeline method)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Storage.min_spill_size">min_spill_size (feldera.runtime_config.Storage property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Storage.min_storage_bytes">min_storage_bytes (feldera.runtime_config.Storage property)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.modify">modify() (feldera.pipeline.Pipeline method)</a>
 </li>
@@ -1150,12 +1170,12 @@
       </ul></li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.stats">stats() (feldera.pipeline.Pipeline method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.enums.PipelineFieldSelector.STATUS">STATUS (feldera.enums.PipelineFieldSelector attribute)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.status">status() (feldera.pipeline.Pipeline method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.stop">stop() (feldera.pipeline.Pipeline method)</a>
 </li>
       <li><a href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline">stop_pipeline() (feldera.rest.feldera_client.FelderaClient method)</a>
@@ -1177,6 +1197,14 @@
 </li>
       </ul></li>
       <li><a href="feldera.html#feldera.runtime_config.Storage">Storage (class in feldera.runtime_config)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.storage_max">storage_max (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.storage_mb_max">storage_mb_max (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.storage_mb_min">storage_mb_min (feldera.runtime_config.Resources property)</a>
+</li>
+      <li><a href="feldera.html#feldera.runtime_config.Resources.storage_min">storage_min (feldera.runtime_config.Resources property)</a>
 </li>
       <li><a href="feldera.html#feldera.pipeline.Pipeline.storage_status">storage_status() (feldera.pipeline.Pipeline method)</a>
 </li>

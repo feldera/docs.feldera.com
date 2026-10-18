@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
-<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.00c68fb5.js" defer="defer"></script>
+<script src="/assets/js/main.559b78e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -22,22 +22,29 @@
 To achieve high performance, pipelines use available physical memory to cache recently or
 frequently accessed state and to accelerate index lookups.</p>
 <p>For optimal performance, the system aims to fully utilize available memory without exceeding
-it. This behavior is controlled by the <code>max_rss_mb</code> setting in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.
+it. This behavior is controlled by the <code>max_rss</code> setting in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.
 When configured, the pipeline dynamically applies <em>backpressure</em> to the storage layer, flushing
 in-memory state to disk more aggressively as memory usage approaches the limit.</p>
-<p>If <code>max_rss_mb</code> is not set but <code>memory_mb_max</code> is configured in the <code>resources</code> section of
+<p>If <code>max_rss</code> is not set but <code>memory_max</code> is configured in the <code>resources</code> section of
 <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>, the latter is used as the effective memory cap. We <strong>strongly recommend</strong>
 setting at least one of these parameters to prevent out-of-memory failures.</p>
 <p>On single-host deployments (for example, in Docker), if neither
-parameter is set, <code>resources.memory_mb_max</code> is set to the smaller
+parameter is set, <code>resources.memory_max</code> is set to the smaller
 value of host memory size, and container memory limit.  In a
 multi-host deployment each pipeline process that finds neither
-parameter set derives <code>max_rss_mb</code> from its own host&#x27;s available
+parameter set derives <code>max_rss</code> from its own host&#x27;s available
 memory at startup.</p>
-<p>When either <code>max_rss_mb</code> or <code>resources.memory_mb_max</code> is configured, the pipeline reports its current
-memory pressure level (<code>low</code>, <code>moderate</code>, <code>high</code>, or <code>critical</code>) via the
-<a class="" href="/operations/metrics/"><code>memory_pressure</code> metric</a>. High or critical pressure indicates that memory usage
-is nearing the configured limit and may result in significant performance degradation. In such cases,
+<p>In every case, the pipeline caps its memory limit at the memory
+available to it, which is the host&#x27;s memory or the container&#x27;s memory
+limit, whichever is smaller.  The pipeline rechecks this every second,
+so if the container&#x27;s memory limit changes while the pipeline runs,
+the pipeline adjusts its limit to match.</p>
+<p>The pipeline reports its current memory pressure level (<code>low</code>,
+<code>moderate</code>, <code>high</code>, or <code>critical</code>) via the
+<a class="" href="/operations/metrics/"><code>memory_pressure</code> metric</a>, and its memory limit
+via the <a class="" href="/operations/metrics/"><code>max_rss_bytes</code> metric</a>. High or critical
+pressure indicates that memory usage is nearing the limit and may
+result in significant performance degradation. In such cases,
 increasing available memory is recommended.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pipeline-memory-breakdown">Pipeline memory breakdown<a href="#pipeline-memory-breakdown" class="hash-link" aria-label="Direct link to Pipeline memory breakdown" title="Direct link to Pipeline memory breakdown" translate="no">​</a></h2>
 <p>This section breaks down pipelines&#x27; memory usage in more detail.</p>
@@ -46,7 +53,7 @@ increasing available memory is recommended.</p>
 <p><strong>Input</strong> records ingested by connectors, but not yet processed by
 the circuit.</p>
 <p>The maximum queue length is controlled by the per-connector
-<a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a> and <a class="" href="/connectors/#max_queued_bytes"><code>max_queued_bytes</code></a> properties.  These
+<a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a> and <a class="" href="/connectors/#max_queued_bytes"><code>max_queued_size</code></a> properties.  These
 should be large enough to hide the latency of communication, but
 small enough to avoid wasting memory.  The defaults of 1,000,000
 records and 1,000,000,000 bytes limit the memory used by a connector
@@ -71,7 +78,7 @@ connectors.  Output records can be in memory or on storage.</p>
 number of records buffered.  This should be large enough to avoid
 stalling the pipeline.  The value applies to output records whether
 in memory or on storage.  The default is 1,000,000.</p>
-<p><a class="" href="/connectors/#max_queued_bytes"><code>max_queued_bytes</code></a> is not yet implemented for output connectors.</p>
+<p><a class="" href="/connectors/#max_queued_bytes"><code>max_queued_size</code></a> is not yet implemented for output connectors.</p>
 <p>The number of batches of buffered output records is exposed as
 <a class="" href="/operations/metrics/#output_buffered_batches"><code>output_buffered_batches</code></a>, but since each batch contains a
 variable number of records, this does not directly relate to memory
@@ -84,7 +91,7 @@ index batch to storage, it can later be cached in memory.  A
 pipeline&#x27;s memory usage is mostly independent of the size of its
 state, so that a pipeline can have a 1 TB storage footprint, but
 only use a few GB or RAM.</p>
-<p>The maximum size of the cache can be configured with <code>cache_mib</code>
+<p>The maximum size of the cache can be configured with <code>cache_size</code>
 under <code>storage</code> in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.  The
 default is 512 MiB per worker, or 4 GiB for the default 8-worker
 configuration.  The default is usually a good choice unless a large
@@ -128,11 +135,11 @@ are first accumulated in in-memory batches, which are then merged into larger
 batches in the background.</p>
 <p>When storage is enabled (the default), batches exceeding a configured size are written
 to persistent storage. The minimum batch size for spilling to disk is controlled by the
-<code>min_storage_bytes</code> parameter under <code>storage</code> in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.
+<code>min_spill_size</code> parameter under <code>storage</code> in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.
 The default value is 10 MiB, which is typically a good balance. Lowering this value can
 reduce memory usage, but may negatively impact performance.</p>
 <p>In addition, users can bound the pipeline’s memory usage via the
-<code>max_rss_mb</code> option described above. As memory consumption approaches this
+<code>max_rss</code> option described above. As memory consumption approaches this
 limit, the pipeline increasingly flushes index batches to storage to stay within the
 configured bound.</p>
 <p>Note that this backpressure mechanism only applies to memory used by state
@@ -155,14 +162,14 @@ output connector, or simply be discarded.</p>
 internally breaks large batches into smaller batches, they do not
 usually become a memory problem.  If they do, one may reduce
 <a class="" href="/connectors/#max_batch_size"><code>max_batch_size</code></a> for input connectors, limiting the size of input
-batches.  Another approach is to set <code>min_step_storage_bytes</code> in
+batches.  Another approach is to set <code>min_step_spill_size</code> in
 <code>storage</code> in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>, to force
 in-flight batches to storage, although this is likely to reduce
 performance.</p>
 </li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="summary-of-pipelines-memory-usage">Summary of pipeline&#x27;s memory usage<a href="#summary-of-pipelines-memory-usage" class="hash-link" aria-label="Direct link to Summary of pipeline&#x27;s memory usage" title="Direct link to Summary of pipeline&#x27;s memory usage" translate="no">​</a></h2>
-<div class="table-scroll-container"><table><thead><tr><th>Component</th><th>Description</th><th>Metrics</th><th>Control knobs</th></tr></thead><tbody><tr><td>Input buffering</td><td>Records ingested by input connectors but not yet processed by the circuit.</td><td><a class="" href="/operations/metrics/#records_input_buffered"><code>records_input_buffered</code></a>, <a class="" href="/operations/metrics/#records_input_buffered_bytes"><code>records_input_buffered_bytes</code></a>, <a class="" href="/operations/metrics/#input_connector_buffered_records"><code>input_connector_buffered_records</code></a>, <a class="" href="/operations/metrics/#input_connector_buffered_records_bytes"><code>input_connector_buffered_records_bytes</code></a>, <a class="" href="/operations/metrics/#input_connector_extra_memory_bytes"><code>input_connector_extra_memory_bytes</code></a></td><td>Connector <a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a>, <a class="" href="/connectors/#max_queued_bytes"><code>max_queued_bytes</code></a></td></tr><tr><td>Output buffering</td><td>Records produced by the circuit but not yet consumed by output connectors; can be buffered in memory or storage.</td><td><a class="" href="/operations/metrics/#output_buffered_batches"><code>output_buffered_batches</code></a>, <a class="" href="/operations/metrics/#output_connector_buffered_records"><code>output_connector_buffered_records</code></a></td><td>Connector <a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a></td></tr><tr><td>Index batches in memory</td><td>Index batches kept in memory before background merges and eventual flush to storage.</td><td></td><td>Runtime config <code>storage.min_storage_bytes</code>, <a href="#max_rss" class=""><code>max_rss_mb</code></a></td></tr><tr><td>Storage cache</td><td>In-memory cache of index batches stored on disk; decouples working memory from total state size.</td><td><a class="" href="/operations/metrics/#storage_cache_usage_bytes"><code>storage_cache_usage_bytes</code></a>, <a class="" href="/operations/metrics/#storage_cache_usage_limit_bytes_total"><code>storage_cache_usage_limit_bytes_total</code></a></td><td>Runtime config <code>storage.cache_mib</code></td></tr><tr><td>Bloom filters</td><td>In-memory bloom filters for batches on storage; can become significant at large state sizes.</td><td>Visible in circuit profiles.</td><td>Runtime config <code>storage.bloom_false_positive_rate</code></td></tr><tr><td>In-flight batches</td><td>Transient batches moving between operators during execution; usually short-lived but workload-dependent.</td><td></td><td>Connector <a class="" href="/connectors/#max_batch_size"><code>max_batch_size</code></a>, runtime config <code>storage.min_step_storage_bytes</code></td></tr></tbody></table></div>
+<div class="table-scroll-container"><table><thead><tr><th>Component</th><th>Description</th><th>Metrics</th><th>Control knobs</th></tr></thead><tbody><tr><td>Input buffering</td><td>Records ingested by input connectors but not yet processed by the circuit.</td><td><a class="" href="/operations/metrics/#records_input_buffered"><code>records_input_buffered</code></a>, <a class="" href="/operations/metrics/#records_input_buffered_bytes"><code>records_input_buffered_bytes</code></a>, <a class="" href="/operations/metrics/#input_connector_buffered_records"><code>input_connector_buffered_records</code></a>, <a class="" href="/operations/metrics/#input_connector_buffered_records_bytes"><code>input_connector_buffered_records_bytes</code></a>, <a class="" href="/operations/metrics/#input_connector_extra_memory_bytes"><code>input_connector_extra_memory_bytes</code></a></td><td>Connector <a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a>, <a class="" href="/connectors/#max_queued_bytes"><code>max_queued_size</code></a></td></tr><tr><td>Output buffering</td><td>Records produced by the circuit but not yet consumed by output connectors; can be buffered in memory or storage.</td><td><a class="" href="/operations/metrics/#output_buffered_batches"><code>output_buffered_batches</code></a>, <a class="" href="/operations/metrics/#output_connector_buffered_records"><code>output_connector_buffered_records</code></a></td><td>Connector <a class="" href="/connectors/#max_queued_records"><code>max_queued_records</code></a></td></tr><tr><td>Index batches in memory</td><td>Index batches kept in memory before background merges and eventual flush to storage.</td><td></td><td>Runtime config <code>storage.min_spill_size</code>, <a href="#max_rss" class=""><code>max_rss</code></a></td></tr><tr><td>Storage cache</td><td>In-memory cache of index batches stored on disk; decouples working memory from total state size.</td><td><a class="" href="/operations/metrics/#storage_cache_usage_bytes"><code>storage_cache_usage_bytes</code></a>, <a class="" href="/operations/metrics/#storage_cache_usage_limit_bytes_total"><code>storage_cache_usage_limit_bytes_total</code></a></td><td>Runtime config <code>storage.cache_size</code></td></tr><tr><td>Bloom filters</td><td>In-memory bloom filters for batches on storage; can become significant at large state sizes.</td><td>Visible in circuit profiles.</td><td>Runtime config <code>storage.bloom_false_positive_rate</code></td></tr><tr><td>In-flight batches</td><td>Transient batches moving between operators during execution; usually short-lived but workload-dependent.</td><td></td><td>Connector <a class="" href="/connectors/#max_batch_size"><code>max_batch_size</code></a>, runtime config <code>storage.min_step_spill_size</code></td></tr></tbody></table></div>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="advanced-usage">Advanced Usage<a href="#advanced-usage" class="hash-link" aria-label="Direct link to Advanced Usage" title="Direct link to Advanced Usage" translate="no">​</a></h2>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="jemalloc-configuration">jemalloc Configuration<a href="#jemalloc-configuration" class="hash-link" aria-label="Direct link to jemalloc Configuration" title="Direct link to jemalloc Configuration" translate="no">​</a></h3>
 <p>You can fine-tune jemalloc with the <code>MALLOC_CONF</code> environment variable.

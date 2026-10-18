@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.runtime_config &mdash; Feldera Python SDK 0.366.0 documentation</title>
+  <title>feldera.runtime_config &mdash; Feldera Python SDK 0.367.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=78b15e63"></script>
+        <script src="../../_static/documentation_options.js?v=0964143a"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -84,22 +84,215 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">FaultToleranceModel</span>
 
 
+<span class="n">_BYTES_PER_UNIT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">1_000</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="mi">1_000</span><span class="p">,</span>
+    <span class="s2">&quot;M&quot;</span><span class="p">:</span> <span class="mi">1_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;G&quot;</span><span class="p">:</span> <span class="mi">1_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;T&quot;</span><span class="p">:</span> <span class="mi">1_000_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="mi">1_000_000_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="mi">1_000_000_000_000_000_000</span><span class="p">,</span>
+    <span class="s2">&quot;Ki&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">&quot;Mi&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s2">&quot;Gi&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s2">&quot;Ti&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">40</span><span class="p">,</span>
+    <span class="s2">&quot;Pi&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s2">&quot;Ei&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">60</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_SIZE_TERM</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([0-9]*)(?:\.([0-9]*))?(.*)$&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+<span class="n">_MAX_SIZE_BYTES</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">64</span> <span class="o">-</span> <span class="mi">1</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_size_bytes</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses a size string such as ``&quot;16G&quot;``, ``&quot;4Gi&quot;`` or ``&quot;4096&quot;`` into bytes.</span>
+
+<span class="sd">    Implements the grammar the pipeline accepts: a number and a unit, decimal</span>
+<span class="sd">    (``k``, ``M``, ``G``, ``T``, ``P``, ``E``) or binary (``Ki`` through</span>
+<span class="sd">    ``Ei``), with an optional trailing ``B``; a bare number is a number of</span>
+<span class="sd">    bytes; one optional leading ``+``. A fraction scales exactly and rounds to</span>
+<span class="sd">    the nearest byte, as the pipeline does.</span>
+
+<span class="sd">    :raises ValueError: if ``text`` is not a size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;size &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; cannot be negative&quot;</span><span class="p">)</span>
+    <span class="n">rest</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">text</span>
+    <span class="k">if</span> <span class="n">rest</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;size is empty&quot;</span><span class="p">)</span>
+    <span class="n">whole</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">_SIZE_TERM</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+    <span class="n">unit_bytes</span> <span class="o">=</span> <span class="n">_BYTES_PER_UNIT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">unit</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">unit</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">unit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">unit_bytes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;unknown unit &#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39; in size &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39;; expected one of &quot;</span>
+            <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">_BYTES_PER_UNIT</span> <span class="k">if</span> <span class="n">u</span> <span class="ow">and</span> <span class="n">u</span> <span class="o">!=</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot;, each with or without a trailing &#39;B&#39;&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">whole</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fraction</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;size &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; has no digits&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39; in size &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; has no number in front of it&quot;</span><span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">whole</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit_bytes</span>
+    <span class="k">if</span> <span class="n">fraction</span><span class="p">:</span>
+        <span class="n">fraction</span> <span class="o">=</span> <span class="n">fraction</span><span class="p">[:</span><span class="n">_MAX_FRACTION_DIGITS</span><span class="p">]</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">fraction</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">unit_bytes</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">fraction</span><span class="p">)</span> <span class="o">+</span> <span class="n">denominator</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">//</span> <span class="n">denominator</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="n">_MAX_SIZE_BYTES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;size &#39;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&#39; is too large&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_size_setting</span><span class="p">(</span>
+    <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">new_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">old_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">stacklevel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolves a size setting given through either its current name or the</span>
+<span class="sd">    deprecated integer argument, as the key to send and its value.</span>
+
+<span class="sd">    Works as :func:`_duration_setting` does: the setting is sent under the</span>
+<span class="sd">    spelling the caller used, so code written against the older argument keeps</span>
+<span class="sd">    working against a server from before the current names, and either use of</span>
+<span class="sd">    the deprecated argument warns.</span>
+
+<span class="sd">    A string with no unit is refused for a setting whose deprecated argument</span>
+<span class="sd">    counted megabytes, as the server refuses it: ``&quot;16000&quot;`` would be sixteen</span>
+<span class="sd">    kilobytes where ``16000`` meant sixteen gigabytes.</span>
+
+<span class="sd">    :raises ValueError: if ``new_value`` is a bare number and ``unit`` is not</span>
+<span class="sd">        bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">unit</span><span class="p">:</span>
+        <span class="n">digits</span> <span class="o">=</span> <span class="n">new_value</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">new_value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">new_value</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9]+\.?[0-9]*|\.[0-9]+&quot;</span><span class="p">,</span> <span class="n">digits</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">=&#39;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}</span><span class="s2">&#39; has no unit; write a size such as &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
+    <span class="k">if</span> <span class="n">old_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span>
+    <span class="n">equivalent</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_value</span><span class="si">}{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">new_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; use </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">=&#39;</span><span class="si">{</span><span class="n">equivalent</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="n">stacklevel</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated and was ignored because &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">=&#39;</span><span class="si">{</span><span class="n">new_value</span><span class="si">}</span><span class="s2">&#39; is also set; drop &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">old_value</span><span class="si">}</span><span class="s2"> (it would mean &#39;</span><span class="si">{</span><span class="n">equivalent</span><span class="si">}</span><span class="s2">&#39;)&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="n">stacklevel</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_size_attribute</span><span class="p">(</span><span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">property</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A size attribute that reads whichever spelling the configuration holds</span>
+<span class="sd">    and, when assigned, replaces both.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+        <span class="c1"># A bare number under either name counts the old unit, as the</span>
+        <span class="c1"># server reads it.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">get</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;``</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s1">``, a size such as ``&quot;4Gi&quot;``.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_legacy_size_attribute</span><span class="p">(</span><span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">property</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A deprecated integer attribute of a size setting.</span>
+
+<span class="sd">    Reading it converts a size stored under the current name to a whole number</span>
+<span class="sd">    of the old unit, rounded up as the manager rounds for an older runtime, so</span>
+<span class="sd">    that a small size written back under the old name never becomes zero;</span>
+<span class="sd">    assigning it stores the number under the old key, which every server</span>
+<span class="sd">    reads, in place of the current one.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; read &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">legacy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">old_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">legacy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">legacy</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">size</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">_parse_size_bytes</span><span class="p">(</span><span class="n">size</span><span class="p">)</span> <span class="o">//</span> <span class="n">_BYTES_PER_UNIT</span><span class="p">[</span><span class="n">unit</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2">&#39; is deprecated; set &#39;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Deprecated: ``</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2">`` as a whole number of the old unit.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_config</span><span class="p">(</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">spellings</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies ``config`` over the arguments already stored in ``target``.</span>
+
+<span class="sd">    ``config`` wins, as it always has, but for the whole setting rather than</span>
+<span class="sd">    for one key: an argument under either name of a setting in ``spellings``</span>
+<span class="sd">    is dropped when ``config`` writes that setting under either name. The</span>
+<span class="sd">    object would otherwise carry both spellings, which the server rejects as</span>
+<span class="sd">    the setting written twice.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">spellings</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">new_name</span> <span class="ow">in</span> <span class="n">config</span> <span class="ow">or</span> <span class="n">old_name</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">old_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="Resources">
 <a class="viewcode-back" href="../../feldera.html#feldera.runtime_config.Resources">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Resources</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class used to specify the resource configuration for a pipeline.</span>
 
+<span class="sd">    Memory and storage sizes are strings made of a number and a unit, such as</span>
+<span class="sd">    ``&quot;4Gi&quot;``, ``&quot;16G&quot;`` or ``&quot;400Gi&quot;``. The deprecated integer arguments count</span>
+<span class="sd">    megabytes and emit a :class:`DeprecationWarning`.</span>
+
 <span class="sd">    :param config: A dictionary containing all the configuration values.</span>
 <span class="sd">    :param cpu_cores_max: The maximum number of CPU cores to reserve for an instance of the pipeline.</span>
 <span class="sd">    :param cpu_cores_min: The minimum number of CPU cores to reserve for an instance of the pipeline.</span>
-<span class="sd">    :param memory_mb_max: The maximum memory in Megabytes to reserve for an instance of the pipeline.</span>
-<span class="sd">    :param memory_mb_min: The minimum memory in Megabytes to reserve for an instance of the pipeline.</span>
+<span class="sd">    :param memory_max: The maximum memory to reserve for an instance of the pipeline, such as ``&quot;16Gi&quot;``.</span>
+<span class="sd">    :param memory_min: The minimum memory to reserve for an instance of the pipeline, such as ``&quot;4Gi&quot;``.</span>
 <span class="sd">    :param storage_class: The storage class to use for the pipeline. The class determines storage performance such</span>
 <span class="sd">        as IOPS and throughput.</span>
 <span class="sd">    :param volume_attributes_class: The Kubernetes volume attributes class to use for the pipeline storage. The class</span>
 <span class="sd">        sets mutable storage parameters such as IOPS and throughput.</span>
-<span class="sd">    :param storage_mb_max: The  storage in Megabytes to reserve for an instance of the pipeline.</span>
+<span class="sd">    :param storage_max: The storage to reserve for an instance of the pipeline, such as ``&quot;400Gi&quot;``.</span>
+<span class="sd">    :param storage_min: The initial storage of an instance of the pipeline; set with ``storage_max`` to</span>
+<span class="sd">        enable storage autoscaling.</span>
+<span class="sd">    :param memory_mb_max: Deprecated; use ``memory_max``.</span>
+<span class="sd">    :param memory_mb_min: Deprecated; use ``memory_min``.</span>
+<span class="sd">    :param storage_mb_max: Deprecated; use ``storage_max``.</span>
+<span class="sd">    :param storage_mb_min: Deprecated; use ``storage_min``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Resources.__init__">
@@ -114,19 +307,61 @@
         <span class="n">storage_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">volume_attributes_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">storage_mb_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">memory_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">memory_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">storage_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">storage_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">storage_mb_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="p">{}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cpu_cores_max</span> <span class="o">=</span> <span class="n">cpu_cores_max</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpu_cores_min</span> <span class="o">=</span> <span class="n">cpu_cores_min</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">memory_mb_max</span> <span class="o">=</span> <span class="n">memory_mb_max</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">memory_mb_min</span> <span class="o">=</span> <span class="n">memory_mb_min</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span><span class="s2">&quot;memory_max&quot;</span><span class="p">,</span> <span class="n">memory_max</span><span class="p">,</span> <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">,</span> <span class="n">memory_mb_max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span><span class="s2">&quot;memory_min&quot;</span><span class="p">,</span> <span class="n">memory_min</span><span class="p">,</span> <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">,</span> <span class="n">memory_mb_min</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">storage_class</span> <span class="o">=</span> <span class="n">storage_class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume_attributes_class</span> <span class="o">=</span> <span class="n">volume_attributes_class</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">storage_mb_max</span> <span class="o">=</span> <span class="n">storage_mb_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span><span class="s2">&quot;storage_max&quot;</span><span class="p">,</span> <span class="n">storage_max</span><span class="p">,</span> <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">,</span> <span class="n">storage_mb_max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span><span class="s2">&quot;storage_min&quot;</span><span class="p">,</span> <span class="n">storage_min</span><span class="p">,</span> <span class="s2">&quot;storage_mb_min&quot;</span><span class="p">,</span> <span class="n">storage_mb_min</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
-</div>
+        <span class="n">_apply_config</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;memory_max&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;memory_min&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;storage_max&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;storage_min&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_mb_min&quot;</span><span class="p">),</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_store_size</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores a megabyte-counted size setting under `new_name` or</span>
+<span class="sd">        `old_name`, whichever the caller gave a value for, and nothing when</span>
+<span class="sd">        neither was given: a `config` read back from an older server carries</span>
+<span class="sd">        the older key, and a `None` under the current one beside it would be</span>
+<span class="sd">        rejected by the server as the setting written twice.&quot;&quot;&quot;</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_size_setting</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">4</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="n">memory_max</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;memory_max&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">memory_min</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;memory_min&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">storage_max</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;storage_max&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">storage_min</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;storage_min&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_mb_min&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">memory_mb_max</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span><span class="s2">&quot;memory_mb_max&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_max&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">memory_mb_min</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span><span class="s2">&quot;memory_mb_min&quot;</span><span class="p">,</span> <span class="s2">&quot;memory_min&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">storage_mb_max</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span><span class="s2">&quot;storage_mb_max&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_max&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">storage_mb_min</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span><span class="s2">&quot;storage_mb_min&quot;</span><span class="p">,</span> <span class="s2">&quot;storage_min&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span></div>
 
 
 
@@ -135,7 +370,9 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Storage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Storage configuration for a pipeline.</span>
 
-<span class="sd">    :param min_storage_bytes: The minimum estimated number of bytes in a batch of data to write it to storage.</span>
+<span class="sd">    :param min_spill_size: The minimum estimated size of a batch of data to write it to storage,</span>
+<span class="sd">        such as ``&quot;10Mi&quot;``.</span>
+<span class="sd">    :param min_storage_bytes: Deprecated; use ``min_spill_size``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Storage.__init__">
@@ -144,13 +381,23 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">min_storage_bytes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">min_spill_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">config</span> <span class="ow">or</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">min_storage_bytes</span> <span class="o">=</span> <span class="n">min_storage_bytes</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_size_setting</span><span class="p">(</span>
+            <span class="s2">&quot;min_spill_size&quot;</span><span class="p">,</span> <span class="n">min_spill_size</span><span class="p">,</span> <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">,</span> <span class="n">min_storage_bytes</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
-</div>
+        <span class="n">_apply_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="p">((</span><span class="s2">&quot;min_spill_size&quot;</span><span class="p">,</span> <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">),))</span></div>
+
+
+    <span class="n">min_spill_size</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;min_spill_size&quot;</span><span class="p">,</span> <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">min_storage_bytes</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">,</span> <span class="s2">&quot;min_spill_size&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">)</span></div>
 
 
 
@@ -288,7 +535,8 @@
 <span class="sd">    :meth:`.RuntimeConfig.from_dict`.</span>
 
 <span class="sd">    Duration settings take a string made of a number and a unit, such as</span>
-<span class="sd">    ``&quot;500ms&quot;``, ``&quot;30s&quot;``, ``&quot;1h30m&quot;`` or ``&quot;30d&quot;``. The deprecated integer</span>
+<span class="sd">    ``&quot;500ms&quot;``, ``&quot;30s&quot;``, ``&quot;1h30m&quot;`` or ``&quot;30d&quot;``, and size settings one</span>
+<span class="sd">    such as ``&quot;16G&quot;``, ``&quot;4Gi&quot;`` or ``&quot;4096&quot;``. The deprecated integer</span>
 <span class="sd">    arguments and attributes still work but emit a :class:`DeprecationWarning`.</span>
 
 <span class="sd">    Documentation:</span>
@@ -322,11 +570,18 @@
         <span class="n">clock_resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">provisioning_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">checkpoint_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">datafusion_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_rss</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="n">workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hosts</span> <span class="o">=</span> <span class="n">hosts</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">datafusion_memory_mb</span> <span class="o">=</span> <span class="n">datafusion_memory_mb</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_rss_mb</span> <span class="o">=</span> <span class="n">max_rss_mb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span>
+            <span class="s2">&quot;datafusion_memory&quot;</span><span class="p">,</span>
+            <span class="n">datafusion_memory</span><span class="p">,</span>
+            <span class="s2">&quot;datafusion_memory_mb&quot;</span><span class="p">,</span>
+            <span class="n">datafusion_memory_mb</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_size</span><span class="p">(</span><span class="s2">&quot;max_rss&quot;</span><span class="p">,</span> <span class="n">max_rss</span><span class="p">,</span> <span class="s2">&quot;max_rss_mb&quot;</span><span class="p">,</span> <span class="n">max_rss_mb</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing</span> <span class="o">=</span> <span class="n">tracing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracing_endpoint_jaeger</span> <span class="o">=</span> <span class="n">tracing_endpoint_jaeger</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cpu_profiler</span> <span class="o">=</span> <span class="n">cpu_profiler</span>
@@ -391,6 +646,21 @@
         <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_duration_setting</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_store_size</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">old_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stores a megabyte-counted size setting under `new_name` or</span>
+<span class="sd">        `old_name`, whichever the caller gave a value for.&quot;&quot;&quot;</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_size_setting</span><span class="p">(</span>
+            <span class="n">new_name</span><span class="p">,</span> <span class="n">new_value</span><span class="p">,</span> <span class="n">old_name</span><span class="p">,</span> <span class="n">old_value</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">4</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_legacy_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The value of a deprecated integer attribute, whichever spelling the</span>
 <span class="sd">        configuration holds. A duration stored under the current name converts</span>
@@ -433,6 +703,14 @@
     <span class="p">)</span>
     <span class="n">provisioning_timeout</span> <span class="o">=</span> <span class="n">_duration_attribute</span><span class="p">(</span>
         <span class="s2">&quot;provisioning_timeout&quot;</span><span class="p">,</span> <span class="s2">&quot;provisioning_timeout_secs&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span>
+    <span class="p">)</span>
+    <span class="n">max_rss</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span><span class="s2">&quot;max_rss&quot;</span><span class="p">,</span> <span class="s2">&quot;max_rss_mb&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">datafusion_memory</span> <span class="o">=</span> <span class="n">_size_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;datafusion_memory&quot;</span><span class="p">,</span> <span class="s2">&quot;datafusion_memory_mb&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span>
+    <span class="p">)</span>
+    <span class="n">max_rss_mb</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span><span class="s2">&quot;max_rss_mb&quot;</span><span class="p">,</span> <span class="s2">&quot;max_rss&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+    <span class="n">datafusion_memory_mb</span> <span class="o">=</span> <span class="n">_legacy_size_attribute</span><span class="p">(</span>
+        <span class="s2">&quot;datafusion_memory_mb&quot;</span><span class="p">,</span> <span class="s2">&quot;datafusion_memory&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>

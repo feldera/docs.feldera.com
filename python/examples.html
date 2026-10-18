@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examples &mdash; Feldera Python SDK 0.366.0 documentation</title>
+  <title>Examples &mdash; Feldera Python SDK 0.367.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=78b15e63"></script>
+        <script src="_static/documentation_options.js?v=0964143a"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -206,10 +206,9 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
         <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span>
         <span class="p">},</span>
-        <span class="s2">&quot;min_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;min_step_storage_bytes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;min_spill_size&quot;</span><span class="p">:</span> <span class="s2">&quot;10Mi&quot;</span><span class="p">,</span>
         <span class="s2">&quot;compression&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;cache_mib&quot;</span><span class="p">:</span> <span class="kc">None</span>
+        <span class="s2">&quot;cache_size&quot;</span><span class="p">:</span> <span class="s2">&quot;4Gi&quot;</span>
     <span class="p">},</span>
     <span class="s2">&quot;fault_tolerance&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;at_least_once&quot;</span><span class="p">,</span>
@@ -223,9 +222,9 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
     <span class="s2">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">&quot;cpu_cores_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;cpu_cores_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;memory_mb_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;memory_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;storage_mb_max&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_min&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;memory_max&quot;</span><span class="p">:</span> <span class="s2">&quot;16Gi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;storage_max&quot;</span><span class="p">:</span> <span class="s2">&quot;400Gi&quot;</span><span class="p">,</span>
         <span class="s2">&quot;storage_class&quot;</span><span class="p">:</span> <span class="kc">None</span>
     <span class="p">},</span>
     <span class="s2">&quot;clock_resolution&quot;</span><span class="p">:</span> <span class="s2">&quot;1s&quot;</span><span class="p">,</span>

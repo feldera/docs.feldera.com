@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
-<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.00c68fb5.js" defer="defer"></script>
+<script src="/assets/js/main.559b78e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,8 +21,8 @@
 <p>Pipelines come with a set of configuration settings to toggle features, tune performance, and help with operations. If you&#x27;re on the Enterprise Edition, you will likely need to configure the resources section to tune the CPU, memory, and storage resources used by the Pipeline depending on your infrastructure needs. Other than that, users rarely need to deviate from the supplied defaults.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="editing-configuration">Editing configuration<a href="#editing-configuration" class="hash-link" aria-label="Direct link to Editing configuration" title="Direct link to Editing configuration" translate="no">​</a></h3>
 <p>.
-You can edit all pipeline settings when the pipeline is <code>Stopped</code> with storage cleared, and a limited subset when it storage is in use.</p>
-<div class="theme-tabs-container tabs-container tabList__CuJ"><ul role="tablist" aria-orientation="horizontal" class="tabs"><li role="tab" tabindex="0" aria-selected="true" class="tabs__item tabItem_LNqP tabs__item--active">Web Console</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">Python SDK</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">Feldera CLI</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">HTTP API</li></ul><div class="margin-top--md"><div role="tabpanel" class="tabItem_Ymn6"><p>Press the gear button in the top right corner of the code editor to access the dialog where you can edit the runtime and program configuration JSON.</p><p><img decoding="async" loading="lazy" alt="Configure pipeline in web-console" src="/assets/images/webconsole_configure_pipeline-02762f9a8c292460ce7ae63249eab620.png" width="674" height="193" class="img_ev3q"></p></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>You can use <code>RuntimeConfig.from_dict()</code> to set the runtime configuration of a pipeline.</p><p>Example: <a href="/python/examples.html#runtime-configuration-of-a-pipeline" target="_blank" rel="noopener noreferrer" class="">Runtime configuration of a Pipeline</a></p></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>You can toggle the storage for a pipeline with</p><div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">  fda set-config {pipeline_name} storage [true|false]</span><br></span></code></pre></div></div></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>Include only <code>runtime_config</code> or <code>program_config</code> fields in the body of a <a class="" href="/api/patch-pipeline/">PATCH <code>/v0/pipelines/{pipeline_name}</code></a>, e.g. :</p><div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">  curl -X PATCH &quot;http://localhost:8080/v0/pipelines/feature-engineering&quot; -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;runtime_config&quot;:{&quot;workers&quot;:8,&quot;fault_tolerance&quot;:{&quot;model&quot;:&quot;none&quot;,&quot;checkpoint_interval&quot;:&quot;60s&quot;},&quot;resources&quot;:{&quot;memory_mb_max&quot;:16000}},&quot;program_config&quot;:{&quot;profile&quot;:&quot;dev&quot;}}&#x27; -s -o /dev/null</span><br></span></code></pre></div></div></div></div></div>
+You can edit all pipeline settings when the pipeline is <code>Stopped</code> with storage cleared, and a limited subset when its storage is in use.</p>
+<div class="theme-tabs-container tabs-container tabList__CuJ"><ul role="tablist" aria-orientation="horizontal" class="tabs"><li role="tab" tabindex="0" aria-selected="true" class="tabs__item tabItem_LNqP tabs__item--active">Web Console</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">Python SDK</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">Feldera CLI</li><li role="tab" tabindex="-1" aria-selected="false" class="tabs__item tabItem_LNqP">HTTP API</li></ul><div class="margin-top--md"><div role="tabpanel" class="tabItem_Ymn6"><p>Press the gear button in the top right corner of the code editor to access the dialog where you can edit the runtime and program configuration JSON.</p><p><img decoding="async" loading="lazy" alt="Configure pipeline in web-console" src="/assets/images/webconsole_configure_pipeline-02762f9a8c292460ce7ae63249eab620.png" width="674" height="193" class="img_ev3q"></p></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>You can use <code>RuntimeConfig.from_dict()</code> to set the runtime configuration of a pipeline.</p><p>Example: <a href="/python/examples.html#runtime-configuration-of-a-pipeline" target="_blank" rel="noopener noreferrer" class="">Runtime configuration of a Pipeline</a></p></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>You can toggle the storage for a pipeline with</p><div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">  fda set-config {pipeline_name} storage [true|false]</span><br></span></code></pre></div></div></div><div role="tabpanel" class="tabItem_Ymn6" hidden=""><p>Include only <code>runtime_config</code> or <code>program_config</code> fields in the body of a <a class="" href="/api/patch-pipeline/">PATCH <code>/v0/pipelines/{pipeline_name}</code></a>, e.g. :</p><div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">  curl -X PATCH &quot;http://localhost:8080/v0/pipelines/feature-engineering&quot; -H &quot;Content-Type: application/json&quot; -d &#x27;{&quot;runtime_config&quot;:{&quot;workers&quot;:8,&quot;fault_tolerance&quot;:{&quot;model&quot;:&quot;none&quot;,&quot;checkpoint_interval&quot;:&quot;60s&quot;},&quot;resources&quot;:{&quot;memory_max&quot;:&quot;16G&quot;}},&quot;program_config&quot;:{&quot;profile&quot;:&quot;dev&quot;}}&#x27; -s -o /dev/null</span><br></span></code></pre></div></div></div></div></div>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="runtime-configuration">Runtime configuration<a href="#runtime-configuration" class="hash-link" aria-label="Direct link to Runtime configuration" title="Direct link to Runtime configuration" translate="no">​</a></h3>
 <div class="theme-admonition theme-admonition-important admonition_xJq3 alert alert--info"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></span>important</div><div class="admonitionContent_BuS1"><p>Make sure to appropriately size resource limits (memory and storage), the number of worker threads and the storage backend to utilize available cluster resources.</p></div></div>
 <div class="theme-api-markdown"><div class="redocusaurus redocusaurus-schema hide-example"><div class="sc-dsLRjI ylWLO"><div class="sc-la-DyAJ cPxlza"><div class="sc-fQpSrZ erEcGM"><table class="sc-dENgQn gmdkhP"><tbody><tr class=""><td kind="field" title="checkpoint_during_suspend" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">checkpoint_during_suspend</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">boolean</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">true</span></div> <div><div html="&lt;p&gt;Deprecated: setting this true or false does not have an effect anymore.&lt;/p&gt;
@@ -61,11 +61,10 @@ with a warning in the pipeline log.</p>
 &lt;p&gt;The default value is &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Enable CPU profiler.</p>
 <p>The default value is <code>true</code>.</p>
-</div></div></div></td></tr><tr class=""><td kind="field" title="datafusion_memory_mb" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">datafusion_memory_mb</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer or null</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;DataFusion memory pool size, in MB, shared by the ad-hoc query
-engine and the Delta Lake / Iceberg connectors.&lt;/p&gt;
-&lt;p&gt;Carved out of &lt;code&gt;max_rss_mb&lt;/code&gt; (falling back to
-&lt;code&gt;resources.memory_mb_max&lt;/code&gt;); the remainder goes to the DBSP circuit,
-so the two do not double-book RAM.&lt;/p&gt;
+</div></div></div></td></tr><tr class=""><td kind="field" title="datafusion_memory" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">datafusion_memory</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">string or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;DataFusion memory pool size, such as &lt;code&gt;&amp;quot;1Gi&amp;quot;&lt;/code&gt;, shared by the ad-hoc
+query engine and the Delta Lake / Iceberg connectors.&lt;/p&gt;
+&lt;p&gt;Carved out of &lt;code&gt;max_rss&lt;/code&gt; (falling back to &lt;code&gt;resources.memory_max&lt;/code&gt;); the
+remainder goes to the DBSP circuit, so the two do not double-book RAM.&lt;/p&gt;
 &lt;p&gt;Unset: defaults to 5% of the effective budget, capped at 2 GB.
 Pipelines that don&amp;#39;t run heavy ad-hoc / Delta / Iceberg workloads
 can leave this unset.&lt;/p&gt;
@@ -74,13 +73,14 @@ over data too large for the default share. A pool that cannot hold
 the query surfaces as &lt;code&gt;ResourcesExhausted&lt;/code&gt; on that query alone; the
 pipeline keeps running.&lt;/p&gt;
 &lt;p&gt;No pool limit applied if no overall budget is configured.&lt;/p&gt;
+&lt;p&gt;Before release 0.367.0 this setting was &lt;code&gt;datafusion_memory_mb&lt;/code&gt;, a
+number of megabytes. That name is deprecated but still read.&lt;/p&gt;
 &lt;p&gt;See &lt;a href=&quot;https://docs.feldera.com/operations/memory&quot;&gt;documentation on the pipeline&amp;#39;s memory usage&lt;/a&gt;
 for more details.&lt;/p&gt;
-" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>DataFusion memory pool size, in MB, shared by the ad-hoc query
-engine and the Delta Lake / Iceberg connectors.</p>
-<p>Carved out of <code>max_rss_mb</code> (falling back to
-<code>resources.memory_mb_max</code>); the remainder goes to the DBSP circuit,
-so the two do not double-book RAM.</p>
+" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>DataFusion memory pool size, such as <code>&quot;1Gi&quot;</code>, shared by the ad-hoc
+query engine and the Delta Lake / Iceberg connectors.</p>
+<p>Carved out of <code>max_rss</code> (falling back to <code>resources.memory_max</code>); the
+remainder goes to the DBSP circuit, so the two do not double-book RAM.</p>
 <p>Unset: defaults to 5% of the effective budget, capped at 2 GB.
 Pipelines that don&#39;t run heavy ad-hoc / Delta / Iceberg workloads
 can leave this unset.</p>
@@ -89,6 +89,8 @@ over data too large for the default share. A pool that cannot hold
 the query surfaces as <code>ResourcesExhausted</code> on that query alone; the
 pipeline keeps running.</p>
 <p>No pool limit applied if no overall budget is configured.</p>
+<p>Before release 0.367.0 this setting was <code>datafusion_memory_mb</code>, a
+number of megabytes. That name is deprecated but still read.</p>
 <p>See <a href="https://docs.feldera.com/operations/memory">documentation on the pipeline&#39;s memory usage</a>
 for more details.</p>
 </div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="dev_tweaks"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand dev_tweaks"><span class="property-name">dev_tweaks</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{}</span></div> <div><div html="&lt;p&gt;Optional settings for tweaking Feldera internals.&lt;/p&gt;
@@ -187,8 +189,8 @@ To accelerate the process, multiple connectors are initialized concurrently.
 This option controls the maximum number of connectors that can be initialized
 in parallel.</p>
 <p>The default is 10.</p>
-</div></div></div></td></tr><tr class=""><td kind="field" title="max_rss_mb" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">max_rss_mb</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer or null</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;The maximum amount of memory, in Megabytes, that the pipeline is allowed to use
-on each host.&lt;/p&gt;
+</div></div></div></td></tr><tr class=""><td kind="field" title="max_rss" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">max_rss</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">string or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;The maximum amount of memory that the pipeline is allowed to use on
+each host, such as &lt;code&gt;&amp;quot;16G&amp;quot;&lt;/code&gt; or &lt;code&gt;&amp;quot;16Gi&amp;quot;&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;Setting this property activates memory pressure monitoring and backpressure
 mechanisms. The pipeline will track the amount of remaining memory and
 report the memory pressure level via the &lt;code&gt;memory_pressure&lt;/code&gt; metric.&lt;/p&gt;
@@ -198,12 +200,17 @@ out of memory at the cost of some performance degradation.&lt;/p&gt;
 &lt;p&gt;It is strongly recommended to set this property to prevent the pipeline from
 running out of memory. The setting should not exceed the memory limit of the pipeline
 instance.&lt;/p&gt;
-&lt;p&gt;When &lt;code&gt;max_rss_mb&lt;/code&gt; is not specified but &lt;code&gt;resources.memory_mb_max&lt;/code&gt; is set, the
+&lt;p&gt;When &lt;code&gt;max_rss&lt;/code&gt; is not specified but &lt;code&gt;resources.memory_max&lt;/code&gt; is set, the
 latter is used as the effective memory cap for the pipeline.&lt;/p&gt;
+&lt;p&gt;The pipeline caps this limit at the memory available to it, which is the
+host&amp;#39;s memory or the container&amp;#39;s memory limit, whichever is smaller. It
+rechecks the available memory every second.&lt;/p&gt;
+&lt;p&gt;Before release 0.367.0 this setting was &lt;code&gt;max_rss_mb&lt;/code&gt;, a number of
+megabytes. That name is deprecated but still read.&lt;/p&gt;
 &lt;p&gt;See &lt;a href=&quot;https://docs.feldera.com/operations/memory&quot;&gt;documentation on the pipeline&amp;#39;s memory usage&lt;/a&gt;
 for more details.&lt;/p&gt;
-" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>The maximum amount of memory, in Megabytes, that the pipeline is allowed to use
-on each host.</p>
+" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>The maximum amount of memory that the pipeline is allowed to use on
+each host, such as <code>&quot;16G&quot;</code> or <code>&quot;16Gi&quot;</code>.</p>
 <p>Setting this property activates memory pressure monitoring and backpressure
 mechanisms. The pipeline will track the amount of remaining memory and
 report the memory pressure level via the <code>memory_pressure</code> metric.</p>
@@ -213,8 +220,13 @@ out of memory at the cost of some performance degradation.</p>
 <p>It is strongly recommended to set this property to prevent the pipeline from
 running out of memory. The setting should not exceed the memory limit of the pipeline
 instance.</p>
-<p>When <code>max_rss_mb</code> is not specified but <code>resources.memory_mb_max</code> is set, the
+<p>When <code>max_rss</code> is not specified but <code>resources.memory_max</code> is set, the
 latter is used as the effective memory cap for the pipeline.</p>
+<p>The pipeline caps this limit at the memory available to it, which is the
+host&#39;s memory or the container&#39;s memory limit, whichever is smaller. It
+rechecks the available memory every second.</p>
+<p>Before release 0.367.0 this setting was <code>max_rss_mb</code>, a number of
+megabytes. That name is deprecated but still read.</p>
 <p>See <a href="https://docs.feldera.com/operations/memory">documentation on the pipeline&#39;s memory usage</a>
 for more details.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="min_batch_size_records" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">min_batch_size_records</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">integer</span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo"> <!-- -->&lt;<!-- -->int64<!-- -->&gt;<!-- --> </span><span> <span class="sc-xuTxv sc-fsKmBw duzUpg cnusSg"> <!-- -->&gt;= 0<!-- --> </span></span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">0</span></div> <div><div html="&lt;p&gt;Minimal input batch size.&lt;/p&gt;
@@ -299,7 +311,7 @@ placeholders are placed at appropriate location for their semantics:</li>
 Setting this value will override the default of the runner.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Timeout for the <code>Provisioning</code> phase of the pipeline, for example <code>5m</code>.
 Setting this value will override the default of the runner.</p>
-</div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="resources"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand resources"><span class="property-name">resources</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{&quot;cpu_cores_min&quot;:null,&quot;cpu_cores_max&quot;:null,&quot;memory_mb_min&quot;:null,&quot;memory_mb_max&quot;:null,&quot;storage_mb_max&quot;:null,&quot;storage_class&quot;:null,&quot;service_account_name&quot;:null,&quot;namespace&quot;:null}</span></div> <div><div html="" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"></div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="storage"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand storage"><span class="property-name">storage</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{&quot;backend&quot;:{&quot;name&quot;:&quot;default&quot;},&quot;min_storage_bytes&quot;:null,&quot;min_step_storage_bytes&quot;:null,&quot;compression&quot;:&quot;default&quot;,&quot;compression_level&quot;:null,&quot;cache_mib&quot;:null}</span></div> <div><div html="&lt;p&gt;Storage configuration for a pipeline.&lt;/p&gt;
+</div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="resources"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand resources"><span class="property-name">resources</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{&quot;cpu_cores_min&quot;:null,&quot;cpu_cores_max&quot;:null,&quot;storage_class&quot;:null,&quot;service_account_name&quot;:null,&quot;namespace&quot;:null}</span></div> <div><div html="" class="sc-euGquI sc-exazLc fCYcYT kAVoRM"></div></div></div></td></tr><tr class=""><td class="sc-tOlxE sc-epPUyX sc-hxyrwO bykfud iWhDPi crGwrd" kind="field" title="storage"><span class="sc-hfvWGZ ktUUQH"></span><button aria-label="expand storage"><span class="property-name">storage</span><svg class="sc-cBYhWN fgzHhr" version="1.1" viewBox="0 0 24 24" x="0" xmlns="http://www.w3.org/2000/svg" y="0" aria-hidden="true"><polygon points="17.3 8.3 12 13.6 6.7 8.3 5.3 9.7 12 16.4 18.7 9.7 "></polygon></svg></button></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">object or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">{&quot;backend&quot;:{&quot;name&quot;:&quot;default&quot;},&quot;compression&quot;:&quot;default&quot;,&quot;compression_level&quot;:null}</span></div> <div><div html="&lt;p&gt;Storage configuration for a pipeline.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Storage configuration for a pipeline.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="tracing" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">tracing</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">boolean</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">false</span></div> <div><div html="&lt;p&gt;Enable pipeline tracing.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Enable pipeline tracing.</p>
@@ -337,18 +349,57 @@ one beside it. The older names are removed no earlier than release 0.368.0.</p>
 <p>The Delta connector&#x27;s <code>log_retention_duration</code> is the one exception: it passes
 its value through to Delta Lake, which has its own <code>&quot;interval 30 days&quot;</code>
 syntax.</p>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="sizes">Sizes<a href="#sizes" class="hash-link" aria-label="Direct link to Sizes" title="Direct link to Sizes" translate="no">​</a></h4>
+<p>Every setting that holds an amount of memory or storage, such as
+<code>resources.memory_max</code>, <code>max_rss</code> or <code>storage.cache_size</code>, takes a string made
+of a number and a unit, in the format Kubernetes uses for a quantity: <code>&quot;16G&quot;</code>,
+<code>&quot;4Gi&quot;</code>, <code>&quot;512Mi&quot;</code>, <code>&quot;64Ki&quot;</code>. The decimal units <code>k</code>, <code>M</code>, <code>G</code>, <code>T</code>, <code>P</code> and
+<code>E</code> are each a thousand times the one before; the binary units <code>Ki</code>, <code>Mi</code>,
+<code>Gi</code>, <code>Ti</code>, <code>Pi</code> and <code>Ei</code> are each 1024 times the one before. A unit may carry
+a trailing <code>B</code>, and a bare number is a number of bytes.</p>
+<p>A setting whose older name counted megabytes or mebibytes, such as
+<code>memory_max</code> or <code>storage.cache_size</code>, refuses a quoted number with no unit:
+<code>&quot;16000&quot;</code> would mean sixteen kilobytes where the unquoted <code>16000</code> of the older
+spelling meant sixteen gigabytes, so write <code>&quot;16000M&quot;</code> or <code>&quot;16G&quot;</code>.</p>
+<p>The name each of these settings had before, such as <code>memory_mb_max</code>, is still
+accepted as a deprecated alias, takes the bare number of megabytes, mebibytes
+or bytes it always took, and makes the pipeline log a warning that names the setting to
+write instead. Writing both names of one setting is an error. The older names
+are removed no earlier than release 0.369.0.</p>
+<p>The NATS consumer&#x27;s <code>max_bytes</code> is the one exception: it is a NATS pull option
+passed through as NATS spells it.</p>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="runtime-configuration-edit-restrictions">Runtime configuration edit restrictions<a href="#runtime-configuration-edit-restrictions" class="hash-link" aria-label="Direct link to Runtime configuration edit restrictions" title="Direct link to Runtime configuration edit restrictions" translate="no">​</a></h4>
 <p>The runtime configuration cannot be edited at all if the pipeline is not stopped.</p>
-<p>If the pipeline is stopped, but its storage has not been cleared, the following runtime configuration fields cannot be
-edited:</p>
+<p>If the pipeline is stopped, but its storage has not been cleared, the pipeline cannot be renamed, and the following
+runtime configuration fields cannot be edited:</p>
 <ul>
 <li class=""><code>workers</code></li>
 <li class=""><code>hosts</code></li>
 <li class=""><code>fault_tolerance</code></li>
-<li class=""><code>resources.storage_mb_max</code></li>
+<li class=""><code>resources.storage_max</code></li>
+<li class=""><code>resources.storage_min</code></li>
 <li class=""><code>resources.namespace</code></li>
 <li class=""><code>resources.storage_class</code></li>
 <li class=""><code>clock_timezone_offset</code></li>
+</ul>
+<h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="resizing-a-running-pipeline">Resizing a running pipeline<a href="#resizing-a-running-pipeline" class="hash-link" aria-label="Direct link to Resizing a running pipeline" title="Direct link to Resizing a running pipeline" translate="no">​</a></h4>
+<div class="theme-admonition theme-admonition-caution admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>Experimental feature</div><div class="admonitionContent_BuS1"><p>Resizing a running pipeline is an experimental feature and may change.</p></div></div>
+<p>On Kubernetes, the CPU and memory of a running pipeline can be changed without a restart:</p>
+<div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain">curl -X PATCH &quot;http://localhost:8080/v0/pipelines/example&quot; \</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  -H &quot;Content-Type: application/json&quot; \</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">  -d &#x27;{&quot;deployment_config&quot;: {&quot;resources&quot;: {&quot;cpu_cores_max&quot;: 4, &quot;memory_max&quot;: &quot;16G&quot;}}}&#x27;</span><br></span></code></pre></div></div>
+<p><code>GET /v0/pipelines/example</code> returns the resources the pipeline is set to in <code>deployment_config</code>.</p>
+<ul>
+<li class=""><code>deployment_config</code> cannot be combined with other fields in the same <code>PATCH</code>. <code>PUT</code> accepts it
+only unchanged, so a pipeline read with <code>GET</code> can be written back.</li>
+<li class="">Only <code>cpu_cores_min</code>, <code>cpu_cores_max</code>, <code>memory_min</code> and <code>memory_max</code> can be changed.</li>
+<li class="">Kubernetes cannot change the QoS class of a running pod. A change that it cannot apply while the
+pipeline runs, such as making a request equal to its limit, is written to the pipeline log, and
+the next start uses it.</li>
+<li class="">Only single-host pipelines can be resized.</li>
+<li class="">The runtime configuration does not change. The resize lasts across restarts until storage is
+cleared or CPU or memory is changed in the runtime configuration.</li>
+<li class="">Memory budgets set at start, such as <code>max_rss</code> derived from <code>memory_max</code>, do not change.</li>
+<li class="">Requires Kubernetes 1.34 or later and
+<code>kubernetesRunner.enablePipelineResize</code> in the <a class="" href="/get-started/enterprise/helm-chart-reference/#kubernetes-runner">Helm chart</a>.</li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="program-configuration">Program configuration<a href="#program-configuration" class="hash-link" aria-label="Direct link to Program configuration" title="Direct link to Program configuration" translate="no">​</a></h3>
 <p>The &quot;optimized&quot; compilation profile (default) should be used when running production pipelines where performance is important.</p>

@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
-<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.00c68fb5.js" defer="defer"></script>
+<script src="/assets/js/main.559b78e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -93,7 +93,7 @@ following ways:</p>
 <li class="">
 <p>In the web UI, click on the gear icon.  In the dialog box,
 change <code>storage</code> to <code>{}</code>. Example with additional configuration options:</p>
-<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain"> &quot;storage&quot;: {</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;backend&quot;: {</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">     &quot;name&quot;: &quot;default&quot;</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   },</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;min_storage_bytes&quot;: null,</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;min_step_storage_bytes&quot;: null,</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;compression&quot;: &quot;default&quot;,</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;cache_mib&quot;: null</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain"> }</span><br></span></code></pre></div></div>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#e7e4ee;--prism-background-color:#1e1626"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#e7e4ee;background-color:#1e1626"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#e7e4ee"><span class="token plain"> &quot;storage&quot;: {</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;backend&quot;: {</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">     &quot;name&quot;: &quot;default&quot;</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   },</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;min_spill_size&quot;: &quot;10Mi&quot;,</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;compression&quot;: &quot;default&quot;,</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain">   &quot;cache_size&quot;: &quot;4Gi&quot;</span><br></span><span class="token-line" style="color:#e7e4ee"><span class="token plain"> }</span><br></span></code></pre></div></div>
 <p>Then click on the Apply button.  (For more storage options, click
 on the gear again to see that <code>{}</code> has been expanded to show the
 available settings). For all storage configuration options, refer to <a class="" href="/pipelines/configuration/#runtime-configuration">pipeline settings</a></p>
@@ -145,13 +145,15 @@ or disabled as described
 request writing a checkpoint immediately.  If automatic checkpoints
 are disabled, then the user should occasionally invoke this API to
 ensure that the checkpoint feature is useful.</p>
-<p>On <code>SIGTERM</code>, for example when Kubernetes evicts its pod, a pipeline
-writes a checkpoint and then exits.  Kubernetes kills the pipeline
+<p>When fault tolerance is enabled, on <code>SIGTERM</code>, for example when
+Kubernetes evicts its pod, a pipeline writes a checkpoint and then
+exits.  Kubernetes kills the pipeline
 <code>pipeline.terminationGracePeriodSeconds</code> (a Helm value, default 60)
 after the <code>SIGTERM</code>, so set it longer than a checkpoint takes.
 Multihost pipelines exit without a checkpoint.  On Kubernetes, Force
 Stop also sends <code>SIGTERM</code>.  If the checkpoint finishes within 2
-seconds, the pipeline keeps it.</p>
+seconds, the pipeline keeps it.  When fault tolerance is disabled, a
+pipeline exits on <code>SIGTERM</code> without a checkpoint.</p>
 <blockquote>
 <p>Writing a checkpoint is ordinarily a fast operation that takes
 several seconds.  However, the <a class="" href="/connectors/sources/delta/">Delta Lake</a>

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.366.0
+  version: 0.367.0
 paths:
   /config/authentication:
     get:
@@ -924,17 +924,12 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 16
-                    max_rss_mb: null
-                    datafusion_memory_mb: null
                     hosts: 1
                     storage:
                       backend:
                         name: default
-                      min_storage_bytes: null
-                      min_step_storage_bytes: null
                       compression: default
                       compression_level: null
-                      cache_mib: null
                     fault_tolerance:
                       model: none
                     cpu_profiler: true
@@ -944,9 +939,6 @@ paths:
                     resources:
                       cpu_cores_min: null
                       cpu_cores_max: null
-                      memory_mb_min: null
-                      memory_mb_max: null
-                      storage_mb_max: null
                       storage_class: null
                       service_account_name: null
                       namespace: null
@@ -961,6 +953,7 @@ paths:
                     dev_tweaks: {}
                     logging: null
                     pipeline_template_configmap: null
+                  deployment_config: null
                   program_code: CREATE TABLE table1 ( col1 INT );
                   udf_rust: ''
                   udf_toml: ''
@@ -1006,17 +999,12 @@ paths:
                   platform_version: v0
                   runtime_config:
                     workers: 10
-                    max_rss_mb: null
-                    datafusion_memory_mb: null
                     hosts: 1
                     storage:
                       backend:
                         name: default
-                      min_storage_bytes: null
-                      min_step_storage_bytes: null
                       compression: default
                       compression_level: null
-                      cache_mib: null
                     fault_tolerance:
                       model: none
                     cpu_profiler: false
@@ -1026,9 +1014,8 @@ paths:
                     resources:
                       cpu_cores_min: null
                       cpu_cores_max: null
-                      memory_mb_min: 1000
-                      memory_mb_max: null
-                      storage_mb_max: 10000
+                      memory_min: 1G
+                      storage_max: 10G
                       storage_class: null
                       service_account_name: null
                       namespace: null
@@ -1045,6 +1032,7 @@ paths:
                     dev_tweaks: {}
                     logging: null
                     pipeline_template_configmap: null
+                  deployment_config: null
                   program_code: CREATE TABLE table2 ( col2 VARCHAR );
                   udf_rust: ''
                   udf_toml: ''
@@ -1109,17 +1097,12 @@ paths:
               tags: []
               runtime_config:
                 workers: 16
-                max_rss_mb: null
-                datafusion_memory_mb: null
                 hosts: 1
                 storage:
                   backend:
                     name: default
-                  min_storage_bytes: null
-                  min_step_storage_bytes: null
                   compression: default
                   compression_level: null
-                  cache_mib: null
                 fault_tolerance:
                   model: none
                 cpu_profiler: true
@@ -1129,9 +1112,6 @@ paths:
                 resources:
                   cpu_cores_min: null
                   cpu_cores_max: null
-                  memory_mb_min: null
-                  memory_mb_max: null
-                  storage_mb_max: null
                   storage_class: null
                   service_account_name: null
                   namespace: null
@@ -1146,6 +1126,7 @@ paths:
                 dev_tweaks: {}
                 logging: null
                 pipeline_template_configmap: null
+              deployment_config: null
               program_code: CREATE TABLE table1 ( col1 INT );
               udf_rust: null
               udf_toml: null
@@ -1172,17 +1153,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -1192,9 +1168,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -1209,6 +1182,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1341,17 +1315,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -1361,9 +1330,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -1378,6 +1344,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1462,17 +1429,12 @@ paths:
               tags: []
               runtime_config:
                 workers: 16
-                max_rss_mb: null
-                datafusion_memory_mb: null
                 hosts: 1
                 storage:
                   backend:
                     name: default
-                  min_storage_bytes: null
-                  min_step_storage_bytes: null
                   compression: default
                   compression_level: null
-                  cache_mib: null
                 fault_tolerance:
                   model: none
                 cpu_profiler: true
@@ -1482,9 +1444,6 @@ paths:
                 resources:
                   cpu_cores_min: null
                   cpu_cores_max: null
-                  memory_mb_min: null
-                  memory_mb_max: null
-                  storage_mb_max: null
                   storage_class: null
                   service_account_name: null
                   namespace: null
@@ -1499,6 +1458,7 @@ paths:
                 dev_tweaks: {}
                 logging: null
                 pipeline_template_configmap: null
+              deployment_config: null
               program_code: CREATE TABLE table1 ( col1 INT );
               udf_rust: null
               udf_toml: null
@@ -1525,17 +1485,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -1545,9 +1500,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -1562,6 +1514,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1614,17 +1567,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -1634,9 +1582,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -1651,6 +1596,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1701,6 +1647,14 @@ paths:
                       by invoking '/stop'.
                     error_code: UpdateRestrictedToStopped
                     details: null
+                Changed deployment config:
+                  value:
+                    message: >-
+                      Invalid deployment patch: cpu_cores_min (9) exceeds
+                      cpu_cores_max (8)
+                    error_code: InvalidDeploymentPatch
+                    details:
+                      reason: cpu_cores_min (9) exceeds cpu_cores_max (8)
                 Name does not match pattern:
                   value:
                     message: >-
@@ -1790,10 +1744,18 @@ paths:
       tags:
         - Pipeline CRUD
       summary: Patch Pipeline
-      description: |-
+      description: >-
         Required role: `write` or higher.
 
+
         Partially update a pipeline.
+
+
+        A `deployment_config` resizes the CPU and memory of a running pipeline
+        in place (experimental,
+
+        enabled by `--enable-pipeline-resize`). It cannot be combined with other
+        fields.
       operationId: patch_pipeline
       parameters:
         - name: pipeline_name
@@ -1811,6 +1773,7 @@ paths:
               name: null
               description: This is a new description
               runtime_config: null
+              deployment_config: null
               program_code: CREATE TABLE table3 ( col3 INT );
               udf_rust: null
               udf_toml: null
@@ -1833,17 +1796,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -1853,9 +1811,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -1870,6 +1825,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -1913,6 +1869,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Cannot resize non-running pipeline:
+                  value:
+                    message: >-
+                      Pipeline 'deployment_config' can only be changed while it
+                      is running. Start it with '/start', or change
+                      'runtime_config.resources' while it is stopped.
+                    error_code: DeploymentRestrictedToRunning
+                    details: null
                 Cannot update non-stopped pipeline:
                   value:
                     message: >-
@@ -1920,6 +1884,14 @@ paths:
                       by invoking '/stop'.
                     error_code: UpdateRestrictedToStopped
                     details: null
+                Invalid deployment config patch:
+                  value:
+                    message: >-
+                      Invalid deployment patch: cpu_cores_min (9) exceeds
+                      cpu_cores_max (8)
+                    error_code: InvalidDeploymentPatch
+                    details:
+                      reason: cpu_cores_min (9) exceeds cpu_cores_max (8)
                 Name does not match pattern:
                   value:
                     message: >-
@@ -1948,6 +1920,26 @@ paths:
                 error_code: UnknownPipelineName
                 details:
                   pipeline_name: non-existent-pipeline
+        '405':
+          description: >-
+            The runner of this installation cannot resize a running pipeline in
+            place
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: >-
+                  Unsupported pipeline action 'suspend': this pipeline does not
+                  support the suspend action for the following reason(s):
+                      - Storage must be configured
+                error_code: UnsupportedPipelineAction
+                details:
+                  action: suspend
+                  reason: >-
+                    this pipeline does not support the suspend action for the
+                    following reason(s):
+                        - Storage must be configured
         '409':
           description: Cannot rename pipeline as the name already exists
           content:
@@ -7074,17 +7066,12 @@ paths:
                 platform_version: v0
                 runtime_config:
                   workers: 16
-                  max_rss_mb: null
-                  datafusion_memory_mb: null
                   hosts: 1
                   storage:
                     backend:
                       name: default
-                    min_storage_bytes: null
-                    min_step_storage_bytes: null
                     compression: default
                     compression_level: null
-                    cache_mib: null
                   fault_tolerance:
                     model: none
                   cpu_profiler: true
@@ -7094,9 +7081,6 @@ paths:
                   resources:
                     cpu_cores_min: null
                     cpu_cores_max: null
-                    memory_mb_min: null
-                    memory_mb_max: null
-                    storage_mb_max: null
                     storage_class: null
                     service_account_name: null
                     namespace: null
@@ -7111,6 +7095,7 @@ paths:
                   dev_tweaks: {}
                   logging: null
                   pipeline_template_configmap: null
+                deployment_config: null
                 program_code: CREATE TABLE table1 ( col1 INT );
                 udf_rust: ''
                 udf_toml: ''
@@ -9350,6 +9335,31 @@ components:
           required:
             - transport
           properties:
+            distributed:
+              type: boolean
+              description: >-
+                Divide the input of this connector among the hosts of a
+                multihost
+
+                pipeline. Valid for input connectors only.
+
+
+                When `false` (the default), the connector runs on one host,
+                which
+
+                reads all of its input. When `true`, the connector runs on every
+                host,
+
+                and each host reads a different part of the input. Only the
+                Kafka,
+
+                Delta Lake, and Iceberg input transports support this setting.
+
+
+                In a single-host pipeline, this setting has no effect.
+
+
+                Versions of Feldera that predate this option ignore it.
             format:
               allOf:
                 - $ref: '#/components/schemas/FormatConfig'
@@ -9432,47 +9442,6 @@ components:
                 `max_worker_batch_size`.
               nullable: true
               minimum: 0
-            max_queued_bytes:
-              type: integer
-              format: int64
-              description: >-
-                Backpressure threshold, in bytes.
-
-
-                Maximal number of bytes queued by the endpoint before the
-                endpoint
-
-                is paused by the backpressure mechanism.
-
-
-                For input endpoints, this setting bounds the number of bytes
-                that have
-
-                been received from the input transport but haven't yet been
-                consumed by
-
-                the circuit since the circuit, since the circuit is still busy
-                processing
-
-                previous inputs.
-
-
-                This setting is not yet implemented for output endpoints.
-
-
-                Note that this is not a hard bound: there can be a small delay
-                between
-
-                the backpressure mechanism is triggered and the endpoint is
-                paused, during
-
-                which more data may be queued.
-
-
-                When this is unspecified, it defaults to `1000 *
-                max_queued_records`.
-              nullable: true
-              minimum: 0
             max_queued_records:
               type: integer
               format: int64
@@ -9516,6 +9485,53 @@ components:
 
                 The default is 1 million.
               minimum: 0
+            max_queued_size:
+              type: string
+              description: >-
+                Backpressure threshold, in bytes.
+
+
+                Maximal number of bytes queued by the endpoint before the
+                endpoint
+
+                is paused by the backpressure mechanism.
+
+
+                For input endpoints, this setting bounds the number of bytes
+                that have
+
+                been received from the input transport but haven't yet been
+                consumed by
+
+                the circuit since the circuit, since the circuit is still busy
+                processing
+
+                previous inputs.
+
+
+                This setting is not yet implemented for output endpoints.
+
+
+                Note that this is not a hard bound: there can be a small delay
+                between
+
+                the backpressure mechanism is triggered and the endpoint is
+                paused, during
+
+                which more data may be queued.
+
+
+                When this is unspecified, it defaults to `1000 *
+                max_queued_records`
+
+                bytes.
+
+
+                Before release 0.367.0 this setting was `max_queued_bytes`, a
+                number
+
+                of bytes. That name is deprecated but still read.
+              nullable: true
             max_worker_batch_size:
               type: integer
               format: int64
@@ -10879,6 +10895,31 @@ components:
         udf_toml:
           type: string
           description: User defined function (UDF) TOML dependencies.
+    DeploymentResources:
+      type: object
+      description: CPU and memory, the only fields that can change while the pipeline runs.
+      properties:
+        cpu_cores_max:
+          type: number
+          format: double
+          nullable: true
+        cpu_cores_min:
+          type: number
+          format: double
+          nullable: true
+        memory_max:
+          type: string
+          description: |-
+            The maximum memory, such as `"16Gi"`. `memory_mb_max`, a number of
+            megabytes, is a deprecated alias.
+          nullable: true
+        memory_min:
+          type: string
+          description: |-
+            The minimum memory, such as `"4Gi"`. `memory_mb_min`, a number of
+            megabytes, is a deprecated alias.
+          nullable: true
+      additionalProperties: false
     DevTweaks:
       type: object
       description: |-
@@ -11121,13 +11162,12 @@ components:
             key type supports them.
           default: null
           nullable: true
-        exchange_channel_capacity_bytes:
-          type: integer
+        exchange_channel_capacity:
+          type: string
           description: >-
-            Maximum number of bytes of queued but unacknowledged exchange
-            messages
+            Maximum size of the queued but unacknowledged exchange messages per
 
-            per pair of remote host and message type.
+            pair of remote host and message type.
 
 
             A sender that pushes past this budget waits for the receiver to
@@ -11142,21 +11182,20 @@ components:
             budget on its own.
 
 
-            The default is 10,000,000 bytes.
+            The default is `"10M"`. Before release 0.367.0 this setting was
+
+            `exchange_channel_capacity_bytes`, a number of bytes.
           default: null
           nullable: true
-          minimum: 0
-        fbuf_slab_bytes_per_class:
-          type: integer
-          description: >-
-            Target number of cached bytes retained in each `FBuf` slab size
-            class.
+        fbuf_slab_size_per_class:
+          type: string
+          description: |-
+            Target size of the cache retained in each `FBuf` slab size class.
 
-
-            The default is 16 MiB.
+            The default is `"16Mi"`. Before release 0.367.0 this setting was
+            `fbuf_slab_bytes_per_class`, a number of bytes.
           default: null
           nullable: true
-          minimum: 0
         fetch_distinct:
           type: boolean
           description: >-
@@ -11222,32 +11261,22 @@ components:
           default: null
           nullable: true
           minimum: 0
-        lazy_input_map_key_block_bytes:
-          type: integer
-          format: int64
-          description: >-
+        lazy_input_map_key_block_size:
+          type: string
+          description: |-
             Minimum size of the key blocks in the batches a lazy input map's
-
-            accumulator writes for itself, in bytes.  A power of two, at least
-
-            4096.
-
+            accumulator writes for itself.  A power of two, at least 4096 bytes.
 
             The map resolves a transaction by walking the accumulated updates in
-
             key order without reading values, one storage request per key block,
-
             so larger blocks mean fewer requests.  Only the accumulator's own
-
             batches (merge outputs and spills) take this size; the batches that
-
             reach the integral keep it until its merger rewrites them at the
-
-            default size.  The default is 32768; 8192 is the file writer's
-            default.
+            default size.  The default is `"32Ki"`; `"8Ki"` is the file writer's
+            default. Before release 0.367.0 this setting was
+            `lazy_input_map_key_block_bytes`, a number of bytes.
           default: null
           nullable: true
-          minimum: 0
         lazy_input_map_keys_per_step:
           type: integer
           format: int64
@@ -11399,23 +11428,26 @@ components:
             To be used for debugging only; do not enable in production.
           default: null
           nullable: true
-        storage_mb_max:
-          type: integer
-          format: int64
+        storage_max:
+          type: string
           description: >-
-            If set, the maximum amount of storage, in MiB, for the POSIX backend
+            If set, the maximum amount of storage for the POSIX backend to allow
             to
 
-            allow to be in use before failing all writes with `StorageFull`. 
-            This
+            be in use before failing all writes with `StorageFull`.  This is
+            useful
 
-            is useful for testing on top of storage that does not implement its
-            own
+            for testing on top of storage that does not implement its own quota
 
-            quota mechanism.
+            mechanism.
+
+
+            Before release 0.367.0 this setting was `storage_mb_max`, a number
+            of
+
+            mebibytes.
           default: null
           nullable: true
-          minimum: 0
         streaming_exchange:
           type: boolean
           description: Enable streaming exchange.
@@ -11568,16 +11600,17 @@ components:
             Optional endpoint URL, for example when using a local
             DynamoDB-compatible service.
           nullable: true
-        max_buffer_size_bytes:
-          type: integer
-          description: >-
-            Maximum number of bytes buffered by each worker before flushing
-            writes.
-
+        max_buffer_size:
+          type: string
+          description: |-
+            Maximum size of the data buffered by each worker before flushing
+            writes, such as `"1Mi"`.
 
             This is an approximate size based on encoded DynamoDB attributes.
-          default: 1048576
-          minimum: 0
+
+            Before release 0.367.0 this setting was `max_buffer_size_bytes`, a
+            number of bytes. That name is deprecated but still read.
+          default: 1Mi
         max_concurrent_requests:
           type: integer
           description: >-
@@ -11832,15 +11865,22 @@ components:
       required:
         - path
       properties:
-        buffer_size_bytes:
-          type: integer
-          description: |-
-            Read buffer size.
+        buffer_size:
+          type: string
+          description: >-
+            Read buffer size, such as `"64Ki"`.
+
 
             Default: when this parameter is not specified, a platform-specific
+
             default is used.
+
+
+            Before release 0.367.0 this setting was `buffer_size_bytes`, a
+            number
+
+            of bytes. That name is deprecated but still read.
           nullable: true
-          minimum: 0
         follow:
           type: boolean
           description: |-
@@ -13098,7 +13138,9 @@ components:
           nullable: true
         paused:
           type: boolean
-          description: Endpoint has been paused by the user.
+          description: |-
+            Endpoint has been paused by the user.  A distributed connector in a
+            multihost pipeline is paused only if it is paused on every host.
         transport_errors:
           type: array
           items:
@@ -13163,54 +13205,6 @@ components:
         ```
 
 
-        ### `Weighted`
-
-
-        Each element in the input stream consists of a record and a weight
-
-        which indicates how many times the row appears.
-
-
-        ```json
-
-        {"weight": 2, "data": {"column1": "hello, world!", "column2": 100}}
-
-        ```
-
-
-        Note that the line above would be equivalent to the following input in
-        the `InsertDelete` format:
-
-
-        ```json
-
-        {"insert": {"column1": "hello, world!", "column2": 100}}
-
-        {"insert": {"column1": "hello, world!", "column2": 100}}
-
-        ```
-
-
-        Similarly, negative weights are equivalent to deletions:
-
-
-        ```json
-
-        {"weight": -1, "data": {"column1": "hello, world!", "column2": 100}}
-
-        ```
-
-
-        is equivalent to in the `InsertDelete` format:
-
-
-        ```json
-
-        {"delete": {"column1": "hello, world!", "column2": 100}}
-
-        ```
-
-
         ### `Debezium`
 
 
@@ -13255,7 +13249,6 @@ components:
         additional envelope that gets inserted in the input table.
       enum:
         - insert_delete
-        - weighted
         - debezium
         - snowflake
         - raw
@@ -14765,6 +14758,10 @@ components:
         - $ref: '#/components/schemas/PatchClientMetadata'
         - type: object
           properties:
+            deployment_config:
+              allOf:
+                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+              nullable: true
             name:
               type: string
               nullable: true
@@ -14879,21 +14876,20 @@ components:
 
                 The default value is `true`.
               default: true
-            datafusion_memory_mb:
-              type: integer
-              format: int64
+            datafusion_memory:
+              type: string
               description: >-
-                DataFusion memory pool size, in MB, shared by the ad-hoc query
+                DataFusion memory pool size, such as `"1Gi"`, shared by the
+                ad-hoc
 
-                engine and the Delta Lake / Iceberg connectors.
+                query engine and the Delta Lake / Iceberg connectors.
 
 
-                Carved out of `max_rss_mb` (falling back to
+                Carved out of `max_rss` (falling back to
+                `resources.memory_max`); the
 
-                `resources.memory_mb_max`); the remainder goes to the DBSP
-                circuit,
-
-                so the two do not double-book RAM.
+                remainder goes to the DBSP circuit, so the two do not
+                double-book RAM.
 
 
                 Unset: defaults to 5% of the effective budget, capped at 2 GB.
@@ -14919,13 +14915,18 @@ components:
                 No pool limit applied if no overall budget is configured.
 
 
+                Before release 0.367.0 this setting was `datafusion_memory_mb`,
+                a
+
+                number of megabytes. That name is deprecated but still read.
+
+
                 See [documentation on the pipeline's memory
                 usage](https://docs.feldera.com/operations/memory)
 
                 for more details.
               default: null
               nullable: true
-              minimum: 0
             dev_tweaks:
               allOf:
                 - $ref: '#/components/schemas/DevTweaks'
@@ -15067,14 +15068,13 @@ components:
               default: null
               nullable: true
               minimum: 0
-            max_rss_mb:
-              type: integer
-              format: int64
+            max_rss:
+              type: string
               description: >-
-                The maximum amount of memory, in Megabytes, that the pipeline is
-                allowed to use
+                The maximum amount of memory that the pipeline is allowed to use
+                on
 
-                on each host.
+                each host, such as `"16G"` or `"16Gi"`.
 
 
                 Setting this property activates memory pressure monitoring and
@@ -15105,10 +15105,25 @@ components:
                 instance.
 
 
-                When `max_rss_mb` is not specified but `resources.memory_mb_max`
-                is set, the
+                When `max_rss` is not specified but `resources.memory_max` is
+                set, the
 
                 latter is used as the effective memory cap for the pipeline.
+
+
+                The pipeline caps this limit at the memory available to it,
+                which is the
+
+                host's memory or the container's memory limit, whichever is
+                smaller. It
+
+                rechecks the available memory every second.
+
+
+                Before release 0.367.0 this setting was `max_rss_mb`, a number
+                of
+
+                megabytes. That name is deprecated but still read.
 
 
                 See [documentation on the pipeline's memory
@@ -15117,7 +15132,6 @@ components:
                 for more details.
               default: null
               nullable: true
-              minimum: 0
             min_batch_size_records:
               type: integer
               format: int64
@@ -15183,9 +15197,6 @@ components:
               default:
                 cpu_cores_min: null
                 cpu_cores_max: null
-                memory_mb_min: null
-                memory_mb_max: null
-                storage_mb_max: null
                 storage_class: null
                 service_account_name: null
                 namespace: null
@@ -15195,11 +15206,8 @@ components:
               default:
                 backend:
                   name: default
-                min_storage_bytes: null
-                min_step_storage_bytes: null
                 compression: default
                 compression_level: null
-                cache_mib: null
               nullable: true
             tracing:
               type: boolean
@@ -15298,6 +15306,13 @@ components:
         (e.g., runtime configuration) and entries derived from the schema
         of the compiled program (e.g., connectors). Storage configuration,
         if applicable, is set by the runner.
+    PipelineDeploymentConfig:
+      type: object
+      description: The part of a deployment config that can change while the pipeline runs.
+      properties:
+        resources:
+          $ref: '#/components/schemas/DeploymentResources'
+      additionalProperties: false
     PipelineDiff:
       type: object
       description: >-
@@ -15405,6 +15420,10 @@ components:
             created_at:
               type: string
               format: date-time
+            deployment_config:
+              allOf:
+                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+              nullable: true
             deployment_desired_status:
               $ref: '#/components/schemas/CombinedDesiredStatus'
             deployment_desired_status_since:
@@ -15591,6 +15610,10 @@ components:
             created_at:
               type: string
               format: date-time
+            deployment_config:
+              allOf:
+                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+              nullable: true
             deployment_desired_status:
               $ref: '#/components/schemas/CombinedDesiredStatus'
             deployment_desired_status_since:
@@ -15792,6 +15815,10 @@ components:
             - name
             - program_code
           properties:
+            deployment_config:
+              allOf:
+                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+              nullable: true
             name:
               type: string
             program_code:
@@ -15843,17 +15870,6 @@ components:
         `etl` replication library; fields omitted from the configuration fall
         back to `etl`'s own defaults.
       properties:
-        max_bytes:
-          type: integer
-          description: |-
-            Maximum preferred byte size for one batch per active stream. This is
-            a ceiling, not a target: the runtime still chooses the smaller value
-            between this limit and the memory-ratio budget computed from
-            `memory_budget_ratio`.
-
-            Default: 33554432 (32 MiB), the same as etl.
-          default: 33554432
-          minimum: 0
         max_fill_ms:
           type: integer
           format: int64
@@ -15861,11 +15877,24 @@ components:
             Maximum time, in milliseconds, to wait before flushing a partially
             filled batch. This is the latency bound for batching: once the first
             event enters a batch, the batch is flushed when this timer elapses,
-            even if `max_bytes` was not reached.
+            even if `max_size` was not reached.
 
             Default: 10000 (10 seconds).
           default: 10000
           minimum: 0
+        max_size:
+          type: string
+          description: |-
+            Maximum preferred size for one batch per active stream, such as
+            `"32Mi"`. This is a ceiling, not a target: the runtime still chooses
+            the smaller value between this limit and the memory-ratio budget
+            computed from `memory_budget_ratio`.
+
+            Default: `"32Mi"`, the same as etl.
+
+            Before release 0.367.0 this setting was `max_bytes`, a number of
+            bytes. That name is deprecated but still read.
+          default: 32Mi
         memory_budget_ratio:
           type: number
           format: float
@@ -16290,19 +16319,24 @@ components:
                 the `set_extra_columns` connector command,
 
                 to these columns.
-            max_buffer_size_bytes:
-              type: integer
+            max_buffer_size:
+              type: string
               description: >-
-                The maximum buffer size in for a single operation.
+                The maximum buffer size for a single operation, such as `"1Mi"`.
 
                 Note that the buffers of `INSERT`, `UPDATE` and `DELETE` queries
                 are
 
                 separate.
 
-                Default: 1 MiB
-              default: 1048576
-              minimum: 0
+                Default: `"1Mi"`.
+
+
+                Before release 0.367.0 this setting was `max_buffer_size_bytes`,
+                a
+
+                number of bytes. That name is deprecated but still read.
+              default: 1Mi
             max_records_in_buffer:
               type: integer
               description: The maximum number of records in a single buffer.
@@ -16986,24 +17020,26 @@ components:
             for an instance of this pipeline
           default: null
           nullable: true
-        memory_mb_max:
-          type: integer
-          format: int64
+        memory_max:
+          type: string
           description: |-
-            The maximum memory in Megabytes to reserve
-            for an instance of this pipeline
+            The maximum memory to reserve for an instance of this pipeline, such
+            as `"16Gi"`.
+
+            Before release 0.367.0 this setting was `memory_mb_max`, a number of
+            megabytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
-        memory_mb_min:
-          type: integer
-          format: int64
+        memory_min:
+          type: string
           description: |-
-            The minimum memory in Megabytes to reserve
-            for an instance of this pipeline
+            The minimum memory to reserve for an instance of this pipeline, such
+            as `"4Gi"`.
+
+            Before release 0.367.0 this setting was `memory_mb_min`, a number of
+            megabytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
         namespace:
           type: string
           description: |-
@@ -17032,33 +17068,46 @@ components:
             throughput.
           default: null
           nullable: true
-        storage_mb_max:
-          type: integer
-          format: int64
+        storage_max:
+          type: string
           description: >-
-            The maximum storage in Megabytes for an instance of this pipeline.
+            The maximum storage for an instance of this pipeline, such as
+
+            `"400Gi"`.
 
 
-            Without `storage_mb_min`, this much storage is reserved up front.
+            Without `storage_min`, this much storage is reserved up front.
 
 
-            With `storage_mb_min`, storage starts there and autoscaling expands
-            it
+            With `storage_min`, storage starts there and autoscaling expands it
+            up
 
-            up to this limit.
+            to this limit.
+
+
+            Before release 0.367.0 this setting was `storage_mb_max`, a number
+            of
+
+            megabytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
-        storage_mb_min:
-          type: integer
-          format: int64
-          description: |-
-            The initial storage in Megabytes to reserve for an instance of this
-            pipeline. Set together with `storage_mb_max` to enable storage
+        storage_min:
+          type: string
+          description: >-
+            The initial storage to reserve for an instance of this pipeline,
+            such
+
+            as `"100Gi"`. Set together with `storage_max` to enable storage
+
             autoscaling.
+
+
+            Before release 0.367.0 this setting was `storage_mb_min`, a number
+            of
+
+            megabytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
         volume_attributes_class:
           type: string
           description: |-
@@ -17464,20 +17513,19 @@ components:
 
             The default value is `true`.
           default: true
-        datafusion_memory_mb:
-          type: integer
-          format: int64
+        datafusion_memory:
+          type: string
           description: >-
-            DataFusion memory pool size, in MB, shared by the ad-hoc query
+            DataFusion memory pool size, such as `"1Gi"`, shared by the ad-hoc
 
-            engine and the Delta Lake / Iceberg connectors.
+            query engine and the Delta Lake / Iceberg connectors.
 
 
-            Carved out of `max_rss_mb` (falling back to
+            Carved out of `max_rss` (falling back to `resources.memory_max`);
+            the
 
-            `resources.memory_mb_max`); the remainder goes to the DBSP circuit,
-
-            so the two do not double-book RAM.
+            remainder goes to the DBSP circuit, so the two do not double-book
+            RAM.
 
 
             Unset: defaults to 5% of the effective budget, capped at 2 GB.
@@ -17499,13 +17547,17 @@ components:
             No pool limit applied if no overall budget is configured.
 
 
+            Before release 0.367.0 this setting was `datafusion_memory_mb`, a
+
+            number of megabytes. That name is deprecated but still read.
+
+
             See [documentation on the pipeline's memory
             usage](https://docs.feldera.com/operations/memory)
 
             for more details.
           default: null
           nullable: true
-          minimum: 0
         dev_tweaks:
           allOf:
             - $ref: '#/components/schemas/DevTweaks'
@@ -17641,14 +17693,12 @@ components:
           default: null
           nullable: true
           minimum: 0
-        max_rss_mb:
-          type: integer
-          format: int64
+        max_rss:
+          type: string
           description: >-
-            The maximum amount of memory, in Megabytes, that the pipeline is
-            allowed to use
+            The maximum amount of memory that the pipeline is allowed to use on
 
-            on each host.
+            each host, such as `"16G"` or `"16Gi"`.
 
 
             Setting this property activates memory pressure monitoring and
@@ -17678,10 +17728,24 @@ components:
             instance.
 
 
-            When `max_rss_mb` is not specified but `resources.memory_mb_max` is
-            set, the
+            When `max_rss` is not specified but `resources.memory_max` is set,
+            the
 
             latter is used as the effective memory cap for the pipeline.
+
+
+            The pipeline caps this limit at the memory available to it, which is
+            the
+
+            host's memory or the container's memory limit, whichever is smaller.
+            It
+
+            rechecks the available memory every second.
+
+
+            Before release 0.367.0 this setting was `max_rss_mb`, a number of
+
+            megabytes. That name is deprecated but still read.
 
 
             See [documentation on the pipeline's memory
@@ -17690,7 +17754,6 @@ components:
             for more details.
           default: null
           nullable: true
-          minimum: 0
         min_batch_size_records:
           type: integer
           format: int64
@@ -17748,9 +17811,6 @@ components:
           default:
             cpu_cores_min: null
             cpu_cores_max: null
-            memory_mb_min: null
-            memory_mb_max: null
-            storage_mb_max: null
             storage_class: null
             service_account_name: null
             namespace: null
@@ -17760,11 +17820,8 @@ components:
           default:
             backend:
               name: default
-            min_storage_bytes: null
-            min_step_storage_bytes: null
             compression: default
             compression_level: null
-            cache_mib: null
           nullable: true
         tracing:
           type: boolean
@@ -18212,6 +18269,20 @@ components:
           type: string
           description: Acting tenant name; `null` exactly when `tenant_id` is.
           nullable: true
+        user_created_at:
+          type: string
+          format: date-time
+          description: >-
+            When the user got the first tenant membership, usually at the first
+
+            login. The web console uses it to report a signup. Is `null` for
+
+            principals that are not human logins, for users without memberships,
+            and
+
+            for users with a membership from before the manager recorded this
+            time.
+          nullable: true
     SetMemberRoleRequest:
       type: object
       description: Request to assign a role to a user within a tenant.
@@ -18414,8 +18485,8 @@ components:
     StorageAutoscalingConfig:
       type: object
       description: |-
-        Storage autoscaling policy: expand storage from `storage_mb_min` toward
-        `storage_mb_max` as it fills up.
+        Storage autoscaling policy: expand storage from `storage_min` toward
+        `storage_max` as it fills up.
       properties:
         scale_factor:
           type: number
@@ -18429,19 +18500,22 @@ components:
           description: Usage fraction that triggers expansion. Defaults to 0.8.
           default: null
           nullable: true
-        scale_threshold_available_mb:
-          type: integer
-          format: int64
+        scale_threshold_available:
+          type: string
           description: >-
-            Expand storage when available space falls below this many MB, even
-            if
+            Expand storage when available space falls below this size, such as
 
-            usage is still under `scale_threshold`. Either condition triggers
+            `"10Gi"`, even if usage is still under `scale_threshold`. Either
 
-            expansion. Unset by default.
+            condition triggers expansion. Unset by default.
+
+
+            Before release 0.367.0 this setting was
+            `scale_threshold_available_mb`,
+
+            a number of megabytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
     StorageBackendConfig:
       oneOf:
         - type: object
@@ -18560,10 +18634,10 @@ components:
             Values outside the valid range, such as 0.0, disable Bloom filters.
           default: null
           nullable: true
-        cache_mib:
-          type: integer
+        cache_size:
+          type: string
           description: >-
-            The maximum size of the in-memory storage cache, in MiB.
+            The maximum size of the in-memory storage cache, such as `"4Gi"`.
 
 
             If set, the specified cache size is spread across all the foreground
@@ -18573,9 +18647,13 @@ components:
             cache
 
             is limited to 256 MiB.
+
+
+            Before release 0.367.0 this setting was `cache_mib`, a number of
+
+            mebibytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
         compression:
           allOf:
             - $ref: '#/components/schemas/StorageCompression'
@@ -18605,13 +18683,44 @@ components:
             which selects the algorithm's own default.
           default: null
           nullable: true
-        min_step_storage_bytes:
-          type: integer
+        min_spill_size:
+          type: string
+          description: >-
+            For a batch of data maintained as part of a persistent index during
+            a
+
+            pipeline run, the minimum estimated size to write it to storage,
+            such
+
+            as `"10Mi"`.
+
+
+            This is provided for debugging and fine-tuning and should ordinarily
+            be
+
+            left unset.
+
+
+            A value of 0 will write even empty batches to storage, and nonzero
+
+            values provide a threshold.  A very large value effectively disables
+
+            storage for such batches.  The default is `"10Mi"`.
+
+
+            Before release 0.367.0 this setting was `min_storage_bytes`, a
+            number
+
+            of bytes. That name is deprecated but still read.
+          default: null
+          nullable: true
+        min_step_spill_size:
+          type: string
           description: >-
             For a batch of data passed through the pipeline during a single
             step,
 
-            the minimum estimated number of bytes to write it to storage.
+            the minimum estimated size to write it to storage, such as `"64Mi"`.
 
 
             This is provided for debugging and fine-tuning and should ordinarily
@@ -18624,39 +18733,18 @@ components:
 
             and a layer file is not free.  Nonzero values provide a threshold.
 
-            `usize::MAX`, the default, effectively disables storage for such
+            Unset, the default, effectively disables storage for such batches.
 
-            batches.  If it is set to another value, it should ordinarily be
+            If it is set, it should ordinarily be greater than or equal to
 
-            greater than or equal to `min_storage_bytes`.
+            `min_spill_size`.
+
+
+            Before release 0.367.0 this setting was `min_step_storage_bytes`, a
+
+            number of bytes. That name is deprecated but still read.
           default: null
           nullable: true
-          minimum: 0
-        min_storage_bytes:
-          type: integer
-          description: >-
-            For a batch of data maintained as part of a persistent index during
-            a
-
-            pipeline run, the minimum estimated number of bytes to write it to
-
-            storage.
-
-
-            This is provided for debugging and fine-tuning and should ordinarily
-            be
-
-            left unset.
-
-
-            A value of 0 will write even empty batches to storage, and nonzero
-
-            values provide a threshold.  `usize::MAX` would effectively disable
-
-            storage for such batches.  The default is 10,048,576 (10 MiB).
-          default: null
-          nullable: true
-          minimum: 0
     StorageStatus:
       type: string
       description: >-

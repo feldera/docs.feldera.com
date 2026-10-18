@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.0a10513a.js" defer="defer"></script>
-<script src="/assets/js/main.1d4fc7da.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.00c68fb5.js" defer="defer"></script>
+<script src="/assets/js/main.559b78e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,6 +21,121 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">
+<p>Pipelines without fault tolerance no longer write a checkpoint on
+<code>SIGTERM</code>.  On Kubernetes, Force Stop also sends <code>SIGTERM</code>, so such a
+pipeline could keep a checkpoint the user did not ask for.</p>
+</li>
+<li class="">
+<p>Incompatible change (SQL compiler): a pipeline compiled with this release
+cannot reuse the state that an earlier release saved for its views.  When
+the pipeline resumes from such a checkpoint, it must bootstrap all its views
+from its tables, which takes more time than a typical bootstrap.  Materialized tables can reuse their existing saved state.</p>
+</li>
+<li class="">
+<p>Incompatible change (SQL compiler): a pipeline whose program uses <code>NOW()</code>
+cannot resume from a checkpoint that an earlier release saved.
+Bootstrapping a pipeline compiled with a previous version of the
+compiler will be impossible. After recompilation stop the pipeline, clear its storage, and start it again.  The
+pipeline then ingests all its input data again.</p>
+</li>
+<li class="">
+<p>Avro input connector: the new <code>cdc_field</code> property names a field that holds
+the operation type of each raw Avro record: <code>I</code> (insert), <code>U</code> (upsert), or
+<code>D</code> (delete).  A Feldera Avro output connector with <code>cdc_field</code> set writes
+these values.  See
+<a class="" href="/formats/avro/#ingesting-cdc-records">Ingesting change data capture (CDC) records</a>.</p>
+</li>
+<li class="">
+<p>Incompatible change (pipeline process): the pipeline binary reads its
+configuration file as JSON only, so its <code>--config-file</code> argument must name
+a JSON file. The pipeline manager writes <code>config.json</code> and no longer writes
+<code>config.yaml</code>. A pipeline binary has preferred <code>config.json</code> since release
+0.155.0, so a pipeline pinned to that release or a later one is not
+affected. In the Enterprise edition, the pipeline <code>ConfigMap</code> carries only
+<code>config.json</code>.</p>
+</li>
+<li class="">
+<p>Bug fix (Iceberg input connector): in <code>snapshot_and_follow</code> mode, a pipeline
+that restarted from a checkpoint taken after the connector read the
+initial snapshot read that snapshot again, so a table without a primary
+key got duplicate rows.  Now the connector continues to follow the table
+after the last snapshot that it ingested.  A checkpoint taken before this
+fix still makes the connector read the snapshot again once.  See
+<a class="" href="/connectors/sources/iceberg/">Iceberg input connector</a>.</p>
+</li>
+<li class="">
+<p>In a multihost pipeline, a Kafka input connector can now divide the
+partitions of its topic among the hosts, and a Delta Lake or Iceberg input
+connector can divide the data files of its snapshot.  Set the new connector
+attribute <a class="" href="/connectors/#distributed"><code>distributed</code></a> to <code>true</code>.  See
+distributed connectors for
+<a class="" href="/connectors/sources/kafka/#distributed-connectors">Kafka</a>,
+<a class="" href="/connectors/sources/delta/#distributed-connectors">Delta Lake</a>, and
+<a class="" href="/connectors/sources/iceberg/#distributed-connectors">Iceberg</a>.</p>
+</li>
+<li class="">
+<p>Deprecation (pipeline and connector configuration): every size setting now
+takes a string with a unit, in the format Kubernetes uses for a quantity,
+such as <code>&quot;16G&quot;</code>, <code>&quot;4Gi&quot;</code>, <code>&quot;512Mi&quot;</code> or <code>&quot;4096&quot;</code>. Accepted units are <code>k</code>,
+<code>M</code>, <code>G</code>, <code>T</code>, <code>P</code> and <code>E</code> (powers of a thousand) and <code>Ki</code>, <code>Mi</code>, <code>Gi</code>,
+<code>Ti</code>, <code>Pi</code> and <code>Ei</code> (powers of 1024), each with or without a trailing <code>B</code>;
+a bare number is a number of bytes. A setting whose old name counted
+megabytes or mebibytes refuses a quoted number with no unit, such as
+<code>&quot;16000&quot;</code>, since the unquoted <code>16000</code> meant megabytes: write <code>&quot;16G&quot;</code>. Each
+setting loses the unit from its name, so <code>memory_mb_max</code> becomes
+<code>memory_max</code>, and the settings whose name carried no usable unit take a
+name that says what they measure, as the table below shows. The old name remains a deprecated alias of the new one
+and takes the bare number it always took, so an existing configuration
+keeps working, and the pipeline logs a warning that names the setting and
+the value to write instead. Writing both names of one setting is an error.
+The old names are removed no earlier than release 0.369.0.</p>
+<p>The NATS consumer&#x27;s <code>max_bytes</code> is not part of this scheme: it is a NATS
+pull option passed through as NATS spells it.</p>
+<div class="table-scroll-container"><table><thead><tr><th>Old name (unit)</th><th>New name</th></tr></thead><tbody><tr><td><code>max_rss_mb</code> (MB)</td><td><code>max_rss</code></td></tr><tr><td><code>datafusion_memory_mb</code> (MB)</td><td><code>datafusion_memory</code></td></tr><tr><td><code>storage.cache_mib</code> (MiB)</td><td><code>storage.cache_size</code></td></tr><tr><td><code>storage.min_storage_bytes</code> (bytes)</td><td><code>storage.min_spill_size</code></td></tr><tr><td><code>storage.min_step_storage_bytes</code> (bytes)</td><td><code>storage.min_step_spill_size</code></td></tr><tr><td><code>resources.memory_mb_min</code>, <code>resources.memory_mb_max</code> (MB)</td><td><code>resources.memory_min</code>, <code>resources.memory_max</code></td></tr><tr><td><code>resources.storage_mb_min</code>, <code>resources.storage_mb_max</code> (MB)</td><td><code>resources.storage_min</code>, <code>resources.storage_max</code></td></tr><tr><td><code>resources.autoscaling.storage.scale_threshold_available_mb</code> (MB)</td><td><code>resources.autoscaling.storage.scale_threshold_available</code></td></tr><tr><td>connector <code>max_queued_bytes</code> (bytes)</td><td><code>max_queued_size</code></td></tr><tr><td><code>dev_tweaks.storage_mb_max</code> (MiB)</td><td><code>dev_tweaks.storage_max</code></td></tr><tr><td><code>dev_tweaks.fbuf_slab_bytes_per_class</code>, <code>lazy_input_map_key_block_bytes</code>, <code>exchange_channel_capacity_bytes</code> (bytes)</td><td><code>fbuf_slab_size_per_class</code>, <code>lazy_input_map_key_block_size</code>, <code>exchange_channel_capacity</code></td></tr><tr><td>File input <code>buffer_size_bytes</code> (bytes)</td><td><code>buffer_size</code></td></tr><tr><td>DynamoDB and Postgres output <code>max_buffer_size_bytes</code> (bytes)</td><td><code>max_buffer_size</code></td></tr><tr><td>Postgres CDC <code>batch.max_bytes</code> (bytes)</td><td><code>batch.max_size</code></td></tr><tr><td><code>deployment_config.resources.memory_mb_min</code>, <code>memory_mb_max</code> (MB)</td><td><code>memory_min</code>, <code>memory_max</code></td></tr></tbody></table></div>
+<p>For a client that reads the configuration back:</p>
+<ul>
+<li class="">A configuration is stored under the new names the next time it is saved,
+and the API then returns it under those names, as <code>&quot;16G&quot;</code> rather than
+<code>16000</code>. A pipeline stored before this change and not saved since comes
+back under the old names, so a client must accept either.</li>
+<li class="">The OpenAPI schema lists only the new names.</li>
+<li class="">The Python SDK&#x27;s <code>Resources</code>, <code>Storage</code> and <code>RuntimeConfig</code> take the new
+arguments as strings such as <code>&quot;16Gi&quot;</code>, and read them back from either
+spelling. The old arguments and attributes such as <code>memory_mb_max</code> remain
+as deprecated properties that return a whole number of the old unit and
+warn. The SDK writes each setting to the server under the name it was
+given, so code that uses the old arguments keeps working against an
+older server.</li>
+<li class="">The web console reads the memory and storage limits of a pipeline from
+either spelling.</li>
+</ul>
+<p>Upgrade <code>fda</code> together with the server. An <code>fda</code> older than this change
+reads a configuration stored under the new names as if those settings were
+unset. <code>fda set-config</code> takes <code>memory_min</code>, <code>memory_max</code>, <code>storage_min</code>,
+<code>storage_max</code>, <code>max_rss</code>, <code>datafusion_memory</code> and <code>min_spill_size</code> as
+sizes; its megabyte and byte keys keep working and say which key to use.</p>
+<p>When the pipeline manager starts a pipeline pinned to an older runtime with
+<code>runtime_version</code>, or one compiled by an earlier release and not yet
+updated, it writes the pipeline&#x27;s configuration under the old names, in the
+runtime configuration and in every connector. A size that is not a whole
+number of the old unit rounds up, so a small limit never becomes <code>0</code>. A
+runtime from before the duration rename gets both the old duration and the
+old size names; one from between the two renames gets only the old size
+names. The configuration stored by the API is not changed.</p>
+</li>
+<li class="">
+<p>Incompatible change (pipeline process): the pipeline binary reads its
+configuration file as JSON only, so its <code>--config-file</code> argument must name
+a JSON file. The pipeline manager writes <code>config.json</code> and no longer writes
+<code>config.yaml</code>. A pipeline binary has preferred <code>config.json</code> since release
+0.155.0, so a pipeline pinned to that release or a later one is not
+affected. In the Enterprise edition, the pipeline <code>ConfigMap</code> carries only
+<code>config.json</code>.</p>
+</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03660">v0.366.0<a href="#v03660" class="hash-link" aria-label="Direct link to v0.366.0" title="Direct link to v0.366.0" translate="no">​</a></h2>
 <ul>
 <li class="">
 <p>Incompatible change (ad-hoc queries): the <code>hash</code> result format and
@@ -157,6 +272,18 @@ durations, and its <code>checkpoint_interval</code> key accepts a duration such 
 <p>Pipelines write a checkpoint on <code>SIGTERM</code> before they exit.  See
 <a class="" href="/pipelines/fault-tolerance/#writing-checkpoints">Writing checkpoints</a>.</p>
 </li>
+<li class="">
+<p>Bug fix (Python SDK): <code>Pipeline.checkpoint(wait=True)</code> returned normally
+when the checkpoint failed.  It now raises <code>RuntimeError</code> with the error
+the pipeline reported, as <code>Pipeline.sync_checkpoint(wait=True)</code> already
+did.</p>
+</li>
+<li class="">
+<p>Bug fix (Python SDK): the connector methods (<code>input_connector_stats()</code>,
+<code>pause_input_connector()</code>, <code>generate_completion_token()</code> and the others)
+failed with <code>UnknownEndpoint</code> for a quoted table or view name that contains
+a character such as <code>#</code>, <code>?</code>, <code>%</code> or <code>/</code>.</p>
+</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03650">v0.365.0<a href="#v03650" class="hash-link" aria-label="Direct link to v0.365.0" title="Direct link to v0.365.0" translate="no">​</a></h2>
 <ul>
@@ -181,6 +308,18 @@ key.  This implementation does not support partial updates (JSON
 option can make the pipeline re-ingest its input data.  See
 <a class="" href="/sql/grammar/#experimental-options"><code>FELDERA_LAZY_UPSERT</code></a> and
 <a class="" href="/pipelines/modifying/#bootstrapping">Bootstrapping</a>.</p>
+</li>
+<li class="">
+<p>Experimental (Enterprise, Kubernetes): <code>deployment_config</code> in
+<code>PATCH /v0/pipelines/{name}</code> changes the CPU and memory of a running pipeline
+without a restart, and <code>GET</code> returns them.  The resize lasts across restarts until storage is
+cleared or CPU or memory is changed in the runtime configuration.  Enable it with the Helm value <code>kubernetesRunner.enablePipelineResize</code>.  See
+<a class="" href="/pipelines/configuration/#resizing-a-running-pipeline">Resizing a running pipeline</a>.</p>
+</li>
+<li class="">
+<p>Behavior change (Enterprise, Kubernetes): pipeline StatefulSets now use the
+<code>OnDelete</code> update strategy.  To apply StatefulSet changes (e.g.,
+<code>kubectl rollout restart</code>, <code>kubectl edit</code>, etc.), delete the pod.</p>
 </li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03620">v0.362.0<a href="#v03620" class="hash-link" aria-label="Direct link to v0.362.0" title="Direct link to v0.362.0" translate="no">​</a></h2>
@@ -1204,6 +1343,6 @@ If the provided docker images are used (and the entrypoint is not modified), no 
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="0900-2025-06-20">0.90.0 (2025-06-20)<a href="#0900-2025-06-20" class="hash-link" aria-label="Direct link to 0.90.0 (2025-06-20)" title="Direct link to 0.90.0 (2025-06-20)" translate="no">​</a></h2>
 <ul>
 <li class=""><strong>Aligned Open Source and Enterprise version:</strong> The enterprise edition of Feldera is now aligned with the Open Source edition. Versions will share the same codebase for a given release but the enterprise edition will include additional features and support.</li>
-</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#unreleased" class="table-of-contents__link toc-highlight">Unreleased</a></li><li><a href="#v03650" class="table-of-contents__link toc-highlight">v0.365.0</a></li><li><a href="#v03620" class="table-of-contents__link toc-highlight">v0.362.0</a></li><li><a href="#v03600" class="table-of-contents__link toc-highlight">v0.360.0</a></li><li><a href="#v03580" class="table-of-contents__link toc-highlight">v0.358.0</a></li><li><a href="#v03560" class="table-of-contents__link toc-highlight">v0.356.0</a></li><li><a href="#v03520" class="table-of-contents__link toc-highlight">v0.352.0</a></li><li><a href="#v03510" class="table-of-contents__link toc-highlight">v0.351.0</a></li><li><a href="#v03500" class="table-of-contents__link toc-highlight">v0.350.0</a></li><li><a href="#v03440" class="table-of-contents__link toc-highlight">v0.344.0</a></li><li><a href="#v03430" class="table-of-contents__link toc-highlight">v0.343.0</a></li><li><a href="#v03400" class="table-of-contents__link toc-highlight">v0.340.0</a></li><li><a href="#v03370" class="table-of-contents__link toc-highlight">v0.337.0</a></li><li><a href="#v03330" class="table-of-contents__link toc-highlight">v0.333.0</a></li><li><a href="#v03300" class="table-of-contents__link toc-highlight">v0.330.0</a></li><li><a href="#v03290" class="table-of-contents__link toc-highlight">v0.329.0</a></li><li><a href="#v03280" class="table-of-contents__link toc-highlight">v0.328.0</a></li><li><a href="#v03270" class="table-of-contents__link toc-highlight">v0.327.0</a></li><li><a href="#v03250" class="table-of-contents__link toc-highlight">v0.325.0</a></li><li><a href="#v03220" class="table-of-contents__link toc-highlight">v0.322.0</a></li><li><a href="#v03190" class="table-of-contents__link toc-highlight">v0.319.0</a></li><li><a href="#v03160" class="table-of-contents__link toc-highlight">v0.316.0</a></li><li><a href="#v03130" class="table-of-contents__link toc-highlight">v0.313.0</a></li><li><a href="#v03110" class="table-of-contents__link toc-highlight">v0.311.0</a></li><li><a href="#v03090" class="table-of-contents__link toc-highlight">v0.309.0</a></li><li><a href="#v03070" class="table-of-contents__link toc-highlight">v0.307.0</a></li><li><a href="#v03060" class="table-of-contents__link toc-highlight">v0.306.0</a></li><li><a href="#v02940" class="table-of-contents__link toc-highlight">v0.294.0</a></li><li><a href="#v02920" class="table-of-contents__link toc-highlight">v0.292.0</a></li><li><a href="#v02890" class="table-of-contents__link toc-highlight">v0.289.0</a></li><li><a href="#v02880" class="table-of-contents__link toc-highlight">v0.288.0</a></li><li><a href="#v02810" class="table-of-contents__link toc-highlight">v0.281.0</a><ul><li><a href="#new-dbt-adapter-for-feldera-dbt-feldera" class="table-of-contents__link toc-highlight">New dbt adapter for Feldera (<code>dbt-feldera</code>)</a></li><li><a href="#checkpoint-sync-read_bucket-and-checkpoint-loading-priority" class="table-of-contents__link toc-highlight">Checkpoint sync: <code>read_bucket</code> and checkpoint loading priority</a></li><li><a href="#nats-input-connector-retry-and-health-check-support" class="table-of-contents__link toc-highlight">NATS input connector retry and health check support</a></li><li><a href="#nats-input-connector-timeout-and-probe-updates" class="table-of-contents__link toc-highlight">NATS input connector timeout and probe updates</a></li></ul></li><li><a href="#v02780" class="table-of-contents__link toc-highlight">v0.278.0</a><ul><li><a href="#checkpoint-sync-remote-checkpoints-older-than-v02250-are-no-longer-supported" class="table-of-contents__link toc-highlight">Checkpoint sync: remote checkpoints older than v0.225.0 are no longer supported</a></li></ul></li><li><a href="#v02630" class="table-of-contents__link toc-highlight">v0.263.0</a></li><li><a href="#v02520" class="table-of-contents__link toc-highlight">v0.252.0</a><ul><li><a href="#python-api-removed-ignore_deployment_error" class="table-of-contents__link toc-highlight">Python API removed <code>ignore_deployment_error</code></a></li><li><a href="#kafka-input-connector-synchronize_partitions-option" class="table-of-contents__link toc-highlight">Kafka input connector <code>synchronize_partitions</code> option</a></li></ul></li><li><a href="#02270" class="table-of-contents__link toc-highlight">0.227.0</a></li><li><a href="#02260" class="table-of-contents__link toc-highlight">0.226.0</a></li><li><a href="#02010" class="table-of-contents__link toc-highlight">0.201.0</a></li><li><a href="#01880" class="table-of-contents__link toc-highlight">0.188.0</a></li><li><a href="#01860" class="table-of-contents__link toc-highlight">0.186.0</a></li><li><a href="#01560" class="table-of-contents__link toc-highlight">0.156.0</a></li><li><a href="#01480" class="table-of-contents__link toc-highlight">0.148.0</a></li><li><a href="#01380" class="table-of-contents__link toc-highlight">0.138.0</a></li><li><a href="#01360" class="table-of-contents__link toc-highlight">0.136.0</a></li><li><a href="#01350" class="table-of-contents__link toc-highlight">0.135.0</a></li><li><a href="#01290" class="table-of-contents__link toc-highlight">0.129.0</a></li><li><a href="#01260" class="table-of-contents__link toc-highlight">0.126.0</a></li><li><a href="#01250" class="table-of-contents__link toc-highlight">0.125.0</a></li><li><a href="#01240" class="table-of-contents__link toc-highlight">0.124.0</a></li><li><a href="#01050" class="table-of-contents__link toc-highlight">0.105.0</a></li><li><a href="#01050-1" class="table-of-contents__link toc-highlight">0.105.0</a></li><li><a href="#01030" class="table-of-contents__link toc-highlight">0.103.0</a></li><li><a href="#0970" class="table-of-contents__link toc-highlight">0.97.0</a><ul><li><a href="#changes-to-web-console" class="table-of-contents__link toc-highlight">Changes to Web Console</a></li><li><a href="#changes-to-rest-api" class="table-of-contents__link toc-highlight">Changes to REST API</a></li><li><a href="#changes-to-python-sdk-feldera" class="table-of-contents__link toc-highlight">Changes to Python SDK <code>feldera</code>:</a></li><li><a href="#changes-to-cli-fda" class="table-of-contents__link toc-highlight">Changes to CLI <code>fda</code>:</a></li><li><a href="#changes-to-rust-sdk-feldera-rest-api" class="table-of-contents__link toc-highlight">Changes to Rust SDK <code>feldera-rest-api</code>:</a></li><li><a href="#pipeline-manager" class="table-of-contents__link toc-highlight">Pipeline Manager</a></li></ul></li><li><a href="#0900-2025-06-20" class="table-of-contents__link toc-highlight">0.90.0 (2025-06-20)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
+</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#unreleased" class="table-of-contents__link toc-highlight">Unreleased</a></li><li><a href="#v03660" class="table-of-contents__link toc-highlight">v0.366.0</a></li><li><a href="#v03650" class="table-of-contents__link toc-highlight">v0.365.0</a></li><li><a href="#v03620" class="table-of-contents__link toc-highlight">v0.362.0</a></li><li><a href="#v03600" class="table-of-contents__link toc-highlight">v0.360.0</a></li><li><a href="#v03580" class="table-of-contents__link toc-highlight">v0.358.0</a></li><li><a href="#v03560" class="table-of-contents__link toc-highlight">v0.356.0</a></li><li><a href="#v03520" class="table-of-contents__link toc-highlight">v0.352.0</a></li><li><a href="#v03510" class="table-of-contents__link toc-highlight">v0.351.0</a></li><li><a href="#v03500" class="table-of-contents__link toc-highlight">v0.350.0</a></li><li><a href="#v03440" class="table-of-contents__link toc-highlight">v0.344.0</a></li><li><a href="#v03430" class="table-of-contents__link toc-highlight">v0.343.0</a></li><li><a href="#v03400" class="table-of-contents__link toc-highlight">v0.340.0</a></li><li><a href="#v03370" class="table-of-contents__link toc-highlight">v0.337.0</a></li><li><a href="#v03330" class="table-of-contents__link toc-highlight">v0.333.0</a></li><li><a href="#v03300" class="table-of-contents__link toc-highlight">v0.330.0</a></li><li><a href="#v03290" class="table-of-contents__link toc-highlight">v0.329.0</a></li><li><a href="#v03280" class="table-of-contents__link toc-highlight">v0.328.0</a></li><li><a href="#v03270" class="table-of-contents__link toc-highlight">v0.327.0</a></li><li><a href="#v03250" class="table-of-contents__link toc-highlight">v0.325.0</a></li><li><a href="#v03220" class="table-of-contents__link toc-highlight">v0.322.0</a></li><li><a href="#v03190" class="table-of-contents__link toc-highlight">v0.319.0</a></li><li><a href="#v03160" class="table-of-contents__link toc-highlight">v0.316.0</a></li><li><a href="#v03130" class="table-of-contents__link toc-highlight">v0.313.0</a></li><li><a href="#v03110" class="table-of-contents__link toc-highlight">v0.311.0</a></li><li><a href="#v03090" class="table-of-contents__link toc-highlight">v0.309.0</a></li><li><a href="#v03070" class="table-of-contents__link toc-highlight">v0.307.0</a></li><li><a href="#v03060" class="table-of-contents__link toc-highlight">v0.306.0</a></li><li><a href="#v02940" class="table-of-contents__link toc-highlight">v0.294.0</a></li><li><a href="#v02920" class="table-of-contents__link toc-highlight">v0.292.0</a></li><li><a href="#v02890" class="table-of-contents__link toc-highlight">v0.289.0</a></li><li><a href="#v02880" class="table-of-contents__link toc-highlight">v0.288.0</a></li><li><a href="#v02810" class="table-of-contents__link toc-highlight">v0.281.0</a><ul><li><a href="#new-dbt-adapter-for-feldera-dbt-feldera" class="table-of-contents__link toc-highlight">New dbt adapter for Feldera (<code>dbt-feldera</code>)</a></li><li><a href="#checkpoint-sync-read_bucket-and-checkpoint-loading-priority" class="table-of-contents__link toc-highlight">Checkpoint sync: <code>read_bucket</code> and checkpoint loading priority</a></li><li><a href="#nats-input-connector-retry-and-health-check-support" class="table-of-contents__link toc-highlight">NATS input connector retry and health check support</a></li><li><a href="#nats-input-connector-timeout-and-probe-updates" class="table-of-contents__link toc-highlight">NATS input connector timeout and probe updates</a></li></ul></li><li><a href="#v02780" class="table-of-contents__link toc-highlight">v0.278.0</a><ul><li><a href="#checkpoint-sync-remote-checkpoints-older-than-v02250-are-no-longer-supported" class="table-of-contents__link toc-highlight">Checkpoint sync: remote checkpoints older than v0.225.0 are no longer supported</a></li></ul></li><li><a href="#v02630" class="table-of-contents__link toc-highlight">v0.263.0</a></li><li><a href="#v02520" class="table-of-contents__link toc-highlight">v0.252.0</a><ul><li><a href="#python-api-removed-ignore_deployment_error" class="table-of-contents__link toc-highlight">Python API removed <code>ignore_deployment_error</code></a></li><li><a href="#kafka-input-connector-synchronize_partitions-option" class="table-of-contents__link toc-highlight">Kafka input connector <code>synchronize_partitions</code> option</a></li></ul></li><li><a href="#02270" class="table-of-contents__link toc-highlight">0.227.0</a></li><li><a href="#02260" class="table-of-contents__link toc-highlight">0.226.0</a></li><li><a href="#02010" class="table-of-contents__link toc-highlight">0.201.0</a></li><li><a href="#01880" class="table-of-contents__link toc-highlight">0.188.0</a></li><li><a href="#01860" class="table-of-contents__link toc-highlight">0.186.0</a></li><li><a href="#01560" class="table-of-contents__link toc-highlight">0.156.0</a></li><li><a href="#01480" class="table-of-contents__link toc-highlight">0.148.0</a></li><li><a href="#01380" class="table-of-contents__link toc-highlight">0.138.0</a></li><li><a href="#01360" class="table-of-contents__link toc-highlight">0.136.0</a></li><li><a href="#01350" class="table-of-contents__link toc-highlight">0.135.0</a></li><li><a href="#01290" class="table-of-contents__link toc-highlight">0.129.0</a></li><li><a href="#01260" class="table-of-contents__link toc-highlight">0.126.0</a></li><li><a href="#01250" class="table-of-contents__link toc-highlight">0.125.0</a></li><li><a href="#01240" class="table-of-contents__link toc-highlight">0.124.0</a></li><li><a href="#01050" class="table-of-contents__link toc-highlight">0.105.0</a></li><li><a href="#01050-1" class="table-of-contents__link toc-highlight">0.105.0</a></li><li><a href="#01030" class="table-of-contents__link toc-highlight">0.103.0</a></li><li><a href="#0970" class="table-of-contents__link toc-highlight">0.97.0</a><ul><li><a href="#changes-to-web-console" class="table-of-contents__link toc-highlight">Changes to Web Console</a></li><li><a href="#changes-to-rest-api" class="table-of-contents__link toc-highlight">Changes to REST API</a></li><li><a href="#changes-to-python-sdk-feldera" class="table-of-contents__link toc-highlight">Changes to Python SDK <code>feldera</code>:</a></li><li><a href="#changes-to-cli-fda" class="table-of-contents__link toc-highlight">Changes to CLI <code>fda</code>:</a></li><li><a href="#changes-to-rust-sdk-feldera-rest-api" class="table-of-contents__link toc-highlight">Changes to Rust SDK <code>feldera-rest-api</code>:</a></li><li><a href="#pipeline-manager" class="table-of-contents__link toc-highlight">Pipeline Manager</a></li></ul></li><li><a href="#0900-2025-06-20" class="table-of-contents__link toc-highlight">0.90.0 (2025-06-20)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
 </body>
 </html>

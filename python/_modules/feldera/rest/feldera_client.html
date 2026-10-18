@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.366.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.367.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=78b15e63"></script>
+        <script src="../../../_static/documentation_options.js?v=0964143a"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -1475,7 +1475,7 @@
 
 <span class="sd">        :param force: If True, the data will be inserted even if the pipeline is paused</span>
 <span class="sd">        :param update_format: JSON data change event format, used in conjunction with the &quot;json&quot; format,</span>
-<span class="sd">            the default value is &quot;insert_delete&quot;, other supported formats: &quot;weighted&quot;, &quot;debezium&quot;, &quot;snowflake&quot;, &quot;raw&quot;</span>
+<span class="sd">            the default value is &quot;insert_delete&quot;, other supported formats: &quot;debezium&quot;, &quot;raw&quot;</span>
 <span class="sd">        :param json_flavor: JSON encoding used for individual table records, the default value is &quot;default&quot;, other supported encodings:</span>
 <span class="sd">            &quot;debezium_mysql&quot;, &quot;snowflake&quot;, &quot;kafka_connect_json_converter&quot;, &quot;pandas&quot;</span>
 <span class="sd">        :param data: The data to insert</span>
@@ -1493,15 +1493,9 @@
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;csv&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;format must be either &#39;json&#39; or &#39;csv&#39;&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">update_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;weighted&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;debezium&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;raw&quot;</span><span class="p">,</span>
-        <span class="p">]:</span>
+        <span class="k">if</span> <span class="n">update_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;insert_delete&quot;</span><span class="p">,</span> <span class="s2">&quot;debezium&quot;</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;update_format must be one of &#39;insert_delete&#39;, &#39;weighted&#39;, &#39;debezium&#39;, &#39;snowflake&#39;, &#39;raw&#39;&quot;</span>
+                <span class="s2">&quot;update_format must be one of &#39;insert_delete&#39;, &#39;debezium&#39;, &#39;raw&#39;&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">json_flavor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">json_flavor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
@@ -1928,7 +1922,7 @@
 <span class="sd">        Get the status of the specified input connector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/stats&quot;</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/stats&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -1941,7 +1935,7 @@
 <span class="sd">        Get the status of the specified output connector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/stats&quot;</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">view_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/stats&quot;</span>
         <span class="p">)</span></div>
 
 
@@ -1967,7 +1961,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
             <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -1991,7 +1985,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
             <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -2057,7 +2051,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">view_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/pause&quot;</span><span class="p">,</span>
             <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -2084,7 +2078,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">view_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/views/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">view_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/start&quot;</span><span class="p">,</span>
             <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -2410,7 +2404,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">connector_name</span><span class="si">}</span><span class="s2">/completion_token&quot;</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/tables/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/connectors/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">connector_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/completion_token&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span>
