@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.367.0
+  version: 0.368.0
 paths:
   /config/authentication:
     get:
@@ -10685,6 +10685,20 @@ components:
         - snapshot
         - always
         - catchup
+    DeltaTableUpdateMode:
+      type: string
+      description: >-
+        How the Delta table connector applies pipeline updates to the target
+        table.
+
+
+        This is orthogonal to `mode`, which governs what happens to an existing
+        table
+
+        when the connector starts.
+      enum:
+        - cdc
+        - merge
     DeltaTableWriteMode:
       type: string
       description: >-
@@ -10703,6 +10717,32 @@ components:
       required:
         - uri
       properties:
+        auto_compact:
+          type: boolean
+          description: >-
+            Compact the target table from the connector, between flushes.
+
+
+            Only used when `update_mode` is `merge`. Merge mode marks an old row
+            version deleted
+
+            but leaves it in place, so without compaction the table keeps
+            growing and reads slow
+
+            down, however few live rows it holds.
+
+
+            Off by default, because maintenance is normally the table
+            administrator's job. Set it
+
+            for tables where Feldera is the only writer and nothing else
+            compacts the table. See
+
+            "Compaction is required" in the Delta output connector
+            documentation.
+
+
+            Default: `false`.
         checkpoint_interval:
           type: integer
           format: int32
@@ -10785,6 +10825,41 @@ components:
 
             Default: `"interval 30 days"` (Delta Lake default).
           nullable: true
+        lookup_chunk_size:
+          type: string
+          description: >-
+            Ceiling on the encoded keys the connector holds while locating the
+            rows to
+
+            supersede, such as `"256Mi"`.
+
+
+            Only used when `update_mode` is `merge`. A flush whose key set
+            exceeds this budget
+
+            is split into successive lookup passes, which bounds memory at the
+            cost of
+
+            re-scanning candidate files. Default: `"256Mi"`. Maximum:
+            `"2147483647"`, one byte
+
+            less than 2 GiB.
+          default: 256Mi
+        max_concurrent_probes:
+          type: integer
+          description: >-
+            Number of data files read concurrently while locating the rows to
+            supersede.
+
+
+            Only used when `update_mode` is `merge`. Each concurrent read holds
+            one file's
+
+            projected key column, so this bounds memory as well as request
+            concurrency.
+
+            Default: 16.
+          minimum: 1
         max_retries:
           type: integer
           format: int32
@@ -10818,13 +10893,17 @@ components:
             Number of parallel threads used by the connector.
 
 
-            Increasing this value can improve Delta Lake write throughput
-
-            by enabling concurrent writes. Increasing this value can improve
-            Delta Lake write throughput by enabling concurrent writes.
+            Increasing this value can improve Delta Lake write throughput by
+            enabling concurrent writes.
 
             Values above 1 require the view to have a unique key, so that the
             connector can order inserts and deletes correctly.
+
+            With `update_mode: merge` the connector splits a batch only when
+            each thread would get a
+
+            substantial share of it, so a small change still writes one file
+            rather than one small file per thread.
 
             Define the key with `CREATE INDEX` and set the connector's `index`
             property to that index;
@@ -10840,6 +10919,8 @@ components:
             Default: 1.
           nullable: true
           minimum: 1
+        update_mode:
+          $ref: '#/components/schemas/DeltaTableUpdateMode'
         uri:
           type: string
           description: Table URI.
@@ -13969,11 +14050,38 @@ components:
           nullable: true
         retry_interval:
           type: string
-          description: |-
-            Delay between automatic reconnect attempts while in retry mode, for
-            example `5s`. Must be at least one second. Unset selects
-            the default, `DEFAULT_RETRY_INTERVAL`.
+          description: >-
+            Delay before the first automatic reconnect attempt after a failure,
+
+            for example `5s`. The delay doubles on every consecutive failure, up
+
+            to `retry_max_interval`, and is jittered to avoid synchronized
+            retries
+
+            across connectors. Must be at least one second. Unset selects the
+
+            default, `DEFAULT_RETRY_INTERVAL`.
           default: 5s
+          nullable: true
+        retry_max_attempts:
+          type: integer
+          format: int32
+          description: >-
+            Maximum number of consecutive failed reconnect attempts before the
+
+            connector gives up and reports a fatal error. When unset, the
+            connector
+
+            retries indefinitely. Must be at least 1 when set.
+          nullable: true
+          minimum: 0
+        retry_max_interval:
+          type: string
+          description: |-
+            Upper bound on the delay between consecutive reconnect attempts, for
+            example `5m`. Must be at least `retry_interval`. Unset selects the
+            default, `DEFAULT_RETRY_MAX_INTERVAL`.
+          default: 5m
           nullable: true
         stream_name:
           type: string
@@ -14803,6 +14911,17 @@ components:
           properties:
             UnsupportedInputEndpoint:
               type: string
+        - type: object
+          required:
+            - FailedInputEndpointBarrier
+          properties:
+            FailedInputEndpointBarrier:
+              type: string
+              description: >-
+                The input endpoint failed with a fatal error while it held a
+                barrier.
+
+                It never reports another step, so the barrier never clears.
       description: Reasons why a pipeline does not support suspend and resume operations.
     PipelineConfig:
       allOf:
@@ -16483,7 +16602,9 @@ components:
 
             compiler captures the circuit IR and the runner launches the Gen-2
 
-            engine, so no pipeline binary is compiled.
+            engine, so no pipeline binary is compiled. `gen2:<sha>` selects the
+
+            engine build of that commit, where the runner supports it.
 
 
             A platform of version `0.x.y` may be capable of running future and
@@ -16677,6 +16798,10 @@ components:
             $ref: '#/components/schemas/MirNode'
         program_schema:
           description: Program schema.
+        udf_library:
+          allOf:
+            - $ref: '#/components/schemas/UdfLibrary'
+          nullable: true
     ProgramSchema:
       type: object
       description: |-
@@ -19652,6 +19777,21 @@ components:
         and `crate::InputTransport::new_endpoint`.
       discriminator:
         propertyName: name
+    UdfLibrary:
+      type: object
+      description: >-
+        A program's UDF library, named by the same checksums as a pipeline
+        binary.
+      required:
+        - source_checksum
+        - integrity_checksum
+      properties:
+        integrity_checksum:
+          type: string
+          description: sha256 checksum of the library file.
+        source_checksum:
+          type: string
+          description: Checksum of the sources the library was built from.
     UpdateInformation:
       type: object
       required:
