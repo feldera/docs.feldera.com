@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.368.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.369.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=bf77bbbe"></script>
+        <script src="../../_static/documentation_options.js?v=cea2f1e7"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -554,6 +554,9 @@
 <span class="sd">        In order to receive all changes since the pipeline started, you can create the pipeline in the `PAUSED` state</span>
 <span class="sd">        using :meth:`start_paused`, attach listeners and unpause the pipeline using :meth:`resume`.</span>
 
+<span class="sd">        To read the changes that one input caused, pass the input&#39;s completion</span>
+<span class="sd">        token to :meth:`.OutputHandler.wait_for_token` before reading the handle.</span>
+
 <span class="sd">        :param view_name: The name of the view to listen to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -868,6 +871,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. _start:</span>
@@ -889,7 +893,22 @@
 <span class="sd">        :param wait: Set True to wait for the pipeline to start. True by default</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload. Use it</span>
+<span class="sd">            with `bootstrap_policy=BootstrapPolicy.ALLOW` and `wait=True`.</span>
+<span class="sd">            If a table is modified, bootstrapping will reload the table: it truncates the table and</span>
+<span class="sd">            resets its input connectors. Write each name exactly as the pipeline</span>
+<span class="sd">            reports it in the approval diff: an unquoted SQL name in lowercase,</span>
+<span class="sd">            a quoted name without its quotes. For example, write `t1` for</span>
+<span class="sd">            `CREATE TABLE T1` and `MyTable` for `CREATE TABLE &quot;MyTable&quot;`.</span>
+<span class="sd">            None by default: ALLOW bootstraps without a check. If no tables are</span>
+<span class="sd">            acceptable to reload, set `reloadable_tables=[]`.</span>
 <span class="sd">        :raises RuntimeError: If the pipeline is not in STOPPED state.</span>
+<span class="sd">        :raises TableReloadNotAllowedError: If a modified table is not in</span>
+<span class="sd">            `reloadable_tables`, or the pipeline cannot compute the program</span>
+<span class="sd">            diff. The pipeline stays in the AWAITINGAPPROVAL state: call</span>
+<span class="sd">            `approve()` to bootstrap or `stop(force=True)` to reject.</span>
+<span class="sd">        :raises ValueError: If `reloadable_tables` is set with a bootstrap</span>
+<span class="sd">            policy other than ALLOW, or with `wait=False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline</span><span class="p">(</span>
@@ -900,6 +919,7 @@
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="o">=</span><span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -913,6 +933,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the paused state.</span>
@@ -928,6 +949,8 @@
 <span class="sd">            pipeline to start (defaults to `None` = no timeout is enforced).</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload. See</span>
+<span class="sd">            :meth:`start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_paused</span><span class="p">(</span>
@@ -938,6 +961,7 @@
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="o">=</span><span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -951,6 +975,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the pipeline in the standby state.</span>
@@ -966,6 +991,8 @@
 <span class="sd">            pipeline to start (defaults to `None` = no timeout is enforced).</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload. See</span>
+<span class="sd">            :meth:`start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">start_pipeline_as_standby</span><span class="p">(</span>
@@ -976,6 +1003,7 @@
             <span class="n">wait</span><span class="o">=</span><span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="o">=</span><span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -988,6 +1016,7 @@
         <span class="n">concurrent_bootstrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Restarts the pipeline.</span>
@@ -1006,6 +1035,8 @@
 <span class="sd">            pipeline to restart.</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload. See</span>
+<span class="sd">            :meth:`start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">)</span>
@@ -1015,6 +1046,7 @@
             <span class="n">concurrent_bootstrap</span><span class="o">=</span><span class="n">concurrent_bootstrap</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="o">=</span><span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="o">=</span><span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="o">=</span><span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -2566,6 +2598,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Blocks until the pipeline processes all inputs represented by the completion token.</span>
+
+<span class="sd">        The pipeline has then handed the resulting changes to every output</span>
+<span class="sd">        connector.  A handle from :meth:`listen` may still be receiving them;</span>
+<span class="sd">        :meth:`.OutputHandler.wait_for_token` waits until it has.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span></div>

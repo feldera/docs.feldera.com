@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.368.0
+  version: 0.369.0
 paths:
   /config/authentication:
     get:
@@ -8658,7 +8658,11 @@ components:
         The payload is stored in the `bin_data`, `text_data`, or `json_data`
         field
 
-        depending on the data format used.
+        depending on the data format used.  A chunk without a payload marks the
+
+        end of a step's output, when it carries `processed_steps`, or is a
+
+        keep-alive.
       required:
         - sequence_number
         - snapshot
@@ -8672,6 +8676,32 @@ components:
           type: object
           description: JSON payload.
           nullable: true
+        processed_steps:
+          type: integer
+          format: int64
+          description: >-
+            The number of steps whose output precedes this chunk, this step
+
+            included.  `Some` only on the empty chunk that follows a step's
+            output,
+
+            so a chunk with `processed_steps` carries no `bin_data`, `text_data`
+
+            or `json_data`.  The output of a record that the pipeline ingested
+            in
+
+            step `n` has been delivered once `processed_steps > n`.  The
+
+            `/completion_status` endpoint reports the `step` that a completion
+
+            token waits for in the same unit, so a client that has received a
+
+            chunk with `processed_steps` at or above that `step` is guaranteed
+            to
+
+            have received every update for the token.
+          nullable: true
+          minimum: 0
         sequence_number:
           type: integer
           format: int64

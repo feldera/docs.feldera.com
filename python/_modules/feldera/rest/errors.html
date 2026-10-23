@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.errors &mdash; Feldera Python SDK 0.368.0 documentation</title>
+  <title>feldera.rest.errors &mdash; Feldera Python SDK 0.369.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=bf77bbbe"></script>
+        <script src="../../../_static/documentation_options.js?v=cea2f1e7"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -80,7 +80,7 @@
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">requests</span><span class="w"> </span><span class="kn">import</span> <span class="n">Response</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
 
@@ -212,6 +212,48 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.errors.FelderaCommunicationError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot connect to Feldera API: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TableReloadNotAllowedError">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.errors.TableReloadNotAllowedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TableReloadNotAllowedError</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raised when bootstrapping would reload a table that is not in</span>
+<span class="sd">    `reloadable_tables`, or when the SDK cannot tell which tables it reloads.</span>
+<span class="sd">    The pipeline stays in the AWAITINGAPPROVAL state: call `approve()` to</span>
+<span class="sd">    bootstrap or `stop(force=True)` to reject.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TableReloadNotAllowedError.__init__">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.errors.TableReloadNotAllowedError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">approval_diff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+        <span class="n">blocked_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param pipeline_name: The name of the pipeline. Stored as</span>
+<span class="sd">            `pipeline_name`.</span>
+<span class="sd">        :param reason: Why the SDK did not approve the bootstrap. Part of the</span>
+<span class="sd">            error message.</span>
+<span class="sd">        :param approval_diff: The diff awaiting approval, as the pipeline</span>
+<span class="sd">            reported it. Stored as `approval_diff`.</span>
+<span class="sd">        :param blocked_tables: Modified tables that are not in</span>
+<span class="sd">            `reloadable_tables`. Stored as `blocked_tables`. Empty if the diff</span>
+<span class="sd">            is unknown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="n">pipeline_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">approval_diff</span> <span class="o">=</span> <span class="n">approval_diff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocked_tables</span> <span class="o">=</span> <span class="n">blocked_tables</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Table reload not allowed in pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="s2">&quot;The pipeline is AWAITINGAPPROVAL: call approve() to bootstrap or &quot;</span>
+            <span class="s2">&quot;stop(force=True) to reject.&quot;</span>
+        <span class="p">)</span></div>
 </div>
 
 </pre></div>

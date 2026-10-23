@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examples &mdash; Feldera Python SDK 0.368.0 documentation</title>
+  <title>Examples &mdash; Feldera Python SDK 0.369.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=bf77bbbe"></script>
+        <script src="_static/documentation_options.js?v=cea2f1e7"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#creating-a-pipeline-with-fault-tolerance-enabled">Creating a Pipeline with Fault Tolerance Enabled</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#runtime-configuration-of-a-pipeline">Runtime configuration of a Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#starting-a-pipeline">Starting a Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#approving-reloads-of-selected-tables-when-bootstrapping">Approving Reloads of Selected Tables when Bootstrapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#analyzing-existing-feldera-pipeline-for-errors">Analyzing Existing Feldera Pipeline for Errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-pandas-dataframes">Using Pandas DataFrames</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-completion-tokens">Using Completion Tokens</a></li>
@@ -248,6 +249,50 @@ To set a timeout for these state transitions, set the parameter <cite>timeout_s<
 </pre></div>
 </div>
 </section>
+<section id="approving-reloads-of-selected-tables-when-bootstrapping">
+<h2>Approving Reloads of Selected Tables when Bootstrapping<a class="headerlink" href="#approving-reloads-of-selected-tables-when-bootstrapping" title="Link to this heading"></a></h2>
+<p>When a modified pipeline restarts from a checkpoint, if a table is modified,
+bootstrapping will reload the table: it truncates the table and resets its input
+connectors. With <code class="docutils literal notranslate"><span class="pre">bootstrap_policy=BootstrapPolicy.ALLOW</span></code>, and <code class="docutils literal notranslate"><span class="pre">wait=True</span></code>,
+<code class="docutils literal notranslate"><span class="pre">reloadable_tables</span></code>  lists the tables that bootstrapping may reload.
+If a modified table is not in the list, <code class="docutils literal notranslate"><span class="pre">start()</span></code> raises <code class="docutils literal notranslate"><span class="pre">TableReloadNotAllowedError</span></code>
+and the pipeline stays in the <code class="docutils literal notranslate"><span class="pre">AWAITINGAPPROVAL</span></code> state.
+Bootstrapping is an Enterprise feature.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">feldera.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapPolicy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">TableReloadNotAllowedError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
+        <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">BootstrapPolicy</span><span class="o">.</span><span class="n">ALLOW</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dim_customers&quot;</span><span class="p">,</span> <span class="s2">&quot;dim_products&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+<span class="k">except</span> <span class="n">TableReloadNotAllowedError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Bootstrapping would reload: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">blocked_tables</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">approval_diff</span><span class="p">)</span>
+
+    <span class="c1"># Reject: stop the pipeline. A force stop makes no checkpoint.</span>
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Or approve: bootstrap with the changes as they are.</span>
+    <span class="c1"># pipeline.approve()</span>
+</pre></div>
+</div>
+<p>Write each name exactly as the pipeline reports it in the approval diff: an
+unquoted SQL name in lowercase, a quoted name without its quotes. For example,
+write <code class="docutils literal notranslate"><span class="pre">dim_customers</span></code> for <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">TABLE</span> <span class="pre">DIM_CUSTOMERS</span></code> and <code class="docutils literal notranslate"><span class="pre">DimCustomers</span></code>
+for <code class="docutils literal notranslate"><span class="pre">CREATE</span> <span class="pre">TABLE</span> <span class="pre">&quot;DimCustomers&quot;</span></code>. The names in <code class="docutils literal notranslate"><span class="pre">e.blocked_tables</span></code> use the
+same spelling, so you can pass them back:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="o">.</span><span class="n">restart</span><span class="p">(</span>
+    <span class="n">bootstrap_policy</span><span class="o">=</span><span class="n">BootstrapPolicy</span><span class="o">.</span><span class="n">ALLOW</span><span class="p">,</span>
+    <span class="n">reloadable_tables</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dim_customers&quot;</span><span class="p">,</span> <span class="s2">&quot;dim_products&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">blocked_tables</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">reloadable_tables=[]</span></code> to allow no table reloads. Changes to views only
+are still approved.</p>
+<p>For more information, refer to the docs at:
+<a class="reference external" href="https://docs.feldera.com/pipelines/modifying#approving-reloads-of-selected-tables-python-sdk">https://docs.feldera.com/pipelines/modifying#approving-reloads-of-selected-tables-python-sdk</a></p>
+</section>
 <section id="analyzing-existing-feldera-pipeline-for-errors">
 <h2>Analyzing Existing Feldera Pipeline for Errors<a class="headerlink" href="#analyzing-existing-feldera-pipeline-for-errors" title="Link to this heading"></a></h2>
 <p>First let’s create a Feldera pipeline that errors from the web console, with the
@@ -317,6 +362,20 @@ To check the status of this completion token use <a class="reference internal" h
 
 <span class="c1"># wait until the pipeline processes this completion token</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.wait_for_token" title="feldera.pipeline.Pipeline.wait_for_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.wait_for_token()</span></code></a> returns once the pipeline has handed the
+resulting changes to its output connectors.  A listener from
+<a class="reference internal" href="feldera.html#feldera.pipeline.Pipeline.listen" title="feldera.pipeline.Pipeline.listen"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Pipeline.listen()</span></code></a> receives its changes over an HTTP stream, so they can
+still be on their way.  <a class="reference internal" href="feldera.html#feldera.output_handler.OutputHandler.wait_for_token" title="feldera.output_handler.OutputHandler.wait_for_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">OutputHandler.wait_for_token()</span></code></a> returns once the
+listener has received every change for the token, and once the pipeline has
+confirmed that the token changed nothing in the view:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">totals</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="s2">&quot;customer_totals&quot;</span><span class="p">)</span>
+<span class="n">token</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">input_json</span><span class="p">(</span><span class="s2">&quot;orders&quot;</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;customer&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="s2">&quot;amount&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}])</span>
+
+<span class="c1"># every change that the input caused in &quot;customer_totals&quot; is in the listener</span>
+<span class="n">totals</span><span class="o">.</span><span class="n">wait_for_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">totals</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
 </pre></div>
 </div>
 </section>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.368.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.369.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=bf77bbbe"></script>
+        <script src="../../../_static/documentation_options.js?v=cea2f1e7"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -95,7 +95,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">determine_client_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest._httprequests</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequests</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApiKey</span><span class="p">,</span> <span class="n">Config</span>  <span class="c1"># noqa: F401 — re-exported</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span><span class="p">,</span> <span class="n">FelderaTimeoutError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TableReloadNotAllowedError</span><span class="p">,</span>
+    <span class="n">FelderaAPIError</span><span class="p">,</span>
+    <span class="n">FelderaTimeoutError</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogPosition</span><span class="p">,</span> <span class="n">LogStream</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
@@ -103,6 +107,50 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.retry</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetryConfig</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_reloadable_tables</span><span class="p">(</span>
+    <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">runtime_status_details</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise `TableReloadNotAllowedError` unless every table that the bootstrap</span>
+<span class="sd">    awaiting approval modifies is in `reloadable_tables`.</span>
+
+<span class="sd">    Bootstrapping truncates a modified table and resets its input connectors,</span>
+<span class="sd">    so the table is reloaded from its connectors.</span>
+
+<span class="sd">    Names must match the diff exactly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">approval_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">runtime_status_details</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;approval_diff&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">approval_diff</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TableReloadNotAllowedError</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;the pipeline did not report the changes awaiting approval&quot;</span><span class="p">,</span>
+            <span class="n">approval_diff</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">program_diff</span> <span class="o">=</span> <span class="n">approval_diff</span><span class="p">[</span><span class="s2">&quot;program_diff&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">program_diff</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TableReloadNotAllowedError</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="s2">&quot;the pipeline could not compute the program diff: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">approval_diff</span><span class="p">[</span><span class="s1">&#39;program_diff_error&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">approval_diff</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">allowed</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">reloadable_tables</span><span class="p">)</span>
+    <span class="n">blocked</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">program_diff</span><span class="p">[</span><span class="s2">&quot;modified_tables&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">table</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span>
+    <span class="p">]</span>
+    <span class="k">if</span> <span class="n">blocked</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TableReloadNotAllowedError</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;modified tables not in reloadable_tables: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">blocked</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">approval_diff</span><span class="p">,</span>
+            <span class="n">blocked</span><span class="p">,</span>
+        <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_no_none_keys_in_map</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -729,6 +777,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -740,7 +789,20 @@
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload, with</span>
+<span class="sd">            `bootstrap_policy=BootstrapPolicy.ALLOW`. See `Pipeline.start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">reloadable_tables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bootstrap_policy</span> <span class="o">!=</span> <span class="n">BootstrapPolicy</span><span class="o">.</span><span class="n">ALLOW</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;reloadable_tables requires bootstrap_policy=BootstrapPolicy.ALLOW&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;reloadable_tables requires wait=True&quot;</span><span class="p">)</span>
+            <span class="c1"># With ALLOW the pipeline bootstraps before the SDK sees the diff.</span>
+            <span class="c1"># Make it wait, and approve below if the diff permits.</span>
+            <span class="n">bootstrap_policy</span> <span class="o">=</span> <span class="n">BootstrapPolicy</span><span class="o">.</span><span class="n">AWAIT_APPROVAL</span>
+
         <span class="n">start_params</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Any error is dismissed separately in order to make sure we only dismiss any error</span>
@@ -773,10 +835,29 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">wait</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
+        <span class="n">deadline</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">timeout_s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout_s</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
             <span class="n">pipeline_name</span><span class="p">,</span>
             <span class="p">[</span><span class="n">initial</span><span class="p">,</span> <span class="s2">&quot;AwaitingApproval&quot;</span><span class="p">],</span>
             <span class="n">timeout_s</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">reloadable_tables</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">AWAITINGAPPROVAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">status</span>
+
+        <span class="n">details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">STATUS</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">deployment_runtime_status_details</span>
+        <span class="n">_validate_reloadable_tables</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">reloadable_tables</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">approve_pipeline</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="n">silent_bootstrap</span><span class="o">=</span><span class="n">silent_bootstrap</span><span class="p">,</span>
+            <span class="n">concurrent_bootstrap</span><span class="o">=</span><span class="n">concurrent_bootstrap</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__wait_for_pipeline_state_one_of</span><span class="p">(</span>
+            <span class="n">pipeline_name</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">initial</span><span class="p">],</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">deadline</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">deadline</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()),</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="FelderaClient.start_pipeline">
@@ -790,6 +871,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
@@ -800,6 +882,8 @@
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload, with</span>
+<span class="sd">            `bootstrap_policy=BootstrapPolicy.ALLOW`. See `Pipeline.start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
@@ -811,6 +895,7 @@
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -825,6 +910,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PipelineStatus</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param pipeline_name: The name of the pipeline to start as paused.</span>
@@ -834,6 +920,8 @@
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload, with</span>
+<span class="sd">            `bootstrap_policy=BootstrapPolicy.ALLOW`. See `Pipeline.start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
@@ -845,6 +933,7 @@
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -859,6 +948,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dismiss_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">reloadable_tables</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param pipeline_name: The name of the pipeline to start as standby.</span>
@@ -868,6 +958,8 @@
 <span class="sd">            pipeline to start.</span>
 <span class="sd">        :param dismiss_error: Set True to dismiss any deployment error before starting;</span>
 <span class="sd">            set False to make it fail in that case. True by default.</span>
+<span class="sd">        :param reloadable_tables: Tables that bootstrapping may reload, with</span>
+<span class="sd">            `bootstrap_policy=BootstrapPolicy.ALLOW`. See `Pipeline.start`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_inner_start_pipeline</span><span class="p">(</span>
@@ -879,6 +971,7 @@
             <span class="n">wait</span><span class="p">,</span>
             <span class="n">timeout_s</span><span class="p">,</span>
             <span class="n">dismiss_error</span><span class="p">,</span>
+            <span class="n">reloadable_tables</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1573,6 +1666,37 @@
         <span class="k">return</span> <span class="n">token</span></div>
 
 
+<div class="viewcode-block" id="FelderaClient.completion_status">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">completion_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the status of a completion token as the pipeline reports it:</span>
+<span class="sd">        a mapping with `status`, either `complete` or `inprogress`, and</span>
+<span class="sd">        `step`, the number of steps the pipeline completes before the token</span>
+<span class="sd">        is complete, or `None` while the token&#39;s records wait to be ingested.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline</span>
+<span class="sd">        :param token: The token to check for completion</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/completion_status&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;got empty status when checking for completion status for token: </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">resp</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">resp</span></div>
+
+
 <div class="viewcode-block" id="FelderaClient.completion_token_processed">
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.completion_token_processed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">completion_token_processed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1585,23 +1709,7 @@
 <span class="sd">        :return: True if the pipeline has finished processing all inputs represented by the token, False otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">,</span>
-        <span class="p">}</span>
-
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/completion_status&quot;</span><span class="p">,</span>
-            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">FelderaAPIError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;got empty status when checking for completion status for token: </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="n">resp</span><span class="p">,</span>
-            <span class="p">)</span>
-
+        <span class="n">status</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completion_status</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span> <span class="n">token</span><span class="p">)[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;complete&quot;</span></div>
 
 
