@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.3d7d7160.js" defer="defer"></script>
-<script src="/assets/js/main.97d4c5fc.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6916eb2d.js" defer="defer"></script>
+<script src="/assets/js/main.a6247b85.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -32,13 +32,16 @@ setting at least one of these parameters to prevent out-of-memory failures.</p>
 parameter is set, <code>resources.memory_max</code> is set to the smaller
 value of host memory size, and container memory limit.  In a
 multi-host deployment each pipeline process that finds neither
-parameter set derives <code>max_rss</code> from its own host&#x27;s available
-memory at startup.</p>
+parameter set derives <code>resources.memory_max</code> from its own host&#x27;s
+available memory at startup.</p>
 <p>In every case, the pipeline caps its memory limit at the memory
 available to it, which is the host&#x27;s memory or the container&#x27;s memory
 limit, whichever is smaller.  The pipeline rechecks this every second,
 so if the container&#x27;s memory limit changes while the pipeline runs,
 the pipeline adjusts its limit to match.</p>
+<p>When <a class="" href="/pipelines/configuration/#resizing-a-running-pipeline">a running pipeline is resized</a>,
+the new <code>resources.memory_max</code> also becomes its memory limit,
+unless <code>max_rss</code> is set.</p>
 <p>The pipeline reports its current memory pressure level (<code>low</code>,
 <code>moderate</code>, <code>high</code>, or <code>critical</code>) via the
 <a class="" href="/operations/metrics/"><code>memory_pressure</code> metric</a>, and its memory limit

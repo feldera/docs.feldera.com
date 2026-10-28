@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.3d7d7160.js" defer="defer"></script>
-<script src="/assets/js/main.97d4c5fc.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6916eb2d.js" defer="defer"></script>
+<script src="/assets/js/main.a6247b85.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -26,7 +26,8 @@
 time zone.  This extends to dates before the Gregorian calendar was
 introduced, effectively meaning that the dates use a <a href="https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar">Proleptic calendar</a>.</p>
 <p>The legal dates are <code>0001-01-01</code> to <code>9999-12-31</code>.  A computation whose
-result is outside this range stops the pipeline with an error.</p>
+result is outside this range stops the pipeline with an error.  An input
+value outside this range is a parse error.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="date-literals">Date literals<a href="#date-literals" class="hash-link" aria-label="Direct link to Date literals" title="Direct link to Date literals" translate="no">​</a></h3>
 <p><code>DATE</code> literals have the form <code>DATE &#x27;YYYY-MM-DD&#x27;</code>.  Trailing spaces
 are not allowed.</p>
@@ -41,8 +42,13 @@ Values BC or values greater than 10,000 years are not supported.</p>
 <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;=&gt;</code>, <code>BETWEEN</code>; the result is a Boolean.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="times">Times<a href="#times" class="hash-link" aria-label="Direct link to Times" title="Direct link to Times" translate="no">​</a></h2>
 <p>A time represents the time of day, a value between 0 and 24 hours
-(excluding the latter).  Time values are stored to a precision of
-nanoseconds -- 9 subsecond digits.  Leap seconds are not supported.
+(excluding the latter).  An input value outside this range is a parse
+error.  Time values are stored to a precision of
+nanoseconds -- 9 subsecond digits.  Leap seconds are not supported:
+when a string is converted to a <code>TIME</code>, by a cast, by <code>PARSE_TIME</code>, or
+when reading input data, a time with 60 seconds is read as the last
+nanosecond before the next minute.  For example, <code>&#x27;12:30:60&#x27;</code> is
+<code>12:30:59.999999999</code>.
 The specified scale for the <code>TIME</code> data type is ignored, and it is
 always assumed to be <code>TIME(9)</code>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="time-literals">Time literals<a href="#time-literals" class="hash-link" aria-label="Direct link to Time literals" title="Direct link to Time literals" translate="no">​</a></h3>
@@ -81,7 +87,9 @@ precision of microseconds (6 digits for fractions of second).  The
 specified scale for the <code>TIMESTAMP</code> data type is ignored, and it is
 always assumed to be <code>TIMESTAMP(6)</code>.</p>
 <p>The legal timestamps are <code>0001-01-01 00:00:00</code> to <code>9999-12-31 23:59:59.999999</code> (in UTC for <code>TIMESTAMP WITH TIME ZONE</code>).  Values
-outside this range behave as for <a href="#dates" class="">dates</a>.</p>
+outside this range behave as for <a href="#dates" class="">dates</a>.  Leap seconds are
+handled as for <a href="#times" class="">times</a>, to microsecond precision: for example,
+<code>&#x27;2024-12-31 23:59:60&#x27;</code> is <code>2024-12-31 23:59:59.999999</code>.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="timestamp-literals">Timestamp literals<a href="#timestamp-literals" class="hash-link" aria-label="Direct link to Timestamp literals" title="Direct link to Timestamp literals" translate="no">​</a></h3>
 <p><code>TIMESTAMP</code> literals have the form <code>TIMESTAMP &#x27;YYYY-MM-DD HH:MM:SS.FFFFFF&#x27;</code>, where the fractional part is optional.  Trailing
 spaces are not allowed.</p>
@@ -116,7 +124,10 @@ they can appear in the computed views.</p>
 <p>There are two kinds of intervals: short (from <code>DAY</code> to <code>SECOND</code>), and
 long (<code>YEAR</code> to <code>MONTH</code>).  Short intervals are represented with a
 precision of microseconds.  Long intervals are represented with a
-precision of an integer number of months.</p>
+precision of an integer number of months.  A short interval can be at
+most about 106 million days (about 292,000 years), positive or
+negative.  A long interval can be at most about 179 million years,
+positive or negative.</p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="interval-literals">Interval literals<a href="#interval-literals" class="hash-link" aria-label="Direct link to Interval literals" title="Direct link to Interval literals" translate="no">​</a></h3>
 <p>Interval literals (constant values) can be written using the following
 verbose syntax:</p>
@@ -136,6 +147,9 @@ Long intervals support EXTRACT of values between MILLENNIUM and MONTHS.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="other-datetimetimestamptime-interval-operations">Other date/time/timestamp/time interval operations<a href="#other-datetimetimestamptime-interval-operations" class="hash-link" aria-label="Direct link to Other date/time/timestamp/time interval operations" title="Direct link to Other date/time/timestamp/time interval operations" translate="no">​</a></h2>
 <p>The following arithmetic operations are supported:</p>
 <div class="table-scroll-container"><table><thead><tr><th>Operation</th><th>Result Type</th><th>Explanation</th></tr></thead><tbody><tr><td><em>date</em> <code>+</code> <em>interval</em></td><td><code>DATE</code></td><td>Add an interval to a date</td></tr><tr><td>(<em>date</em> <code>-</code> <em>date</em>) UNIT</td><td><code>INTERVAL</code></td><td>Compute the difference between two dates as a short interval. E.g. <code>(d1 - d2) SECONDS</code></td></tr><tr><td>(<em>date</em> <code>-</code> <em>date</em>) UNIT</td><td><code>INTERVAL</code></td><td>Compute the difference between two dates as a long interval. E.g. <code>(d1 - d2) MONTHS</code></td></tr><tr><td>(<em>time</em> <code>-</code> <em>time</em>) UNIT</td><td><code>INTERVAL</code></td><td>Compute the difference between two times as a short interval. E.g. <code>(t1 - t2) HOURS</code></td></tr><tr><td><em>interval</em> <code>+</code> <em>interval</em></td><td><code>INTERVAL</code></td><td>Add two intervals; both must have the same type</td></tr><tr><td><em>timestamp</em> <code>+</code> <em>interval</em></td><td><code>TIMESTAMP</code></td><td>Add an interval to a timestamp</td></tr><tr><td><em>time</em> <code>+</code> <em>interval</em></td><td><code>TIME</code></td><td>Add an interval to a time. Performs wrapping addition.</td></tr><tr><td><code>-</code> <em>interval</em></td><td><code>INTERVAL</code></td><td>Negate an interval</td></tr><tr><td><em>date</em> <code>-</code> <em>interval</em></td><td><code>DATE</code></td><td>Subtract an interval from a date</td></tr><tr><td><em>time</em> <code>-</code> <em>interval</em></td><td><code>TIME</code></td><td>Subtract an interval from a time. Performs wrapping subtraction.</td></tr><tr><td><em>timestamp</em> <code>-</code> <em>interval</em></td><td><code>TIMESTAMP</code></td><td>Subtract an interval from a timestamp</td></tr><tr><td>(<em>timestamp</em> <code>-</code> <em>timestamp</em>) UNIT</td><td><code>INTERVAL</code></td><td>Compute the difference between two timestamps as a short interval. E.g. <code>(ts1 - ts2) HOURS TO MINUTES</code></td></tr><tr><td>(<em>timestamp</em> <code>-</code> <em>timestamp</em>) UNIT</td><td><code>INTERVAL</code></td><td>Compute the difference between two timestamps as a long interval. E.g. <code>(ts1 - ts2) YEARS TO MONTHS</code></td></tr><tr><td><em>interval</em> <code>-</code> <em>interval</em></td><td><code>INTERVAL</code></td><td>Subtract two intervals</td></tr><tr><td><em>interval</em> <code>*</code> <em>double</em></td><td><code>INTERVAL</code></td><td>Multiply an interval by a scalar</td></tr><tr><td><em>interval</em> <code>/</code> <em>double</em></td><td><code>INTERVAL</code></td><td>Divide an interval by a scalar</td></tr></tbody></table></div>
+<p>An interval computation whose result is too large for the interval
+type stops the pipeline with an error.  This includes multiplication
+by a <code>NaN</code> or infinite <code>DOUBLE</code>.</p>
 <p>Arithmetic involving a <code>TIME</code> value always produces a (positive)
 <code>TIME</code> value, between <code>00:00:00</code> (inclusive) and <code>24:00:00</code>
 (exclusive).  One can think of the computation as being performed in

@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.369.0
+  version: 0.370.0
 paths:
   /config/authentication:
     get:
@@ -4596,6 +4596,12 @@ paths:
         available.
 
 
+        Pass `follow=false` to receive only the retained buffer: the response
+        then ends instead
+
+        of waiting for new lines. It cannot be combined with `cursor`.
+
+
         It is possible for the logs stream to end prematurely due to the API
         server temporarily losing
 
@@ -4718,6 +4724,16 @@ paths:
           schema:
             type: string
             nullable: true
+        - name: follow
+          in: query
+          description: >-
+            Set to `false` to end the response after the retained buffer instead
+            of streaming new lines. Default: `true`. Cannot be combined with
+            `cursor`.
+          required: false
+          schema:
+            type: boolean
+            nullable: true
       responses:
         '200':
           description: Pipeline logs retrieved successfully
@@ -4727,7 +4743,7 @@ paths:
                 type: string
                 format: binary
         '400':
-          description: Cursor is malformed
+          description: Cursor is malformed, or is combined with `follow=false`
           content:
             application/json:
               schema:
@@ -11006,31 +11022,6 @@ components:
         udf_toml:
           type: string
           description: User defined function (UDF) TOML dependencies.
-    DeploymentResources:
-      type: object
-      description: CPU and memory, the only fields that can change while the pipeline runs.
-      properties:
-        cpu_cores_max:
-          type: number
-          format: double
-          nullable: true
-        cpu_cores_min:
-          type: number
-          format: double
-          nullable: true
-        memory_max:
-          type: string
-          description: |-
-            The maximum memory, such as `"16Gi"`. `memory_mb_max`, a number of
-            megabytes, is a deprecated alias.
-          nullable: true
-        memory_min:
-          type: string
-          description: |-
-            The minimum memory, such as `"4Gi"`. `memory_mb_min`, a number of
-            megabytes, is a deprecated alias.
-          nullable: true
-      additionalProperties: false
     DevTweaks:
       type: object
       description: |-
@@ -11625,6 +11616,38 @@ components:
           description: Always display it, do not allow it to be dismissed
           enum:
             - Always
+    DynamicConfig:
+      type: object
+      description: The part of a pipeline's config that can change while the pipeline runs.
+      properties:
+        resources:
+          $ref: '#/components/schemas/DynamicResources'
+      additionalProperties: false
+    DynamicResources:
+      type: object
+      description: CPU and memory, the only fields that can change while the pipeline runs.
+      properties:
+        cpu_cores_max:
+          type: number
+          format: double
+          nullable: true
+        cpu_cores_min:
+          type: number
+          format: double
+          nullable: true
+        memory_max:
+          type: string
+          description: |-
+            The maximum memory, such as `"16Gi"`. `memory_mb_max`, a number of
+            megabytes, is a deprecated alias.
+          nullable: true
+        memory_min:
+          type: string
+          description: |-
+            The minimum memory, such as `"4Gi"`. `memory_mb_min`, a number of
+            megabytes, is a deprecated alias.
+          nullable: true
+      additionalProperties: false
     DynamoDBWriteMode:
       type: string
       description: DynamoDB write API used by the output connector.
@@ -14898,7 +14921,7 @@ components:
           properties:
             deployment_config:
               allOf:
-                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+                - $ref: '#/components/schemas/DynamicConfig'
               nullable: true
             name:
               type: string
@@ -15455,13 +15478,6 @@ components:
         (e.g., runtime configuration) and entries derived from the schema
         of the compiled program (e.g., connectors). Storage configuration,
         if applicable, is set by the runner.
-    PipelineDeploymentConfig:
-      type: object
-      description: The part of a deployment config that can change while the pipeline runs.
-      properties:
-        resources:
-          $ref: '#/components/schemas/DeploymentResources'
-      additionalProperties: false
     PipelineDiff:
       type: object
       description: >-
@@ -15571,7 +15587,7 @@ components:
               format: date-time
             deployment_config:
               allOf:
-                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+                - $ref: '#/components/schemas/DynamicConfig'
               nullable: true
             deployment_desired_status:
               $ref: '#/components/schemas/CombinedDesiredStatus'
@@ -15761,7 +15777,7 @@ components:
               format: date-time
             deployment_config:
               allOf:
-                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+                - $ref: '#/components/schemas/DynamicConfig'
               nullable: true
             deployment_desired_status:
               $ref: '#/components/schemas/CombinedDesiredStatus'
@@ -15966,7 +15982,7 @@ components:
           properties:
             deployment_config:
               allOf:
-                - $ref: '#/components/schemas/PipelineDeploymentConfig'
+                - $ref: '#/components/schemas/DynamicConfig'
               nullable: true
             name:
               type: string
@@ -16570,6 +16586,22 @@ components:
       properties:
         config:
           description: Arbitrary additional configuration.
+        max_allowed_call_duration:
+          type: string
+          description: >-
+            Maximum allowed duration of one call to the preprocessor, for
+            example
+
+            `10s`.  While a call runs longer, the connector is unhealthy and the
+
+            pipeline logs warnings.
+
+
+            When not set it defaults to `1s`; `null` disables the check.  Values
+
+            less than 1 second are raised to 1 second.
+          default: 1s
+          nullable: true
         message_oriented:
           type: boolean
           description: >-
@@ -18058,6 +18090,15 @@ components:
         connector_stats:
           allOf:
             - $ref: '#/components/schemas/ConnectorStats'
+          nullable: true
+        memory_max:
+          type: string
+          description: >-
+            The `resources.memory_max` the pipeline uses, which a resize
+            changes.
+
+
+            Specifically useful for: `Paused`, `Running`.
           nullable: true
         reason:
           type: string

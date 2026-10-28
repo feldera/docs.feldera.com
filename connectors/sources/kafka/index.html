@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.3d7d7160.js" defer="defer"></script>
-<script src="/assets/js/main.97d4c5fc.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6916eb2d.js" defer="defer"></script>
+<script src="/assets/js/main.a6247b85.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -145,6 +145,9 @@ principal derived from the credentials.</li>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="accessing-kafka-metadata"><a name="metadata"></a>Accessing Kafka metadata<a href="#accessing-kafka-metadata" class="hash-link" aria-label="Direct link to accessing-kafka-metadata" title="Direct link to accessing-kafka-metadata" translate="no">​</a></h2>
 <p>Kafka messages include several metadata attributes in addition to the payload. These can be extracted by the Kafka connector and accessed from SQL:</p>
 <div class="table-scroll-container"><table><thead><tr><th>Metadata attribute</th><th>SQL type</th><th><code>CONNECTOR_METADATA()</code> field</th><th>Configuration option</th></tr></thead><tbody><tr><td>Message headers</td><td><code>MAP&lt;STRING, VARBINARY&gt;</code></td><td><code>kafka_headers</code></td><td><code>include_headers</code></td></tr><tr><td>Topic name</td><td><code>VARCHAR</code></td><td><code>kafka_topic</code></td><td><code>include_topic</code></td></tr><tr><td>Partition</td><td><code>INT</code></td><td><code>kafka_partition</code></td><td><code>include_partition</code></td></tr><tr><td>Message offset</td><td><code>BIGINT</code></td><td><code>kafka_offset</code></td><td><code>include_offset</code></td></tr><tr><td>Timestamp</td><td><code>TIMESTAMP</code></td><td><code>kafka_timestamp</code></td><td><code>include_timestamp</code></td></tr></tbody></table></div>
+<p>A Kafka timestamp outside the legal <a class="" href="/sql/datetime/#timestamps"><code>TIMESTAMP</code> range</a>
+is clamped to that range: an earlier timestamp becomes <code>0001-01-01 00:00:00</code>,
+and a later one becomes <code>9999-12-31 23:59:59.999999</code>.</p>
 <p>Some applications need to ingest and store these attributes alongside the message payload.
 The steps below describe how to extract and use Kafka metadata in SQL tables.</p>
 <ol>
