@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.6916eb2d.js" defer="defer"></script>
-<script src="/assets/js/main.a6247b85.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.2cdbecd2.js" defer="defer"></script>
+<script src="/assets/js/main.faf69556.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -271,6 +271,7 @@ must be syntactically valid.&lt;/li&gt;
 &lt;li&gt;The runner performs simple string substitution for the following placeholders. Please ensure these
 placeholders are placed at appropriate location for their semantics:&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{id}&lt;/code&gt;: pipeline Kubernetes name (used for object names and labels)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{name}&lt;/code&gt;: pipeline name as a quoted JSON string (use it only as a whole YAML value)&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{namespace}&lt;/code&gt;: Kubernetes namespace where the pipeline runs&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{pipeline_executor_image}&lt;/code&gt;: container image used to run the pipeline executor&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{binary_ref}&lt;/code&gt;: program binary reference passed as an argument&lt;/li&gt;
@@ -279,8 +280,13 @@ placeholders are placed at appropriate location for their semantics:&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{storage_class_name}&lt;/code&gt;: storage class name to use for PVCs (if applicable)&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{deployment_id}&lt;/code&gt;: UUID identifying the deployment instance&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;{deployment_initial}&lt;/code&gt;: initial desired runtime status (e.g., &lt;code&gt;provisioning&lt;/code&gt;)&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;{bootstrap_policy}&lt;/code&gt;: bootstrap policy value when applicable&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{bootstrap_policy}&lt;/code&gt;: bootstrap policy value when applicable, otherwise &lt;code&gt;none&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{silent_bootstrap}&lt;/code&gt;: &lt;code&gt;yes&lt;/code&gt; or &lt;code&gt;no&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{concurrent_bootstrap}&lt;/code&gt;: &lt;code&gt;yes&lt;/code&gt; or &lt;code&gt;no&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{hosts}&lt;/code&gt;: number of hosts the pipeline runs on&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;{multihost}&lt;/code&gt;: &lt;code&gt;yes&lt;/code&gt; or &lt;code&gt;no&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;p&gt;The substitution has no escape: do not use these names in braces as literal text.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Configuration for supplying a custom pipeline StatefulSet template via a Kubernetes ConfigMap.</p>
 <p>Operators can provide a custom StatefulSet YAML that the Kubernetes runner will use when
 creating pipeline StatefulSets for a pipeline. The custom template must be stored as the
@@ -297,6 +303,7 @@ must be syntactically valid.</li>
 <li>The runner performs simple string substitution for the following placeholders. Please ensure these
 placeholders are placed at appropriate location for their semantics:</li>
 <li><code>{id}</code>: pipeline Kubernetes name (used for object names and labels)</li>
+<li><code>{name}</code>: pipeline name as a quoted JSON string (use it only as a whole YAML value)</li>
 <li><code>{namespace}</code>: Kubernetes namespace where the pipeline runs</li>
 <li><code>{pipeline_executor_image}</code>: container image used to run the pipeline executor</li>
 <li><code>{binary_ref}</code>: program binary reference passed as an argument</li>
@@ -305,8 +312,13 @@ placeholders are placed at appropriate location for their semantics:</li>
 <li><code>{storage_class_name}</code>: storage class name to use for PVCs (if applicable)</li>
 <li><code>{deployment_id}</code>: UUID identifying the deployment instance</li>
 <li><code>{deployment_initial}</code>: initial desired runtime status (e.g., <code>provisioning</code>)</li>
-<li><code>{bootstrap_policy}</code>: bootstrap policy value when applicable</li>
+<li><code>{bootstrap_policy}</code>: bootstrap policy value when applicable, otherwise <code>none</code></li>
+<li><code>{silent_bootstrap}</code>: <code>yes</code> or <code>no</code></li>
+<li><code>{concurrent_bootstrap}</code>: <code>yes</code> or <code>no</code></li>
+<li><code>{hosts}</code>: number of hosts the pipeline runs on</li>
+<li><code>{multihost}</code>: <code>yes</code> or <code>no</code></li>
 </ul>
+<p>The substitution has no escape: do not use these names in braces as literal text.</p>
 </div></div></div></td></tr><tr class=""><td kind="field" title="provisioning_timeout" class="sc-tOlxE sc-epPUyX bykfud iWhDPi"><span class="sc-hfvWGZ ktUUQH"></span><span class="property-name">provisioning_timeout</span></td><td class="sc-fpSqyW eptlcx"><div><div><span class="sc-xuTxv sc-cvzDUw duzUpg cMozMb"></span><span class="sc-xuTxv sc-gKRPtZ duzUpg fEgrdo">string or null</span></div><div><span class="sc-xuTxv duzUpg"> <!-- -->Default:<!-- --> </span> <span class="sc-xuTxv sc-cDektu duzUpg gHVtMq">null</span></div> <div><div html="&lt;p&gt;Timeout for the &lt;code&gt;Provisioning&lt;/code&gt; phase of the pipeline, for example &lt;code&gt;5m&lt;/code&gt;.
 Setting this value will override the default of the runner.&lt;/p&gt;
 " class="sc-euGquI sc-exazLc fCYcYT kAVoRM"><p>Timeout for the <code>Provisioning</code> phase of the pipeline, for example <code>5m</code>.

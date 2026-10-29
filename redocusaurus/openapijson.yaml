@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.370.0
+  version: 0.371.0
 paths:
   /config/authentication:
     get:
@@ -9247,7 +9247,11 @@ components:
         - changelog_url
         - build_info
         - build_source
+        - allow_rust_udfs
       properties:
+        allow_rust_udfs:
+          type: boolean
+          description: Whether pipelines may have Rust UDFs (`udf_rust` and `udf_toml`).
         build_info:
           $ref: '#/components/schemas/BuildInformation'
         build_source:
@@ -15939,6 +15943,9 @@ components:
 
         - `{id}`: pipeline Kubernetes name (used for object names and labels)
 
+        - `{name}`: pipeline name as a quoted JSON string (use it only as a
+        whole YAML value)
+
         - `{namespace}`: Kubernetes namespace where the pipeline runs
 
         - `{pipeline_executor_image}`: container image used to run the pipeline
@@ -15958,7 +15965,20 @@ components:
         - `{deployment_initial}`: initial desired runtime status (e.g.,
         `provisioning`)
 
-        - `{bootstrap_policy}`: bootstrap policy value when applicable
+        - `{bootstrap_policy}`: bootstrap policy value when applicable,
+        otherwise `none`
+
+        - `{silent_bootstrap}`: `yes` or `no`
+
+        - `{concurrent_bootstrap}`: `yes` or `no`
+
+        - `{hosts}`: number of hosts the pipeline runs on
+
+        - `{multihost}`: `yes` or `no`
+
+
+        The substitution has no escape: do not use these names in braces as
+        literal text.
       required:
         - name
       properties:
