@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest package &mdash; Feldera Python SDK 0.372.0 documentation</title>
+  <title>feldera.rest package &mdash; Feldera Python SDK 0.373.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=76534d5c"></script>
+        <script src="_static/documentation_options.js?v=07860705"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -315,6 +315,27 @@ pipeline to activate.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.add_tenant_member">
+<span class="sig-name descname"><span class="pre">add_tenant_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.add_tenant_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.add_tenant_member" title="Link to this definition"></a></dt>
+<dd><p>Add a member to the current tenant by identity, before the user’s
+first login. Requires the <cite>admin</cite> role.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subject</strong> – The user’s OIDC subject (the <cite>sub</cite> claim of their
+tokens).</p></li>
+<li><p><strong>role</strong> – The role to grant: <code class="docutils literal notranslate"><span class="pre">&quot;read&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;write&quot;</span></code> or
+<code class="docutils literal notranslate"><span class="pre">&quot;admin&quot;</span></code>. It may not exceed the caller’s own role.</p></li>
+<li><p><strong>email</strong> – (Optional) Email shown in the member list.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with the new member’s <cite>user_id</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.advance_clock">
 <span class="sig-name descname"><span class="pre">advance_clock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.advance_clock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.advance_clock" title="Link to this definition"></a></dt>
 <dd><p>Advance the externally-driven <cite>NOW()</cite> clock and return its new value.</p>
@@ -607,6 +628,20 @@ asserts this name lands in the tenant created here.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.delete_api_key">
+<span class="sig-name descname"><span class="pre">delete_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.delete_api_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.delete_api_key" title="Link to this definition"></a></dt>
+<dd><p>Delete an API key by name, which revokes it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The API key name.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If there is no API key with this name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.delete_oidc_trust">
 <span class="sig-name descname"><span class="pre">delete_oidc_trust</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.delete_oidc_trust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.delete_oidc_trust" title="Link to this definition"></a></dt>
 <dd><p>Delete an OIDC trust relationship by name.</p>
@@ -666,6 +701,23 @@ the token was generated.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the connector cannot be found, or if the pipeline is not running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_api_key">
+<span class="sig-name descname"><span class="pre">get_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_api_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_api_key" title="Link to this definition"></a></dt>
+<dd><p>Retrieve the metadata of an API key by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> – The API key name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dict with keys <cite>id</cite>, <cite>name</cite> and <cite>role</cite>.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If there is no API key with this name.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -899,6 +951,18 @@ otherwise by name.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.list_api_keys">
+<span class="sig-name descname"><span class="pre">list_api_keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.list_api_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.list_api_keys" title="Link to this definition"></a></dt>
+<dd><p>List the API keys of the current tenant.</p>
+<p>The key itself is only ever returned by <a class="reference internal" href="#feldera.rest.feldera_client.FelderaClient.create_api_key" title="feldera.rest.feldera_client.FelderaClient.create_api_key"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_api_key()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dicts with keys <cite>id</cite>, <cite>name</cite> and <cite>role</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.list_oidc_trust">
 <span class="sig-name descname"><span class="pre">list_oidc_trust</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.list_oidc_trust"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.list_oidc_trust" title="Link to this definition"></a></dt>
 <dd><p>List the OIDC trust relationships configured for the current tenant.</p>
@@ -907,6 +971,20 @@ otherwise by name.</p>
 <dd class="field-odd"><p>A list of dicts each describing a trust relationship
 (<cite>id</cite>, <cite>name</cite>, <cite>description</cite>, <cite>issuer</cite>, <cite>subject</cite>,
 <cite>audience</cite>, <cite>role</cite>).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.list_tenant_members">
+<span class="sig-name descname"><span class="pre">list_tenant_members</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.list_tenant_members"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.list_tenant_members" title="Link to this definition"></a></dt>
+<dd><p>List the members of the current tenant and their roles. Requires the
+<cite>admin</cite> role.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list of dicts each describing a member (<cite>user_id</cite>,
+<cite>provider</cite>, <cite>subject</cite>, <cite>role</cite>, and, when known, <cite>email</cite>,
+<cite>email_verified</cite>, <cite>display_name</cite> and <cite>origin</cite>).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1233,6 +1311,24 @@ If the extension isn’t <cite>parquet</cite>, it will be automatically appended
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.remove_tenant_member">
+<span class="sig-name descname"><span class="pre">remove_tenant_member</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.remove_tenant_member"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.remove_tenant_member" title="Link to this definition"></a></dt>
+<dd><p>Remove a member from the current tenant. Requires the <cite>admin</cite> role.</p>
+<p>This drops their role now, but if the identity provider still grants
+them the tenant, they are added again on their next login. Revoke
+access at the provider to lock them out completely.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> – The member’s <cite>user_id</cite>, as listed by
+<a class="reference internal" href="#feldera.rest.feldera_client.FelderaClient.list_tenant_members" title="feldera.rest.feldera_client.FelderaClient.list_tenant_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list_tenant_members()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the user is not a member of the tenant.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.rename_tenant">
 <span class="sig-name descname"><span class="pre">rename_tenant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tenant_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displace_existing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.rename_tenant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.rename_tenant" title="Link to this definition"></a></dt>
 <dd><p>Rename a tenant. Platform owners only.</p>
@@ -1311,6 +1407,26 @@ the retained buffer.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The open stream. Close it when done reading.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.set_tenant_member_role">
+<span class="sig-name descname"><span class="pre">set_tenant_member_role</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.set_tenant_member_role"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.set_tenant_member_role" title="Link to this definition"></a></dt>
+<dd><p>Change a member’s role in the current tenant. Requires the <cite>admin</cite>
+role.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user_id</strong> – The member’s <cite>user_id</cite>, as listed by
+<a class="reference internal" href="#feldera.rest.feldera_client.FelderaClient.list_tenant_members" title="feldera.rest.feldera_client.FelderaClient.list_tenant_members"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list_tenant_members()</span></code></a>.</p></li>
+<li><p><strong>role</strong> – The new role: <code class="docutils literal notranslate"><span class="pre">&quot;read&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;write&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;admin&quot;</span></code>. It
+may not exceed the caller’s own role.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the user is not a member of the tenant.</p>
 </dd>
 </dl>
 </dd></dl>
