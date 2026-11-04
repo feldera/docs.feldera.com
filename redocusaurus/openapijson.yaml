@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.375.0
+  version: 0.376.0
 paths:
   /config/authentication:
     get:
@@ -3426,11 +3426,60 @@ paths:
           required: true
           schema:
             type: string
+        - name: transaction_id
+          in: query
+          description: |-
+            The ID of the transaction to commit, which `/start_transaction`
+            returned:
+
+            - If this is the transaction that the API started and that is still
+            open, the request commits it.
+            - If this is the last transaction that `/commit_transaction`
+            committed, the request succeeds and does nothing, so it is safe to
+            retry.
+            - Otherwise, the request fails with 409 Conflict, for example if no
+            transaction with this ID has started yet.
+
+            Without this parameter, the request commits the transaction that the
+            API started.
+          required: false
+          schema:
+            type: integer
+            format: int64
+            nullable: true
+        - name: incarnation_uuid
+          in: query
+          description: >-
+            The `incarnation_uuid` that `/start_transaction` returned.  If the
+
+            pipeline restarted since then, the request fails with 400 Bad
+            Request
+
+            and error code `IncarnationUuidMismatch`, because transaction IDs
+            start
+
+            again after a restart.
+          required: false
+          schema:
+            type: string
+            format: uuid
+            nullable: true
       responses:
         '200':
           description: Commit operation initiated.
+        '400':
+          description: >-
+            The given `incarnation_uuid` does not match the pipeline's current
+            incarnation (error code `IncarnationUuidMismatch`): the pipeline
+            process has restarted since the transaction started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '409':
-          description: Another transaction is already in progress.
+          description: >-
+            Another transaction is already in progress, or `transaction_id` is
+            not the transaction that the API started.
           content:
             application/json:
               schema:
@@ -18747,6 +18796,14 @@ components:
       required:
         - transaction_id
       properties:
+        incarnation_uuid:
+          type: string
+          format: uuid
+          description: |-
+            Pass back to `/commit_transaction` to detect pipeline restarts.
+
+            Only `None` if sent by an older pipeline.
+          nullable: true
         transaction_id:
           type: integer
           format: int64

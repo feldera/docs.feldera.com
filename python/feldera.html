@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.375.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.376.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=f808bc92"></script>
+        <script src="_static/documentation_options.js?v=6a776279"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -406,7 +406,7 @@ if storage is cleared (default is every 0.25 seconds). Not used if <cite>wait=Fa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.commit_transaction">
-<span class="sig-name descname"><span class="pre">commit_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_interval_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.commit_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.commit_transaction" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">commit_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poll_interval_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incarnation_uuid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.commit_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.commit_transaction" title="Link to this definition"></a></dt>
 <dd><p>Commit the currently active transaction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -419,12 +419,18 @@ If False, the function initiates the commit and returns immediately without wait
 If None, the function will wait indefinitely.</p></li>
 <li><p><strong>poll_interval_s</strong> – Polling interval at which to check while waiting for the
 transaction to commit (default is every 0.5 seconds). Not used if <cite>wait=False</cite>.</p></li>
+<li><p><strong>incarnation_uuid</strong> – The <cite>incarnation_uuid</cite> that <cite>start_transaction_response</cite> returned.
+If the pipeline restarted since then, the commit fails with <cite>IncarnationUuidMismatch</cite>.
+If not provided, the function uses the pipeline’s incarnation when the call starts.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>RuntimeError</strong> – If there is currently no transaction in progress.</p></li>
-<li><p><strong>ValueError</strong> – If the provided <cite>transaction_id</cite> does not match the current transaction.</p></li>
+<li><p><strong>RuntimeError</strong> – If <cite>transaction_id</cite> is not provided and there is currently no transaction in progress,
+or if the pipeline restarts while the function waits for the commit.</p></li>
+<li><p><strong>ValueError</strong> – If the provided <cite>transaction_id</cite> does not match the current transaction.
+If there is no current transaction, the pipeline checks <cite>transaction_id</cite>: if the last commit
+request already committed it, the commit succeeds, so it is safe to call this again after a <cite>TimeoutError</cite>.</p></li>
 <li><p><strong>TimeoutError</strong> – If the transaction does not commit within the specified timeout (when <cite>wait</cite> is True).</p></li>
 <li><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline fails to commit a transaction.</p></li>
 </ul>
@@ -1543,6 +1549,24 @@ there is already an active transaction.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="feldera.pipeline.Pipeline.start_transaction_response">
+<span class="sig-name descname"><span class="pre">start_transaction_response</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.start_transaction_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.start_transaction_response" title="Link to this definition"></a></dt>
+<dd><p>Start a new transaction, returning the full response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict with <cite>transaction_id</cite> and <cite>incarnation_uuid</cite>; pass both
+to <cite>commit_transaction</cite>.  Transaction IDs start again when the
+pipeline restarts, so <cite>incarnation_uuid</cite> prevents a commit of
+another transaction with the same ID.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="feldera.rest.html#feldera.rest.errors.FelderaAPIError" title="feldera.rest.errors.FelderaAPIError"><strong>FelderaAPIError</strong></a> – If the pipeline fails to start a transaction, e.g., if the pipeline is not running or
+there is already an active transaction.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.stats">
 <span class="sig-name descname"><span class="pre">stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#feldera.stats.PipelineStatistics" title="feldera.stats.PipelineStatistics"><span class="pre">PipelineStatistics</span></a></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.stats" title="Link to this definition"></a></dt>
 <dd><p>Gets the pipeline metrics and performance counters.</p>
@@ -1726,7 +1750,13 @@ This is useful for testing platform upgrade behavior without actually upgrading 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.pipeline.Pipeline.transaction_id">
 <span class="sig-name descname"><span class="pre">transaction_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/feldera/pipeline.html#Pipeline.transaction_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.pipeline.Pipeline.transaction_id" title="Link to this definition"></a></dt>
-<dd><p>Gets the ID of the currently active transaction or None if there is no active transaction.</p>
+<dd><p>Gets the ID of the transaction that the pipeline runs or commits now,
+or None if there is no such transaction.  This is the transaction
+that <cite>transaction_status</cite> describes.</p>
+<p>This can be a different transaction than the one that
+<cite>start_transaction</cite> started: an earlier transaction, for example one
+that a connector started, can still be committing.  To commit a
+transaction, use the ID that <cite>start_transaction</cite> returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The ID of the transaction.</p>
@@ -3139,6 +3169,7 @@ pipeline’s “/stats” endpoint reply.</p>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_pipeline_as_standby"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_pipeline_as_standby()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_samply_profile"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_samply_profile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_transaction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction_response"><code class="docutils literal notranslate"><span class="pre">FelderaClient.start_transaction_response()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.stop_pipeline"><code class="docutils literal notranslate"><span class="pre">FelderaClient.stop_pipeline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="feldera.rest.html#feldera.rest.feldera_client.FelderaClient.sync_checkpoint_response"><code class="docutils literal notranslate"><span class="pre">FelderaClient.sync_checkpoint_response()</span></code></a></li>

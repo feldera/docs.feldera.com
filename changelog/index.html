@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://us.i.posthog.com">
 <script>!function(t,e){var o,s,r,a;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,n,p){function c(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(r=t.createElement("script")).type="text/javascript",r.async=!0,r.src=n.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(a=t.getElementsByTagName("script")[0]).parentNode.insertBefore(r,a);var g=e;for(void 0!==p?g=e[p]=[]:p="posthog",g.people=g.people||[],g.toString=function(t){var e="posthog";return"posthog"!==p&&(e+="."+p),t||(e+=" (stub)"),e},g.people.toString=function(){return g.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "),s=0;s<o.length;s++)c(g,o[s]);e._i.push([i,n,p])},e.__SV=1)}(document,window.posthog||[]),posthog.init("phc_p6JuLSh7rq4M8WsXvxJsooG9yfWT7GhzddPWnfPjJV3g",{api_host:"https://us.i.posthog.com",id:"default"})</script>
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script><link rel="stylesheet" href="/assets/css/styles.05d2b2d7.css">
-<script src="/assets/js/runtime~main.05a2513b.js" defer="defer"></script>
-<script src="/assets/js/main.34f9eef6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.eab0d694.js" defer="defer"></script>
+<script src="/assets/js/main.da88bb33.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -21,6 +21,39 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">
+<p>Behavior change (Python SDK): a request that is not idempotent, such as
+HTTP ingress, <code>patch_pipeline</code> or a checkpoint, no longer retries after a
+502, 503 or 504 response or a read timeout, because the server may already
+have applied it and a retry could apply it twice (for example, insert the
+same rows twice). It still retries a connect timeout, a 408 or 429
+response, and a 503 whose error code shows the request was not applied
+(<code>DeadlockDetected</code>, <code>LockTookTooLong</code>, <code>PipelineInteractionNotDeployed</code>,
+<code>CompilerUnavailable</code>). GET requests and idempotent requests keep the full
+retry policy.</p>
+</li>
+<li class="">
+<p>Bug fix (Python SDK, fda): <code>commit_transaction(transaction_id=N)</code> and
+<code>fda commit-transaction</code> failed with &quot;doesn&#x27;t match current active
+transaction&quot; if an earlier transaction, for example one that a connector
+started, was still committing. Without a transaction ID, they returned
+before the API&#x27;s transaction committed. Now both wait for the transaction
+that <code>start_transaction</code> started.</p>
+</li>
+<li class="">
+<p><code>POST /v0/pipelines/{pipeline_name}/commit_transaction</code> accepts optional
+<code>transaction_id</code> and <code>incarnation_uuid</code> query parameters, and
+<code>start_transaction</code> returns <code>incarnation_uuid</code>. With them, the pipeline
+commits only the named transaction. A retry of the last commit succeeds
+and does nothing. A commit of a transaction that a pipeline restart lost
+fails, with <code>IncarnationUuidMismatch</code> if the request has
+<code>incarnation_uuid</code>. The Python SDK and <code>fda</code> send both. In Python,
+<code>Pipeline.start_transaction_response()</code> returns both values, and
+<code>commit_transaction()</code> takes <code>incarnation_uuid</code>. See
+<a class="" href="/pipelines/transactions/">Transactions</a>.</p>
+</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03730">v0.373.0<a href="#v03730" class="hash-link" aria-label="Direct link to v0.373.0" title="Direct link to v0.373.0" translate="no">​</a></h2>
 <ul>
 <li class="">
@@ -666,6 +699,15 @@ which was fixed at 8082.  The default is still 8082.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03650">v0.365.0<a href="#v03650" class="hash-link" aria-label="Direct link to v0.365.0" title="Direct link to v0.365.0" translate="no">​</a></h2>
 <ul>
 <li class="">
+<p>The Kafka output connector now writes keyed messages with exactly-once
+fault tolerance, for example from the JSON <code>debezium</code> format or from
+<code>key_fields</code>.  These messages were previously reported as errors and not
+written.  Messages with the same key now go to the same partition in order,
+so consumers can share a topic&#x27;s partitions.  Keyless messages are written
+as before.  Tombstones are still not supported in this mode.  See
+<a class="" href="/connectors/sinks/kafka/#message-keys-with-exactly-once-fault-tolerance">message keys with exactly-once fault tolerance</a>.</p>
+</li>
+<li class="">
 <p>New connector (<code>nats_output</code>): write view output to a NATS subject. The
 connector publishes to JetStream: each message is acknowledged by the
 server before the pipeline moves on, every message carries a <code>Nats-Msg-Id</code>
@@ -698,6 +740,16 @@ cleared or CPU or memory is changed in the runtime configuration.  Enable it wit
 <p>Behavior change (Enterprise, Kubernetes): pipeline StatefulSets now use the
 <code>OnDelete</code> update strategy.  To apply StatefulSet changes (e.g.,
 <code>kubectl rollout restart</code>, <code>kubectl edit</code>, etc.), delete the pod.</p>
+</li>
+<li class="">
+<p>The Kafka output connector with exactly-once fault tolerance no longer
+forces <code>batch.size</code>, <code>batch.num.messages</code> and <code>linger.ms</code> to their
+minimums, which sent every message in its own request and limited
+throughput.  librdkafka&#x27;s defaults now apply, so output batches messages,
+and large transactions finish before the transaction timeout.  The three
+options can now be set in <code>fault_tolerance.producer_options</code>; before, any
+other value was rejected.  See
+<a class="" href="/connectors/sinks/kafka/#fault-tolerance-options">fault tolerance options</a>.</p>
 </li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03620">v0.362.0<a href="#v03620" class="hash-link" aria-label="Direct link to v0.362.0" title="Direct link to v0.362.0" translate="no">​</a></h2>

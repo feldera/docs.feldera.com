@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.375.0 documentation</title>
+  <title>feldera.rest.feldera_client &mdash; Feldera Python SDK 0.376.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=f808bc92"></script>
+        <script src="../../../_static/documentation_options.js?v=6a776279"></script>
         <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -166,6 +166,40 @@
         <span class="n">validate_no_none_keys</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_open_api_transaction</span><span class="p">(</span><span class="n">global_metrics</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ID of the transaction that the API started and did not yet</span>
+<span class="sd">    commit, or `None` if there is no such transaction.</span>
+
+<span class="sd">    `transaction_id` in `global_metrics` is the transaction that the pipeline</span>
+<span class="sd">    runs now.  That can be an earlier transaction that is still committing, so</span>
+<span class="sd">    this uses the initiators of the transaction instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">initiators</span> <span class="o">=</span> <span class="n">global_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_initiators&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">initiators</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># A pipeline that does not report initiators.</span>
+        <span class="k">return</span> <span class="n">global_metrics</span><span class="p">[</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">initiators</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;initiated_by_api&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;Started&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">initiators</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_transaction_pending</span><span class="p">(</span>
+    <span class="n">global_metrics</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">transaction_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return true if transaction `transaction_id` did not yet commit.</span>
+
+<span class="sd">    The transaction can be the one that the pipeline runs now, or the next one,</span>
+<span class="sd">    which waits for an earlier transaction to commit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">initiators</span> <span class="o">=</span> <span class="n">global_metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_initiators&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">return</span> <span class="n">transaction_id</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">global_metrics</span><span class="p">[</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">],</span>
+        <span class="n">initiators</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_boolean_input</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -372,12 +406,24 @@
                 <span class="k">if</span> <span class="n">expected_program_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
 
+                <span class="c1"># Accept a newer version: the compiler also bumps the version</span>
+                <span class="c1"># when it adopts a pipeline whose platform version differs</span>
+                <span class="c1"># from its own (e.g. during a rolling upgrade).</span>
                 <span class="n">current_version</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">program_version</span> <span class="ow">or</span> <span class="mi">0</span>
-                <span class="k">if</span> <span class="n">current_version</span> <span class="o">==</span> <span class="n">expected_program_version</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">current_version</span> <span class="o">&gt;</span> <span class="n">expected_program_version</span><span class="p">:</span>
+                    <span class="c1"># Also the result of a concurrent edit by another client.</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;pipeline &#39;</span><span class="si">%s</span><span class="s2">&#39; compiled program version </span><span class="si">%d</span><span class="s2">, newer than &quot;</span>
+                        <span class="s2">&quot;the expected version </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">name</span><span class="p">,</span>
+                        <span class="n">current_version</span><span class="p">,</span>
+                        <span class="n">expected_program_version</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">current_version</span> <span class="o">&gt;=</span> <span class="n">expected_program_version</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;program version (</span><span class="si">{</span><span class="n">current_version</span><span class="si">}</span><span class="s2">) != expected program version (</span><span class="si">{</span><span class="n">expected_program_version</span><span class="si">}</span><span class="s2">)&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;program version (</span><span class="si">{</span><span class="n">current_version</span><span class="si">}</span><span class="s2">) &lt; expected program version (</span><span class="si">{</span><span class="n">expected_program_version</span><span class="si">}</span><span class="s2">)&quot;</span>
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wait</span><span class="p">:</span>
                 <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">PipelineFieldSelector</span><span class="o">.</span><span class="n">ALL</span><span class="p">)</span>
@@ -1202,18 +1248,35 @@
 <a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">start_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Start a new transaction.</span>
+<span class="sd">        Start a new transaction and return its ID.</span>
 
-<span class="sd">            Transaction ID.</span>
+<span class="sd">        `start_transaction_response` is a better choice because it also</span>
+<span class="sd">        returns the pipeline&#39;s `incarnation_uuid`, which lets</span>
+<span class="sd">        `commit_transaction` detect a pipeline restart.</span>
 
 <span class="sd">        :param pipeline_name: The name of the pipeline.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start_transaction&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_transaction_response</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)[</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">])</span></div>
 
-        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="FelderaClient.start_transaction_response">
+<a class="viewcode-back" href="../../../feldera.rest.html#feldera.rest.feldera_client.FelderaClient.start_transaction_response">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start_transaction_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start a new transaction, returning the full response.</span>
+
+<span class="sd">        :param pipeline_name: The name of the pipeline.</span>
+<span class="sd">        :return: dict with `transaction_id` and `incarnation_uuid`, the</span>
+<span class="sd">            latter identifying the pipeline process instance that started the</span>
+<span class="sd">            transaction; pass both to `commit_transaction`.  Transaction IDs</span>
+<span class="sd">            start again when the pipeline restarts, so `incarnation_uuid`</span>
+<span class="sd">            prevents a commit of another transaction with the same ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/start_transaction&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="FelderaClient.advance_clock">
@@ -1301,6 +1364,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/diff&quot;</span><span class="p">,</span>
             <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1344,6 +1408,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/validate_program&quot;</span><span class="p">,</span>
             <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
@@ -1356,6 +1421,7 @@
         <span class="n">wait</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">timeout_s</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">poll_interval_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">incarnation_uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commits the currently active transaction.</span>
@@ -1374,30 +1440,54 @@
 <span class="sd">        :param poll_interval_s: Polling interval at which to check while waiting for the</span>
 <span class="sd">            transaction to commit (default is every 0.5 seconds). Not used if `wait=False`.</span>
 
-<span class="sd">        :raises RuntimeError: If there is currently no transaction in progress.</span>
+<span class="sd">        :param incarnation_uuid: The `incarnation_uuid` that `start_transaction_response` returned.</span>
+<span class="sd">            If the pipeline restarted since then, the commit fails with `IncarnationUuidMismatch`.</span>
+<span class="sd">            If not provided, the function uses the pipeline&#39;s incarnation when the call starts.</span>
+
+<span class="sd">        :raises RuntimeError: If `transaction_id` is not provided and there is currently no transaction in progress,</span>
+<span class="sd">            or if the pipeline restarts while the function waits for the commit.</span>
 <span class="sd">        :raises ValueError: If the provided `transaction_id` does not match the current transaction.</span>
+<span class="sd">            If there is no current transaction, the pipeline checks `transaction_id`: if the last commit</span>
+<span class="sd">            request already committed it, the commit succeeds, so it is safe to call this again after a `TimeoutError`.</span>
 <span class="sd">        :raises TimeoutError: If the transaction does not commit within the specified timeout (when `wait` is True).</span>
 <span class="sd">        :raises FelderaAPIError: If the pipeline fails to commit a transaction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># TODO: implement this without using /stats when we have a better pipeline status reporting API.</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
-        <span class="n">current_transaction_id</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">][</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">]</span>
+        <span class="n">metrics</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">]</span>
+        <span class="n">current_incarnation</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">incarnation_uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">incarnation_uuid</span> <span class="o">=</span> <span class="n">current_incarnation</span>
+        <span class="n">current_transaction_id</span> <span class="o">=</span> <span class="n">_open_api_transaction</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">current_transaction_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Attempting to commit a transaction, but there is no transaction in progress&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">transaction_id</span> <span class="ow">and</span> <span class="n">current_transaction_id</span> <span class="o">!=</span> <span class="n">transaction_id</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">incarnation_uuid</span> <span class="o">!=</span> <span class="n">current_incarnation</span><span class="p">:</span>
+            <span class="c1"># The pipeline restarted.  Let it report `IncarnationUuidMismatch`.</span>
+            <span class="n">current_transaction_id</span> <span class="o">=</span> <span class="n">transaction_id</span>
+        <span class="k">elif</span> <span class="n">current_transaction_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">transaction_id</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Attempting to commit a transaction, but there is no transaction in progress&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Maybe a retry: the pipeline accepts a commit of the transaction</span>
+            <span class="c1"># that the last commit request committed.</span>
+            <span class="n">current_transaction_id</span> <span class="o">=</span> <span class="n">transaction_id</span>
+        <span class="k">elif</span> <span class="n">transaction_id</span> <span class="ow">and</span> <span class="n">current_transaction_id</span> <span class="o">!=</span> <span class="n">transaction_id</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Specified transaction id </span><span class="si">{</span><span class="n">transaction_id</span><span class="si">}</span><span class="s2"> doesn&#39;t match current active transaction id </span><span class="si">{</span><span class="n">current_transaction_id</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="n">transaction_id</span> <span class="o">=</span> <span class="n">current_transaction_id</span>
 
+        <span class="c1"># A pipeline that knows `transaction_id` commits only that transaction,</span>
+        <span class="c1"># and accepts a retry once the transaction is committing.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">http</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">/commit_transaction&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;transaction_id&quot;</span><span class="p">:</span> <span class="n">transaction_id</span><span class="p">,</span>
+                <span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">:</span> <span class="n">incarnation_uuid</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
@@ -1423,7 +1513,13 @@
                     <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span><span class="s2">&quot;Timed out waiting for transaction to commit&quot;</span><span class="p">)</span>
 
             <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pipeline_stats</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">][</span><span class="s2">&quot;transaction_id&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">transaction_id</span><span class="p">:</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;global_metrics&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;incarnation_uuid&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">incarnation_uuid</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Pipeline </span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2"> restarted while transaction </span><span class="si">{</span><span class="n">transaction_id</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;was committing, so the transaction might not have committed&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_transaction_pending</span><span class="p">(</span><span class="n">metrics</span><span class="p">,</span> <span class="n">transaction_id</span><span class="p">):</span>
                 <span class="n">wait_for_commit</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
                 <span class="k">return</span>
 
@@ -1822,6 +1918,7 @@
             <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;/pipelines/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/egress/</span><span class="si">{</span><span class="n">quote</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
             <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">idempotent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span> <span class="k">if</span> <span class="n">timeout</span> <span class="k">else</span> <span class="kc">None</span>
