@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.376.0
+  version: 0.377.0
 paths:
   /config/authentication:
     get:
@@ -1751,11 +1751,13 @@ paths:
         Partially update a pipeline.
 
 
-        A `deployment_config` resizes the CPU and memory of a running pipeline
-        in place (experimental,
+        A `deployment_config` changes the CPU, memory, storage, and volume
+        attributes class of a
 
-        enabled by `--enable-pipeline-resize`). It cannot be combined with other
-        fields.
+        running pipeline in place (experimental, enabled by
+        `--enable-pipeline-resize`). It cannot be
+
+        combined with other fields.
       operationId: patch_pipeline
       parameters:
         - name: pipeline_name
@@ -11636,6 +11638,20 @@ components:
           description: Enable streaming exchange.
           default: null
           nullable: true
+        tls_exchange:
+          type: boolean
+          description: >-
+            Exchange data between the hosts of a multihost pipeline over TLS.
+
+
+            This applies only when the pipeline has client certificates for TLS
+
+            (with `mtls.enabled` in the Helm chart).  Set it to `false` to
+            exchange
+
+            data in plaintext even then.  The default is `true`.
+          default: null
+          nullable: true
         top_level_negative_weight_fraction:
           type: number
           format: double
@@ -11706,7 +11722,11 @@ components:
       additionalProperties: false
     DynamicResources:
       type: object
-      description: CPU and memory, the only fields that can change while the pipeline runs.
+      description: >-
+        CPU, memory, storage, and the volume attributes class, the only fields
+        that can change while
+
+        the pipeline runs.
       properties:
         cpu_cores_max:
           type: number
@@ -11727,6 +11747,36 @@ components:
           description: |-
             The minimum memory, such as `"4Gi"`. `memory_mb_min`, a number of
             megabytes, is a deprecated alias.
+          nullable: true
+        storage_max:
+          type: string
+          description: >-
+            The maximum storage, such as `"400Gi"`. `storage_mb_max`, a number
+            of megabytes, is a
+
+            deprecated alias.
+          nullable: true
+        storage_min:
+          type: string
+          description: >-
+            Storage grows to `storage_min`, else `storage_max`. With both set,
+            storage autoscaling
+
+            expands it up to `storage_max`. A change can only increase a field
+            that is already set.
+
+            `storage_mb_min`, a number of megabytes, is a deprecated alias.
+
+            Not serialized when unset, so that a pipeline on an older runtime
+            accepts a memory update.
+          nullable: true
+        volume_attributes_class:
+          type: string
+          description: >-
+            The Kubernetes volume attributes class of the storage, which sets
+            its IOPS and
+
+            throughput. A change cannot remove it.
           nullable: true
       additionalProperties: false
     DynamoDBWriteMode:
@@ -11846,39 +11896,65 @@ components:
           type: integer
           format: int32
           description: >-
-            Maximum number of retries for a failed or partially-applied DynamoDB
-            write chunk.
+            Maximum number of retries of a DynamoDB write chunk after its first
+            request.
 
 
-            For `batch` writes, `BatchWriteItem` may return some items as
-            "unprocessed" in a
+            One budget covers every reason a chunk is sent again: items that a
+            successful
 
-            successful 200 response; those are re-submitted and counted as
-            retries. For
+            `BatchWriteItem` response returns as unprocessed, a
+            `TransactWriteItems` call cancelled by
 
-            `transactional` writes, a failed `TransactWriteItems` call is
-            retried in full.
+            transient contention, and a request that fails with a retryable
+            error, such as
+
+            throttling, a timeout, a network failure, a server error, or a
+            temporary failure to
+
+            obtain credentials. The AWS SDK makes its own few attempts first;
+            only a retry that this
+
+            connector starts after the SDK gave up counts here. Each retry waits
+            longer than the
+
+            previous one (exponential backoff with random jitter), up to a
+            ceiling of roughly 13
+
+            seconds.
 
 
-            Transient errors (throttling, network failures) are first handled
-            transparently by the
+            `0` permits no retry. Set to `null` to retry indefinitely: the
+            connector keeps retrying
 
-            AWS SDK. Only attempts that reach this connector's retry loop count
-            against this limit.
+            at the ceiling interval, and the pipeline waits behind it, until
+            DynamoDB recovers or
 
-            Each retry waits longer than the previous one (exponential backoff),
-            up to a ceiling
+            the pipeline stops. When a bounded budget runs out, the chunk's
+            remaining records are
 
-            of roughly 13 seconds.
+            discarded and counted in `dynamodb_output_failed_items_total`.
 
 
-            Set to `null` to retry indefinitely. After the backoff ceiling is
-            reached the connector
+            An error that a retry cannot fix, such as a validation error, a
+            missing table, denied
 
-            keeps retrying at that interval, providing backpressure until
-            DynamoDB recovers.
+            access, or an invalid credential configuration, discards the chunk
+            at once, whatever
 
-            Defaults to `10`.
+            the budget. Items of a transaction that fail their condition
+            expression are dropped
+
+            without a retry, which costs nothing here.
+
+
+            Once a chunk has retried for ten seconds, the connector reports
+            itself unhealthy in
+
+            the pipeline's statistics, with the cause; it reports healthy again
+            once no chunk
+
+            retries and a chunk has landed. Defaults to `10`.
           default: 10
           nullable: true
           minimum: 0
@@ -17418,12 +17494,20 @@ components:
           nullable: true
         volume_attributes_class:
           type: string
-          description: |-
+          description: >-
             Kubernetes volume attributes class to use for the storage of an
+
             instance of this pipeline. The class sets mutable storage parameters
+
             such as IOPS and throughput. Requires Kubernetes 1.34 or later (or
+
             the `VolumeAttributesClass` feature gate) and CSI driver support.
-            A change takes effect on the next start, also for existing storage.
+
+            A change takes effect on the next start, also for existing storage,
+            or
+
+            while the pipeline runs through a `PATCH` of its
+            `deployment_config`.
           default: null
           nullable: true
     ResourcesDesiredStatus:

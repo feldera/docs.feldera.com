@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.376.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.377.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=6a776279"></script>
+        <script src="../../_static/documentation_options.js?v=1ba22820"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -117,7 +117,11 @@
     <span class="n">TransactionStatus</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.output_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputHandler</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaAPIError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FelderaAPIError</span><span class="p">,</span>
+    <span class="n">FelderaCommunicationError</span><span class="p">,</span>
+    <span class="n">FelderaTimeoutError</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.feldera_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">FelderaClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.logs</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogStream</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">feldera.rest.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span> <span class="k">as</span> <span class="n">InnerPipeline</span>
@@ -622,10 +626,40 @@
         <span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div>
 
 
+    <span class="c1"># Statuses in which `wait_for_completion` waits for the pipeline.</span>
+    <span class="n">_WAIT_FOR_COMPLETION_STATUSES</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">INITIALIZING</span><span class="p">,</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PROVISIONING</span><span class="p">,</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">BOOTSTRAPPING</span><span class="p">,</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">CONCURRENTBOOTSTRAPPING</span><span class="p">,</span>
+        <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">SYNCHRONIZING</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_exactly_once</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the pipeline uses exactly-once fault tolerance, which</span>
+<span class="sd">        recovers all of its input after a restart.&quot;&quot;&quot;</span>
+        <span class="n">ft</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime_config</span><span class="p">()</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fault_tolerance&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="n">ft</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;exactly_once&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_not_running_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">PipelineStatus</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The error for a pipeline that is not in a status to complete.&quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Pipeline must be running to wait for completion (status: </span><span class="si">{</span><span class="n">status</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">deployment_runtime_status_details</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">FelderaAPIError</span><span class="p">:</span>
+            <span class="n">details</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">details</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, details: </span><span class="si">{</span><span class="n">details</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Pipeline.wait_for_completion">
 <a class="viewcode-back" href="../../feldera.html#feldera.pipeline.Pipeline.wait_for_completion">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wait_for_completion</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">force_stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">force_stop</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unavailable_timeout_s</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">60.0</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Block until the pipeline has completed processing all input records.</span>
@@ -645,21 +679,28 @@
 <span class="sd">        :param timeout_s: Optional. The maximum time (in seconds) to wait for</span>
 <span class="sd">            the pipeline to complete. The default is None, which means wait</span>
 <span class="sd">            indefinitely.</span>
+<span class="sd">        :param unavailable_timeout_s: The maximum time (in seconds) to wait</span>
+<span class="sd">            for a pipeline in the UNAVAILABLE status to become available</span>
+<span class="sd">            again. The manager reports UNAVAILABLE when one status probe</span>
+<span class="sd">            fails, for example when the node is overloaded, so this status</span>
+<span class="sd">            is usually transient. 60 seconds by default.</span>
 
-<span class="sd">        :raises RuntimeError: If the pipeline returns unknown metrics.</span>
+<span class="sd">        :raises RuntimeError: If the pipeline is not running, stays</span>
+<span class="sd">            UNAVAILABLE for longer than `unavailable_timeout_s`, restarts</span>
+<span class="sd">            during the wait without exactly-once fault tolerance, or returns</span>
+<span class="sd">            unknown metrics.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">INITIALIZING</span><span class="p">,</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PROVISIONING</span><span class="p">,</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">BOOTSTRAPPING</span><span class="p">,</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">CONCURRENTBOOTSTRAPPING</span><span class="p">,</span>
-            <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">SYNCHRONIZING</span><span class="p">,</span>
-        <span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Pipeline must be running to wait for completion&quot;</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_WAIT_FOR_COMPLETION_STATUSES</span>
+            <span class="ow">and</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">UNAVAILABLE</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_not_running_error</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
 
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+        <span class="n">unavailable_since</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">first_incarnation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Reused by the warning message below; is_complete() would fetch and</span>
         <span class="c1"># discard the same stats, hiding whether the wait is stalled or just</span>
         <span class="c1"># slow (e.g. mid-transaction-commit).</span>
@@ -684,7 +725,51 @@
                         <span class="sa">f</span><span class="s2">&quot; pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; to complete&quot;</span>
                     <span class="p">)</span>
 
-            <span class="n">latest_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">latest_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+            <span class="k">except</span> <span class="p">(</span>
+                <span class="n">FelderaAPIError</span><span class="p">,</span>
+                <span class="n">FelderaTimeoutError</span><span class="p">,</span>
+                <span class="n">FelderaCommunicationError</span><span class="p">,</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">status</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_WAIT_FOR_COMPLETION_STATUSES</span><span class="p">:</span>
+                    <span class="k">raise</span>
+                <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">UNAVAILABLE</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_not_running_error</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+                <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">unavailable_since</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">unavailable_since</span> <span class="o">=</span> <span class="n">now</span>
+                <span class="k">elif</span> <span class="n">now</span> <span class="o">-</span> <span class="n">unavailable_since</span> <span class="o">&gt;</span> <span class="n">unavailable_timeout_s</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">_not_running_error</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">unavailable_since</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="c1"># Without exactly-once fault tolerance, a restarted pipeline can</span>
+            <span class="c1"># lose input, so its completion does not cover what we wait for.</span>
+            <span class="n">incarnation</span> <span class="o">=</span> <span class="n">latest_stats</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">incarnation_uuid</span>
+            <span class="k">if</span> <span class="n">first_incarnation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">first_incarnation</span> <span class="o">=</span> <span class="n">incarnation</span>
+            <span class="k">elif</span> <span class="n">incarnation</span> <span class="o">!=</span> <span class="n">first_incarnation</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_exactly_once</span><span class="p">():</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;pipeline &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; restarted while waiting for&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; completion (incarnation </span><span class="si">{</span><span class="n">first_incarnation</span><span class="si">}</span><span class="s2"> became&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">incarnation</span><span class="si">}</span><span class="s2">) without exactly-once fault&quot;</span>
+                        <span class="s2">&quot; tolerance; input received since the last&quot;</span>
+                        <span class="s2">&quot; checkpoint may be lost&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;pipeline </span><span class="si">%s</span><span class="s2"> restarted while waiting for completion&quot;</span>
+                    <span class="s2">&quot; (incarnation </span><span class="si">%s</span><span class="s2"> became </span><span class="si">%s</span><span class="s2">); exactly-once fault tolerance&quot;</span>
+                    <span class="s2">&quot; replays its input&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">first_incarnation</span><span class="p">,</span>
+                    <span class="n">incarnation</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">first_incarnation</span> <span class="o">=</span> <span class="n">incarnation</span>
+
             <span class="n">pipeline_complete</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">latest_stats</span><span class="o">.</span><span class="n">global_metrics</span><span class="o">.</span><span class="n">pipeline_complete</span>
             <span class="p">)</span>
