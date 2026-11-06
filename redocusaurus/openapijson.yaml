@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.377.0
+  version: 0.378.0
 paths:
   /config/authentication:
     get:
@@ -2026,6 +2026,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2183,6 +2197,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2309,6 +2337,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2430,6 +2472,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2571,6 +2627,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2712,6 +2782,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2840,6 +2924,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -2967,6 +3065,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -3088,6 +3200,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -3209,6 +3335,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -3499,6 +3639,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -3656,6 +3810,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -4058,6 +4226,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -4335,6 +4517,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -4552,6 +4748,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5027,6 +5237,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5292,6 +5516,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5390,7 +5628,7 @@ paths:
             minimum: 0
         - name: duration_secs
           in: query
-          description: The number of seconds to sample for the profile.
+          description: The number of seconds to sample for the profile, from 1 to 300.
           required: false
           schema:
             type: integer
@@ -5399,6 +5637,12 @@ paths:
       responses:
         '202':
           description: Started profiling the pipeline with the Samply tool
+        '400':
+          description: '`duration_secs` is not from 1 to 300 (error code `InvalidParam`)'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Pipeline with that name does not exist
           content:
@@ -5429,6 +5673,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5664,6 +5922,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5778,6 +6050,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -5913,6 +6199,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -6308,6 +6608,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -6427,6 +6741,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -6560,6 +6888,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -6752,6 +7094,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -6871,6 +7227,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -7003,6 +7373,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -7343,6 +7727,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -7476,6 +7874,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
@@ -7648,6 +8060,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
               examples:
+                Connection failed:
+                  value:
+                    message: >-
+                      Error sending HTTP request to pipeline: Failed to connect
+                      to host: Timeout while establishing connection Failed
+                      request: /pause pipeline-id=N/A
+                      pipeline-name="my_pipeline"
+                    error_code: PipelineInteractionConnectFailed
+                    details:
+                      pipeline_name: my_pipeline
+                      request: /pause
+                      error: >-
+                        Failed to connect to host: Timeout while establishing
+                        connection
                 Disconnected during response:
                   value:
                     message: >-
