@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.378.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.379.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -14,7 +14,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=adb187a4"></script>
+        <script src="../../_static/documentation_options.js?v=dc64cdfd"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -2602,8 +2602,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">pipeline_events</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;pipeline_events&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span>
 
+        <span class="c1"># Without a new collection, the request only reads stored data, so a</span>
+        <span class="c1"># retry is cheap.</span>
         <span class="n">support_bundle_bytes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_pipeline_support_bundle</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">retry</span><span class="o">=</span><span class="ow">not</span> <span class="n">collect</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">output_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

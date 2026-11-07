@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.378.0
+  version: 0.379.0
 paths:
   /config/authentication:
     get:
@@ -6469,6 +6469,24 @@ paths:
         statistics,
 
         and packages them into a single ZIP file for support purposes.
+
+
+        The response starts before the data is collected, and has no
+
+        `Content-Length`. When the bundle collects new data, its first entry,
+
+        `collection_log.txt`, gets a line every 10 seconds until the collection
+        is
+
+        complete, so that the response is never idle for long. Data that the
+
+        pipeline cannot supply is reported inside the bundle. A failure after
+        the
+
+        response started cuts the response short, so a client must check that
+        the
+
+        ZIP file is complete.
       operationId: get_pipeline_support_bundle
       parameters:
         - name: pipeline_name
@@ -6602,70 +6620,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '503':
-          description: ''
+          description: >-
+            The database was busy before the response started (`LockTookTooLong`
+            or `DeadlockDetected`)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                Connection failed:
-                  value:
-                    message: >-
-                      Error sending HTTP request to pipeline: Failed to connect
-                      to host: Timeout while establishing connection Failed
-                      request: /pause pipeline-id=N/A
-                      pipeline-name="my_pipeline"
-                    error_code: PipelineInteractionConnectFailed
-                    details:
-                      pipeline_name: my_pipeline
-                      request: /pause
-                      error: >-
-                        Failed to connect to host: Timeout while establishing
-                        connection
-                Disconnected during response:
-                  value:
-                    message: >-
-                      Error sending HTTP request to pipeline: the pipeline
-                      disconnected while it was processing this HTTP request.
-                      This could be because the pipeline either (a) encountered
-                      a fatal error or panic, (b) was stopped, or (c)
-                      experienced network issues -- retrying might help in the
-                      last case. Alternatively, check the pipeline logs. Failed
-                      request: /pause pipeline-id=N/A
-                      pipeline-name="my_pipeline"
-                    error_code: PipelineInteractionUnreachable
-                    details:
-                      pipeline_name: my_pipeline
-                      request: /pause
-                      error: >-
-                        the pipeline disconnected while it was processing this
-                        HTTP request. This could be because the pipeline either
-                        (a) encountered a fatal error or panic, (b) was stopped,
-                        or (c) experienced network issues -- retrying might help
-                        in the last case. Alternatively, check the pipeline
-                        logs.
-                Response timeout:
-                  value:
-                    message: >-
-                      Error sending HTTP request to pipeline: timeout (10s) was
-                      reached: this means the pipeline took too long to respond
-                      -- this can simply be because the request was too
-                      difficult to process in time, or other reasons (e.g.,
-                      deadlock): the pipeline logs might contain additional
-                      information (original send request error: Timeout while
-                      waiting for response) Failed request: /pause
-                      pipeline-id=N/A pipeline-name="my_pipeline"
-                    error_code: PipelineInteractionUnreachable
-                    details:
-                      pipeline_name: my_pipeline
-                      request: /pause
-                      error: >-
-                        timeout (10s) was reached: this means the pipeline took
-                        too long to respond -- this can simply be because the
-                        request was too difficult to process in time, or other
-                        reasons (e.g., deadlock): the pipeline logs might
-                        contain additional information (original send request
-                        error: Timeout while waiting for response)
       security:
         - JSON web token (JWT) or API key: []
   /v0/pipelines/{pipeline_name}/tables/{table_name}/connectors/{connector_name}/completion_token:

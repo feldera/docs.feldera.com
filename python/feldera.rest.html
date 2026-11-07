@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.rest package &mdash; Feldera Python SDK 0.378.0 documentation</title>
+  <title>feldera.rest package &mdash; Feldera Python SDK 0.379.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=adb187a4"></script>
+        <script src="_static/documentation_options.js?v=dc64cdfd"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -875,7 +875,7 @@ waiting for new lines. A server older than this parameter ignores it.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle">
-<span class="sig-name descname"><span class="pre">get_pipeline_support_bundle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_pipeline_support_bundle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_pipeline_support_bundle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pipeline_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/feldera/rest/feldera_client.html#FelderaClient.get_pipeline_support_bundle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.rest.feldera_client.FelderaClient.get_pipeline_support_bundle" title="Link to this definition"></a></dt>
 <dd><p>Generate a support bundle containing diagnostic information from a pipeline.</p>
 <p>This endpoint collects various diagnostic data from the pipeline including
 circuit profile, heap profile, metrics, logs, stats, and connector statistics,
@@ -885,6 +885,10 @@ and packages them into a single ZIP file for support purposes.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pipeline_name</strong> – The name of the pipeline</p></li>
 <li><p><strong>params</strong> – Optional query parameters to control data collection</p></li>
+<li><p><strong>retry</strong> – Whether to retry after a failure that can come late,
+such as a gateway timeout or a dropped connection. A bundle that
+collects new data is slow and loads the pipeline, so pass True
+only with <cite>collect=false</cite> in <cite>params</cite>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
