@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -80,12 +80,17 @@ The controller&#x27;s output queue then fills to <code>max_queued_records</code>
 pipeline stops advancing until the sink catches up. Configure
 <code>queue.buffering.max.messages</code> and <code>queue.buffering.max.kbytes</code> to bound the
 producer queue; the byte limit takes priority. These bounds apply per connector.</p>
+<p>At the end of each output batch, the connector waits until Kafka acknowledges
+or fails every record that it sent. Thus, a checkpoint never covers records
+that are only in the producer queue. While the broker is unreachable, this
+wait stops the sink, and output backs up as described above.</p>
 <p>To restore the former five-minute delivery deadline, add either
 <code>&quot;message.timeout.ms&quot;: &quot;300000&quot;</code> or <code>&quot;delivery.timeout.ms&quot;: &quot;300000&quot;</code> to the
 transport&#x27;s <code>config</code> object. The two names are aliases; configure only one.
 An explicit finite timeout or retry count can cause undelivered records to be
 dropped. Permanent errors, such as a rejected oversized message, can also lose
-records. The connector reports these losses as errors. Shutdown does not
+records, even if a checkpoint covers them. The connector reports these losses
+as errors. Shutdown does not
 guarantee delivery of records still in the non-fault-tolerant producer queue.</p>
 <p>The connector reports unhealthy when a pending message has waited at least
 10 seconds for delivery and no delivery completed in the last 10 seconds, or

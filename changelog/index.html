@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -24,6 +24,52 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">
+<p>Incompatible change (support bundles): in new collections,
+<code>pipeline_config.json</code> no longer has <code>program_info.dataflow</code>, which was a
+copy of <code>dataflow_graph.json</code>.</p>
+</li>
+<li class="">
+<p>The API server now accepts JSON request bodies of up to 64 MiB. Before, the
+limit was 2 MiB. When you create or update a pipeline, the body holds its SQL
+program, Rust UDF code, configuration, name, description and tags. Change the
+limit, in bytes, with <code>--max-json-body-bytes</code> or
+<code>FELDERA_MAX_JSON_BODY_BYTES</code> (in the Helm chart, through
+<code>controlPlane.env</code>). The server holds each body in memory while it parses
+it, so a lower limit caps the memory one request can use. A request over the
+limit gets <code>413 Payload Too Large</code>, and the message now names the setting.</p>
+</li>
+<li class="">
+<p>Delta Lake: applying a deletion vector no longer fails on Parquet files that
+Databricks Photon writes with 256-value <code>DELTA_BINARY_PACKED</code> miniblocks, as
+it does for tables with <code>delta.parquet.format.version = 2.12.0</code>. Before, the
+read failed with <code>cannot skip miniblock of size 256</code>, and the input connector
+retried the file without making progress.</p>
+</li>
+<li class="">
+<p>Incompatible change (Enterprise): the compiler server image no longer
+includes the AWS CLI.  In <code>credential-provider</code> values, replace
+<code>aws codeartifact get-authorization-token</code> with <code>codeartifact-token</code>, which
+fetches CodeArtifact tokens for private Cargo registries.  See
+<a class="" href="/get-started/enterprise/private-cargo-registry/">Private Cargo registry</a>.</p>
+</li>
+<li class="">
+<p>Incompatible change: if both <code>max_rss</code> and <code>resources.memory_max</code> are
+set, the pipeline&#x27;s memory budget is the smaller of the two.  Before, it
+was <code>max_rss</code>.  A pipeline whose <code>datafusion_memory</code> is not less than
+<code>resources.memory_max</code> now fails to start with a
+<code>DatafusionMemoryExceedsBudget</code> error.  To start it, make
+<code>datafusion_memory</code> smaller.  A resize of <code>memory_max</code> now changes the
+budget of a running pipeline also when <code>max_rss</code> is set.</p>
+</li>
+<li class="">
+<p>Storage: a pipeline now keeps only its newest checkpoint on storage.
+Before, it also kept the checkpoint before it, which could use as much
+storage again as the pipeline&#x27;s state.  A multihost pipeline deletes
+the older checkpoint when every host has written the newest one.</p>
+</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03800">v0.380.0<a href="#v03800" class="hash-link" aria-label="Direct link to v0.380.0" title="Direct link to v0.380.0" translate="no">​</a></h2>
 <ul>
 <li class="">Incompatible change (SQL): the compiler no longer supports the <code>INTERNED</code>
@@ -53,6 +99,11 @@ table without a primary key.</p>
 keys fails, the API server keeps using the keys it fetched before, for up to
 1 hour.  Before, one failed fetch refused every token of that issuer with a
 401 for the refresh cooldown, which is 30 seconds for federated tokens.</p>
+</li>
+<li class="">
+<p>Connectors: Feldera now rejects a connector with <code>max_queued_records</code> (or
+<code>max_queued_size</code>) set to 0. Before, such a configuration was accepted, but
+the connector never read or wrote any data.</p>
 </li>
 <li class="">
 <p>Behavior change (support bundle): the download starts at once. While it

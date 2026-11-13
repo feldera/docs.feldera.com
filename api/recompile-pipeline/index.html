@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -244,8 +244,9 @@ report the memory pressure level via the <code>memory_pressure</code> metric.</p
 to push state cached in memory to storage, preventing the pipeline from running
 out of memory at the cost of some performance degradation.</p><p>It is strongly recommended to set this property to prevent the pipeline from
 running out of memory. The setting should not exceed the memory limit of the pipeline
-instance.</p><p>When <code>max_rss</code> is not specified but <code>resources.memory_max</code> is set, the
-latter is used as the effective memory cap for the pipeline.</p><p>The pipeline caps this limit at the memory available to it, which is the
+instance.</p><p>If <code>resources.memory_max</code> is also set, the pipeline uses the smaller of
+the two as its memory cap. If only <code>resources.memory_max</code> is set, the
+pipeline uses it.</p><p>The pipeline caps this limit at the memory available to it, which is the
 host&#x27;s memory or the container&#x27;s memory limit, whichever is smaller. It
 rechecks the available memory every second.</p><p>Before release 0.367.0 this setting was <code>max_rss_mb</code>, a number of
 megabytes. That name is deprecated but still read.</p><p>See <a href="https://docs.feldera.com/operations/memory" target="_blank" rel="noopener noreferrer" class="">documentation on the pipeline&#x27;s memory usage</a>

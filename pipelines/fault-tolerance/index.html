@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -144,6 +144,11 @@ for <code>&lt;duration&gt;</code> to disable automatic checkpoints):</p>
 writes a checkpoint every 60 seconds.  This interval can be changed
 or disabled as described
 <a href="#enabling-checkpoints-and-fault-tolerance" class="">above</a>.</p>
+<p>A pipeline keeps only its newest checkpoint on storage.  When it
+finishes writing a checkpoint, it deletes the older one, together with
+the files that only the older one uses.  A multihost pipeline keeps the
+older checkpoint until every host has written the newest one, because
+it resumes from the newest checkpoint that every host has.</p>
 <p>Feldera also has an HTTP API, <code>/checkpoint</code>, that allows the user to
 request writing a checkpoint immediately.  If automatic checkpoints
 are disabled, then the user should occasionally invoke this API to
@@ -167,6 +172,39 @@ only from those connectors until they advance to a point at which a
 checkpoint is possible, and then writes the checkpoint.  In some
 cases, this can take minutes or longer.</p>
 </blockquote>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="statistics-after-a-resume">Statistics after a resume<a href="#statistics-after-a-resume" class="hash-link" aria-label="Direct link to Statistics after a resume" title="Direct link to Statistics after a resume" translate="no">​</a></h2>
+<p>A checkpoint also stores the pipeline&#x27;s record counters.  When a
+pipeline resumes from a checkpoint, these counters continue from their
+values at the time of the checkpoint:</p>
+<div class="table-scroll-container"><table><thead><tr><th>Counter</th><th>Metrics</th><th><code>/stats</code> fields</th></tr></thead><tbody><tr><td>Records the pipeline received and processed</td><td><code>records_input_total</code>, <code>records_processed_total</code></td><td><code>total_input_records</code>, <code>total_processed_records</code></td></tr><tr><td>Records, bytes and errors for each input connector</td><td><code>input_connector_records_total</code>, <code>input_connector_bytes_total</code>, <code>input_connector_errors_transport_total</code>, <code>input_connector_errors_parse_total</code></td><td>the same counters in each input endpoint&#x27;s metrics</td></tr><tr><td>Records, bytes and errors for each output connector</td><td><code>output_connector_records_total</code>, <code>output_connector_bytes_total</code>, <code>output_connector_errors_transport_total</code>, <code>output_connector_errors_encode_total</code></td><td>the same counters in each output endpoint&#x27;s metrics</td></tr></tbody></table></div>
+<p>Work performed between a checkpoint and a crash is not counted as
+performed when the pipeline resumes.  The pipeline does that work
+again after the resume, and it is counted then.  For example, suppose
+a pipeline reads 1,000,000 records in total.  It writes a checkpoint
+after 500,000 records, reads 250,000 more, and then fails.  After it
+resumes, it reports 500,000 processed records.  When it has read all
+of its input, it reports 1,000,000.  Thus, the counters show the
+1,000,000 records of committed work, not the 1,250,000 records of work
+that the pipeline actually performed.</p>
+<p>In the same way, the output counters do not count output that the
+pipeline sent after the checkpoint and before the failure.  With
+at-least-once fault tolerance, or with an output connector that is
+not fault tolerant, the pipeline can send that output again after the
+resume, so a destination can receive more records than the counters
+show.</p>
+<p>Because a resume can cause these counters to decrease, Prometheus
+sees a counter reset, in the same way as when a process restarts.</p>
+<p>Other statistics are for the current incarnation of the pipeline only,
+that is, for the current pipeline process, and start from zero after a
+resume.  These include:</p>
+<ul>
+<li class=""><code>records_input_bytes_total</code>, <code>records_processed_bytes_total</code> and
+<code>records_late_total</code>.</li>
+<li class="">Counters that only some connectors export, such as the Delta Lake,
+Iceberg and Kafka connector metrics.</li>
+<li class="">Gauges and latency histograms.</li>
+<li class="">The <a class="" href="/operations/metrics/#process-metrics">process metrics</a>.</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="fault-tolerant-connectors">Fault-tolerant connectors<a href="#fault-tolerant-connectors" class="hash-link" aria-label="Direct link to Fault-tolerant connectors" title="Direct link to Fault-tolerant connectors" translate="no">​</a></h2>
 <p>For Feldera to checkpoint and resume, or to enable fault tolerance, all
 of the pipeline&#x27;s input connectors must support fault tolerance.  Some
@@ -204,6 +242,6 @@ state from the most recent checkpoint, then replays any data from
 input connectors previously processed beyond that checkpoint.  If
 replay produces output that was previously sent to output connectors,
 it discards that output.  After replay completes, the pipeline
-continues with new input that has not previously been processed.</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/pipelines/fault-tolerance-overview/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Fault Tolerance &amp; Disaster Recovery</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/pipelines/checkpoint-sync/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Checkpoint Sync to Object Store</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#enabling-checkpoints-and-fault-tolerance" class="table-of-contents__link toc-highlight">Enabling checkpoints and fault tolerance</a></li><li><a href="#writing-checkpoints" class="table-of-contents__link toc-highlight">Writing checkpoints</a></li><li><a href="#fault-tolerant-connectors" class="table-of-contents__link toc-highlight">Fault-tolerant connectors</a></li><li><a href="#implementation-details" class="table-of-contents__link toc-highlight">Implementation details</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/">Guides</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
+continues with new input that has not previously been processed.</p></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/pipelines/fault-tolerance-overview/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Fault Tolerance &amp; Disaster Recovery</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/pipelines/checkpoint-sync/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Checkpoint Sync to Object Store</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#enabling-checkpoints-and-fault-tolerance" class="table-of-contents__link toc-highlight">Enabling checkpoints and fault tolerance</a></li><li><a href="#writing-checkpoints" class="table-of-contents__link toc-highlight">Writing checkpoints</a></li><li><a href="#statistics-after-a-resume" class="table-of-contents__link toc-highlight">Statistics after a resume</a></li><li><a href="#fault-tolerant-connectors" class="table-of-contents__link toc-highlight">Fault-tolerant connectors</a></li><li><a href="#implementation-details" class="table-of-contents__link toc-highlight">Implementation details</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/">Guides</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
 </body>
 </html>

@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -28,9 +28,10 @@ frequently accessed state and to accelerate index lookups.</p>
 it. This behavior is controlled by the <code>max_rss</code> setting in the pipeline <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>.
 When configured, the pipeline dynamically applies <em>backpressure</em> to the storage layer, flushing
 in-memory state to disk more aggressively as memory usage approaches the limit.</p>
-<p>If <code>max_rss</code> is not set but <code>memory_max</code> is configured in the <code>resources</code> section of
-<a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>, the latter is used as the effective memory cap. We <strong>strongly recommend</strong>
-setting at least one of these parameters to prevent out-of-memory failures.</p>
+<p>If <code>memory_max</code> is also set in the <code>resources</code> section of <a class="" href="/pipelines/configuration/#runtime-configuration">Runtime configuration</a>, the
+pipeline uses the smaller of the two as its memory cap. If only <code>memory_max</code> is set, the
+pipeline uses it. We <strong>strongly recommend</strong> setting at least one of these parameters to
+prevent out-of-memory failures.</p>
 <p>On single-host deployments (for example, in Docker), if neither
 parameter is set, <code>resources.memory_max</code> is set to the smaller
 value of host memory size, and container memory limit.  In a
@@ -43,8 +44,8 @@ limit, whichever is smaller.  The pipeline rechecks this every second,
 so if the container&#x27;s memory limit changes while the pipeline runs,
 the pipeline adjusts its limit to match.</p>
 <p>When <a class="" href="/pipelines/configuration/#resizing-a-running-pipeline">a running pipeline is resized</a>,
-the new <code>resources.memory_max</code> also becomes its memory limit,
-unless <code>max_rss</code> is set.</p>
+its memory limit becomes the smaller of <code>max_rss</code> and the new
+<code>resources.memory_max</code>.</p>
 <p>The pipeline reports its current memory pressure level (<code>low</code>,
 <code>moderate</code>, <code>high</code>, or <code>critical</code>) via the
 <a class="" href="/operations/metrics/"><code>memory_pressure</code> metric</a>, and its memory limit

@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.ecbd4be4.js" defer="defer"></script>
-<script src="/assets/js/main.c5ce1340.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
+<script src="/assets/js/main.58278c81.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -170,7 +170,7 @@ The one exception to this is <code>/stop?force=false</code>, which will result i
 <li class=""><code>deployment_runtime_desired_status_since</code></li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="runtime-status-table">Runtime status table<a href="#runtime-status-table" class="hash-link" aria-label="Direct link to Runtime status table" title="Direct link to Runtime status table" translate="no">​</a></h3>
-<div class="table-scroll-container"><table><thead><tr><th>Runtime status</th><th>Description</th></tr></thead><tbody><tr><td><strong>Unavailable</strong></td><td>Unable to determine the current runtime status. This status is never returned by the pipeline endpoint itself, but only determined by the runner. This can occur notably in two scenarios: (1) the runner is unable to (in time) receive a response for its sent request to the pipeline status endpoint, or (2) it received back a 503 Service Unavailable.</td></tr><tr><td><strong>Coordination</strong></td><td>In a multihost pipeline, this status indicates that an individual host is waiting for instructions from the coordinator.  This status should never be visible to the user, since the user does not connect directly to individual hosts in a multihost pipeline.</td></tr><tr><td><strong>Standby</strong>*</td><td>The pipeline constantly pulling the latest checkpoint to S3 but not processing any inputs.</td></tr><tr><td><strong>AwaitingApproval</strong>*</td><td>The pipeline has been modified and is currently awaiting the user&#x27;s approval to proceed with bootstrapping modified views. See <a class="" href="/pipelines/modifying/">Modifying a Pipeline</a> for details.</td></tr><tr><td><strong>Initializing</strong></td><td>The input and output connectors are establishing connections to their data sources and sinks respectively.</td></tr><tr><td><strong>Bootstrapping</strong></td><td>The pipeline was modified since the last time it was started, and is currently computing modified views. See <a class="" href="/pipelines/modifying/">Modifying a Pipeline</a> for details.</td></tr><tr><td><strong>Replaying</strong></td><td>Input records that were stored in the journal but were not yet processed, are being processed first.</td></tr><tr><td><strong>Paused</strong>*</td><td>The input connectors are paused.</td></tr><tr><td><strong>Running</strong>*</td><td>The input connectors are running.</td></tr><tr><td><strong>Suspended</strong>*</td><td>The circuit is terminated and a final checkpoint has been made. This status is normally not observed as the resources (desired) status will become Stopped once it is detected.</td></tr><tr><td>(*) Also a possible desired status</td><td></td></tr></tbody></table></div>
+<div class="table-scroll-container"><table><thead><tr><th>Runtime status</th><th>Description</th></tr></thead><tbody><tr><td><strong>Unavailable</strong></td><td>Unable to determine the current runtime status. This status is never returned by the pipeline endpoint itself, but only determined by the runner. This can occur notably in two scenarios: (1) the runner is unable to (in time) receive a response for its sent request to the pipeline status endpoint, or (2) it received back a 503 Service Unavailable.</td></tr><tr><td><strong>Coordination</strong></td><td>In a multihost pipeline, this status indicates that an individual host is waiting for instructions from the coordinator.  This status should never be visible to the user, since the user does not connect directly to individual hosts in a multihost pipeline.</td></tr><tr><td><strong>Standby</strong>*</td><td>The pipeline constantly pulling the latest checkpoint to S3 but not processing any inputs.</td></tr><tr><td><strong>AwaitingApproval</strong>*</td><td>The pipeline has been modified and is currently awaiting the user&#x27;s approval to proceed with bootstrapping modified views. See <a class="" href="/pipelines/modifying/">Modifying a Pipeline</a> for details.</td></tr><tr><td><strong>Initializing</strong></td><td>The input and output connectors are establishing connections to their data sources and sinks respectively.</td></tr><tr><td><strong>Bootstrapping</strong></td><td>The pipeline was modified since the last time it was started, and is currently computing modified views. See <a class="" href="/pipelines/modifying/">Modifying a Pipeline</a> for details.</td></tr><tr><td><strong>Replaying</strong></td><td>Input records that were stored in the journal but were not yet processed, are being processed first.</td></tr><tr><td><strong>Paused</strong>*</td><td>The input connectors are paused.</td></tr><tr><td><strong>Running</strong>*</td><td>The input connectors are running.</td></tr><tr><td><strong>Suspended</strong>*</td><td>The circuit is terminated and a final checkpoint has been made. This status is normally not observed as the resources (desired) status will become Stopped once it is detected.</td></tr><tr><td><strong>ConcurrentBootstrapping</strong></td><td>The pipeline was modified, and it computes the modified views in the background while the views that did not change keep running. See <a class="" href="/pipelines/modifying/#concurrent-bootstrapping">Concurrent bootstrapping</a>.</td></tr><tr><td><strong>Synchronizing</strong></td><td>The last phase of a concurrent bootstrap. Inputs are paused for a short time while the computed views are brought online.</td></tr><tr><td>(*) Also a possible desired status</td><td></td></tr></tbody></table></div>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="runtime-status-diagram">Runtime status diagram<a href="#runtime-status-diagram" class="hash-link" aria-label="Direct link to Runtime status diagram" title="Direct link to Runtime status diagram" translate="no">​</a></h3>
 <p>There are several transition restrictions:</p>
 <ul>
@@ -180,7 +180,45 @@ Once the pipeline has been set to become <code>Paused</code> or <code>Running</c
 <li class=""><strong>Suspended can only be cleared by stop-and-start:</strong> Once a pipeline has been suspended, it can only again become
 <code>Paused</code> or <code>Running</code> again by stopping (which will happen automatically) and starting the pipeline.</li>
 </ul>
-<p>The diagram will be added in the future.</p>
+<p><img decoding="async" loading="lazy" alt="Runtime status diagram" src="/assets/images/runtime_status-6a020bf59ed1517fc354930375df2a0c.png" width="2709" height="2245" class="img_ev3q"></p>
+<p><strong>Runtime status diagram notes:</strong></p>
+<ul>
+<li class=""><strong>Start:</strong> a new pipeline process starts in <code>Initializing</code>.  The
+edges out of <code>Initializing</code> depend on the desired status and on
+the state in storage:<!-- -->
+<ul>
+<li class=""><code>standby</code>: the initial desired status is <code>Standby</code>.</li>
+<li class=""><code>needs approval</code>: the program changed since the checkpoint, and
+the changes need the user&#x27;s approval.</li>
+<li class=""><code>changed</code>: the program changed since the checkpoint, and no
+approval is needed.  With <code>concurrent_bootstrap=true</code> on <code>/start</code>,
+the pipeline goes to <code>ConcurrentBootstrapping</code> instead.</li>
+<li class=""><code>journal</code>: the journal has input that was not processed yet.</li>
+<li class="">Otherwise, the pipeline goes directly to the desired status,
+<code>Paused</code> or <code>Running</code>.</li>
+</ul>
+</li>
+<li class=""><strong>Stop, edit and start:</strong> the runtime status exists only while the
+resources status is <code>Provisioned</code>.  Stopping a pipeline ends its
+runtime status, and a pipeline can be edited only while it is
+stopped.  See the <a href="#resources-status-diagram" class="">resources status
+diagram</a>.  When the pipeline starts again,
+a new process starts at <code>Initializing</code>.</li>
+<li class=""><strong>Restart:</strong> if the pipeline process restarts, for example after a
+crash, the runtime status starts again at <code>Initializing</code>, and the
+pipeline goes through the statuses above again.</li>
+<li class=""><strong>Unavailable:</strong> the runner reports <code>Unavailable</code> from any status
+when it cannot get the status from the pipeline in time.  When the
+pipeline answers again, the runner reports the status that the
+pipeline gives.</li>
+<li class=""><strong>Errors:</strong> if the pipeline fails in any status, the runner stops
+the pipeline, and the resources status becomes <code>Stopping</code>.</li>
+<li class=""><strong>Suspended:</strong> <code>/stop?force=false</code> writes a checkpoint and
+suspends the pipeline.  The runner then stops the pipeline.</li>
+<li class=""><strong>Multihost:</strong> each host of a multihost pipeline is in
+<code>Coordination</code> until the coordinator tells it what to do.  The user
+does not see this status.</li>
+</ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="multihost-pipeline-startup">Multihost pipeline startup<a href="#multihost-pipeline-startup" class="hash-link" aria-label="Direct link to Multihost pipeline startup" title="Direct link to Multihost pipeline startup" translate="no">​</a></h3>
 <p>A multihost pipeline runs one pipeline process on each host, and a
 coordinator in front of them.  While it starts, its runtime status is
