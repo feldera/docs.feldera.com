@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
-<script src="/assets/js/main.58278c81.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
+<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -61,6 +61,8 @@ subsequent deltas.</li>
 when the client connects, the snapshot is delivered from the most recent
 cached view state, even if the pipeline is paused and no new input is
 flowing.</p>
+<p>A multihost pipeline does not support <code>send_snapshot=true</code>, and refuses the
+request.  To read the whole view, use an ad hoc query instead.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="response-chunks">Response chunks<a href="#response-chunks" class="hash-link" aria-label="Direct link to Response chunks" title="Direct link to Response chunks" translate="no">​</a></h2>
 <p>The response body is a stream of JSON objects, one per line.  Each object
 has a <code>sequence_number</code>, counted from 0 for the stream, and a <code>snapshot</code>

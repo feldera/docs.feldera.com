@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.382.0
+  version: 0.383.0
 paths:
   /config/authentication:
     get:
@@ -9969,22 +9969,49 @@ components:
             distributed:
               type: boolean
               description: >-
-                Divide the input of this connector among the hosts of a
-                multihost
+                Divide the work of this connector among the hosts of a multihost
 
-                pipeline. Valid for input connectors only.
+                pipeline.
 
 
-                When `false` (the default), the connector runs on one host,
-                which
+                For an input connector: when `false` (the default), the
+                connector runs
 
-                reads all of its input. When `true`, the connector runs on every
-                host,
+                on one host, which reads all of its input. When `true`, the
+                connector
 
-                and each host reads a different part of the input. Only the
-                Kafka,
+                runs on every host, and each host reads a different part of the
+                input.
 
-                Delta Lake, and Iceberg input transports support this setting.
+                Only the Kafka, Delta Lake, and Iceberg input transports support
+                this
+
+                setting.
+
+
+                For an output connector: when `false` (the default), the
+                connector
+
+                runs on one host, which writes all of its output.  When `true`,
+                the
+
+                connector runs on every host, and each host writes the part of
+                the
+
+                output on its own workers.  Only the null output transport, and
+                the
+
+                Delta Lake output transport with `mode: append` and
+
+                `update_mode: cdc`, support this setting.  On other output
+                transports,
+
+                it has no effect.  A distributed Delta Lake output commits each
+
+                transaction once, through its part on one host, and it does not
+                support
+
+                output buffering.
 
 
                 In a single-host pipeline, this setting has no effect.
@@ -10266,6 +10293,12 @@ components:
                 snapshot when the connector supports reset (e.g., Delta Lake in
 
                 `truncate` mode and Postgres).
+
+
+                A multihost pipeline does not support this setting, and refuses
+                an
+
+                output connector that sets it.
             soft_delete:
               type: boolean
               description: >-
@@ -12252,6 +12285,11 @@ components:
             never
 
             merges for this reason.
+          default: null
+          nullable: true
+        view_integrals:
+          allOf:
+            - $ref: '#/components/schemas/ViewIntegralsLayout'
           default: null
           nullable: true
       additionalProperties:
@@ -16377,6 +16415,13 @@ components:
           type: array
           items:
             type: string
+        view_integrals_moved:
+          type: boolean
+          description: >-
+            The checkpoint keeps the state of the materialized views in another
+
+            layout, so the pipeline rebuilds it, although the views did not
+            change.
     PipelineDiffRequest:
       type: object
       description: Request body for the pipeline diff endpoint.
@@ -19963,6 +20008,10 @@ components:
 
             this can be left empty to allow automatic authentication via the
             pod's service account.
+
+
+            For an `az://` bucket this is the name of the storage account, and
+            it is required.
           nullable: true
         bucket:
           type: string
@@ -19984,6 +20033,17 @@ components:
             for
 
             example a GKE Workload Identity.
+
+
+            Prefix it with `az://` to sync to Azure Blob Storage through its
+            native
+
+            API: `az://<container>[/<path>]`. `access_key` is then the name of
+            the
+
+            storage account and `secret_key` its shared key; `provider` and
+
+            `region` are ignored. The container must exist.
         checkers:
           type: integer
           format: int32
@@ -20018,6 +20078,12 @@ components:
 
             a bare host gets `/storage/v1/` appended. Leave empty for the public
             service.
+
+
+            For an `az://` bucket this is the blob service endpoint of the
+            storage
+
+            account. Leave empty for `https://<account>.blob.core.windows.net`.
 
 
             Relevant rclone config key:
@@ -20146,7 +20212,9 @@ components:
 
             scheme is not: a `gs://` `bucket` needs a `gs://` `read_bucket` too,
 
-            because the prefix alone selects the object store.
+            and an `az://` `bucket` an `az://` `read_bucket`, because the prefix
+
+            alone selects the object store.
 
 
             The pipeline **never writes** to `read_bucket`.
@@ -20188,6 +20256,15 @@ components:
 
             this can be left empty to allow automatic authentication via the
             pod's service account.
+
+
+            For an `az://` bucket this is the shared key of the storage account.
+            If not provided,
+
+            rclone reads the credentials from the environment, for example an
+            AKS Workload Identity
+
+            or a managed identity.
           nullable: true
         standby:
           type: boolean
@@ -20947,6 +21024,15 @@ components:
       type: integer
       format: int64
       description: Version number.
+    ViewIntegralsLayout:
+      type: string
+      description: |-
+        Where a multihost pipeline keeps the state of its materialized views and
+        indexes.
+      enum:
+        - auto
+        - one_host
+        - all_hosts
   securitySchemes:
     JSON web token (JWT) or API key:
       type: http

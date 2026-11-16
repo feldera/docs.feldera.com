@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
-<script src="/assets/js/main.58278c81.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
+<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -202,7 +202,8 @@ data in plaintext even then.  The default is <code>true</code>.</p></div></td></
 weights above which the level merges its batches.</p><p>A spine keeps most of its records at its highest level.  When many of
 them are retractions, merging the level&#x27;s batches cancels them against
 the records they retract, which shrinks the spine&#x27;s storage.</p><p>A fraction from 0 through 1; the default is 0.2.  At 1 the level never
-merges for this reason.</p></div></td></tr></tbody></table></td></tr><tr><td><code>env</code><span style="opacity:0.6"> object</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Environment variables for the pipeline process.</p><p>These are key-value pairs injected into the pipeline process environment.
+merges for this reason.</p></div></td></tr><tr><td><code>view_integrals</code><span style="opacity:0.6"> string</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p><strong>Possible values:</strong> [<code>auto</code>, <code>one_host</code>, <code>all_hosts</code>]</p></div><div style="margin-top:var(--ifm-table-cell-padding)"><p>Where a multihost pipeline keeps the state of its materialized views and
+indexes.</p></div></td></tr></tbody></table></td></tr><tr><td><code>env</code><span style="opacity:0.6"> object</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Environment variables for the pipeline process.</p><p>These are key-value pairs injected into the pipeline process environment.
 Some variable names are reserved by the platform and cannot be overridden
 (for example <code>RUST_LOG</code>, and variables in the <code>FELDERA_</code>,
 <code>KUBERNETES_</code>, and <code>TOKIO_</code> namespaces).</p></div></td></tr><tr><td><code>fault_tolerance</code><span style="opacity:0.6"> object</span><span style="opacity:0.6"> — </span><strong style="font-size:var(--ifm-code-font-size);color:var(--openapi-optional)"> OPTIONAL</strong><div style="margin-top:var(--ifm-table-cell-padding)"><p>Fault-tolerance configuration.</p><p>The default [FtConfig] (via [FtConfig::default]) disables fault tolerance,

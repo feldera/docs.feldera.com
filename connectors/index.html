@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8eb6ca1b.js" defer="defer"></script>
-<script src="/assets/js/main.58278c81.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
+<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -143,6 +143,8 @@ before streaming incremental updates. The view must be materialized
 <p>The snapshot is sent exactly once: resuming from a checkpoint does not
 re-send it. Modifying the connector configuration causes a fresh
 snapshot to be replayed on the next start.</p>
+<p>A multihost pipeline does not support <code>send_snapshot</code>, and fails to start
+with an output connector that sets it.</p>
 </li>
 <li class="">
 <p><a name="soft_delete"><code>soft_delete</code></a> – <em>(Input connectors only)</em> When <code>true</code>, the connector
@@ -151,16 +153,25 @@ record in the <code>is_delete</code> metadata attribute. The default is <code>fa
 See <a href="#soft-deletes" class="">Soft deletes</a>.</p>
 </li>
 <li class="">
-<p><a name="distributed"><code>distributed</code></a> – <em>(Input connectors only)</em> When
-<code>true</code>, in a multihost pipeline, the connector runs on every host and each
-host reads a different part of its input.  When <code>false</code> (the default), the
-connector runs on one host, which reads all of its input.  In a single-host
-pipeline, this setting has no effect.</p>
-<p>Only the <a class="" href="/connectors/sources/kafka/#distributed-connectors">Kafka</a>,
+<p><a name="distributed"><code>distributed</code></a> – When <code>true</code>, in a multihost
+pipeline, the connector&#x27;s work is divided among the hosts.  In a
+single-host pipeline, this setting has no effect.  The default is <code>false</code>.</p>
+<p>For an input connector, the connector runs on every host and each host
+reads a different part of its input.  When <code>false</code>, the connector runs on
+one host, which reads all of its input.  Only the
+<a class="" href="/connectors/sources/kafka/#distributed-connectors">Kafka</a>,
 <a class="" href="/connectors/sources/delta/#distributed-connectors">Delta Lake</a>, and
 <a class="" href="/connectors/sources/iceberg/#distributed-connectors">Iceberg</a> input
-connectors support this setting.  For other connectors, a pipeline with
-<code>distributed</code> set to <code>true</code> fails to start.</p>
+connectors support this setting.</p>
+<p>For an output connector, the connector runs on every host and each host
+writes the part of the output on its own workers.  When <code>false</code>, the
+connector runs on one host, which writes all of its output.  Only the null
+output connector, and the
+<a class="" href="/connectors/sinks/delta/#distributed-connectors">Delta Lake</a> output
+connector with <code>mode</code> set to <code>append</code> and <code>update_mode</code> set to <code>cdc</code>,
+support this setting.  On other output connectors, it has no effect.</p>
+<p>For other input connectors, a pipeline with <code>distributed</code> set to <code>true</code>
+fails to start.</p>
 </li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="soft-deletes">Soft deletes<a href="#soft-deletes" class="hash-link" aria-label="Direct link to Soft deletes" title="Direct link to Soft deletes" translate="no">​</a></h3>
