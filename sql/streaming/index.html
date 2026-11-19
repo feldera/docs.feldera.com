@@ -12,9 +12,9 @@
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script>
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
-<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
-<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
+<script src="/assets/js/runtime~main.937f0a19.js" defer="defer"></script>
+<script src="/assets/js/main.6990adc5.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -125,8 +125,7 @@ reported; a join on other columns reports them too.  The join columns
 must have the type of the key columns, or a lossless widening of it: a
 <code>VARCHAR</code> event column matched against a <code>VARCHAR(255)</code> key, or a
 <code>BIGINT</code> column against an <code>INT</code> key, is recognized, while a key of
-type <code>CHAR(n)</code>, whose comparison ignores trailing spaces, or a join
-column narrower than the key is not.  Declare the expected size of
+type <code>CHAR(n)</code> or a join column narrower than the key is not.  Declare the expected size of
 each dimension table:</p>
 <div class="language-sql codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#E9E6DF;--prism-background-color:#0F100E"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-sql codeBlock_bY9V thin-scrollbar" style="color:#E9E6DF;background-color:#0F100E"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#E9E6DF"><span class="token keyword" style="color:#F4F2EB">CREATE</span><span class="token plain"> </span><span class="token keyword" style="color:#F4F2EB">TABLE</span><span class="token plain"> products </span><span class="token punctuation" style="color:#E9E6DF">(</span><span class="token plain"></span><br></span><span class="token-line" style="color:#E9E6DF"><span class="token plain">    sku </span><span class="token keyword" style="color:#F4F2EB">VARCHAR</span><span class="token plain"> </span><span class="token operator" style="color:#E9E6DF">NOT</span><span class="token plain"> </span><span class="token boolean" style="color:#D9AE80">NULL</span><span class="token plain"> </span><span class="token keyword" style="color:#F4F2EB">PRIMARY</span><span class="token plain"> </span><span class="token keyword" style="color:#F4F2EB">KEY</span><span class="token punctuation" style="color:#E9E6DF">,</span><span class="token plain"></span><br></span><span class="token-line" style="color:#E9E6DF"><span class="token plain">    name </span><span class="token keyword" style="color:#F4F2EB">VARCHAR</span><span class="token plain"></span><br></span><span class="token-line" style="color:#E9E6DF"><span class="token plain"></span><span class="token punctuation" style="color:#E9E6DF">)</span><span class="token plain"> </span><span class="token keyword" style="color:#F4F2EB">WITH</span><span class="token plain"> </span><span class="token punctuation" style="color:#E9E6DF">(</span><span class="token string" style="color:#C4C49A">&#x27;expected_size&#x27;</span><span class="token plain"> </span><span class="token operator" style="color:#E9E6DF">=</span><span class="token plain"> </span><span class="token string" style="color:#C4C49A">&#x27;100000&#x27;</span><span class="token punctuation" style="color:#E9E6DF">)</span><span class="token punctuation" style="color:#E9E6DF">;</span><br></span></code></pre></div></div>
 <p>With this annotation the join with <code>products</code> and the operators

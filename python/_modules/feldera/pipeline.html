@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.pipeline &mdash; Feldera Python SDK 0.383.0 documentation</title>
+  <title>feldera.pipeline &mdash; Feldera Python SDK 0.384.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Geist+Mono:wght@400;500;600&display=swap" />
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ede55393"></script>
+        <script src="../../_static/documentation_options.js?v=63bea25d"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -46,7 +46,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-  <p class="fd-side-label">Python SDK · 0.383.0</p>
+  <p class="fd-side-label">Python SDK · 0.384.0</p>
   
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -844,6 +844,12 @@
 <span class="sd">        they equal each other (thus, all input records present at the pipeline</span>
 <span class="sd">        have been processed).</span>
 
+<span class="sd">        A paused pipeline does not process the input that its connectors</span>
+<span class="sd">        buffered, so for a paused pipeline, this function counts that input</span>
+<span class="sd">        as if it were processed.  The exception is input that HTTP input</span>
+<span class="sd">        connectors buffered, such as forced input from `input_json()`: a</span>
+<span class="sd">        paused pipeline processes it, so this function waits for it.</span>
+
 <span class="sd">        :param idle_interval_s: Idle interval duration (default is 5.0 seconds).</span>
 <span class="sd">        :param timeout_s: Timeout waiting for idle (`None` = no timeout is enforced).</span>
 <span class="sd">        :param poll_interval_s: Polling interval, should be set substantially</span>
@@ -871,12 +877,13 @@
 
         <span class="n">start_time_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
         <span class="n">idle_started_s</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">prev</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">now_s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
 
             <span class="c1"># Metrics retrieval</span>
-            <span class="n">metrics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span><span class="o">.</span><span class="n">global_metrics</span>
+            <span class="n">stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stats</span><span class="p">()</span>
+            <span class="n">metrics</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">global_metrics</span>
             <span class="n">total_input_records</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_input_records</span>
             <span class="n">total_processed_records</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_processed_records</span>
             <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">total_input_records</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -889,12 +896,22 @@
 <span class="sd">metrics&quot;&quot;&quot;</span>
                 <span class="p">)</span>
 
+            <span class="c1"># A paused pipeline holds buffered input until it resumes, except</span>
+            <span class="c1"># in HTTP input connectors, which it still polls.</span>
+            <span class="n">buffered</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">buffered_input_records</span> <span class="ow">or</span> <span class="mi">0</span>
+            <span class="n">held</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="n">PipelineStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+                <span class="n">held</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">buffered_records</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">stats</span><span class="o">.</span><span class="n">inputs</span>
+                    <span class="k">if</span> <span class="s2">&quot;.api-ingress-&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">endpoint_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="p">)</span>
+
             <span class="c1"># Idle check</span>
-            <span class="n">unchanged</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">total_input_records</span> <span class="ow">and</span> <span class="n">prev</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">total_processed_records</span>
-            <span class="p">)</span>
-            <span class="n">equal</span> <span class="o">=</span> <span class="n">total_input_records</span> <span class="o">==</span> <span class="n">total_processed_records</span>
-            <span class="n">prev</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_input_records</span><span class="p">,</span> <span class="n">total_processed_records</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_input_records</span><span class="p">,</span> <span class="n">total_processed_records</span><span class="p">,</span> <span class="n">buffered</span><span class="p">)</span>
+            <span class="n">unchanged</span> <span class="o">=</span> <span class="n">prev</span> <span class="o">==</span> <span class="n">current</span>
+            <span class="n">equal</span> <span class="o">=</span> <span class="n">total_input_records</span> <span class="o">==</span> <span class="n">total_processed_records</span> <span class="o">+</span> <span class="n">held</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="n">current</span>
             <span class="k">if</span> <span class="n">unchanged</span> <span class="ow">and</span> <span class="n">equal</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">idle_started_s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">idle_started_s</span> <span class="o">=</span> <span class="n">now_s</span>
@@ -1173,6 +1190,15 @@
 <span class="sd">        state. If the pipeline is already paused, it will remain in the PAUSED</span>
 <span class="sd">        state.</span>
 
+<span class="sd">        A paused pipeline does not process the input that its connectors</span>
+<span class="sd">        buffered. The exceptions are input in HTTP input connectors, such as</span>
+<span class="sd">        forced input from :meth:`.input_json`, and the cases listed under</span>
+<span class="sd">        &quot;Pausing a pipeline&quot; in the testing guide, such as a transaction</span>
+<span class="sd">        commit. When this function waits, it returns after the step that was</span>
+<span class="sd">        in progress at the time of the pause is complete. A transaction commit</span>
+<span class="sd">        that was in progress at the pause still finishes after that, which</span>
+<span class="sd">        changes the views.</span>
+
 <span class="sd">        :param wait: Set True to wait for the pipeline to pause. True by default</span>
 <span class="sd">        :param timeout_s: The maximum time (in seconds) to wait for the</span>
 <span class="sd">            pipeline to pause.</span>
@@ -1278,6 +1304,13 @@
 <span class="sd">        next pipeline step; queries against materialized views may</span>
 <span class="sd">        observe the previous ``NOW()`` until that step completes.  Poll</span>
 <span class="sd">        the view if you need read-after-write semantics.</span>
+
+<span class="sd">        A paused pipeline takes the new value when it resumes, or earlier if</span>
+<span class="sd">        it commits a transaction: from a :meth:`.commit_transaction` request</span>
+<span class="sd">        until the commit starts, it polls all its connectors, the clock</span>
+<span class="sd">        included.  Otherwise, while the pipeline is paused, the views keep the</span>
+<span class="sd">        previous ``NOW()``, so do not poll the view for the new value until</span>
+<span class="sd">        after :meth:`.resume`.</span>
 
 <span class="sd">        :return: A dict ``{&quot;now_ms&quot;: &lt;int&gt;, &quot;now&quot;: &lt;RFC 3339 str&gt;}``.</span>
 

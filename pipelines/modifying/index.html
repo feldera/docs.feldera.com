@@ -12,9 +12,9 @@
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script>
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
-<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
-<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
+<script src="/assets/js/runtime~main.937f0a19.js" defer="defer"></script>
+<script src="/assets/js/main.6990adc5.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -165,8 +165,7 @@ and emit subsequent incremental changes.</p>
 Do not use it if the sink needs to receive the full contents of newly
 added or modified views during bootstrap.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="concurrent-bootstrapping">Concurrent bootstrapping<a href="#concurrent-bootstrapping" class="hash-link" aria-label="Direct link to Concurrent bootstrapping" title="Direct link to Concurrent bootstrapping" translate="no">​</a></h2>
-<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>Experimental</div><div class="admonitionContent_BuS1"><p>Concurrent bootstrapping is an experimental Enterprise-only feature and is
-disabled by default.</p></div></div>
+<p class="preview-note">Concurrent bootstrapping is an Enterprise feature in <a href="/feature-maturity">preview</a>. It is disabled by default.</p>
 <p>By default, bootstrapping is a <strong>stop-the-world</strong> operation: the pipeline ingests
 no input and existing views produce no output until every new and modified view has
 been recomputed (see <a href="#bootstrapping" class="">Bootstrapping</a> above).</p>

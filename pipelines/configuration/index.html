@@ -12,9 +12,9 @@
 <script async defer="defer" id="hs-script-loader" src="//js.hs-scripts.com/45801078.js"></script>
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
-<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.a5418cbd.css">
-<script src="/assets/js/runtime~main.8fd58427.js" defer="defer"></script>
-<script src="/assets/js/main.ebd283e2.js" defer="defer"></script>
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
+<script src="/assets/js/runtime~main.937f0a19.js" defer="defer"></script>
+<script src="/assets/js/main.6990adc5.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -410,7 +410,7 @@ outside these limits is refused with a 400 <code>InvalidDeploymentPatch</code> e
 cannot be more than <code>resources.memory_max</code>. A runtime configuration stored before a limit was set still loads, but the
 pipeline does not start until the value is changed.</p>
 <h4 class="anchor anchorTargetStickyNavbar_Vzrq" id="resizing-a-running-pipeline">Resizing a running pipeline<a href="#resizing-a-running-pipeline" class="hash-link" aria-label="Direct link to Resizing a running pipeline" title="Direct link to Resizing a running pipeline" translate="no">​</a></h4>
-<div class="theme-admonition theme-admonition-caution admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>Experimental feature</div><div class="admonitionContent_BuS1"><p>Resizing a running pipeline is an experimental feature and may change.</p></div></div>
+<p class="preview-note">Resizing a running pipeline is in <a href="/feature-maturity">preview</a>.</p>
 <p>On Kubernetes, the CPU, memory, storage, and volume attributes class of a running pipeline can
 be changed without a restart:</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#E9E6DF;--prism-background-color:#0F100E"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#E9E6DF;background-color:#0F100E"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#E9E6DF"><span class="token plain">curl -X PATCH &quot;http://localhost:8080/v0/pipelines/example&quot; \</span><br></span><span class="token-line" style="color:#E9E6DF"><span class="token plain">  -H &quot;Content-Type: application/json&quot; \</span><br></span><span class="token-line" style="color:#E9E6DF"><span class="token plain">  -d &#x27;{&quot;deployment_config&quot;: {&quot;resources&quot;: {&quot;cpu_cores_max&quot;: 4, &quot;memory_max&quot;: &quot;16G&quot;}}}&#x27;</span><br></span></code></pre></div></div>

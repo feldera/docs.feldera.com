@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.383.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.384.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Geist+Mono:wght@400;500;600&display=swap" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=ede55393"></script>
+        <script src="_static/documentation_options.js?v=63bea25d"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -49,7 +49,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-  <p class="fd-side-label">Python SDK · 0.383.0</p>
+  <p class="fd-side-label">Python SDK · 0.384.0</p>
   
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -268,6 +268,12 @@ one full tick.</p>
 next pipeline step; queries against materialized views may
 observe the previous <code class="docutils literal notranslate"><span class="pre">NOW()</span></code> until that step completes.  Poll
 the view if you need read-after-write semantics.</p>
+<p>A paused pipeline takes the new value when it resumes, or earlier if
+it commits a transaction: from a <a class="reference internal" href="#feldera.pipeline.Pipeline.commit_transaction" title="feldera.pipeline.Pipeline.commit_transaction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">commit_transaction()</span></code></a> request
+until the commit starts, it polls all its connectors, the clock
+included.  Otherwise, while the pipeline is paused, the views keep the
+previous <code class="docutils literal notranslate"><span class="pre">NOW()</span></code>, so do not poll the view for the new value until
+after <a class="reference internal" href="#feldera.pipeline.Pipeline.resume" title="feldera.pipeline.Pipeline.resume"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resume()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A dict <code class="docutils literal notranslate"><span class="pre">{&quot;now_ms&quot;:</span> <span class="pre">&lt;int&gt;,</span> <span class="pre">&quot;now&quot;:</span> <span class="pre">&lt;RFC</span> <span class="pre">3339</span> <span class="pre">str&gt;}</span></code>.</p>
@@ -932,6 +938,14 @@ the pipeline is not in a STOPPED state.</p>
 <p>The pipeline can only transition to the PAUSED state from the RUNNING
 state. If the pipeline is already paused, it will remain in the PAUSED
 state.</p>
+<p>A paused pipeline does not process the input that its connectors
+buffered. The exceptions are input in HTTP input connectors, such as
+forced input from <a class="reference internal" href="#feldera.pipeline.Pipeline.input_json" title="feldera.pipeline.Pipeline.input_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">input_json()</span></code></a>, and the cases listed under
+“Pausing a pipeline” in the testing guide, such as a transaction
+commit. When this function waits, it returns after the step that was
+in progress at the time of the pause is complete. A transaction commit
+that was in progress at the pause still finishes after that, which
+changes the views.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1901,6 +1915,11 @@ unknown metrics.</p>
 input and processed records reported by the pipeline do not change, and
 they equal each other (thus, all input records present at the pipeline
 have been processed).</p>
+<p>A paused pipeline does not process the input that its connectors
+buffered, so for a paused pipeline, this function counts that input
+as if it were processed.  The exception is input that HTTP input
+connectors buffered, such as forced input from <cite>input_json()</cite>: a
+paused pipeline processes it, so this function waits for it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
