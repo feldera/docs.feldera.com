@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
-<script src="/assets/js/runtime~main.937f0a19.js" defer="defer"></script>
-<script src="/assets/js/main.6990adc5.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.aa11f510.js" defer="defer"></script>
+<script src="/assets/js/main.50df4f02.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -52,6 +52,10 @@ the following methods:</p>
 button on the home page to upload and vie the bundle in the profile viewer, which shows the
 pipeline&#x27;s logs, metrics and circuit profile. The same button lists the bundles opened
 before, so that a bundle can be reopened without picking the file again.</p>
+<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>warning</div><div class="admonitionContent_BuS1"><p>A support bundle includes the SQL code and the connector settings as
+supplied. A credential written inline in a connector configuration is
+therefore in the bundle. Use <a class="" href="/connectors/secret-references/">secret references</a>
+for credentials, and check a bundle before you share it.</p></div></div>
 <p>The support bundle has the following content:</p>
 <ol>
 <li class="">
@@ -59,6 +63,13 @@ before, so that a bundle can be reopened without picking the file again.</p>
 </li>
 <li class="">
 <p><strong>Pipeline Configuration</strong>: the <a class="" href="/api/get-pipeline/">pipeline configuration</a>, including the SQL code and connector settings.
+The SQL code and connector settings are included as supplied, including inline credentials.
+A URL password or a <code>password=</code> value in the error fields of the record is
+replaced with <code>[REDACTED]</code>. Where the end of a credential cannot be
+established, the diagnostic is cut off at the credential. Retained
+collections pass through the current sanitization policy when their
+recorded policy is older.
+These rules also apply to collection failure reasons in the bundle metadata.
 To remove the source code from it, use <code>fda support-bundle --no-source-code</code>,
 <code>source_code=False</code> in the Python SDK, <code>source_code=false</code> in the REST API, or
 clear <strong>Source code</strong> in the web console. The configuration then has no SQL

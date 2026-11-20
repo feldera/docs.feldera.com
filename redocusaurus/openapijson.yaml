@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.384.0
+  version: 0.385.0
 paths:
   /config/authentication:
     get:
@@ -10884,13 +10884,21 @@ components:
           type: integer
           format: int32
           description: >-
-            The number of parallel parsing tasks the connector uses to process
-            data read from the
+            The number of record batches the connector parses at the same time.
+            Parsing runs on a
 
-            table. Increasing this value can enhance performance by allowing
-            more concurrent processing.
+            pool with one thread per CPU core, which all connectors share, so a
+            larger value only
 
-            Recommended range: 1–10. The default is 4.
+            helps while the pool has idle threads. Each batch in flight holds
+            memory.
+
+            All connectors together keep at most two batches per CPU core in
+            flight.
+
+            The default is the number of CPU cores available to the pipeline, at
+            most 16.
+          nullable: true
           minimum: 0
         scan_parallelism:
           type: integer
@@ -13640,13 +13648,27 @@ components:
               type: integer
               format: int32
               description: >-
-                The number of parallel parsing tasks the connector uses to
-                process data read from the
+                The number of record batches the connector parses at the same
+                time. Parsing runs on a
 
-                table. Increasing this value can enhance performance by allowing
-                more concurrent processing.
+                pool with one thread per CPU core, which all connectors share,
+                so a larger value only
 
-                Recommended range: 1-10. The default is 4.
+                helps while the pool has idle threads. Each batch in flight
+                holds memory.
+
+                All connectors together keep at most two batches per CPU core in
+                flight.
+
+                The default is the number of CPU cores available to the
+                pipeline, at most 16.
+
+
+                When set, this is also the number of files the connector reads
+                at the same time,
+
+                which is 4 otherwise.
+              nullable: true
               minimum: 1
             snapshot_filter:
               type: string

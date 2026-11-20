@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
-<script src="/assets/js/runtime~main.937f0a19.js" defer="defer"></script>
-<script src="/assets/js/main.6990adc5.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.aa11f510.js" defer="defer"></script>
+<script src="/assets/js/main.50df4f02.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -40,9 +40,73 @@ configuration with their values. We currently only support a single secret provi
 </ul>
 <p>When the pipeline initializes, it replaces all references in the connector configuration
 with their resolved values. Feldera resolves references when a pipeline starts, as well as
-each time it resumes. Feldera does not write resolved values to checkpoints or journals.</p>
+each time it resumes. Feldera does not write resolved values to checkpoints or journals.
+Connector error messages are written to checkpoints; see <a href="#diagnostics" class="">Diagnostics</a>
+for how resolved values are kept out of them.</p>
 <p>Use environment variables for non-sensitive deployment configuration only.
 Storing secrets in environment variables is generally discouraged; use a dedicated secret manager or secret store instead.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="diagnostics">Diagnostics<a href="#diagnostics" class="hash-link" aria-label="Direct link to Diagnostics" title="Direct link to Diagnostics" translate="no">​</a></h2>
+<p>A user who may reference a secret is not necessarily allowed to read it. The
+pipeline therefore keeps resolved values out of what it reports:</p>
+<div class="table-scroll-container"><table><thead><tr><th>Output</th><th>What is shown instead of a resolved value</th></tr></thead><tbody><tr><td>Pipeline log</td><td>the reference, <code>${secret:...}</code>, for the value as resolved; <code>[REDACTED ${secret:...}]</code> for a derived form of it, such as a percent-encoded or escaped copy or the password of a URL value</td></tr><tr><td><code>deployment_error</code>, pipeline events, <code>/status</code></td><td>the reference, <code>${secret:...}</code>, for the value as resolved; <code>[REDACTED ${secret:...}]</code> for a derived form of it, such as a percent-encoded or escaped copy or the password of a URL value. This applies to a pipeline on a runtime with this fix</td></tr><tr><td>Connector errors in <code>/stats</code> and in the support bundle</td><td>the reference, <code>${secret:...}</code>, for the value as resolved; <code>[REDACTED ${secret:...}]</code> for a derived form of it, such as a percent-encoded or escaped copy or the password of a URL value. This applies to a pipeline on a runtime with this fix</td></tr><tr><td>Connection errors and debug log lines of the Postgres input, Delta Lake and Kafka connectors, and of the Avro format</td><td>the endpoint name and option names only, never the URI, option value, or configuration</td></tr><tr><td>Format and connector configuration errors, and the pipeline startup summary</td><td>the error category, the expected values and field names from the schema, the endpoint, transport and format names; never a rejected value or a configuration dump</td></tr></tbody></table></div>
+<p>The API server does not resolve secret references, but a pipeline on an
+older runtime can send it an error that holds a resolved value. In stored
+deployment errors, status details, and support bundles, the server replaces
+the password of a URL and the value of a <code>password=</code> parameter with
+<code>[REDACTED]</code>. Where it cannot tell where a credential ends, it cuts the text
+off at the credential.</p>
+<p>One case is not covered in full. A password with both an unencoded <code>@</code> and
+whitespace is replaced only up to its first <code>@</code>:
+<code>postgres://u:pa@ss word@host/db</code> shows as
+<code>postgres://u:[REDACTED]@ss word@host/db</code>. Percent-encode such a password
+(<code>pa%40ss%20word</code>), and it is replaced whole.</p>
+<p>Format configuration errors report a safe error category and a corrective
+action instead of quoting the rejected value, including for short secrets.
+JSON log fields are redacted before serialization adds JSON escaping.</p>
+<p>The pipeline also registers values from declared credential fields and replaces
+matching diagnostic text with <code>[REDACTED]</code>. The same length and token limits
+apply. A Secret reference remains protected regardless of its destination field,
+including usernames, topics, and broker addresses; its reference takes precedence
+over the generic marker when a value appears in both forms. A URL with
+credentials in it is itself a declared credential, so a diagnostic message
+that quotes the whole URL shows <code>[REDACTED]</code>, not the reference inside it.</p>
+<div class="table-scroll-container"><table><thead><tr><th>Connector or format</th><th>Credential fields replaced in diagnostics</th><th>Stays visible</th></tr></thead><tbody><tr><td>Kafka</td><td>SASL password, TLS private key and key passwords, OAuth client secret and JWT assertion private key/passphrase; also fault-tolerance consumer/producer options</td><td></td></tr><tr><td>Postgres and Redis</td><td>the credentials of a connection string: a URL with userinfo or a query as a whole, and the <code>password</code> and <code>sslpassword</code> values of a libpq keyword string; Postgres inline TLS client key</td><td>a connection string without credentials</td></tr><tr><td>S3 and DynamoDB</td><td>AWS secret access key and credential-bearing endpoint URLs</td><td></td></tr><tr><td>Delta Lake</td><td>Known object-store secret keys, session/bearer tokens, SAS tokens, client secrets, service-account keys, customer encryption keys, and Unity catalog access tokens and client secrets, including supported aliases</td><td></td></tr><tr><td>Iceberg</td><td>Catalog credentials/tokens, authentication headers, and known FileIO credential keys</td><td></td></tr><tr><td>NATS</td><td>Inline credentials, JWT, NKey seed, token, password, and credential-bearing server URL</td><td></td></tr><tr><td>S2 and Pub/Sub</td><td>Authentication token and inline credentials, respectively</td><td></td></tr><tr><td>URL input and Avro</td><td>Credential-bearing URLs, including token-only userinfo; Avro registry password, authorization token, credential-bearing proxy URL, and <code>Authorization</code>, <code>Proxy-Authorization</code>, or <code>X-API-Key</code> headers</td><td>a URL without credentials</td></tr></tbody></table></div>
+<p>An unknown option key or a custom header is not in this table, even if its
+name looks like a credential. Connector errors still leave its value out.</p>
+<div class="theme-admonition theme-admonition-warning admonition_xJq3 alert alert--warning"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"></path></svg></span>warning</div><div class="admonitionContent_BuS1"><p>A credential written inline in the <code>connectors</code> property is part of the SQL
+program, and a support bundle includes it as written. Use a secret reference
+for every credential: see <a href="#kubernetes" class="">Kubernetes</a> for how to create one.</p></div></div>
+<p>The following limits apply:</p>
+<ul>
+<li class="">The pipeline log, <code>/status</code> and <code>/stats</code> show a resolved value of 8 bytes
+or more as its reference, where the value stands as a whole word or token.
+A shorter value is shown as it is.</li>
+<li class="">A secret whose value is a common word or a non-sensitive value, such as a
+user name or a broker address, is replaced by its reference in every
+diagnostic that uses the word on its own. Keep such values out of secrets,
+or expect them to read as references.</li>
+<li class="">A value that a connector transforms before printing it, other than trimming,
+percent-encoding, or escaping, may not be recognized.</li>
+<li class="">An environment variable reference is not protected. Its value is
+non-sensitive configuration by contract, and a common word in it would be
+replaced in every diagnostic that uses the word. The exception is a value
+in one of the credential fields of the table above: it is replaced like an
+inline value.</li>
+<li class="">Pipelines started on a runtime from before this fix (see the
+<a class="" href="/changelog/">changelog</a>) do not apply these rules. Restart such pipelines
+after an upgrade.</li>
+<li class="">A connector error message written to a checkpoint by an older runtime can
+contain the resolved value. After the upgrade, the restored message shows the
+reference if the secret still has that value. A rotated value is not
+recognized.</li>
+<li class="">A value that is part of SQL, UDF code, an endpoint name, or table data is
+shown as written.</li>
+<li class="">A value written inline in the <code>connectors</code> property is SQL text, not a
+resolved value. It shows as written in the program and in compiler messages
+and their SQL excerpts. The support bundle exports the pipeline
+configuration as supplied, and its connector settings stay when the bundle
+is collected without source code. Use a secret reference for a credential.</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="kubernetes">Kubernetes<a href="#kubernetes" class="hash-link" aria-label="Direct link to Kubernetes" title="Direct link to Kubernetes" translate="no">​</a></h2>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="usage">Usage<a href="#usage" class="hash-link" aria-label="Direct link to Usage" title="Direct link to Usage" translate="no">​</a></h3>
 <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#E9E6DF;--prism-background-color:#0F100E"><div class="codeBlockContent_QJqH"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#E9E6DF;background-color:#0F100E"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#E9E6DF"><span class="token plain">${secret:kubernetes:&lt;name&gt;/&lt;data key&gt;}</span><br></span></code></pre></div></div>
@@ -109,6 +173,6 @@ the datagen connector <code>strategy</code> field)</li>
 <li class="">It is not possible to specify a reference value type other than string</li>
 <li class="">It is not possible to specify a reference as a substring, for example
 <code>abc${secret:kubernetes:a/b}def</code> and <code>abc${env:MY_VAR}def</code> do not work</li>
-</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/connectors/completion-tokens/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Synchronous Processing with Completion Tokens</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/connectors/sources/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Input connectors</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#kubernetes" class="table-of-contents__link toc-highlight">Kubernetes</a><ul><li><a href="#usage" class="table-of-contents__link toc-highlight">Usage</a></li><li><a href="#example" class="table-of-contents__link toc-highlight">Example</a></li></ul></li><li><a href="#environment-variables" class="table-of-contents__link toc-highlight">Environment variables</a><ul><li><a href="#usage-1" class="table-of-contents__link toc-highlight">Usage</a></li><li><a href="#example-1" class="table-of-contents__link toc-highlight">Example</a></li><li><a href="#restrictions" class="table-of-contents__link toc-highlight">Restrictions</a></li></ul></li><li><a href="#restrictions-secret-references" class="table-of-contents__link toc-highlight">Restrictions (secret references)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/">Guides</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
+</ul></div></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/connectors/completion-tokens/"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">Synchronous Processing with Completion Tokens</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/connectors/sources/"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Input connectors</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#diagnostics" class="table-of-contents__link toc-highlight">Diagnostics</a></li><li><a href="#kubernetes" class="table-of-contents__link toc-highlight">Kubernetes</a><ul><li><a href="#usage" class="table-of-contents__link toc-highlight">Usage</a></li><li><a href="#example" class="table-of-contents__link toc-highlight">Example</a></li></ul></li><li><a href="#environment-variables" class="table-of-contents__link toc-highlight">Environment variables</a><ul><li><a href="#usage-1" class="table-of-contents__link toc-highlight">Usage</a></li><li><a href="#example-1" class="table-of-contents__link toc-highlight">Example</a></li><li><a href="#restrictions" class="table-of-contents__link toc-highlight">Restrictions</a></li></ul></li><li><a href="#restrictions-secret-references" class="table-of-contents__link toc-highlight">Restrictions (secret references)</a></li></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/get-started/">Get Started</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/basics/part1/">Tutorial</a></li><li class="footer__item"><a class="footer__link-item" href="/tutorials/">Guides</a></li><li class="footer__item"><a class="footer__link-item" href="/sql/intro/">SQL Reference</a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://join.slack.com/t/felderacommunity/shared_invite/zt-3vf3n5dj5-HJuC1DFFY2wE1_AZUyNxqw" target="_blank" rel="noopener noreferrer" class="footer__link-item">Slack<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://discord.com/invite/s6t5n9UzHE" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li><li class="footer__item"><a href="https://bsky.app/profile/feldera.bsky.social" target="_blank" rel="noopener noreferrer" class="footer__link-item">Bluesky<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div><div class="theme-layout-footer-column col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://github.com/feldera/feldera" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 Feldera Inc.</div></div></div></footer></div>
 </body>
 </html>
