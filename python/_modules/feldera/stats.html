@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera.stats &mdash; Feldera Python SDK 0.386.0 documentation</title>
+  <title>feldera.stats &mdash; Feldera Python SDK 0.387.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Geist+Mono:wght@400;500;600&display=swap" />
@@ -16,7 +16,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=801436ef"></script>
+        <script src="../../_static/documentation_options.js?v=f1c17cb6"></script>
         <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -46,7 +46,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-  <p class="fd-side-label">Python SDK · 0.386.0</p>
+  <p class="fd-side-label">Python SDK · 0.387.0</p>
   
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -327,6 +327,40 @@
 
 
 
+<div class="viewcode-block" id="CircuitInputWatermark">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CircuitInputWatermark">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CircuitInputWatermark</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Latest watermark that the circuit has taken in, reported by input</span>
+<span class="sd">    connector status.  Unlike a completed watermark, it moves during a</span>
+<span class="sd">    transaction too.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CircuitInputWatermark.__init__">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CircuitInputWatermark.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ingested_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processed_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CircuitInputWatermark.from_dict">
+<a class="viewcode-back" href="../../feldera.html#feldera.stats.CircuitInputWatermark.from_dict">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+        <span class="n">watermark</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;metadata&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;missing required field &#39;metadata&#39;&quot;</span><span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">ingested_at</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span>
+            <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;ingested_at&quot;</span><span class="p">),</span> <span class="s2">&quot;ingested_at&quot;</span>
+        <span class="p">)</span>
+        <span class="n">watermark</span><span class="o">.</span><span class="n">processed_at</span> <span class="o">=</span> <span class="n">parse_datetime</span><span class="p">(</span>
+            <span class="n">expect_str</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s2">&quot;processed_at&quot;</span><span class="p">),</span> <span class="s2">&quot;processed_at&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">watermark</span></div>
+</div>
+
+
+
 <div class="viewcode-block" id="InputEndpointStatus">
 <a class="viewcode-back" href="../../feldera.html#feldera.stats.InputEndpointStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InputEndpointStatus</span><span class="p">:</span>
@@ -347,7 +381,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">health</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConnectorHealth</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paused</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">barrier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">completed_frontier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CompletedWatermark</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">completed_frontier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CompletedWatermark</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuit_input_frontier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CircuitInputWatermark</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="InputEndpointStatus.from_dict">
@@ -386,6 +421,12 @@
         <span class="n">status</span><span class="o">.</span><span class="n">completed_frontier</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">CompletedWatermark</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">completed_frontier</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">completed_frontier</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+        <span class="n">circuit_input_frontier</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;circuit_input_frontier&quot;</span><span class="p">)</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">circuit_input_frontier</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">CircuitInputWatermark</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">circuit_input_frontier</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">circuit_input_frontier</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
             <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">status</span></div>

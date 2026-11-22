@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.386.0
+  version: 0.387.0
 paths:
   /config/authentication:
     get:
@@ -9156,6 +9156,31 @@ components:
           type: string
           description: Text payload, e.g., CSV.
           nullable: true
+    CircuitInputWatermark:
+      type: object
+      description: |-
+        A watermark that the circuit has taken in.
+
+        The outputs computed from the input may not be complete yet: in a
+        transaction, they wait for the commit.
+      required:
+        - metadata
+        - ingested_at
+        - processed_at
+      properties:
+        ingested_at:
+          type: string
+          format: date-time
+          description: Timestamp when the data was ingested from the wire.
+        metadata:
+          type: object
+          description: >-
+            Metadata that describes the position in the input stream (e.g.,
+            Kafka partition/offset pairs).
+        processed_at:
+          type: string
+          format: date-time
+          description: Timestamp when the circuit finished the step that took the data in.
     ClientMetadata:
       type: object
       description: >-
@@ -14002,6 +14027,10 @@ components:
         barrier:
           type: boolean
           description: Endpoint is currently a barrier to checkpointing and suspend.
+        circuit_input_frontier:
+          allOf:
+            - $ref: '#/components/schemas/CircuitInputWatermark'
+          nullable: true
         completed_frontier:
           allOf:
             - $ref: '#/components/schemas/CompletedWatermark'

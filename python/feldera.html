@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>feldera package &mdash; Feldera Python SDK 0.386.0 documentation</title>
+  <title>feldera package &mdash; Feldera Python SDK 0.387.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Geist+Mono:wght@400;500;600&display=swap" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=801436ef"></script>
+        <script src="_static/documentation_options.js?v=f1c17cb6"></script>
         <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -49,7 +49,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-  <p class="fd-side-label">Python SDK · 0.386.0</p>
+  <p class="fd-side-label">Python SDK · 0.387.0</p>
   
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -108,6 +108,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-feldera.stats">feldera.stats module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#feldera.stats.CircuitInputWatermark"><code class="docutils literal notranslate"><span class="pre">CircuitInputWatermark</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.stats.CommitProgressSummary"><code class="docutils literal notranslate"><span class="pre">CommitProgressSummary</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.stats.CompletedWatermark"><code class="docutils literal notranslate"><span class="pre">CompletedWatermark</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feldera.stats.ConnectorError"><code class="docutils literal notranslate"><span class="pre">ConnectorError</span></code></a></li>
@@ -2874,6 +2875,25 @@ such as <code class="docutils literal notranslate"><span class="pre">&quot;10Mi&
 </section>
 <section id="module-feldera.stats">
 <span id="feldera-stats-module"></span><h2>feldera.stats module<a class="headerlink" href="#module-feldera.stats" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="feldera.stats.CircuitInputWatermark">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.stats.</span></span><span class="sig-name descname"><span class="pre">CircuitInputWatermark</span></span><a class="reference internal" href="_modules/feldera/stats.html#CircuitInputWatermark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.CircuitInputWatermark" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Latest watermark that the circuit has taken in, reported by input
+connector status.  Unlike a completed watermark, it moves during a
+transaction too.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.stats.CircuitInputWatermark.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/stats.html#CircuitInputWatermark.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.CircuitInputWatermark.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="feldera.stats.CircuitInputWatermark.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/feldera/stats.html#CircuitInputWatermark.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.CircuitInputWatermark.from_dict" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="feldera.stats.CommitProgressSummary">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">feldera.stats.</span></span><span class="sig-name descname"><span class="pre">CommitProgressSummary</span></span><a class="reference internal" href="_modules/feldera/stats.html#CommitProgressSummary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#feldera.stats.CommitProgressSummary" title="Link to this definition"></a></dt>
