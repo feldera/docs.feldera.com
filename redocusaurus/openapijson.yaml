@@ -225,7 +225,7 @@ info:
     email: dev@feldera.com
   license:
     name: MIT OR Apache-2.0
-  version: 0.388.0
+  version: 0.389.0
 paths:
   /config/authentication:
     get:
@@ -13429,9 +13429,23 @@ components:
               allOf:
                 - $ref: '#/components/schemas/ComputeResources'
               nullable: true
+            last_termination:
+              allOf:
+                - $ref: '#/components/schemas/ProcessTermination'
+              nullable: true
             manager:
               $ref: '#/components/schemas/ResourceManager'
-      description: CPU and memory of one host.
+            restart_count:
+              type: integer
+              format: int32
+              description: >-
+                Times the pipeline process restarted (Kubernetes
+                `restartCount`). Absent when the runner
+
+                has not reported the process.
+              nullable: true
+              minimum: 0
+      description: CPU and memory of one host, and restarts of its pipeline process.
     HostMetrics:
       type: object
       description: Resource usage of one host in a multihost pipeline.
@@ -17446,6 +17460,40 @@ components:
           description: |-
             Name of the preprocessor.
             All preprocessors with the same name will perform the same task.
+    ProcessTermination:
+      type: object
+      description: How the pipeline process ended (Kubernetes `ContainerStateTerminated`).
+      required:
+        - exit_code
+      properties:
+        exit_code:
+          type: integer
+          format: int32
+        finished_at:
+          type: string
+          format: date-time
+          description: >-
+            Identifies one termination: the same termination keeps the same
+            time.
+          nullable: true
+        message:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          description: >-
+            Machine-readable cause, for example `OOMKilled`, `Error` or
+            `Completed`.
+          nullable: true
+        signal:
+          type: integer
+          format: int32
+          description: Absent when the platform does not report it.
+          nullable: true
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
     ProgramConfig:
       type: object
       description: Program configuration.
