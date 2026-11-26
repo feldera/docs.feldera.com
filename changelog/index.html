@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
-<script src="/assets/js/runtime~main.1d40187b.js" defer="defer"></script>
-<script src="/assets/js/main.aa013741.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.607672c2.js" defer="defer"></script>
+<script src="/assets/js/main.a67c6b0d.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -24,6 +24,17 @@
 <p><a href="https://github.com/feldera/feldera/releases/" target="_blank" rel="noopener noreferrer" class="">Release notes</a> for the Open
 Source edition can be found on github.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="unreleased">Unreleased<a href="#unreleased" class="hash-link" aria-label="Direct link to Unreleased" title="Direct link to Unreleased" translate="no">​</a></h2>
+<ul>
+<li class="">Security: with client certificates (<code>mtls.enabled</code>), a pipeline admits
+only its own coordinator and hosts to the <code>/coordination/*</code> routes.  Before,
+the control plane and the clients of <code>mtls.extraClientUris</code> could also call
+them, and so, for example, activate a multihost host with connectors of
+their choice before its coordinator did.  A pipeline without a coordinator
+refuses these routes with 400 Bad Request and error code <code>NoCoordinator</code>.
+The leader of a distributed output connector refuses a report that names a
+host that is not a follower.  Restart running pipelines so that they run on
+the fixed runtime.</li>
+</ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="v03850">v0.385.0<a href="#v03850" class="hash-link" aria-label="Direct link to v0.385.0" title="Direct link to v0.385.0" translate="no">​</a></h2>
 <ul>
 <li class="">Security: pipeline diagnostics replace registered Secret values with their

@@ -13,8 +13,8 @@
 <meta name="color-scheme" content="only light">
 <link rel="icon" href="/img/favicon.ico" sizes="any">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/css/styles.36b32a61.css">
-<script src="/assets/js/runtime~main.1d40187b.js" defer="defer"></script>
-<script src="/assets/js/main.aa013741.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.607672c2.js" defer="defer"></script>
+<script src="/assets/js/main.a67c6b0d.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <svg style="display: none;"><defs>
@@ -184,9 +184,13 @@ Use <code>https://</code> as the protocol.</p>
 <p>With the Helm value <code>mtls.enabled: true</code>, the compiler, runner, pipeline and
 coordinator servers require a client certificate that the private CA signed,
 and admit each caller only to its own routes:</p>
-<div class="table-scroll-container"><table><thead><tr><th>Caller</th><th>Certificate</th><th>Compiler</th><th>Runner</th><th>Pipeline <code>&lt;p&gt;</code> and its coordinator</th></tr></thead><tbody><tr><td>API server, runner, compiler replicas</td><td>control-plane certificate (URI SAN <code>urn:feldera:control-plane</code>), issued by cert-manager from the private CA</td><td>all routes</td><td>all routes</td><td>all routes</td></tr><tr><td>Pipeline <code>&lt;id&gt;</code></td><td>pipeline certificate (URI SAN <code>urn:feldera:pipeline:&lt;id&gt;</code>), issued by the runner from the private CA</td><td>download its own binary and program info, <code>/healthz</code></td><td><code>/healthz</code></td><td>all routes if <code>&lt;id&gt;</code> is <code>&lt;p&gt;</code> (the multihost coordinator), else none</td></tr><tr><td>External client, such as a sidecar</td><td>certificate with one URI SAN listed in <code>mtls.extraClientUris</code>, issued from the private CA</td><td><code>/healthz</code></td><td><code>/healthz</code></td><td>all routes</td></tr><tr><td>No certificate</td><td>none</td><td><code>/healthz</code></td><td><code>/healthz</code></td><td>none</td></tr></tbody></table></div>
+<div class="table-scroll-container"><table><thead><tr><th>Caller</th><th>Certificate</th><th>Compiler</th><th>Runner</th><th>Pipeline <code>&lt;p&gt;</code> and its coordinator</th></tr></thead><tbody><tr><td>API server, runner, compiler replicas</td><td>control-plane certificate (URI SAN <code>urn:feldera:control-plane</code>), issued by cert-manager from the private CA</td><td>all routes</td><td>all routes</td><td>all routes except <code>/coordination/*</code></td></tr><tr><td>Pipeline <code>&lt;id&gt;</code></td><td>pipeline certificate (URI SAN <code>urn:feldera:pipeline:&lt;id&gt;</code>), issued by the runner from the private CA</td><td>download its own binary and program info, <code>/healthz</code></td><td><code>/healthz</code></td><td>all routes if <code>&lt;id&gt;</code> is <code>&lt;p&gt;</code> (the coordinator and the hosts of a multihost pipeline), else none</td></tr><tr><td>External client, such as a sidecar</td><td>certificate with one URI SAN listed in <code>mtls.extraClientUris</code>, issued from the private CA</td><td><code>/healthz</code></td><td><code>/healthz</code></td><td>all routes except <code>/coordination/*</code></td></tr><tr><td>No certificate</td><td>none</td><td><code>/healthz</code></td><td><code>/healthz</code></td><td>none</td></tr></tbody></table></div>
 <p>Clients that reach a pipeline directly, instead of through the API server,
-are refused, except <a href="#external-clients" class="">external clients</a>.  Pipelines on an older runtime version (<code>runtime_version</code>) do
+are refused, except <a href="#external-clients" class="">external clients</a>.  Only the
+coordinator and the hosts of a multihost pipeline use the <code>/coordination/*</code>
+routes, so the pipeline admits only its own certificate to them.  A pipeline
+without a coordinator refuses them with 400 Bad Request and error code
+<code>NoCoordinator</code>, also without client certificates.  Pipelines on an older runtime version (<code>runtime_version</code>) do
 not check client certificates.</p>
 <p>The hosts of a multihost pipeline also use TLS to exchange data with each
 other.  Each host presents its pipeline certificate and admits only a host
